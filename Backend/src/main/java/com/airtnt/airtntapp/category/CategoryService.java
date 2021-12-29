@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import com.airtnt.entity.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryService {
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -26,6 +32,10 @@ public class CategoryService {
         itr.forEachRemaining(categories::add);
 
         return categories;
+    }
+
+    public List<Category> findAllCategoriesWithDesiredField() {
+        return categoryRepository.getAllCategoriesWithDesiredField();
     }
 
     public List<Category> listAll() {

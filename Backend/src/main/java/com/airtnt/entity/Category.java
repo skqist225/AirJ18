@@ -31,15 +31,21 @@ public class Category extends BaseEntity {
 
 	public Category(int id) {
 		super(id);
-	} 
+	}
 
 	@Transient
 	public String getIconPath() {
 		return "/category_images/" + this.icon;
 	}
-  
+
 	public Category(String name) {
 		this.name = name;
+	}
+
+	public Category(int id, String name, String icon) {
+		super(id);
+		this.name = name;
+		this.icon = icon;
 	}
 
 	public Category(int id, String name) {

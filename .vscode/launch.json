@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AirTntApplication<AirTNT>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.airtnt.airtntapp.AirTntApplication",
+            "projectName": "AirTNT",
+            "args": ""
+        }
+    ]
+}
