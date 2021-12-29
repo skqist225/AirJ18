@@ -1,0 +1,650 @@
+*,
+*::before,
+*::after {
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.rdt_container {
+    width: 1200px;
+    max-width: 95%;
+    margin: 0 auto;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+}
+
+#rdt__location {
+    height: 600px;
+    margin-top: 48px;
+    border-top: 1px solid rgb(211, 211, 211);
+    border-bottom: 1px solid rgb(211, 211, 211);
+    padding: 48px 0;
+}
+
+.heartSvg.like {
+    fill: rgb(255, 56, 92) !important;
+}
+
+#map {
+    height: 500px;
+}
+
+.rdt_name {
+    font-size: 26px;
+    color: #222;
+    line-height: 1.6rem;
+    margin-bottom: 4px;
+    padding-top: 24px;
+}
+
+.rdt_images__left {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+    position: relative;
+}
+
+.rdt_images {
+    padding-top: 24px;
+    height: 470px;
+}
+
+.rdt_button__action {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px -8px;
+    position: relative;
+    text-align: center;
+    width: auto;
+    touch-action: manipulation;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    /* width: 80px; */
+    outline: none;
+    padding: 8px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: transparent;
+    color: rgb(34, 34, 34);
+    text-decoration: underline;
+    display: flex;
+    align-items: center;
+}
+
+.rdt_button__action:hover {
+    border: none !important;
+    background: rgb(247, 247, 247) !important;
+    color: rgb(0, 0, 0) !important;
+}
+
+.rdt_button__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.rdt_header__action button {
+    padding-bottom: 0;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.flex2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.rdt_images {
+    height: 470px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.grid__2_1 {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+}
+
+.image {
+    object-fit: cover;
+    vertical-align: bottom;
+}
+
+.image:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.roundedBorder:first-child {
+    border-top-right-radius: 10px;
+}
+
+.roundedBorder:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.host_info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.text {
+    color: rgb(113, 113, 113);
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    max-height: 20px;
+}
+
+.rdt_body {
+    padding-top: 48px;
+}
+
+.rdt_room__count {
+    padding-bottom: 24px;
+    border-bottom: 1px solid #ddd;
+}
+
+.rdt_room__decor {
+    padding: 24px;
+    border: 1px solid rebeccapurple;
+    height: 143px;
+    width: 208px;
+    border-radius: 10px;
+}
+
+.rdt_body__common {
+    padding: 48px 0;
+    /* border-top: 1px solid #ddd; */
+    border-bottom: 1px solid #ddd;
+}
+
+.rdt_amentity__header {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.normal-flex {
+    display: flex;
+    align-items: center;
+}
+
+.rdt__review-line {
+    padding: 0 8px;
+    height: 36px;
+    margin-right: 95px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rdt__empty-rating {
+    height: 4px;
+    width: 116px;
+    background-color: #b0b0b0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-right: 12px;
+}
+
+#rdt__review {
+    padding: 48px 0;
+    border-top: 1px solid rgb(211, 211, 211);
+}
+
+#rdt_calender {
+    padding: 48px 0;
+}
+
+.rdt__rating {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #222;
+    z-index: 99;
+}
+
+.rdt__review-box {
+    flex: 1;
+    max-width: 50%;
+    padding: 0 8px;
+    margin-right: 95px;
+}
+
+.rdt_anchor__container {
+    border: 1px solid #222222;
+    background: #fff;
+    padding: 13px 23px;
+    height: 48px;
+    width: 230px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.rdt_anchor {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: #222;
+}
+
+.rdt_booking_button {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    outline: none;
+    padding: 14px 24px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+    color: rgb(255, 255, 255);
+    width: 100%;
+}
+
+.rdt_transparent__btn {
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    outline: none;
+    border: none;
+}
+
+.rdt__price {
+    color: #222;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.rdt_showMoreImage {
+    padding: 7px 15px;
+    color: rgb(34, 34, 34);
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(34, 34, 34);
+    border-radius: 8px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 14px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+#rdt_images-verticle-show {
+    background-color: #fff;
+    width: 100%;
+    height: fit-content;
+    transition: all 1s ease;
+}
+
+.rdt_images_show {
+    max-width: 1170px;
+    width: 95%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#closeShowImgBtn {
+    appearance: none;
+    display: inline-block;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    color: rgb(34, 34, 34);
+    cursor: pointer;
+    touch-action: manipulation;
+    position: relative;
+    background: transparent;
+    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
+        transform 0.25s ease 0s;
+}
+
+#rdt__fullScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background-color: #222;
+    display: none;
+}
+
+.shareSvg.white,
+.loveSvg.white,
+.backIcon.white {
+    stroke: #fff;
+}
+
+#rdt__imagesFullScreenContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#innerContainer {
+    width: 720px;
+    height: 480px;
+    position: relative;
+}
+
+.bigImage {
+    width: 720px;
+    height: 480px;
+    object-fit: cover;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.bigImage.active {
+    opacity: 1;
+}
+
+.nextImage {
+    appearance: none;
+    display: inline-block;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    touch-action: manipulation;
+    position: relative;
+    background: transparent;
+    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
+        transform 0.25s ease 0s;
+}
+
+.prevImage {
+    appearance: none;
+    display: inline-block;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    touch-action: manipulation;
+    position: relative;
+    background: transparent;
+    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
+        transform 0.25s ease 0s;
+}
+
+#button__changeImage {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 20px;
+}
+
+._1lyyzem {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+._1lyyzem:hover {
+    background-color: #484848;
+}
+/* 
+-webkit-box-direction: normal;
+-webkit-box-orient: vertical;
+-webkit-box-pack: center;
+-webkit-box-align: center;
+margin-left: 1px;
+margin-right: 1px;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+border-radius: 100%;
+position: relative;
+font-size: 14px;
+line-height: 18px;
+font-weight: 600;
+color: rgb(34, 34, 34);
+border: 1.5px solid rgb(255, 255, 255); */
+
+.rdt-calendar__header {
+    display: flex;
+    align-items: center;
+}
+
+.flex3 {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.firstMonth {
+    flex: 1;
+    max-width: 50%;
+    padding: 0 13px;
+}
+
+.secondMonth {
+    flex: 1;
+    max-width: 50%;
+    padding: 0 13px;
+}
+
+.dayInWeek {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    margin-left: 1px;
+    margin-right: 1px;
+    position: relative;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    color: rgb(34, 34, 34);
+    border: 1.5px solid rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.dayInWeek.false:hover {
+    border: 1px solid #222;
+    border-radius: 50%;
+}
+
+.dayInWeek.false.between {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    color: rgb(34, 34, 34);
+    border: 1.5px solid rgb(247, 247, 247);
+    background-color: palegreen;
+}
+
+.dayInWeek.false.checked {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 100%;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    background: rgb(34, 34, 34);
+    border: 1.5 px solid rgb(34, 34, 34);
+    color: rgb(255, 255, 255);
+    position: relative;
+}
+
+.date {
+    width: 42px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.monthTitle,
+.secondMonthTitle {
+    text-align: center;
+    padding: 22px 49px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.secondMonthTitle {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 0;
+}
+
+.pseudoContainer {
+    flex: 1;
+    text-align: center;
+}
+
+.getMonth-btn {
+    appearance: none;
+    display: inline-block;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    color: rgb(34, 34, 34);
+    cursor: pointer;
+    touch-action: manipulation;
+    position: relative;
+    background: transparent;
+    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
+        transform 0.25s ease 0s;
+
+    width: 48px;
+    height: 48px;
+}
+
+.getMonth-btn:hover {
+    border: none !important;
+    background: rgb(247, 247, 247) !important;
+    color: rgb(0, 0, 0) !important;
+}
+
+.block__date {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
+    border-radius: 100%;
+    position: relative;
+    font-size: 14px;
+    line-height: 18px;
+    border: 1.5px solid rgb(255, 255, 255);
+    color: rgb(176, 176, 176);
+    font-weight: 400;
+    text-decoration: line-through;
+}
+
+.totalPriceTitle {
+    color: rgb(32, 32, 32);
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.previewPrice-line {
+    padding-bottom: 12px;
+    display: none;
+}
+
+.normal-flex {
+    display: flex;
+    align-items: center;
+}
+
+.flex-space {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

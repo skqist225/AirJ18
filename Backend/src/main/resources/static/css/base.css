@@ -1,0 +1,135 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.normal-flex {
+    display: flex;
+    align-items: center;
+}
+
+.flex-space {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.col-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img.rounded-border {
+    border-radius: 50%;
+}
+
+.button {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+    touch-action: manipulation;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    border-radius: 8px;
+    outline: none;
+    padding: 14px 2px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    color: rgb(255, 255, 255);
+    width: 180px;
+    height: 42px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button.bg-red {
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+}
+
+.button.bg-normal {
+    background-color: #fff;
+    border: 1px solid #4e54c8;
+    color: #222; /* fallback for old browsers */
+    transition: all 0.1s ease;
+}
+
+.button.button.bg-normal:hover {
+    background: #4e54c8;
+    color: #fff;
+    border: none;
+}
+
+.fw-600 {
+    font-weight: 600;
+}
+
+.fs-16 {
+    font-size: 16px;
+}
+
+.heartSvg.like {
+    fill: rgb(255, 56, 92) !important;
+}
+
+input[type='checkbox'] {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -o-appearance: none;
+    outline: none;
+    content: none;
+}
+
+input[type='checkbox']:before {
+    font-family: 'FontAwesome';
+    content: '\f00c';
+    font-size: 13px;
+    border-radius: 4px;
+    color: transparent;
+    background: #fff;
+    display: block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d3d6db;
+    margin-right: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input[type='checkbox']:checked:before {
+    background: #3ea8df;
+    color: rgba(255, 255, 255, 0.85);
+    border: 2px solid #3ea8df;
+    border-radius: 4px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}

@@ -1,0 +1,59 @@
+.room-title__left {
+    position: relative;
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+    background: #fc5c7d; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+        to right,
+        #6a82fb,
+        #fc5c7d
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+        to right,
+        #6a82fb,
+        #fc5c7d
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+#room-name {
+    color: rgb(34, 34, 34);
+    display: block;
+    outline: none;
+    border: 1px solid rgb(176, 176, 176);
+    margin: 0px;
+    box-sizing: border-box;
+    background-color: transparent;
+    appearance: none;
+    resize: vertical;
+    padding: 16px;
+    border-radius: 8px;
+    text-overflow: ellipsis;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 38px;
+    overflow-y: hidden;
+    height: 164px;
+    width: 576px;
+}
+.room-name-label {
+    font-size: 22px !important;
+    line-height: 28px !important;
+    padding-bottom: 24px;
+}
+
+.title__right-middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#numberOfTextPerMaxLength {
+    align-self: flex-start;
+}
+
+.stepProcess.room-title-step {
+    width: calc(100% / 11 * 8);
+}

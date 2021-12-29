@@ -1,0 +1,145 @@
+*,
+*::before,
+*::after {
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+}
+
+.booking_container {
+    height: 100%;
+    width: 1440px;
+    margin: 0 auto;
+    padding: 70px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.checkinAndCheckoutTitle {
+    font-size: 16px;
+    color: #222;
+    margin-top: 8px;
+}
+
+.booking__transparent-btn {
+    appearance: none;
+    background: transparent;
+    border: 0px;
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+    user-select: auto;
+    color: rgb(34, 34, 34);
+    text-decoration: underline;
+    border-radius: 4px;
+    font-weight: 600;
+    text-align: inherit;
+    outline: none;
+}
+
+.normal-flex {
+    display: flex;
+    align-items: center;
+}
+
+.flex-space {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#boxPreview-header {
+    display: flex;
+    align-items: flex-start;
+    height: 130px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+#boxPreview-body {
+    flex: 1;
+    border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+#boxPreview {
+    width: 465px;
+    height: fit-content;
+    padding: 24px;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+#boxPreview-footer {
+    padding-top: 10px;
+}
+
+.booking__header-title {
+    flex: 1;
+    justify-content: center;
+    max-width: 50%;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.booking__price-details-title {
+    padding-bottom: 12px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.start-flex {
+    display: flex;
+    align-items: flex-start;
+}
+
+.rdt_booking_button {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    outline: none;
+    padding: 14px 24px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+    color: rgb(255, 255, 255);
+    width: 100%;
+}
+
+.rdt_booking_button:hover {
+    filter: contrast(115%);
+}
+
+.rdt_booking_button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.previewPrice-line {
+    margin-bottom: 10px;
+}

@@ -1,0 +1,7 @@
+<div th:fragment="content(privacyTypes)" th:remove="tag">
+    <div class="roomTypesContainer">
+        <div th:each="pt : ${privacyTypes}" class="privacy-type__box">
+            <div class="privacy-type__name" th:data-privacy-id="${pt.id}">[[${pt.name}]]</div>
+        </div>
+    </div>
+</div>

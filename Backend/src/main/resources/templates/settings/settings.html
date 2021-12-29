@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeLeaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+  xml:lang="en"
+>
+  <head th:replace="fragments::page_head('Settings', 'none')"> </head>
+
+  <body>
+    <div class="container-fluid">
+      <div th:replace="navigation::menu"></div>
+
+      <div>
+        <h1>Settings</h1>
+      </div>
+
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link active"
+            id="categories-tab"
+            data-toggle="tab"
+            href="#categories"
+            role="tab"
+            aria-controls="categories"
+            aria-selected="true"
+            >Categories</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            id="amentities-tab"
+            data-toggle="tab"
+            href="#amentities"
+            role="tab"
+            aria-controls="amentities"
+            aria-selected="false"
+            >Amentities</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            id="rules-tab"
+            data-toggle="tab"
+            href="#rules"
+            role="tab"
+            aria-controls="rules"
+            aria-selected="false"
+            >Rules</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            id="countries-tab"
+            data-toggle="tab"
+            href="#countries"
+            role="tab"
+            aria-controls="countries"
+            aria-selected="false"
+            >Countries</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            id="states-tab"
+            data-toggle="tab"
+            href="#states"
+            role="tab"
+            aria-controls="states"
+            aria-selected="false"
+            >States</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            id="cities-tab"
+            data-toggle="tab"
+            href="#cities"
+            role="tab"
+            aria-controls="cities"
+            aria-selected="false"
+            >Cities</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            id="currencies-tab"
+            data-toggle="tab"
+            href="#currencies"
+            role="tab"
+            aria-controls="currencies"
+            aria-selected="false"
+            >Currencies</a
+          >
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane active"
+          id="categories"
+          role="tabpanel"
+          aria-labelledby="category-tab"
+        >
+          <th:block th:replace="settings/categories::content"></th:block>
+        </div>
+        <div
+          class="tab-pane"
+          id="amentities"
+          role="tabpanel"
+          aria-labelledby="amentity-tab"
+        >
+          <th:block th:replace="settings/amentities::content"></th:block>
+        </div>
+        <div
+          class="tab-pane"
+          id="rules"
+          role="tabpanel"
+          aria-labelledby="rules-tab"
+        >
+          <th:block th:replace="settings/rules::content"></th:block>
+        </div>
+        <div
+          class="tab-pane"
+          id="countries"
+          role="tabpanel"
+          aria-labelledby="countries-tab"
+        >
+          <th:block th:replace="settings/countries::content"></th:block>
+        </div>
+        <div
+          class="tab-pane"
+          id="states"
+          role="tabpanel"
+          aria-labelledby="countries-tab"
+        >
+          <th:block th:replace="settings/states::content"></th:block>
+        </div>
+        <div
+          class="tab-pane"
+          id="cities"
+          role="tabpanel"
+          aria-labelledby="countries-tab"
+        >
+          <th:block th:replace="settings/cities::content"></th:block>
+        </div>
+        <div
+          class="tab-pane"
+          id="currencies"
+          role="tabpanel"
+          aria-labelledby="currencies-tab"
+        >
+          <th:block th:replace="settings/currencies::content"></th:block>
+        </div>
+        <div
+          class="tab-pane"
+          id="promos"
+          role="tabpanel"
+          aria-labelledby="promos-tab"
+        >
+          <th:block th:replace="settings/promos::content"></th:block>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="fragments :: confirm_modal"></div>
+
+    <div th:replace="fragments :: modal_dialog"></div>
+
+    <div
+      class="toast justify-content-center d-flex"
+      role="alert"
+      aria-live="polite"
+      aria-atomic="true"
+      data-delay="3000"
+    >
+      <div role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+          <span id="toastMessage"></span>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="fragments::footer"></div>
+
+    <script type="text/javascript">
+      MAX_FILE_SIZE = 1024000;
+      moduleURL = "[[@{/admin/settings}]]";
+      contextPath = "[[@{/admin/}]]";
+    </script>
+    <script th:src="@{/js/common_form.js}"></script>
+    <script th:src="@{/js/settings/categories.js}"></script>
+    <script th:src="@{/js/settings/amentities.js}"></script>
+    <script th:src="@{/js/settings/rules.js}"></script>
+    <script th:src="@{/js/settings/countries.js}"></script>
+    <script th:src="@{/js/settings/states.js}"></script>
+    <script th:src="@{/js/settings/cities.js}"></script>
+    <script th:src="@{/js/settings/currencies.js}"></script>
+    <script th:src="@{/js/settings/promos.js}"></script>
+  </body>
+</html>
