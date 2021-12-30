@@ -69,15 +69,15 @@ public class Room extends BaseEntity {
 	@Column(columnDefinition = "smallint")
 	private byte rating;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "country_id")
-	private Country country;  
+	private Country country;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	@JoinColumn(name = "state_id")
 	private State state;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	@JoinColumn(name = "city_id")
 	private City city;
 

@@ -33,7 +33,7 @@ public class Country {
 
     @Builder.Default
     @JsonManagedReference
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "country")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "country")
     private Set<State> states = new HashSet<>();
 
     public Country(int id) {

@@ -1,7 +1,8 @@
-import React, { FC, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { ICategory } from './HomeCategories';
 import $ from 'jquery';
-import './home.css';
+import { useDispatch } from 'react-redux';
+import { fetchRoomsByCategoryId } from '../../features/room/roomSlice';
 
 interface ICategoryProps {
     category: ICategory;
@@ -9,42 +10,37 @@ interface ICategoryProps {
 }
 
 export const Category: FC<ICategoryProps> = ({ category, index }) => {
+    const dispatch = useDispatch();
+
     const jQuerycode = async () => {
         const catContainers = $('.cat__container');
-        const buttonContainers = $('.button__container');
-        const urlSearchParams = new URLSearchParams(window.location.search).get('categoryId');
-        let categoryId = urlSearchParams || 1;
+        const urlSearchParams = new URLSearchParams(window.location.search).get('categoryId')!;
+        let categoryId = +urlSearchParams;
 
         $('.img_idt').each(function () {
             if ($(this).data('index') * 1 === 1) $(this).addClass('active');
         });
 
         catContainers.each(function () {
-            if ($(this).data('category-id') * 1 === categoryId)
+            if ($(this).data('category-id') * 1 === categoryId) {
                 setActiveTab(catContainers, $(this));
+                dispatch(fetchRoomsByCategoryId({ categoryId }));
+            }
         });
 
-        buttonContainers.each(function () {
-            $(this).on('click', function () {
-                window.location.href = `/?categoryId=${$(this).data('category-id')}`;
+        function setActiveTab(catContainer: JQuery<HTMLElement>, self: JQuery<HTMLElement>) {
+            catContainer.each(function () {
+                $(this).removeClass('active');
+
+                const insideLoopimage = $('.cat__image', this);
+                insideLoopimage.removeClass('active');
             });
-        });
+
+            $(self).addClass('active');
+            const image = $('.cat__image', self);
+            image.addClass('active');
+        }
     };
-
-    function setActiveTab(catContainer: JQuery<HTMLElement>, self: JQuery<HTMLElement>) {
-        const imageClassName = '.' + 'cat__image';
-
-        catContainer.each(function () {
-            $(this).removeClass('active');
-
-            const insideLoopimage = $(imageClassName, this);
-            insideLoopimage.removeClass('active');
-        });
-
-        $(self).addClass('active');
-        const image = $(imageClassName, self);
-        image.addClass('active');
-    }
 
     useEffect(() => {
         jQuerycode();
@@ -53,16 +49,17 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
     return (
         <div className='cat__container' data-category-id={category.id}>
             <button
+                id={`${index + 1}`}
                 className='button__container'
-                id={index + 1 + ''}
-                data-category-id={category.id}
+                onClick={e => {
+                    e.preventDefault();
+                    window.location.href = `/?categoryId=${category.id}`;
+                }}
             >
                 <div>
                     <img
-                        src={`http://localhost:8080${category.icon}`}
+                        src={`${process.env.REACT_APP_SERVER_URL}${category.icon}`}
                         alt={category.name + "'s icon"}
-                        width='20px'
-                        height='20px'
                         className='cat__image'
                     />
                 </div>

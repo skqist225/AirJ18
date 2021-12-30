@@ -40,7 +40,7 @@ public class State {
 
 	@Builder.Default
 	@JsonManagedReference
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "state")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "state")
 	private Set<City> cities = new HashSet<>();
 
 	public State(int id) {

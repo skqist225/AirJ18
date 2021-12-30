@@ -1,0 +1,158 @@
+import React, { FC, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import './header.css';
+
+interface IHeaderProps {
+    includeMiddle: boolean;
+    excludeBecomeHostAndNavigationHeader: boolean;
+}
+
+const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigationHeader }) => {
+    const jQuerycode = () => {
+        const headerNavButton = document.getElementsByClassName('account__button')[0];
+        const navMenu = document.getElementsByClassName('loginAndLogoutHidden')[0];
+        let isClicked = false;
+
+        headerNavButton.addEventListener('click', function () {
+            if (!isClicked) {
+                navMenu.classList.add('active');
+                isClicked = true;
+            } else {
+                navMenu.classList.remove('active');
+                isClicked = false;
+            }
+        });
+    };
+
+    useEffect(() => {
+        jQuerycode();
+    }, []);
+
+    return (
+        <header className='header'>
+            <div className='header__container'>
+                <div className='header__right'>
+                    <Link to='/'>
+                        <img
+                            src={`${process.env.REACT_APP_SERVER_URL}/images/airtntlogo.png`}
+                            id='airj18-logo'
+                            alt='application-logo'
+                            className='image'
+                        />
+                    </Link>
+                </div>
+                {includeMiddle && (
+                    <div className='header__middle'>
+                        <ul id='ulMiddle'>
+                            <li className='nav__container'>
+                                <a href='@{/progress/reviews}' className='nav__link'>
+                                    Đánh giá
+                                </a>
+                            </li>
+                            <li className='nav__container'>
+                                <a href='@{/progress/earnings}' className='nav__link'>
+                                    Thu nhập
+                                </a>
+                            </li>
+                            <li className='nav__container'>
+                                <a href='@{/user/bookings}' className='nav__link'>
+                                    Phòng đã đặt
+                                </a>
+                            </li>
+                            <li className='nav__container'>
+                                <a href='@{/hosting/listings/1}' className='nav__link'>
+                                    Quản lí nhà/phòng cho thuê
+                                </a>
+                            </li>
+                            <li className='nav__container'>
+                                <a href='@{/booking/listings/1}' className='nav__link'>
+                                    Quản lí đặt phòng
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                )}
+                <div className='header__left'>
+                    {/* isAuthenticated(); */}
+                    {!excludeBecomeHostAndNavigationHeader && (
+                        <div style={{ marginRight: '20px' }}>
+                            <a href='@{/become-a-host/}' className='header__become-host'>
+                                Trở thành chủ nhà
+                            </a>
+                        </div>
+                    )}
+
+                    <div className='navMenuHeader'>
+                        <div className='account__button'>
+                            <div>
+                                <svg
+                                    viewBox='0 0 32 32'
+                                    xmlns='http://www.w3.org/2000/svg'
+                                    aria-hidden='true'
+                                    role='presentation'
+                                    focusable='false'
+                                    className='subMenu'
+                                >
+                                    <g fill='none' fillRule='nonzero'>
+                                        <path d='m2 16h28'></path>
+                                        <path d='m2 24h28'></path>
+                                        <path d='m2 8h28'></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div>
+                                <div id='userAvatarWrapper'>
+                                    {/* <img
+                                        alt="User's avatar'"
+                                        className='header__user-avatar'
+                                        id='userAvatar'
+                                    /> */}
+                                    <img
+                                        alt="User's avatar'"
+                                        className='header__user-avatar'
+                                        id='userAvatar'
+                                        src={`${process.env.REACT_APP_SERVER_URL}/images/default_user_avatar.png`}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className='headerBridge'></div>
+                        <div className='loginAndLogoutHidden'>
+                            <ul>
+                                <li>
+                                    <a href='@{/user/register}'>Đăng ký</a>
+                                </li>
+                                <li>
+                                    <a href='@{/login}'>Đăng nhập</a>
+                                </li>
+                            </ul>
+                            <div>
+                                <ul>
+                                    <li>
+                                        <a href='@{/user/bookings}'>Phòng đã đặt</a>
+                                    </li>
+                                    <li>
+                                        <a href='@{/wishlists}'>Danh sách yêu thích</a>
+                                    </li>
+                                    <li>
+                                        <a href='@{/hosting/listings/1}'>
+                                            Quản lí nhà/phòng cho thuê
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href='@{/user/personal-info}'>Tài khoản</a>
+                                    </li>
+                                    <li>
+                                        <a href='@{/logout}'>Đăng xuất</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+};
+
+export default Header;

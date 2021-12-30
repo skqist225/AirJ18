@@ -3,8 +3,10 @@ package com.airtnt.airtntapp.room;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
+import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.room.dto.RoomPostDTO;
 import com.airtnt.airtntapp.rule.RuleService;
 import com.airtnt.airtntapp.state.StateService;
@@ -27,12 +29,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.airtnt.entity.Amentity;
+import com.airtnt.entity.Booking;
 import com.airtnt.entity.Category;
 import com.airtnt.entity.City;
 import com.airtnt.entity.Country;
 import com.airtnt.entity.Currency;
 import com.airtnt.entity.Image;
 import com.airtnt.entity.PriceType;
+import com.airtnt.entity.Review;
 import com.airtnt.entity.Role;
 
 import java.io.IOException;
@@ -48,12 +52,16 @@ import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.Rule;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
+import com.airtnt.entity.Exception.RoomNotFoundException;
 
 @RestController
 public class RoomRestController {
 
     @Autowired
     private RoomService roomService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @Autowired
     private UserService userService;
@@ -66,6 +74,9 @@ public class RoomRestController {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @RequestMapping("/api/rooms/category/{categoryId}")
     public String fetchRoomsByCategoryId(@PathVariable("categoryId") Integer categoryId,
@@ -100,12 +111,64 @@ public class RoomRestController {
             roomsJSON
                     .put(new JSONObject().put("name", room.getName()).put("thumbnail", room.renderThumbnailImage())
                             .put("images", images)
-                            .put("price", room.getPrice()).put("room_currency", room.getCurrency().getSymbol())
+                            .put("price", room.getPrice()).put("currency", room.getCurrency().getSymbol())
                             .put("stay_type", room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
                             .put("liked_by_users", likedByUsers));
         }
 
         return roomsJSON.toString();
+    }
+
+    @GetMapping("/api/room/{roomId}")
+    public String fetchRoomById(@PathVariable("roomId") Integer id) throws RoomNotFoundException {
+        Room room = roomService.getById(id);
+
+        List<Booking> bookings = bookingService.getBookingsByRoom(room);
+        Integer[] bookingIds = new Integer[bookings.size()];
+        for (int i = 0; i < bookings.size(); i++)
+            bookingIds[i] = bookings.get(i).getId();
+
+        List<Review> reviews = reviewService.getReviewsByBookings(bookingIds);
+
+        List<Integer> bedCount = new ArrayList<>();
+        for (int i = 0; i < room.getBedCount(); i++) {
+            bedCount.add(1);
+        }
+
+        float avgRatings = 0;
+        for (Review r : reviews) {
+            avgRatings += r.getFinalRating();
+        }
+        if (reviews.size() > 0)
+            avgRatings /= reviews.size();
+
+        JSONArray amentities = new JSONArray();
+        JSONArray rules = new JSONArray();
+        JSONArray reviewsJSON = new JSONArray();
+        for (Amentity a : room.getAmentities()) {
+            amentities.put(
+                    new JSONObject().put("name", a.getName()).put("icon", a.getIconImagePath()).put("id", a.getId()));
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", room.getId()).put("images", room.getImages())
+                .put("location",
+                        room.getStreet() + " " + room.getCity().getName() + " " + room.getState().getName() + " "
+                                + room.getCountry().getName())
+                .put("privacy", room.getPrivacyType()).put("guest", room.getAccomodatesCount())
+                .put("bedroom", room.getBedroomCount()).put("bed", room.getBedCount())
+                .put("bathroom", room.getBathroomCount())
+                .put("host_name", room.getHost().getFullName()).put("host_avatar", room.getHost().getAvatarPath())
+                .put("price", room.getPrice())
+                .put("currency", room.getCurrency().getSymbol())
+                .put("stay_type", room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
+                .put("amenitities", amentities)
+                .put("longitude", room.getLongitude())
+                .put("latitude", room.getLatitude())
+                .put("average_rating", avgRatings)
+                .put("reviews", reviews);
+
+        return jsonObject.toString();
     }
 
     @PostMapping("/rooms/checkName")

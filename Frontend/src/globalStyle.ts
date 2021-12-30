@@ -2,9 +2,9 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 const GlobalStyle = createGlobalStyle`
-    html {
-        font-size: 62.5%;
-    }
+    // html {
+    //     font-size: 62.5%;
+    // }
 
     body {
         margin: 0;

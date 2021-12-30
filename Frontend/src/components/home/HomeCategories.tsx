@@ -13,7 +13,7 @@ interface IHomeCategoriesProps {
 
 export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
     return (
-        <>
+        <div className='flex'>
             {categories.length > 0 &&
                 categories.map((category: ICategory, index: number) => {
                     return (
@@ -24,6 +24,6 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
                         />
                     );
                 })}
-        </>
+        </div>
     );
 };
