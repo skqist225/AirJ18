@@ -1,0 +1,29 @@
+.room-createdDate {
+    padding-top: 8px;
+    color: #717171;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.room-hostName {
+    font-size: 22px;
+    line-height: 26px;
+}
+
+.customerAvatarWrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.normal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avgRatingWrapper {
+    flex: 1;
+    max-width: 50%;
+}

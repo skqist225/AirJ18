@@ -144,18 +144,27 @@ public class RoomRestController {
 
         JSONArray amentities = new JSONArray();
         JSONArray rules = new JSONArray();
+        JSONArray images = new JSONArray();
         JSONArray reviewsJSON = new JSONArray();
         for (Amentity a : room.getAmentities()) {
             amentities.put(
                     new JSONObject().put("name", a.getName()).put("icon", a.getIconImagePath()).put("id", a.getId()));
         }
+        for (Rule r : room.getRules()) {
+            rules.put(new JSONObject().put("title", r.getTitle()).put("icon", r.getIcon()));
+        }
+        for (Image image : room.getImages()) {
+            images.put(image.getImagePath(room.getHost().getEmail(), room.getId()));
+        }
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", room.getId()).put("images", room.getImages())
+        jsonObject.put("id", room.getId()).put("images", images)
+                .put("name", room.getName())
+                .put("thumbnail", room.getThumbnail())
                 .put("location",
                         room.getStreet() + " " + room.getCity().getName() + " " + room.getState().getName() + " "
                                 + room.getCountry().getName())
-                .put("privacy", room.getPrivacyType()).put("guest", room.getAccomodatesCount())
+                .put("privacy", room.getPrivacyType().getName()).put("guest", room.getAccomodatesCount())
                 .put("bedroom", room.getBedroomCount()).put("bed", room.getBedCount())
                 .put("bathroom", room.getBathroomCount())
                 .put("host_name", room.getHost().getFullName()).put("host_avatar", room.getHost().getAvatarPath())
@@ -166,7 +175,7 @@ public class RoomRestController {
                 .put("longitude", room.getLongitude())
                 .put("latitude", room.getLatitude())
                 .put("average_rating", avgRatings)
-                .put("reviews", reviews);
+                .put("reviews", reviews).put("rules", rules);
 
         return jsonObject.toString();
     }
