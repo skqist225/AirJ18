@@ -3,6 +3,8 @@ import { ICategory } from './HomeCategories';
 import $ from 'jquery';
 import './home.css';
 import { IRoom } from './Rooms';
+import { Link } from 'react-router-dom';
+import { getImage } from '../../helpers/getImage';
 
 interface IRoomsProps {
     room: IRoom;
@@ -54,15 +56,15 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
     useEffect(() => {
         jQuerycode();
     }, []);
-
+    console.log(room.id);
     return (
         <div className='room__container'>
             <div className='room__image__container'>
-                <a href="@{${'/room/' + room.id}}">
+                <Link to={'/room/' + room.id}>
                     <div className='image__slider'>
                         {room.images.map((image: string, idx: number) => (
                             <img
-                                src={process.env.REACT_APP_SERVER_URL + image}
+                                src={getImage(image)}
                                 data-index={idx + 1}
                                 className={`room__image${index + 1} img_idt`}
                                 style={{ objectFit: 'cover' }}
@@ -70,7 +72,7 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                             />
                         ))}
                     </div>
-                </a>
+                </Link>
                 <div className='room__changeImage__pseudoContainer'>
                     <div className='room__changeImage'>
                         <button

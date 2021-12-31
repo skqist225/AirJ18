@@ -1,6 +1,7 @@
 import React, { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomById } from '../../features/room/roomSlice';
+import { getImage } from '../../helpers/getImage';
 import { RootState } from '../../store';
 import { IRoomDetails } from '../../type/type_RoomDetails';
 import Header from '../Header';
@@ -23,8 +24,8 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
         <>
             <Header excludeBecomeHostAndNavigationHeader={true} includeMiddle={false} />
             <main>
-                <div className='rdt_header' style={{ position: 'relative' }}>
-                    <h1 className='rdt_name'>{room?.name}</h1>
+                <section id='rdt__header--container' style={{ position: 'relative' }}>
+                    <h1 className='rdt__header--name'>{room?.name}</h1>
                     <input type='hidden' id='roomId' value='${room.id}' />
                     <div className='rdt_below__header flex'>
                         <div className='rdt_location__info text'>
@@ -121,41 +122,37 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                             <article>
                                 <div className='rdt_room__count flex'>
                                     <div>
-                                        <h2 style='font-size: 22px; line-height: 40px'>
-                                            Phòng riêng tại room.category.name. Chủ nhà
-                                            room.host.firstName room.host.lastName
+                                        <h2 className='rdt__body--hostDetails'>
+                                            {room?.privacy} tại {room?.name}. Chủ nhà
+                                            {room?.host_name}
                                         </h2>
-                                        <p style='font-size: 16px; font-weight: 500'>
-                                            room.accomodatesCount khách · room.bathroomCount phòng
-                                            ngủ · room.bedCount giường · room.bedroomCount phòng tắm
-                                            riêng
+                                        <p className='rdt__body--room-infos'>
+                                            {room?.guest} khách · {room?.bedroom} phòng ngủ ·{' '}
+                                            {room?.bed} giường · {room?.bathroom} phòng tắm riêng
                                         </p>
                                     </div>
                                     <div>
                                         <img
-                                            src='@{${room.host.avatarPath}}'
-                                            alt=''
+                                            src={getImage(room?.host_avatar)}
+                                            alt="host's avatar"
                                             className='image'
-                                            width='64px'
-                                            height='64px'
-                                            style='border-radius: 50%'
+                                            id='rdt__body--userAvatar'
                                         />
                                     </div>
                                 </div>
                                 <div className='rdt_description rdt_body__common'>
-                                    <p>room.description</p>
+                                    <p>{room?.description}</p>
                                 </div>
                                 <div className='rdt_bedroom_info rdt_body__common'>
                                     <div className='rdt_amentity__header'>Nơi bạn sẽ ngủ nghỉ</div>
                                     <div className='rdt_room__decor'>
                                         <div
-                                            style='
-                                            display: flex;
-                                            align-items: center;
-                                            margin-bottom: 16px;
-                                        '
+                                            className='normal-flex'
+                                            style={{
+                                                marginBottom: '16px',
+                                            }}
                                         >
-                                            <block each='bed : ${numberOfBed}'>
+                                            {/* {Array.from({ length: room?.bed }).map(_ => (
                                                 <span>
                                                     <svg
                                                         viewBox='0 0 32 32'
@@ -163,23 +160,22 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                                         aria-hidden='true'
                                                         role='presentation'
                                                         focusable='false'
-                                                        style='
-                                                        display: block;
-                                                        height: 24px;
-                                                        wid 24px;
-                                                        fill: currentcolor;
-                                                    '
+                                                        style={{
+                                                            display: 'block',
+                                                            height: '24px',
+                                                            width: '24px',
+                                                        }}
                                                     >
                                                         <path d='M24 4a2 2 0 0 1 1.995 1.85L26 6v7.839l1.846 5.537a3 3 0 0 1 .115.468l.03.24.009.24V30h-2v-2H6v2H4v-9.675a3 3 0 0 1 .087-.717l.067-.232L6 13.836V6a2 2 0 0 1 1.697-1.977l.154-.018L8 4zm2 18H6v4h20zm-1.388-6H7.387l-1.333 4h19.891zM24 6H8v8h3v-4a2 2 0 0 1 1.85-1.995L13 8h6a2 2 0 0 1 1.995 1.85L21 10v4h3zm-5 4h-6v4h6z'></path>
                                                     </svg>{' '}
                                                 </span>
-                                            </block>
+                                            ))} */}
                                         </div>
-                                        <div style='margin-bottom: 8px; font-size: 16px'>
+                                        <div style={{ marginBottom: '8px', fontSize: '16px' }}>
                                             Phòng ngủ
                                         </div>
-                                        <div style='font-size: 14px'>
-                                            <span text='${#arrays.length(numberOfBed)}'></span>
+                                        <div style={{ fontSize: '14px' }}>
+                                            <span>{room?.bed}</span>
                                             giường đơn
                                         </div>
                                     </div>
@@ -188,59 +184,51 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                     <h4 className='rdt_amentity__header'>
                                         Nơi này có những gì cho bạn
                                     </h4>
-                                    <div style='display: grid; grid-template-columns: repeat(2, 1fr)'>
-                                        <block each='amt : ${room.amentities}'>
+                                    <div
+                                        style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: 'repeat(2, 1fr)',
+                                        }}
+                                    >
+                                        {room?.amenitities.map(a => (
                                             <div
-                                                style='
-                                                display: flex;
-                                                align-items: center;
-                                                padding-bottom: 16px;
-                                                height: 40px;
-                                            '
+                                                className='normal-flex'
+                                                style={{ paddingBottom: '16px', height: '40px' }}
                                             >
-                                                <span remove='tag'>
+                                                <span>
                                                     <img
-                                                        src='@{${amt.iconImagePath}}'
+                                                        src={getImage(a.icon)}
                                                         alt=''
                                                         width='36px'
                                                         height='36px'
                                                     />
                                                 </span>
-                                                <span style='padding-left: 16px'>amt.name</span>
+                                                <span style={{ paddingLeft: '16px' }}>
+                                                    amt.name
+                                                </span>
                                             </div>
-                                        </block>
+                                        ))}
                                     </div>
                                 </div>
                                 <div id='rdt_calender'>
                                     <div>
-                                        <div
-                                            style='
-                                            font-size: 20px;
-                                            font-weight: 500;
-                                            margin-bottom: 5px;
-                                        '
-                                        >
+                                        <div className='rdt__body--calendar__chooseStartDateTitle'>
                                             Chọn ngày nhận phòng
                                         </div>
                                         <div
-                                            style='
-                                            display: none;
-                                            font-size: 20px;
-                                            font-weight: 500;
-                                            margin-bottom: 5px;
-                                        '
+                                            className='rdt__body--calendar__chooseEndDateTitle'
                                             id='numberOfDaysContainer'
                                         >
                                             <span id='daysAtHere'>1</span> đêm tại room.city.name
                                         </div>
                                     </div>
-                                    <div style='color: #717171'>
+                                    <div style={{ color: '#717171' }}>
                                         <div id='beforeEndDateContainer'>
-                                            <span id='beforeChooseDay' style='font-size: 14px'>
+                                            <span id='beforeChooseDay' style={{ fontSize: '14px' }}>
                                                 Thêm ngày đi để biết giá chính xác
                                             </span>
                                         </div>
-                                        <div style='display: none' id='fromDayToDayContainer'>
+                                        <div style={{ display: 'none' }} id='fromDayToDayContainer'>
                                             <span id='fromDay'>Từ ngày</span> -
                                             <span id='toDay'>đến ngày</span>
                                         </div>
@@ -248,8 +236,27 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                     <div className='rdt_calender__header'>
                                         <div className='flex3'>
                                             <div className='firstMonth'>
-                                                <div style='display: flex; align-items: center'>
-                                                    <div replace="room/_room_details_partial :: nextCoupleOfMonth('close3', 'getThePrevTwoMonth')"></div>
+                                                <div className='normal-flex'>
+                                                    <div>
+                                                        <button
+                                                            type='button'
+                                                            className={
+                                                                'getThePrevTwoMonth' +
+                                                                ' getMonth-btn'
+                                                            }
+                                                        >
+                                                            <span>
+                                                                <img
+                                                                    src={getImage(
+                                                                        '/svg/close3.svg'
+                                                                    )}
+                                                                    width='12px'
+                                                                    height='12px'
+                                                                />
+                                                            </span>
+                                                        </button>
+                                                    </div>
+
                                                     <div className='monthTitle firstMonthAndYear'>
                                                         Tháng MM năm YYY
                                                     </div>
@@ -257,7 +264,7 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                                 <div className='rdt_calender__body'>
                                                     <div
                                                         className='flex3'
-                                                        style='wid calc(44px * 7)'
+                                                        style={{ width: 'calc(44px * 7)' }}
                                                     >
                                                         <div className='date'>CN</div>
                                                         <div className='date'>T2</div>
@@ -271,18 +278,37 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                                 </div>
                                             </div>
                                             <div className='secondMonth'>
-                                                <div style='display: flex; align-items: center'>
+                                                <div className='normal-flex'>
                                                     <div className='pseudoContainer'>
                                                         <div className='secondMonthAndYear monthTitle'>
                                                             Tháng MM + 1 năm YYYY
                                                         </div>
                                                     </div>
-                                                    <div replace="room/_room_details_partial :: nextCoupleOfMonth('nextMonth', 'getTheNextTwoMonth')"></div>
+
+                                                    <div>
+                                                        <button
+                                                            type='button'
+                                                            className={
+                                                                'getTheNextTwoMonth' +
+                                                                ' getMonth-btn'
+                                                            }
+                                                        >
+                                                            <span>
+                                                                <img
+                                                                    src={getImage(
+                                                                        '/svg/nextMonth.svg'
+                                                                    )}
+                                                                    width='12px'
+                                                                    height='12px'
+                                                                />
+                                                            </span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 <div className='rdt_calender__body'>
                                                     <div
                                                         className='flex3'
-                                                        style='wid calc(44px * 7)'
+                                                        style={{ width: 'calc(44px * 7)' }}
                                                     >
                                                         <div className='date'>CN</div>
                                                         <div className='date'>T2</div>
@@ -301,56 +327,30 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                             </article>
 
                             <article className='rdt_booking'>
-                                <div
-                                    style='
-                                    border: 1px solid rgb(221, 221, 221);
-                                    border-radius: 12px;
-                                    padding: 24px;
-                                    box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px;
-                                    wid 373px;
-                                    float: right;
-                                '
-                                >
-                                    <div style='margin-bottom: 24px'>
+                                <div className='rdt__booking--container'>
+                                    <div style={{ marginBottom: '24px' }}>
                                         <span className='rdt__price'>
                                             room.currency.symbol#numbers.formatDecimal(room.price,3,
                                             'POINT',0, 'COMMA')
                                         </span>
-                                        <span
-                                            style='font-size: 16px'
-                                            if='${room.priceType.equals(T(com.airtnt.entity.PriceType).PER_NIGHT)}'
-                                        >
-                                            / đêm
-                                        </span>
-                                        <span
-                                            style='font-size: 16px'
-                                            if='${room.priceType.equals(T(com.airtnt.entity.PriceType).PER_WEEK)}'
-                                        >
-                                            / tuần
-                                        </span>
+                                        <span style={{ fontSize: '16px' }}>{room?.price}</span>
                                     </div>
-                                    <div
-                                        style='
-                                        border: 1px solid #b0b0b0;
-                                        border-radius: 10px;
-                                        font-size: 14px;
-                                        overflow: hidden;
-                                        margin-bottom: 20px;
-                                    '
-                                    >
+                                    <div className='rdt__booking--receiveRoom'>
                                         <div className='flex'>
-                                            <div style='padding: 10px 12px 10px; wid 50%'>
-                                                <div style='font-weight: 600'>Nhận phòng</div>
+                                            <div
+                                                style={{ padding: '10px 12px 10px', width: '50%' }}
+                                            >
+                                                <div style={{ fontWeight: 600 }}>Nhận phòng</div>
                                                 <div id='checkinDate'>Thêm ngày</div>
                                             </div>
                                             <div
-                                                style='
-                                                padding: 10px 12px 10px;
-                                                wid 50%;
-                                                border-left: 0.5px solid rgb(211, 211, 211);
-                                            '
+                                                style={{
+                                                    padding: '10px 12px 10px',
+                                                    width: '50%',
+                                                    borderLeft: '0.5px solid rgb(211, 211, 211)',
+                                                }}
                                             >
-                                                <div style='font-weight: 600'>Trả phòng</div>
+                                                <div style={{ fontWeight: '600' }}>Trả phòng</div>
                                                 <div id='checkoutDate'>Thêm ngày</div>
                                             </div>
                                         </div>
@@ -359,28 +359,32 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                         <button
                                             type='submit'
                                             className='rdt_booking_button'
-                                            onclick='processBooking();'
+                                            // onClick='processBooking();'
                                         >
                                             <span>
                                                 <span
-                                                    style='
-                                                    background-position: calc(
-                                                            (100 - var(--mouse-x, 0)) * 1%
-                                                        )
-                                                        calc((100 - var(--mouse-y, 0)) * 1%);
-                                                    --mouse-x: 96.4371;
-                                                    --mouse-y: 50;
-                                                '
+                                                    style={{
+                                                        backgroundPosition:
+                                                            'calc((100 - 96.4371) * 1%) calc((100 - 50) * 1%)',
+                                                    }}
                                                 ></span>
                                             </span>
                                             <span>Đặt phòng</span>
                                         </button>
                                     </div>
-                                    <div className='previewPrice-line' style='margin-top: 20px'>
+                                    <div
+                                        className='previewPrice-line'
+                                        style={{ marginTop: '20px' }}
+                                    >
                                         <div className='flex-space'>
                                             <div>
                                                 <button className='rdt_transparent__btn'>
-                                                    <div style='color: rgb(32, 32, 32); font-size: 14px'>
+                                                    <div
+                                                        style={{
+                                                            color: 'rgb(32, 32, 32)',
+                                                            fontSize: '14px',
+                                                        }}
+                                                    >
                                                         room.currency.symbol#numbers.formatDecimal(room.price,3,
                                                         'POINT',0, 'COMMA') x
                                                         <span id='numberOfNight'>7</span>
@@ -388,7 +392,7 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                                     </div>
                                                 </button>
                                             </div>
-                                            <div style='font-size: 14px'>
+                                            <div style={{ fontSize: '14px' }}>
                                                 room.currency.symbol<span id='totalPrice'></span>
                                             </div>
                                         </div>
@@ -398,22 +402,22 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                             <div>
                                                 <button className='rdt_transparent__btn'>
                                                     <div
-                                                        style='
-                                                        color: rgb(32, 32, 32);
-                                                        font-size: 14px;
-                                                        text-decoration: underline;
-                                                    '
+                                                        style={{
+                                                            color: 'rgb(32, 32, 32)',
+                                                            fontSize: '14px',
+                                                            textDecoration: 'underline',
+                                                        }}
                                                     >
                                                         Phí dịch vụ
                                                     </div>
                                                 </button>
                                             </div>
-                                            <div style='font-size: 14px'>
+                                            <div style={{ fontSize: '14px' }}>
                                                 room.currency.symbol<span id='siteFee'></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className='flex' style='padding-top: 16px'>
+                                    <div className='flex' style={{ paddingTop: '16px' }}>
                                         <div className='totalPriceTitle'>Tổng</div>
                                         <div className='totalPriceTitle'>
                                             room.currency.symbol<span id='finalTotalPrice'></span>
@@ -426,25 +430,27 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                             <div>
                                 <div className='normal-flex'>
                                     <img src='@{/svg/star.svg}' width='16px' height='16px' />
-                                    <span
+                                    {/* <span
                                         style='
                                         font-weight: 600;
                                         font-size: 22px;
                                         display: inline-block;
                                         margin-left: 12px;
                                     '
-                                    >
-                                        <span
+                                    > */}
+                                    {/* <span
                                             text="${#numbers.formatDecimal(avgRatings, 0, 'POINT', 2,
                                     'COMMA')}"
                                             if='${numberOfReviews > 0}'
-                                        ></span>
-                                        <span if='${numberOfReviews == 0}'>0</span>· numberOfReviews
-                                        đánh giá
-                                    </span>
+                                        >
+                                            {room?.average_rating}
+                                        </span> */}
+
+                                    <span>{room?.reviews.length || 0} đánh giá</span>
+                                    {/* </span> */}
                                 </div>
-                                <div className='normal-flex' style='margin-bottom: 42px'>
-                                    <div style='flex: 1; max-wid 50%'>
+                                <div className='normal-flex' style={{ marginBottom: '42px' }}>
+                                    <div style={{ flex: '1', maxWidth: '50%' }}>
                                         <div className='rdt__review-line'>
                                             <div>Mức độ sạch sẽ</div>
                                             <div className='normal-flex'>
@@ -521,42 +527,42 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div style='display: grid; grid-template-columns: repeat(2, 1fr)'>
+                                <div id='ratingDetailsContainer'>
                                     {room?.reviews.map(review => (
                                         <div className='rdt__review-box'>
                                             <input
                                                 type='hidden'
-                                                value='${review.subRating.cleanliness}'
+                                                value={review.rating.cleanliness}
                                                 className='cleanliness-rating'
                                             />
                                             <input
                                                 type='hidden'
-                                                value='${review.subRating.contact}'
+                                                value={review.rating.contact}
                                                 className='contact-rating'
                                             />
                                             <input
                                                 type='hidden'
-                                                value='${review.subRating.checkin}'
+                                                value={review.rating.checkin}
                                                 className='checkin-rating'
                                             />
                                             <input
                                                 type='hidden'
-                                                value='${review.subRating.accuracy}'
+                                                value={review.rating.accuracy}
                                                 className='accuracy-rating'
                                             />
                                             <input
                                                 type='hidden'
-                                                value='${review.subRating.location}'
+                                                value={review.rating.location}
                                                 className='location-rating'
                                             />
                                             <input
                                                 type='hidden'
-                                                value='${review.subRating.value}'
+                                                value={review.rating.value}
                                                 className='value-rating'
                                             />
                                             <div
                                                 className='normal-flex'
-                                                style='margin-bottom: 20px'
+                                                style={{ marginBottom: '20px' }}
                                             >
                                                 <div className='customerAvatarWrapper'>
                                                     <img
@@ -565,18 +571,23 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                                                         className='normal-img'
                                                     />
                                                 </div>
-                                                <div style=''>
-                                                    <div style='font-weight: 600'>
-                                                        review.booking.customer.fullName
+                                                <div>
+                                                    <div style={{ fontWeight: 600 }}>
+                                                        {review.customer_name}
                                                     </div>
                                                     <div
-                                                        text="${#dates.format(review.createdDate,
-                                                    'dd-MM-yyyy')}"
-                                                        style='color: #717171; font-size: 14px'
-                                                    ></div>
+                                                        style={{
+                                                            color: '#717171',
+                                                            fontSize: '14px',
+                                                        }}
+                                                    >
+                                                        {review.created_at}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div style={{ maxWidth: '457px' }}>review.comment</div>
+                                            <div style={{ maxWidth: '457px' }}>
+                                                {review.comment}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -625,7 +636,7 @@ const RoomDetails: FC<IRoomDetailsProps> = ({ roomId }) => {
                             </div>
                         </div>
                     </main>
-                </div>
+                </section>
             </main>
         </>
     );
