@@ -1,4 +1,6 @@
-export interface IAmentities {
+import { keys } from '@material-ui/core/styles/createBreakpoints';
+
+export interface IAmenity {
     name: string;
     icon: string;
     id: number;
@@ -28,6 +30,7 @@ export interface IHost {
     id: number;
     name: string;
     avatar: string;
+    created_date: string;
 }
 
 export type IRoomDetails = {
@@ -35,7 +38,7 @@ export type IRoomDetails = {
     name: string;
     description: string;
     thumbnail: string;
-    amenitities: IAmentities[];
+    amenitities: IAmenity[];
     images: string[];
     latitude: number;
     privacy: string;

@@ -34,7 +34,7 @@ public class Rule extends BaseEntity {
 
 	@Transient
 	public String getIconPath() {
-		return "rule_images/" + this.icon;
+		return "/rule_images/" + this.icon;
 	}
 
 	@Transient

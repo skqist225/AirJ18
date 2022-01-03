@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, ReactNode, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { fetchRoomById } from '../../features/room/roomSlice';
@@ -6,9 +6,12 @@ import { getImage } from '../../helpers/getImage';
 import { RootState } from '../../store';
 import { IRoomDetails } from '../../type/type_RoomDetails';
 import { getRoomlocation } from '../../utils/getLocation';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 import Header from '../Header';
-import './room.css';
+import './room_details.css';
+import { MyNumberForMat } from '../helpers/MyNumberFormat';
+import { ReviewLine, Amenity, ReviewValue, Rule } from './components';
 
 interface IRoomDetailsProps {}
 
@@ -20,6 +23,38 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
         (state: RootState) => state.room
     );
 
+    const jQuerycode = () => {};
+
+    const leftReviewLines = [
+        {
+            title: 'Mức độ sạch sẽ',
+            id: 'cleanlinessRating',
+        },
+        {
+            title: 'Liên lạc',
+            id: 'contactRating',
+        },
+        {
+            title: 'Nhận phòng',
+            id: 'checkinRating',
+        },
+    ];
+
+    const rightReviewLines = [
+        {
+            title: 'Độ chính xác',
+            id: 'accuracyRating',
+        },
+        {
+            title: 'Vị trí',
+            id: 'locationRating',
+        },
+        {
+            title: 'Giá trị',
+            id: 'valueRating',
+        },
+    ];
+
     useEffect(() => {
         dispatch(fetchRoomById({ roomId: pathname.split('/')[2] }));
     }, [dispatch, pathname]);
@@ -27,11 +62,11 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
     useEffect(() => {
         if (room !== null)
             getRoomlocation(
-                room!.latitude,
-                room!.longitude,
-                room!.host.id,
-                room!.host.avatar,
-                room!.host.name
+                room.latitude,
+                room.longitude,
+                room.host.id,
+                room.host.avatar,
+                room.host.name
             );
     }, [room]);
 
@@ -154,12 +189,11 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             <img
                                                 src={getImage(room.host.avatar)}
                                                 alt="host's avatar"
-                                                className='image'
-                                                id='rdt__body--userAvatar'
+                                                className='rdt__host--avatar'
                                             />
                                         </div>
                                     </div>
-                                    <div className='rdt_description rdt_body__common'>
+                                    <div className='rdt__description rdt_body__common'>
                                         <p>{room.description}</p>
                                     </div>
                                     <div className='rdt_bedroom_info rdt_body__common'>
@@ -200,7 +234,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             >
                                                 Phòng ngủ
                                             </div>
-                                            <div style={{ fontSize: '14px' }}>
+                                            <div style={{ fontSize: '1.4rem' }}>
                                                 <span>{room.bed}</span>
                                                 giường đơn
                                             </div>
@@ -210,33 +244,9 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                         <h4 className='rdt_amentity__header'>
                                             Nơi này có những gì cho bạn
                                         </h4>
-                                        <div
-                                            style={{
-                                                display: 'grid',
-                                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                            }}
-                                        >
-                                            {room.amenitities.map(a => (
-                                                <div
-                                                    className='normal-flex'
-                                                    style={{
-                                                        paddingBottom: '16px',
-                                                        height: '40px',
-                                                    }}
-                                                    key={a.name}
-                                                >
-                                                    <span>
-                                                        <img
-                                                            src={getImage(a.icon)}
-                                                            alt=''
-                                                            width='36px'
-                                                            height='36px'
-                                                        />
-                                                    </span>
-                                                    <span style={{ paddingLeft: '16px' }}>
-                                                        {a.name}
-                                                    </span>
-                                                </div>
+                                        <div className='rdt__amenities--container'>
+                                            {room.amenitities.map(amenity => (
+                                                <Amenity amenity={amenity} key={amenity.name} />
                                             ))}
                                         </div>
                                     </div>
@@ -363,13 +373,14 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                     </div>
                                 </article>
 
-                                <article className='rdt_booking'>
+                                <article className='rdt__booking'>
                                     <div className='rdt__booking--container'>
                                         <div style={{ marginBottom: '24px' }}>
-                                            <span className='rdt__price'>
-                                                {room.currency} {room.price}
-                                            </span>
-                                            <span style={{ fontSize: '16px' }}>{room.price}</span>
+                                            <MyNumberForMat
+                                                price={room.price}
+                                                currency={room.currency}
+                                                stayType={room.stay_type}
+                                            />
                                         </div>
                                         <div className='rdt__booking--receiveRoom'>
                                             <div className='flex'>
@@ -429,9 +440,12 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                                 fontSize: '14px',
                                                             }}
                                                         >
-                                                            room.currency.symbol#numbers.formatDecimal(room.price,3,
-                                                            'POINT',0, 'COMMA') x
-                                                            <span id='numberOfNight'>7</span>
+                                                            <MyNumberForMat
+                                                                price={room.price}
+                                                                currency={room.currency}
+                                                                stayType={room.stay_type}
+                                                            />{' '}
+                                                            x<span id='numberOfNight'>7</span>
                                                             &nbsp;đêm&nbsp;
                                                         </div>
                                                     </button>
@@ -481,101 +495,31 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             width='16px'
                                             height='16px'
                                         />
-                                        {/* <span
-                                        style='
-                                        font-weight: 600;
-                                        font-size: 22px;
-                                        display: inline-block;
-                                        margin-left: 12px;
-                                    '
-                                    > */}
-                                        {/* <span
-                                            text="${#numbers.formatDecimal(avgRatings, 0, 'POINT', 2,
-                                    'COMMA')}"
-                                            if='${numberOfReviews > 0}'
+                                        <span
+                                            style={{
+                                                fontWeight: '600',
+                                                fontSize: '22px',
+                                                display: 'inline-block',
+                                                marginLeft: '12px',
+                                            }}
                                         >
-                                            {room.average_rating}
-                                        </span> */}
+                                            {room.reviews.length > 0 && (
+                                                <span>{room.average_rating}</span>
+                                            )}
 
-                                        <span>{room.reviews.length || 0} đánh giá</span>
-                                        {/* </span> */}
+                                            <span>{room.reviews.length || 0} đánh giá</span>
+                                        </span>
                                     </div>
                                     <div className='normal-flex' style={{ marginBottom: '42px' }}>
                                         <div style={{ flex: '1', maxWidth: '50%' }}>
-                                            <div className='rdt__review-line'>
-                                                <div>Mức độ sạch sẽ</div>
-                                                <div className='normal-flex'>
-                                                    <div className='rdt__empty-rating'>
-                                                        <div
-                                                            id='cleanlinessRating'
-                                                            className='rdt__rating'
-                                                        ></div>
-                                                    </div>
-                                                    <span id='averageCleanlinessRating'></span>
-                                                </div>
-                                            </div>
-                                            <div className='rdt__review-line'>
-                                                <div>Liên lạc</div>
-                                                <div className='normal-flex'>
-                                                    <div className='rdt__empty-rating'>
-                                                        <div
-                                                            id='contactRating'
-                                                            className='rdt__rating'
-                                                        ></div>
-                                                    </div>
-                                                    <span id='averageContactRating'></span>
-                                                </div>
-                                            </div>
-                                            <div className='rdt__review-line'>
-                                                <div>Nhận phòng</div>
-                                                <div className='normal-flex'>
-                                                    <div className='rdt__empty-rating'>
-                                                        <div
-                                                            id='checkinRating'
-                                                            className='rdt__rating'
-                                                        ></div>
-                                                    </div>
-                                                    <span id='averageCheckinRating'></span>
-                                                </div>
-                                            </div>
+                                            {leftReviewLines.map(({ title, id }) => (
+                                                <ReviewLine title={title} id={id} key={title} />
+                                            ))}
                                         </div>
                                         <div className='avgRatingWrapper'>
-                                            <div className='rdt__review-line'>
-                                                <div>Độ chính xác</div>
-                                                <div className='normal-flex'>
-                                                    <div className='rdt__empty-rating'>
-                                                        <div
-                                                            id='accuracyRating'
-                                                            className='rdt__rating'
-                                                        ></div>
-                                                    </div>
-                                                    <span id='averageAccuracyRating'></span>
-                                                </div>
-                                            </div>
-                                            <div className='rdt__review-line'>
-                                                <div>Vị trí</div>
-                                                <div className='normal-flex'>
-                                                    <div className='rdt__empty-rating'>
-                                                        <div
-                                                            id='locationRating'
-                                                            className='rdt__rating'
-                                                        ></div>
-                                                    </div>
-                                                    <span id='averageLocationRating'></span>
-                                                </div>
-                                            </div>
-                                            <div className='rdt__review-line'>
-                                                <div>Giá trị</div>
-                                                <div className='normal-flex'>
-                                                    <div className='rdt__empty-rating'>
-                                                        <div
-                                                            id='valueRating'
-                                                            className='rdt__rating'
-                                                        ></div>
-                                                    </div>
-                                                    <span id='averageValueRating'></span>
-                                                </div>
-                                            </div>
+                                            {rightReviewLines.map(({ title, id }) => (
+                                                <ReviewLine title={title} id={id} key={title} />
+                                            ))}
                                         </div>
                                     </div>
                                     <div id='ratingDetailsContainer'>
@@ -584,62 +528,50 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 className='rdt__review-box'
                                                 key={review.created_at}
                                             >
-                                                <input
-                                                    type='hidden'
-                                                    value={review.rating.cleanliness}
-                                                    className='cleanliness-rating'
-                                                />
-                                                <input
-                                                    type='hidden'
-                                                    value={review.rating.contact}
-                                                    className='contact-rating'
-                                                />
-                                                <input
-                                                    type='hidden'
-                                                    value={review.rating.checkin}
-                                                    className='checkin-rating'
-                                                />
-                                                <input
-                                                    type='hidden'
-                                                    value={review.rating.accuracy}
-                                                    className='accuracy-rating'
-                                                />
-                                                <input
-                                                    type='hidden'
-                                                    value={review.rating.location}
-                                                    className='location-rating'
-                                                />
-                                                <input
-                                                    type='hidden'
-                                                    value={review.rating.value}
-                                                    className='value-rating'
-                                                />
+                                                {Object.keys(review.rating).map(k => {
+                                                    return (
+                                                        <ReviewValue
+                                                            value={(review.rating as any)[k]}
+                                                            className={`${k}-rating`}
+                                                            key={k}
+                                                        />
+                                                    );
+                                                })}
                                                 <div
                                                     className='normal-flex'
                                                     style={{ marginBottom: '20px' }}
                                                 >
                                                     <div className='customerAvatarWrapper'>
-                                                        {/* <img
-                                                        src='@{${review.booking.customer.avatarPath}}'
-                                                        alt=''
-                                                        className='normal-img'
-                                                    /> */}
+                                                        <img
+                                                            src={getImage(review.customer_avatar)}
+                                                            className='normal-img'
+                                                        />
                                                     </div>
                                                     <div>
-                                                        <div style={{ fontWeight: 600 }}>
+                                                        <div
+                                                            style={{
+                                                                fontWeight: 600,
+                                                                fontSize: '1.6rem',
+                                                            }}
+                                                        >
                                                             {review.customer_name}
                                                         </div>
                                                         <div
                                                             style={{
                                                                 color: '#717171',
-                                                                fontSize: '14px',
+                                                                fontSize: '1.4rem',
                                                             }}
                                                         >
                                                             {review.created_at}
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div style={{ maxWidth: '457px' }}>
+                                                <div
+                                                    style={{
+                                                        maxWidth: '457px',
+                                                        fontSize: '1.6rem',
+                                                    }}
+                                                >
                                                     {review.comment}
                                                 </div>
                                             </div>
@@ -655,19 +587,15 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                 <div className='rdt_host rdt_body__common'>
                                     <div className='host_info'>
                                         <div>
-                                            {/* <img
-                                            src='@{${room.host.avatarPath}}'
-                                            alt=''
-                                            className='image'
-                                            width='64px'
-                                            height='64px'
-                                            style={{ borderRadius: '50%' }}
-                                        /> */}
+                                            <img
+                                                src={getImage(room.host.avatar)}
+                                                className='rdt__host--avatar'
+                                            />
                                         </div>
                                         <div style={{ marginLeft: '20px' }}>
                                             <h2 className='room-hostName'>{room.host.name}</h2>
                                             <div className='room-createdDate'>
-                                                room.host.createdDate
+                                                {room.host.created_date}
                                             </div>
                                         </div>
                                     </div>
@@ -675,16 +603,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                 <div className='rdt_rules rdt_body__common'>
                                     <h4 className='rdt_amentity__header'>Những điều cần biết</h4>
                                     {room.rules.map(rule => (
-                                        <div
-                                            className='normal-flex'
-                                            style={{ marginBottom: '8px' }}
-                                            key={rule.title}
-                                        >
-                                            <span>{rule.title}</span>
-                                            <span style={{ paddingLeft: '16px' }}>
-                                                {rule.title}
-                                            </span>
-                                        </div>
+                                        <Rule rule={rule} key={rule.title} />
                                     ))}
                                 </div>
                             </div>

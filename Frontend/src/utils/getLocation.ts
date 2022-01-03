@@ -53,10 +53,7 @@ export function getRoomlocation(
         };
 
         const image: HTMLImageElement = document.createElement('img');
-        image.setAttribute(
-            'src',
-            `${process.env.REACT_APP_SERVER_URL}user_images/${userid}/${userimage}`
-        );
+        image.setAttribute('src', `${process.env.REACT_APP_SERVER_URL}${userimage}`);
         image.setAttribute('style', 'width:40px; height:40px; border-radius:50%; object-fit:cover');
 
         const marker = new mapboxgl.Marker(image)

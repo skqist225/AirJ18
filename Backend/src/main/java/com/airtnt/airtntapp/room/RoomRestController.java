@@ -113,7 +113,8 @@ public class RoomRestController {
                             .put("images", images)
                             .put("price", room.getPrice()).put("currency", room.getCurrency().getSymbol())
                             .put("stay_type", room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
-                            .put("liked_by_users", likedByUsers));
+                            .put("liked_by_users", likedByUsers)
+                            .put("id", room.getId()));
         }
 
         return roomsJSON.toString();
@@ -153,7 +154,7 @@ public class RoomRestController {
         }
 
         for (Rule r : room.getRules()) {
-            rules.put(new JSONObject().put("title", r.getTitle()).put("icon", r.getIcon()));
+            rules.put(new JSONObject().put("title", r.getTitle()).put("icon", r.getIconPath()));
         }
 
         for (Image image : room.getImages()) {
@@ -175,7 +176,7 @@ public class RoomRestController {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", room.getId()).put("images", images)
                 .put("name", room.getName())
-                .put("thumbnail", room.getThumbnail())
+                .put("thumbnail", room.renderThumbnailImage())
                 .put("description", room.getDescription())
                 .put("location",
                         room.getStreet() + " " + room.getCity().getName() + " " + room.getState().getName() + " "
@@ -183,7 +184,10 @@ public class RoomRestController {
                 .put("privacy", room.getPrivacyType().getName()).put("guest", room.getAccomodatesCount())
                 .put("bedroom", room.getBedroomCount()).put("bed", room.getBedCount())
                 .put("bathroom", room.getBathroomCount())
-                .put("host_name", room.getHost().getFullName()).put("host_avatar", room.getHost().getAvatarPath())
+                .put("host",
+                        new JSONObject().put("name", room.getHost().getFullName()).put("avatar",
+                                room.getHost().getAvatarPath()).put("id", room.getHost().getId())
+                                .put("created_date", room.getHost().getCreatedDate()))
                 .put("price", room.getPrice())
                 .put("currency", room.getCurrency().getSymbol())
                 .put("stay_type", room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")

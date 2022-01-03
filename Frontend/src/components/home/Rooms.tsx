@@ -1,7 +1,6 @@
 import React, { FC, ReactElement, ReactNode, useEffect } from 'react';
 import { Category } from './Category';
 import { Room } from './Room';
-import NumberFormat from 'react-number-format';
 
 export interface IRoom {
     id: number;
