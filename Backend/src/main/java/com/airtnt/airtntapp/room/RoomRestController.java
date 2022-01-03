@@ -146,21 +146,37 @@ public class RoomRestController {
         JSONArray rules = new JSONArray();
         JSONArray images = new JSONArray();
         JSONArray reviewsJSON = new JSONArray();
+
         for (Amentity a : room.getAmentities()) {
             amentities.put(
                     new JSONObject().put("name", a.getName()).put("icon", a.getIconImagePath()).put("id", a.getId()));
         }
+
         for (Rule r : room.getRules()) {
             rules.put(new JSONObject().put("title", r.getTitle()).put("icon", r.getIcon()));
         }
+
         for (Image image : room.getImages()) {
             images.put(image.getImagePath(room.getHost().getEmail(), room.getId()));
+        }
+
+        for (Review r : reviews) {
+            reviewsJSON.put(new JSONObject().put("comment", r.getComment())
+                    .put("customer_name", r.getBooking().getCustomer().getFullName())
+                    .put("customer_avatar", r.getBooking().getCustomer().getAvatarPath()).put("rating",
+                            new JSONObject().put("cleanliness", r.getSubRating().getCleanliness())
+                                    .put("contact", r.getSubRating().getContact())
+                                    .put("checkin", r.getSubRating().getCheckin())
+                                    .put("accuracy", r.getSubRating().getAccuracy())
+                                    .put("location", r.getSubRating().getLocation())
+                                    .put("value", r.getSubRating().getValue())));
         }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", room.getId()).put("images", images)
                 .put("name", room.getName())
                 .put("thumbnail", room.getThumbnail())
+                .put("description", room.getDescription())
                 .put("location",
                         room.getStreet() + " " + room.getCity().getName() + " " + room.getState().getName() + " "
                                 + room.getCountry().getName())
@@ -175,7 +191,7 @@ public class RoomRestController {
                 .put("longitude", room.getLongitude())
                 .put("latitude", room.getLatitude())
                 .put("average_rating", avgRatings)
-                .put("reviews", reviews).put("rules", rules);
+                .put("reviews", reviewsJSON).put("rules", rules);
 
         return jsonObject.toString();
     }
