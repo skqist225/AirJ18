@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HomeCategories } from '../components/home/HomeCategories';
 import { fetchCategories } from '../features/category/categorySlice';
@@ -7,7 +7,6 @@ import { RootState } from '../store';
 import '../components/home/home.css';
 import { Rooms } from '../components/home/Rooms';
 import Header from '../components/Header';
-import { relative } from 'path/posix';
 type HomeProps = {};
 
 const HomePage: FC<HomeProps> = () => {
@@ -27,12 +26,12 @@ const HomePage: FC<HomeProps> = () => {
         <div>
             <Header includeMiddle={false} excludeBecomeHostAndNavigationHeader={true} />
 
-            <main style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }}>
                 <div className='home__body'>
                     {!categoryLoading && <HomeCategories categories={categories} />}
                     <div>{!roomLoading && <Rooms rooms={rooms} />}</div>
                 </div>
-            </main>
+            </div>
         </div>
     );
 };

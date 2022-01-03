@@ -24,6 +24,12 @@ export interface IReview {
     created_at: string;
 }
 
+export interface IHost {
+    id: number;
+    name: string;
+    avatar: string;
+}
+
 export type IRoomDetails = {
     bed: number;
     name: string;
@@ -35,16 +41,15 @@ export type IRoomDetails = {
     privacy: string;
     average_rating: number;
     rules: IRule[];
-    bedroom: 9;
+    bedroom: number;
     stay_type: string;
     reviews: IReview[];
     price: number;
-    host_avatar: string;
     location: string;
     guest: number;
     currency: string;
     id: number;
     bathroom: number;
-    host_name: string;
+    host: IHost;
     longitude: number;
 } | null;

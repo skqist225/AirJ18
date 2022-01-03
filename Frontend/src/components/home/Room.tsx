@@ -1,10 +1,10 @@
-import React, { FC, MouseEventHandler, useEffect } from 'react';
-import { ICategory } from './HomeCategories';
+import { FC, useEffect } from 'react';
 import $ from 'jquery';
 import './home.css';
 import { IRoom } from './Rooms';
 import { Link } from 'react-router-dom';
 import { getImage } from '../../helpers/getImage';
+import NumberFormat from 'react-number-format';
 
 interface IRoomsProps {
     room: IRoom;
@@ -57,11 +57,10 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
         jQuerycode();
     }, []);
 
-    
     return (
         <div className='room__container'>
             <div className='room__image__container'>
-                <Link to={'/room/' + room.id}>
+                <Link to={`room/${room.id}`}>
                     <div className='image__slider'>
                         {room.images.map((image: string, idx: number) => (
                             <img
@@ -102,7 +101,9 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                         <div
                             style={{ flex: '1', cursor: 'pointer', height: '50px' }}
                             data-room-id={room.id}
-                            // onClick={redirectToRoomDetails($(this))}
+                            onClick={() => {
+                                window.location.href = `room/${room.id}`;
+                            }}
                         ></div>
                         <button
                             className={'nextImgBtn'}
@@ -128,7 +129,7 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                     </div>
                 </div>
                 <div className='room__button__like__container'>
-                    <button className='room__likeBtn' data-room-id='${room.id}'>
+                    <button className='room__likeBtn' data-room-id={room.id}>
                         <svg
                             viewBox='0 0 32 32'
                             xmlns='http://www.w3.org/2000/svg'
@@ -142,16 +143,24 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                     </button>
                 </div>
             </div>
-            <a href={'room/' + room.id}>
-                <div className='flex' style={{ paddingTop: '15px' }}>
+            <Link to={'room/' + room.id}>
+                <div className='normal-flex' style={{ paddingTop: '15px' }}>
                     <div className='room__name'>{room.name}</div>
                     <div className='room__price'>
-                        {room.currency}
-                        {room.price}
-                        <span>{room.stay_type}</span>
+                        <NumberFormat
+                            value={room.price}
+                            prefix={room.currency}
+                            thousandSeparator={true}
+                            displayType={'text'}
+                            renderText={(formattedValue: any) => (
+                                <div>
+                                    {formattedValue} {room.stay_type}
+                                </div>
+                            )}
+                        />
                     </div>
                 </div>
-            </a>
+            </Link>
         </div>
     );
 };

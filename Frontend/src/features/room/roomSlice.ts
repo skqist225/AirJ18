@@ -6,33 +6,33 @@ export const fetchRoomsByCategoryId = createAsyncThunk(
     'room/fetchRoomsByCategoryId',
     async ({ categoryId }: { categoryId: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const res = await api.get(`/rooms/category/${categoryId}`);
-            return { data: res.data };
+            const { data } = await api.get(`/rooms/category/${categoryId}`);
+            return { data };
         } catch (error) {}
     }
 );
 
 export const fetchRoomById = createAsyncThunk(
     'room/fetchRoomById',
-    async ({ roomId }: { roomId: number }, { dispatch, getState, rejectWithValue }) => {
+    async ({ roomId }: { roomId: string }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const res = await api.get(`/room/${roomId}`);
-            console.log(res);
-            return res.data;
+            const { data } = await api.get(`/room/${roomId}`);
+
+            return { data };
         } catch (error) {}
     }
 );
 
 type RoomState = {
-    loading: boolean;
     rooms: [];
     room: IRoomDetails;
+    loading: boolean;
 };
 
 const initialState: RoomState = {
-    loading: true,
     rooms: [],
     room: null,
+    loading: true,
 };
 
 const roomSlice = createSlice({
