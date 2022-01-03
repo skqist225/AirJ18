@@ -56,7 +56,8 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
     useEffect(() => {
         jQuerycode();
     }, []);
-    console.log(room.id);
+
+    
     return (
         <div className='room__container'>
             <div className='room__image__container'>
