@@ -3,6 +3,7 @@ package com.airtnt.airtntapp.room;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.airtnt.airtntapp.booking.BookedDate;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
@@ -44,6 +45,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.ParseException;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -121,7 +123,7 @@ public class RoomRestController {
     }
 
     @GetMapping("/api/room/{roomId}")
-    public String fetchRoomById(@PathVariable("roomId") Integer id) throws RoomNotFoundException {
+    public String fetchRoomById(@PathVariable("roomId") Integer id) throws RoomNotFoundException, ParseException {
         Room room = roomService.getById(id);
 
         List<Booking> bookings = bookingService.getBookingsByRoom(room);
@@ -172,6 +174,7 @@ public class RoomRestController {
                                     .put("location", r.getSubRating().getLocation())
                                     .put("value", r.getSubRating().getValue())));
         }
+        List<BookedDate> bookedDates = bookingService.getBookedDate(room);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", room.getId()).put("images", images)
@@ -195,7 +198,8 @@ public class RoomRestController {
                 .put("longitude", room.getLongitude())
                 .put("latitude", room.getLatitude())
                 .put("average_rating", avgRatings)
-                .put("reviews", reviewsJSON).put("rules", rules);
+                .put("reviews", reviewsJSON).put("rules", rules)
+                .put("bookedDates", bookedDates);
 
         return jsonObject.toString();
     }

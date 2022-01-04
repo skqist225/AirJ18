@@ -6,6 +6,7 @@ import { getImage } from '../../helpers/getImage';
 import { RootState } from '../../store';
 import { IRoomDetails } from '../../type/type_RoomDetails';
 import { getRoomlocation } from '../../utils/getLocation';
+import 'alertifyjs/build/css/alertify.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import Header from '../Header';

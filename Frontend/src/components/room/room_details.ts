@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import api from '../../axios';
 import { seperateNumber } from '../../helpers/seperateNumber';
 
 const active = 'active';
@@ -7,7 +8,10 @@ let haveEndDate = false;
 let startDate = '';
 let endDate = '';
 
-export default async function roomDetails() {
+export default async function roomDetails(
+    roomPrice: number,
+    bookedDates: { checkinDate: string; checkoutDate: string }[]
+) {
     const date = new Date();
     const month = date.getMonth();
     const year = date.getFullYear();
@@ -76,28 +80,24 @@ export default async function roomDetails() {
         $('#checkoutDate').text(endDateArgs);
     }
 
-    function displayNumberOfDays(manyDays: string) {
+    function displayNumberOfDays(manyDays: number) {
         $('#numberOfDaysContainer').css('display', 'block');
         $('#numberOfDaysContainer').siblings('div').css('display', 'none');
         $('#daysAtHere').text(manyDays + 2);
         $('#numberOfNight').text(manyDays + 2);
         displayPreviewLine();
-        setTotalPrice(manyDays + 2);
+        setTotalPrice(manyDays + 2, roomPrice);
     }
 
     function setTotalPrice(manyDays: any, roomPrice: number) {
         manyDays = parseInt(manyDays);
 
         const totalRoomPrice = roomPrice * manyDays;
-        console.log(totalRoomPrice);
         const siteFee = totalRoomPrice * 0.05;
-
-        console.log(siteFee);
-        totalPrice = totalRoomPrice + siteFee;
 
         $('#totalPrice').text(seperateNumber(manyDays * roomPrice));
         $('#siteFee').text(seperateNumber(Math.ceil(siteFee)));
-        $('#finalTotalPrice').text(seperateNumber(Math.ceil(totalPrice)));
+        $('#finalTotalPrice').text(seperateNumber(Math.ceil(totalRoomPrice + siteFee)));
     }
 
     function displayPreviewLine() {
@@ -157,7 +157,7 @@ export default async function roomDetails() {
         });
     }
 
-    function hightlightBetween(startDateArgs, endDateArgs) {
+    function hightlightBetween(startDateArgs: string, endDateArgs: string) {
         const [startDateDate, startDateMonth, startDateYear] = getElementsOfDate(startDateArgs);
         const [endDateDate, endDateMonth, endDateYear] = getElementsOfDate(endDateArgs);
         let howManyDays = 0;
@@ -213,19 +213,19 @@ export default async function roomDetails() {
 
     function setStartDate(
         self: JQuery<HTMLElement>,
-        startDateDate: string,
-        startDateMonth: string,
-        startDateYear: string,
-        currDate: string,
-        currMonth: string,
-        currYear: string
+        startDateDate: number,
+        startDateMonth: number,
+        startDateYear: number,
+        currDate: number,
+        currMonth: number,
+        currYear: number
     ) {
         const _self = $(self);
         $('.dayInWeek.false').each(function () {
             if (
-                parseInt($(this).text()) === parseInt(startDateDate) &&
-                parseInt($(this).data('month')) === parseInt(startDateMonth) &&
-                parseInt($(this).data('year')) === parseInt(startDateYear) &&
+                parseInt($(this).text()) === startDateDate &&
+                parseInt($(this).data('month')) === startDateMonth &&
+                parseInt($(this).data('year')) === startDateYear &&
                 $(this).hasClass('checked')
             ) {
                 $(this).removeClass('checked');
@@ -242,19 +242,19 @@ export default async function roomDetails() {
 
     function setEndDate(
         self: JQuery<HTMLElement>,
-        endDateDate: string,
-        endDateMonth: string,
-        endDateYear: string,
-        currDate: string,
-        currMonth: string,
-        currYear: string
+        endDateDate: number,
+        endDateMonth: number,
+        endDateYear: number,
+        currDate: number,
+        currMonth: number,
+        currYear: number
     ) {
         const _self = $(self);
         $('.dayInWeek.false').each(function () {
             if (
-                parseInt($(this).text()) === parseInt(endDateDate) &&
-                parseInt($(this).data('month')) === parseInt(endDateMonth) &&
-                parseInt($(this).data('year')) === parseInt(endDateYear) &&
+                parseInt($(this).text()) === endDateDate &&
+                parseInt($(this).data('month')) === endDateMonth &&
+                parseInt($(this).data('year')) === endDateYear &&
                 $(this).hasClass('checked')
             ) {
                 $(this).removeClass('checked');
@@ -355,12 +355,15 @@ export default async function roomDetails() {
         // });
     }
 
-    async function fetchTheNextCoupleOfMonth(firstMonthAndYear, secondMonthAndYear, month, year) {
+    async function fetchTheNextCoupleOfMonth(
+        firstMonthAndYear: JQuery<HTMLElement>,
+        secondMonthAndYear: JQuery<HTMLElement>,
+        month: number,
+        year: number
+    ) {
         let secondMonth;
         let copyMonth;
         let copyYear;
-
-        console.log(month);
 
         if (month === 11) {
             secondMonth = await fetchDaysInMonth(0, year + 1);
@@ -414,46 +417,56 @@ export default async function roomDetails() {
         });
 
         addClickEventForDay();
-        bookedDates.forEach(({ checkinDate, checkoutDate }) => {
-            blockBetween(checkinDate, checkoutDate);
-        });
+        bookedDates.forEach(
+            ({ checkinDate, checkoutDate }: { checkinDate: string; checkoutDate: string }) => {
+                blockBetween(checkinDate, checkoutDate);
+            }
+        );
     }
 
-    const fetchDaysInMonth = async (month, year) => {
+    const fetchDaysInMonth = async (month: number, year: number) => {
         const {
             data: { daysInMonth, startInWeek },
-        } = await axios.get(`${baseURL}calendar/${month + 1}/${year}`);
+        } = await api.get(`/calendar/${month + 1}/${year}`);
         return Promise.resolve({ daysInMonth, startInWeek });
     };
 
-    function getDaysInMonth(daysInMonth, month, year) {
+    function getDaysInMonth(daysInMonth: string, month: number, year: number) {
         const date = new Date();
-        let daysInMonthJs = [];
+        let daysInMonthJs: string[] = [];
         let weeks = daysInMonth.split('*');
 
         weeks.forEach(week => {
             daysInMonthJs.push('<tbody><tr>');
             const weekArray = week.trim().split(' ');
-            weekArray.forEach(dayInWeek => {
+            weekArray.forEach((dayInWeek: string) => {
                 if (dayInWeek === '') {
                 } else if (dayInWeek.trim() !== '_') {
                     let isBlocked = false;
 
                     if (month < date.getMonth() + 1 && year <= date.getFullYear()) isBlocked = true;
-                    else if (month === date.getMonth() + 1 && dayInWeek < date.getDate())
+                    else if (month === date.getMonth() + 1 && parseInt(dayInWeek) < date.getDate())
                         isBlocked = true;
                     else {
                         const dateThis =
                             (dayInWeek.length === 1 ? `0${dayInWeek}` : dayInWeek) +
                             '/' +
-                            (month.length === 1 ? `0${month}` : month) +
+                            (month.toString().length === 1 ? `0${month}` : month) +
                             '/' +
                             year;
-                        bookedDates.forEach(({ checkinDate, checkoutDate }) => {
-                            if (checkinDate === dateThis || dateThis === checkoutDate) {
-                                isBlocked = true;
+                        bookedDates.forEach(
+                            ({
+                                checkinDate,
+                                checkoutDate,
+                            }: {
+                                checkinDate: string;
+                                checkoutDate: string;
+                            }) => {
+                                if (checkinDate === dateThis || dateThis === checkoutDate) {
+                                    isBlocked = true;
+                                }
                             }
-                        });
+                        );
                     }
 
                     const dayInHtml = `<td><div data-is-blocked="${false}" data-month="${month}" data-year="${year}" class="dayInWeek ${
@@ -641,7 +654,7 @@ export default async function roomDetails() {
                         (month2 < startDateMonth && startDateYear > year2) ||
                         (month2 === startDateMonth && date2 < startDateDate)
                     ) {
-                        alertify.error('Không thể chọn ngày bé hơn ngày bắt đầu');
+                        // alertify.error('Không thể chọn ngày bé hơn ngày bắt đầu');
                         return false;
                     }
 
@@ -675,22 +688,23 @@ export default async function roomDetails() {
         const valueRating = $('.value-rating');
 
         cleanlinessRating.each(function () {
-            cleanliness += $(this).val() * 1;
+            const value = $(this).val();
+            cleanliness += value as any;
         });
         contactRating.each(function () {
-            contact += $(this).val() * 1;
+            contact += parseInt($(this).val() as any);
         });
         checkinRating.each(function () {
-            checkin += $(this).val() * 1;
+            checkin += parseInt($(this).val() as any);
         });
         accuracyRating.each(function () {
-            accuracy += $(this).val() * 1;
+            accuracy += parseInt($(this).val() as any);
         });
         locationRating.each(function () {
-            location += $(this).val() * 1;
+            location += parseInt($(this).val() as any);
         });
         valueRating.each(function () {
-            value += $(this).val() * 1;
+            value += parseInt($(this).val() as any);
         });
 
         cleanliness /= cleanlinessRating.length || 1;
