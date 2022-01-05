@@ -10,9 +10,10 @@ import 'alertifyjs/build/css/alertify.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import Header from '../Header';
-import './room_details.css';
+import './css/room_details.css';
 import { MyNumberForMat } from '../helpers/MyNumberFormat';
 import { ReviewLine, Amenity, ReviewValue, Rule } from './components';
+import roomDetails from './script/room_details';
 
 interface IRoomDetailsProps {}
 
@@ -24,7 +25,9 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
         (state: RootState) => state.room
     );
 
-    const jQuerycode = () => {};
+    const jQuerycode = () => {
+        roomDetails(room!.price, room!.bookedDates);
+    };
 
     const leftReviewLines = [
         {
@@ -61,7 +64,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
     }, [dispatch, pathname]);
 
     useEffect(() => {
-        if (room !== null)
+        if (room !== null) {
             getRoomlocation(
                 room.latitude,
                 room.longitude,
@@ -69,6 +72,9 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                 room.host.avatar,
                 room.host.name
             );
+
+            jQuerycode();
+        }
     }, [room]);
 
     return (

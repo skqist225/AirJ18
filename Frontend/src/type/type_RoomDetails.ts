@@ -33,10 +33,16 @@ export interface IHost {
     created_date: string;
 }
 
+export interface IBookedDate {
+    checkinDate: string;
+    checkoutDate: string;
+}
+
 export type IRoomDetails = {
     bed: number;
     name: string;
     description: string;
+    bookedDates: IBookedDate[];
     thumbnail: string;
     amenitities: IAmenity[];
     images: string[];

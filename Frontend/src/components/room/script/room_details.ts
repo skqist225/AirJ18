@@ -1,6 +1,7 @@
 import $ from 'jquery';
-import api from '../../axios';
-import { seperateNumber } from '../../helpers/seperateNumber';
+import api from '../../../axios';
+import { seperateNumber } from '../../../helpers/seperateNumber';
+import { IBookedDate } from '../../../type/type_RoomDetails';
 
 const active = 'active';
 let haveStartDate = false;
@@ -8,16 +9,20 @@ let haveEndDate = false;
 let startDate = '';
 let endDate = '';
 
-export default async function roomDetails(
-    roomPrice: number,
-    bookedDates: { checkinDate: string; checkoutDate: string }[]
-) {
+const fetchDaysInMonth = async (month: number, year: number) => {
+    const {
+        data: { daysInMonth, startInWeek },
+    } = await api.get(`/calendar/${month + 1}/${year}`);
+    return Promise.resolve({ daysInMonth, startInWeek });
+};
+
+export default async function roomDetails(roomPrice: number, bookedDates: IBookedDate[]) {
     const date = new Date();
     const month = date.getMonth();
     const year = date.getFullYear();
 
     const closeShowImgBtn = $('#closeShowImgBtn');
-    closeShowImgBtn.click(function () {
+    closeShowImgBtn.on('click', function () {
         toggleHiddenImages();
     });
 
@@ -39,7 +44,7 @@ export default async function roomDetails(
         );
     });
 
-    $('.getThePrevTwoMonth').click(async function () {
+    $('.getThePrevTwoMonth').on('click', async function () {
         const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
         const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
 
@@ -55,7 +60,7 @@ export default async function roomDetails(
     const navMenu = $('.loginAndLogoutHidden').first();
     $('.account__button')
         .first()
-        .click(function () {
+        .on('click', function () {
             if (!isClicked) {
                 navMenu.addClass('active');
                 isClicked = true;
@@ -423,13 +428,6 @@ export default async function roomDetails(
             }
         );
     }
-
-    const fetchDaysInMonth = async (month: number, year: number) => {
-        const {
-            data: { daysInMonth, startInWeek },
-        } = await api.get(`/calendar/${month + 1}/${year}`);
-        return Promise.resolve({ daysInMonth, startInWeek });
-    };
 
     function getDaysInMonth(daysInMonth: string, month: number, year: number) {
         const date = new Date();

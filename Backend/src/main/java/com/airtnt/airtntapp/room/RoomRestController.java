@@ -160,6 +160,9 @@ public class RoomRestController {
         }
 
         for (Image image : room.getImages()) {
+            if (image.getImage().equals(room.getThumbnail()))
+                continue;
+
             images.put(image.getImagePath(room.getHost().getEmail(), room.getId()));
         }
 
@@ -211,6 +214,16 @@ public class RoomRestController {
 
     @GetMapping("/calendar/{selectedMonth}/{selectedYear}")
     public String getCalendayByYearAndMonth(@PathVariable("selectedYear") int selectedYear,
+            @PathVariable("selectedMonth") int selectedMonth) {
+        List<String> daysInMonth = CalendarClass.getDaysInMonth(selectedMonth - 1, selectedYear);
+        String strDaysInMonth = daysInMonth.stream().map(Object::toString).collect(Collectors.joining(" "));
+        GregorianCalendar gCal = new GregorianCalendar(selectedYear, selectedMonth - 1, 1);
+        int startInWeek = gCal.get(Calendar.DAY_OF_WEEK); // ngày thứ mấy trong tuần đó
+        return new JSONObject().put("daysInMonth", strDaysInMonth).put("startInWeek", startInWeek).toString();
+    }
+
+    @GetMapping("/api/calendar/{selectedMonth}/{selectedYear}")
+    public String getCalendayByYearAndMonthV2(@PathVariable("selectedYear") int selectedYear,
             @PathVariable("selectedMonth") int selectedMonth) {
         List<String> daysInMonth = CalendarClass.getDaysInMonth(selectedMonth - 1, selectedYear);
         String strDaysInMonth = daysInMonth.stream().map(Object::toString).collect(Collectors.joining(" "));
