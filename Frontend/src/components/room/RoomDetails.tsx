@@ -7,7 +7,7 @@ import { RootState } from '../../store';
 import { IRoomDetails } from '../../type/type_RoomDetails';
 import { getRoomlocation } from '../../utils/getLocation';
 import Header from '../Header';
-import { MyNumberForMat } from '../helpers/MyNumberFormat';
+import { MyNumberForMat } from '../../components/utils';
 import { ReviewLine, Amenity, ReviewValue, Rule } from './components';
 import roomDetails from './script/room_details';
 import 'alertifyjs/build/css/alertify.css';

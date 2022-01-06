@@ -1,5 +1,4 @@
-import React, { FC, ReactElement, ReactNode, useEffect } from 'react';
-import { Category } from './Category';
+import { FC } from 'react';
 import { Room } from './Room';
 
 export interface IRoom {

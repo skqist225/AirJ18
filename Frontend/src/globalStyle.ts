@@ -6,6 +6,14 @@ const GlobalStyle = createGlobalStyle`
         font-size: 62.5%;
     }
 
+    h3 {
+        font-size: 2.8rem;
+    }
+
+        h4 {
+        font-size: 2.4rem;
+    }
+
     body {
         margin: 0;
         padding: 0;

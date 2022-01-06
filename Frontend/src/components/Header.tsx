@@ -120,7 +120,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                         <div className='loginAndLogoutHidden'>
                             <ul>
                                 <li>
-                                    <a href='@{/user/register}'>Đăng ký</a>
+                                    <Link to={'/register'}>Đăng ký</Link>
                                 </li>
                                 <li>
                                     <a href='@{/login}'>Đăng nhập</a>
