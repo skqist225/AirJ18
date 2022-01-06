@@ -159,6 +159,11 @@ public class Room extends BaseEntity {
 	}
 
 	@Transient
+	public String getImagePrefix() {
+		return "/room_images/" + this.host.getEmail() + "/" + this.getId() + "/";
+	}
+
+	@Transient
 	public long calculateHowManyDaysFromPastToCurrent() {
 		SimpleDateFormat df1 = new SimpleDateFormat("yyyy");
 		SimpleDateFormat df2 = new SimpleDateFormat("MM");

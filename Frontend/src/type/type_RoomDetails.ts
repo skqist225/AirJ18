@@ -1,5 +1,3 @@
-import { keys } from '@material-ui/core/styles/createBreakpoints';
-
 export interface IAmenity {
     name: string;
     icon: string;
@@ -61,4 +59,5 @@ export type IRoomDetails = {
     bathroom: number;
     host: IHost;
     longitude: number;
+    image_prefix: string;
 } | null;

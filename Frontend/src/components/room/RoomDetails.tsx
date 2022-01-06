@@ -6,14 +6,13 @@ import { getImage } from '../../helpers/getImage';
 import { RootState } from '../../store';
 import { IRoomDetails } from '../../type/type_RoomDetails';
 import { getRoomlocation } from '../../utils/getLocation';
-import 'alertifyjs/build/css/alertify.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
-
 import Header from '../Header';
-import './css/room_details.css';
 import { MyNumberForMat } from '../helpers/MyNumberFormat';
 import { ReviewLine, Amenity, ReviewValue, Rule } from './components';
 import roomDetails from './script/room_details';
+import 'alertifyjs/build/css/alertify.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import './css/room_details.css';
 
 interface IRoomDetailsProps {}
 
@@ -458,7 +457,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                     </button>
                                                 </div>
                                                 <div style={{ fontSize: '14px' }}>
-                                                    room.currency.symbol
+                                                    {room.currency}
                                                     <span id='totalPrice'></span>
                                                 </div>
                                             </div>
@@ -479,7 +478,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                     </button>
                                                 </div>
                                                 <div style={{ fontSize: '14px' }}>
-                                                    room.currency.symbol
+                                                    {room.currency}
                                                     <span id='siteFee'></span>
                                                 </div>
                                             </div>
@@ -487,7 +486,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                         <div className='flex' style={{ paddingTop: '16px' }}>
                                             <div className='totalPriceTitle'>Tổng</div>
                                             <div className='totalPriceTitle'>
-                                                room.currency.symbol
+                                                {room.currency}
                                                 <span id='finalTotalPrice'></span>
                                             </div>
                                         </div>
