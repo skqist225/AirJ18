@@ -18,10 +18,16 @@
     color: #222;
 }
 
+#register__header--back {
+    display: none;
+    cursor: pointer;
+}
+
 #register__header--title {
     color: #222;
     text-align: center;
     font-weight: 600;
+    flex: 1;
 }
 
 #register__body {
@@ -82,9 +88,10 @@
     position: relative;
     display: inline-block;
     box-shadow: 1px 1px 1px #aaaaaa;
-    margin-top: 10px;
+    margin-top: 5px;
     width: 100%;
     font-size: 14px;
+    margin-bottom: 10px;
 }
 
 .c-validation:before {

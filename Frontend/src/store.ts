@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import { countrySlice, categorySlice, roomSlice } from './features';
+import { countrySlice, categorySlice, roomSlice, userSlice } from './features';
 
 const rootReducer = combineReducers({
     room: roomSlice,
     category: categorySlice,
     country: countrySlice,
+    user: userSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

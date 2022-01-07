@@ -26,11 +26,6 @@ export default function FormGroup({
             <FloatingLabel label={label} className='mb-3'>
                 <Form.Control type={type} placeholder={placeholder} {...register(fieldName)} />
             </FloatingLabel>
-            {errors.fieldName && (
-                <div className={errors?.fieldName && 'c-validation'}>
-                    <span style={{ color: '#fff' }}>{errors?.fieldName.message}</span>
-                </div>
-            )}
         </>
     );
 }

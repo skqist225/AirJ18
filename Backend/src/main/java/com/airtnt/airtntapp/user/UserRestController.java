@@ -87,9 +87,6 @@ public class UserRestController {
         String firstName = payLoad.get("firstName").toString();
         String lastName = payLoad.get("lastName").toString();
 
-        System.out.println(firstName);
-        System.out.println(lastName);
-
         JSONObject jsonObject = new JSONObject();
 
         checkConstraint.put("firstNameError", "Vui lòng nhập tên.");

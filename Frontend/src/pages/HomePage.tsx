@@ -4,7 +4,7 @@ import { HomeCategories } from '../components/home/HomeCategories';
 import { fetchCategories } from '../features/category/categorySlice';
 import { fetchRoomsByCategoryId } from '../features/room/roomSlice';
 import { RootState } from '../store';
-import '../components/home/home.css';
+import '../components/home/css/home.css';
 import { Rooms } from '../components/home/Rooms';
 import Header from '../components/Header';
 type HomeProps = {};

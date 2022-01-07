@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, ReactNode } from 'react';
+import { FC } from 'react';
 import { Category } from './Category';
 
 export interface ICategory {

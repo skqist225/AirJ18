@@ -17,9 +17,8 @@ export default function DropDown({
     };
 }) {
     return (
-        <FloatingLabel label={label}>
+        <FloatingLabel label={label} style={{ marginBottom: '20px' }}>
             <Form.Select {...register(fieldName)}>
-                <option>Giới tính</option>
                 <option value='MALE'>Nam</option>
                 <option value='FEMALE'>Nữ</option>
                 <option value='OTHER'>Khác</option>

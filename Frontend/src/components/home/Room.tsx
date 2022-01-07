@@ -1,10 +1,10 @@
 import { FC, useEffect } from 'react';
 import $ from 'jquery';
-import './home.css';
 import { IRoom } from './Rooms';
 import { Link } from 'react-router-dom';
 import { getImage } from '../../helpers/getImage';
 import NumberFormat from 'react-number-format';
+import './css/home.css';
 
 interface IRoomsProps {
     room: IRoom;

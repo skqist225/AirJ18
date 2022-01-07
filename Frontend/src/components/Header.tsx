@@ -1,5 +1,8 @@
 import React, { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { logout } from '../features/user/userSlice';
+import { RootState } from '../store';
 import './header.css';
 
 interface IHeaderProps {
@@ -8,6 +11,9 @@ interface IHeaderProps {
 }
 
 const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigationHeader }) => {
+    const dispatch = useDispatch();
+    const { user } = useSelector((state: RootState) => state.user);
+
     const jQuerycode = () => {
         const headerNavButton = document.getElementsByClassName('account__button')[0];
         const navMenu = document.getElementsByClassName('loginAndLogoutHidden')[0];
@@ -27,6 +33,10 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
     useEffect(() => {
         jQuerycode();
     }, []);
+
+    const userLogout = () => {
+        dispatch(logout());
+    };
 
     return (
         <header className='header'>
@@ -118,35 +128,39 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                         </div>
                         <div className='headerBridge'></div>
                         <div className='loginAndLogoutHidden'>
-                            <ul>
-                                <li>
-                                    <Link to={'/register'}>Đăng ký</Link>
-                                </li>
-                                <li>
-                                    <a href='@{/login}'>Đăng nhập</a>
-                                </li>
-                            </ul>
-                            <div>
+                            {user === null && (
                                 <ul>
                                     <li>
-                                        <a href='@{/user/bookings}'>Phòng đã đặt</a>
+                                        <Link to={'/register'}>Đăng ký</Link>
                                     </li>
                                     <li>
-                                        <a href='@{/wishlists}'>Danh sách yêu thích</a>
-                                    </li>
-                                    <li>
-                                        <a href='@{/hosting/listings/1}'>
-                                            Quản lí nhà/phòng cho thuê
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href='@{/user/personal-info}'>Tài khoản</a>
-                                    </li>
-                                    <li>
-                                        <a href='@{/logout}'>Đăng xuất</a>
+                                        <Link to={'/login'}>Đăng nhập</Link>
                                     </li>
                                 </ul>
-                            </div>
+                            )}
+                            {user !== null && (
+                                <div>
+                                    <ul>
+                                        <li>
+                                            <a href='@{/user/bookings}'>Phòng đã đặt</a>
+                                        </li>
+                                        <li>
+                                            <a href='@{/wishlists}'>Danh sách yêu thích</a>
+                                        </li>
+                                        <li>
+                                            <a href='@{/hosting/listings/1}'>
+                                                Quản lí nhà/phòng cho thuê
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href='@{/user/personal-info}'>Tài khoản</a>
+                                        </li>
+                                        <li>
+                                            <a href='javascript::userLogout();'>Đăng xuất</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
