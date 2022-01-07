@@ -53,13 +53,13 @@ const LoginPage: FC<HomeProps> = () => {
         });
     }, []);
 
-    useEffect(() => {
-        if (user != null) navigate('/');
-    }, [user]);
-
     const onSubmit = (data: any) => {
         dispatch(login({ ...data }));
     };
+
+    useEffect(() => {
+        if (user != null) navigate('/');
+    }, [user]);
 
     return (
         <div id='register'>

@@ -11,6 +11,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -66,16 +69,18 @@ public class User extends BaseEntity {
 	private String phoneNumber;
 
 	@Builder.Default
-	@OneToMany(mappedBy = "host")
+	@JsonIgnore
+	@OneToMany(mappedBy = "host", fetch = FetchType.LAZY)
 	private List<Room> room = new ArrayList<>();
 
+	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
 
 	@Builder.Default
 	@Column(columnDefinition = "boolean default false")
-	private boolean SupremeHost = false; 
+	private boolean SupremeHost = false;
 
 	@Builder.Default
 	@Column(name = "phone_verified", columnDefinition = "boolean default false")
@@ -85,6 +90,7 @@ public class User extends BaseEntity {
 	private String about;
 
 	@Builder.Default
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "users_favorite_rooms", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
 	private Set<Room> rooms = new HashSet<>();

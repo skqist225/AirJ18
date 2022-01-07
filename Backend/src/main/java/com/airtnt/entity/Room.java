@@ -2,8 +2,13 @@ package com.airtnt.entity;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.bytebuddy.dynamic.TypeResolutionStrategy.Lazy;
+
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -13,6 +18,7 @@ import java.util.*;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "rooms")
 public class Room extends BaseEntity {
 
@@ -52,9 +58,6 @@ public class Room extends BaseEntity {
 
 	public Room(int id) {
 		super(id);
-	}
-
-	public Room() {
 	}
 
 	@Column(nullable = false, length = 512)
@@ -131,7 +134,8 @@ public class Room extends BaseEntity {
 	@Column(length = 20, nullable = false)
 	private PriceType priceType;
 
-	@ManyToOne
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "host_id")
 	private User host;
 

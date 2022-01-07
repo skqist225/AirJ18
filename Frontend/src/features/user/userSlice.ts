@@ -57,7 +57,7 @@ export const login = createAsyncThunk(
 
             const {
                 data: { user, successMessage },
-            } = await api.post('/login', loginInfo, config);
+            } = await api.post('/user/login', loginInfo, config);
 
             setUserToLocalStorage(user);
 

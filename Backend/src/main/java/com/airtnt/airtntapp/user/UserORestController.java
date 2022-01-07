@@ -1,6 +1,5 @@
 package com.airtnt.airtntapp.user;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import com.airtnt.airtntapp.user.dto.PostAddUserDTO;
@@ -11,9 +10,11 @@ import com.airtnt.entity.User;
 
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,9 @@ public class UserORestController {
 
         @Autowired
         private UserService userService;
+
+        @Autowired
+        private BCryptPasswordEncoder encoder;
 
         @PostMapping("/user/add")
         public ResponseEntity<UserResponseEntity> addUser(@RequestBody PostAddUserDTO postUser,
@@ -69,7 +73,6 @@ public class UserORestController {
         public ResponseEntity<UserResponseEntity> login(@RequestBody PostLoginUserDTO postUser,
                         HttpServletResponse res) {
                 UserResponseEntity userResponseEntity = new UserResponseEntity();
-
                 User user = userService.getByEmail(postUser.getEmail());
 
                 if (user == null) {
@@ -86,17 +89,19 @@ public class UserORestController {
                                         userResponseEntity,
                                         null, HttpStatus.SC_BAD_REQUEST);
                 }
-                Cookie cookie = new Cookie("user", user.getEmail());
-                cookie.setMaxAge(1000 * 60 * 60 * 24 * 14);
-                cookie.setHttpOnly(true);
-                cookie.setSecure(false);
-                res.addCookie(cookie);
 
+                HttpCookie cookie = ResponseCookie.from("user", encoder.encode(user
+                                .getEmail()))
+                                .path("/")
+                                .maxAge(1000 * 60 * 60 * 24 * 14)
+                                .httpOnly(true)
+                                .secure(false)
+                                .build();
+
+                userResponseEntity.setErrorMessage(null);
                 userResponseEntity.setSuccessMessage(LOGIN_SUCCESS);
                 userResponseEntity.setUser(user);
 
-                return new ResponseEntity<UserResponseEntity>(
-                                userResponseEntity,
-                                headers, HttpStatus.SC_OK);
+                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userResponseEntity);
         }
 }
