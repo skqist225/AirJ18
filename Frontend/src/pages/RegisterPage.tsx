@@ -1,10 +1,16 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormGroup, DropDown } from '../components/utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 import $ from 'jquery';
 import './register.css';
 import * as yup from 'yup';
+import { FloatingLabel, Form } from 'react-bootstrap';
+import { Divider, MainButton } from '../globalStyle';
+import { FacebookLogo, GoogleLogo } from '../icon/icon';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCountries } from '../features/country/countrySlice';
+import { RootState } from '../store';
 
 const schema = yup
     .object({
@@ -19,6 +25,8 @@ const schema = yup
 type HomeProps = {};
 
 const RegisterPage: FC<HomeProps> = () => {
+    const dispatch = useDispatch();
+    const { countries } = useSelector((state: RootState) => state.country);
     const {
         register,
         handleSubmit,
@@ -27,6 +35,10 @@ const RegisterPage: FC<HomeProps> = () => {
     } = useForm({
         resolver: yupResolver(schema),
     });
+
+    useEffect(() => {
+        dispatch(fetchCountries());
+    }, []);
 
     useEffect(() => {
         const bg = `${process.env.REACT_APP_SERVER_URL}/images/register_background.jpg`;
@@ -43,12 +55,36 @@ const RegisterPage: FC<HomeProps> = () => {
 
     return (
         <div id='register'>
-            <div className='main'>
-                <div className='register__container'>
-                    <h3 className='register__header'>Đăng ký</h3>
-                    <h4 className='register__title'>Chào mừng bạn đến với AirJ18</h4>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <FormGroup
+            <div id='register__container' className='flex-center'>
+                <div className='register__content col-flex'>
+                    <header className='flex-center'>
+                        <div></div>
+                        <div id='register__header--title'>Đăng nhập hoặc đăng ký</div>
+                    </header>
+                    <Divider />
+                    <article id='register__body'>
+                        <div>Chào mừng bạn đến với AirJ18</div>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <FloatingLabel controlId='floatingSelect' label='Quốc gia/Khu vực'>
+                                <Form.Select aria-label='Floating label select example'>
+                                    {countries.map(country => (
+                                        <option>
+                                            {country.name} ({country.dialCode})
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </FloatingLabel>
+                            <FormGroup
+                                label='Số điện thoại'
+                                register={register}
+                                errors={errors}
+                                fieldName='phoneNumber'
+                                type='text'
+                            />
+                            <MainButton type='submit' className='customBtn'>
+                                <span>Tiếp tục</span>
+                            </MainButton>
+                            {/* <FormGroup
                             label='Tên'
                             placeholder='Tên'
                             fieldName='firstName'
@@ -84,17 +120,33 @@ const RegisterPage: FC<HomeProps> = () => {
                             fieldName='password'
                             type='password'
                         />
-                        <FormGroup
-                            label='Số điện thoại'
-                            register={register}
-                            errors={errors}
-                            fieldName='phoneNumber'
-                            type='text'
-                        />
+                   
                         <button type='submit' className='btn customBtn'>
                             Đồng ý và tiếp tục
-                        </button>
-                    </form>
+                        </button> */}
+                        </form>
+                        <div className='normal-flex'>
+                            <Divider className='flex-1'></Divider>
+                            <span className='register__or--option'>hoặc</span>
+                            <Divider className='flex-1'></Divider>
+                        </div>
+                        <div className='register__login'>
+                            <button className='register__login--button'>
+                                <span>
+                                    <FacebookLogo width='20px' height='20px' />
+                                </span>
+                                <span>Tiếp tục với Facebook</span>
+                            </button>
+                        </div>
+                        <div>
+                            <button className='register__login--button'>
+                                <span>
+                                    <GoogleLogo width='20px' height='20px' />
+                                </span>
+                                <span>Tiếp tục với Google</span>
+                            </button>
+                        </div>
+                    </article>
                 </div>
             </div>
         </div>

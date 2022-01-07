@@ -20,6 +20,10 @@ public class CountryService {
         return countries;
     }
 
+    public List<Country> getCountriesWithoutStates() {
+        return countryRepository.getCountriesWithoutStates();
+    }
+
     public Country getCountryById(Integer id) {
         return countryRepository.findById(id).get();
     }

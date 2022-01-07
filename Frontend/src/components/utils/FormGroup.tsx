@@ -23,7 +23,7 @@ export default function FormGroup({
     return (
         <>
             <FloatingLabel controlId='floatingInput' label={label} className='mb-3'>
-                <Form.Control type={type} placeholder={placeholder} />
+                <Form.Control type={type} placeholder={placeholder} {...register(fieldName)} />
             </FloatingLabel>
             {/* {errors.fieldName && (
                 <div className={errors?.fieldName && 'c-validation'}>

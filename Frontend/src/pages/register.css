@@ -1,55 +1,82 @@
-.main {
+#register__container {
     max-width: 1200px;
     width: 90%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
+    margin: 0 auto;
 }
 
-.register__container {
-    display: flex;
-    flex-direction: column;
+.register__content {
     width: 568px;
-    padding: 24px;
     border-radius: 12px;
     background-color: #fff;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
-.customBtn {
-    background-image: radial-gradient(
-        circle at center center,
-        rgb(255, 56, 92) 0%,
-        rgb(230, 30, 77) 27.5%,
-        rgb(227, 28, 95) 40%,
-        rgb(215, 4, 102) 57.5%,
-        rgb(189, 30, 89) 75%,
-        rgb(189, 30, 89) 100%
-    ) !important;
-    color: white;
+.register__content header {
+    padding: 0 24px;
+    min-height: 64px;
+    color: #222;
+}
+
+#register__header--title {
+    color: #222;
+    text-align: center;
+    font-weight: 600;
+}
+
+#register__body {
+    padding: 24px;
+}
+
+.register__or--option {
+    font-size: 12px;
+    color: #484848;
+    padding: 14px;
+}
+
+.half-divider {
     width: 100%;
-    min-width: 200px;
+    height: 1px;
+    background-color: rgb(228, 228, 228);
 }
 
-.register__header {
-    color: #222;
-    text-align: center;
+.register__login {
+    margin-bottom: 20px;
 }
 
-.register__title {
-    color: #222;
-    text-align: center;
-    font-style: italic;
+.register__login--button {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    margin: 0px;
+    position: relative;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: normal;
+    color: rgb(72, 72, 72);
+    padding: 10px 12px;
+    font-weight: 500;
+    border-radius: 8px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(176, 176, 176);
+    background: transparent;
+    box-shadow: none;
+    min-width: 71.1935px;
+    width: 100%;
+}
+
+.register__login--button span:last-child {
+    flex: 1;
 }
 
 .c-validation {
-    background: #c51244 !important;
-    padding: 10px 5px !important;
-    border-radius: 2px !important;
+    background: #c51244;
+    padding: 10px 5px;
+    border-radius: 2px;
     position: relative;
-    display: inline-block !important;
+    display: inline-block;
     box-shadow: 1px 1px 1px #aaaaaa;
     margin-top: 10px;
     width: 100%;
@@ -67,7 +94,7 @@
     top: -10px;
 }
 .c-label:after {
-    color: #c51244 !important;
+    color: #c51244;
 }
 
 .duplicateEmailError {

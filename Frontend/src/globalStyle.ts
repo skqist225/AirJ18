@@ -2,18 +2,6 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 const GlobalStyle = createGlobalStyle`
-    html {
-        font-size: 62.5%;
-    }
-
-    h3 {
-        font-size: 2.8rem;
-    }
-
-        h4 {
-        font-size: 2.4rem;
-    }
-
     body {
         margin: 0;
         padding: 0;
@@ -48,6 +36,50 @@ const GlobalStyle = createGlobalStyle`
         align-items: center;
         justify-content: center;
     }
+
+    .col-flex {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .flex-1 {
+        flex: 1;
+        max-width: 50%;
+    }
+`;
+
+export const MainButton = styled.button`
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    outline: none;
+    padding: 14px 24px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+    color: rgb(255, 255, 255);
+    width: 100%;
+`;
+
+export const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background-color: rgb(228, 228, 228);
 `;
 
 export default GlobalStyle;

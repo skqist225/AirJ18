@@ -31,6 +31,9 @@ public class Country {
     @Column(columnDefinition = "VARCHAR(10)")
     private String code;
 
+    @Column(columnDefinition = "VARCHAR(10)")
+    private String dialCode;
+
     @Builder.Default
     @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "country")
@@ -44,6 +47,13 @@ public class Country {
         this.id = id;
         this.name = name;
         this.code = code;
+    }
+
+    public Country(int id, String name, String code, String dialCode) {
+        this.id = id;
+        this.name = name;
+        this.code = code;
+        this.dialCode = dialCode;
     }
 
     public Country(String name, String code) {
