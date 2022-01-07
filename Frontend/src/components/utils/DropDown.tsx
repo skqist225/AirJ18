@@ -1,17 +1,15 @@
-import { Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
+import { Dropdown, DropdownButton, FloatingLabel, Form, InputGroup } from 'react-bootstrap';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 export interface IDropDown {}
 
 export default function DropDown({
     label,
-
     fieldName,
     register,
     errors,
 }: {
     label: string;
-
     fieldName: string;
     register: UseFormRegister<FieldValues>;
     errors: {
@@ -19,17 +17,13 @@ export default function DropDown({
     };
 }) {
     return (
-        <InputGroup className='form-group'>
-            <DropdownButton
-                variant='outline-secondary'
-                title={label}
-                id='input-group-dropdown-1'
-                {...register('sex')}
-            >
-                <Dropdown.Item value='MALE'>Nam</Dropdown.Item>
-                <Dropdown.Item value='FEMALE'>Nữ</Dropdown.Item>
-                <Dropdown.Item value='OTHER'>Khác</Dropdown.Item>
-            </DropdownButton>
-        </InputGroup>
+        <FloatingLabel label={label}>
+            <Form.Select {...register(fieldName)}>
+                <option>Giới tính</option>
+                <option value='MALE'>Nam</option>
+                <option value='FEMALE'>Nữ</option>
+                <option value='OTHER'>Khác</option>
+            </Form.Select>
+        </FloatingLabel>
     );
 }

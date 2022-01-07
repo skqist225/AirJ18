@@ -67,6 +67,10 @@
     width: 100%;
 }
 
+#register__second--form {
+    display: none;
+}
+
 .register__login--button span:last-child {
     flex: 1;
 }

@@ -1,5 +1,5 @@
 import { FloatingLabel, Form, FormControl, InputGroup } from 'react-bootstrap';
-import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { Control, Controller, FieldValues, UseFormRegister } from 'react-hook-form';
 
 export interface IFormGroup {
     label: string;
@@ -22,14 +22,15 @@ export default function FormGroup({
 }: IFormGroup) {
     return (
         <>
-            <FloatingLabel controlId='floatingInput' label={label} className='mb-3'>
+            {' '}
+            <FloatingLabel label={label} className='mb-3'>
                 <Form.Control type={type} placeholder={placeholder} {...register(fieldName)} />
             </FloatingLabel>
-            {/* {errors.fieldName && (
+            {errors.fieldName && (
                 <div className={errors?.fieldName && 'c-validation'}>
                     <span style={{ color: '#fff' }}>{errors?.fieldName.message}</span>
                 </div>
-            )} */}
+            )}
         </>
     );
 }
