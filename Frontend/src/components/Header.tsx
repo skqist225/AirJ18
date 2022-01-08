@@ -2,6 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../features/user/userSlice';
+import { getImage } from '../helpers/getImage';
 import { RootState } from '../store';
 import './header.css';
 
@@ -34,7 +35,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
         jQuerycode();
     }, []);
 
-    const userLogout = () => {
+    const handleLogout = () => {
         dispatch(logout());
     };
 
@@ -112,17 +113,21 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                             </div>
                             <div>
                                 <div id='userAvatarWrapper'>
-                                    {/* <img
-                                        alt="User's avatar'"
-                                        className='header__user-avatar'
-                                        id='userAvatar'
-                                    /> */}
-                                    <img
-                                        alt="User's avatar'"
-                                        className='header__user-avatar'
-                                        id='userAvatar'
-                                        src={`${process.env.REACT_APP_SERVER_URL}/images/default_user_avatar.png`}
-                                    />
+                                    {user === null ? (
+                                        <img
+                                            alt="User's avatar'"
+                                            className='header__user-avatar'
+                                            id='userAvatar'
+                                            src={getImage('/images/default_user_avatar.png')}
+                                        />
+                                    ) : (
+                                        <img
+                                            alt="User's avatar'"
+                                            src={getImage(user.avatarPath)}
+                                            className='header__user-avatar'
+                                            id='userAvatar'
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -153,11 +158,11 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                                             </a>
                                         </li>
                                         <li>
-                                            <a href='@{/user/personal-info}'>Tài khoản</a>
+                                            <Link to={'/account-settings/personal-info'}>
+                                                Tài khoản
+                                            </Link>
                                         </li>
-                                        <li>
-                                            <a href='javascript::userLogout();'>Đăng xuất</a>
-                                        </li>
+                                        <li onClick={handleLogout}>Đăng xuất</li>
                                     </ul>
                                 </div>
                             )}

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.HashSet;
@@ -36,6 +37,7 @@ public class Country {
 
     @Builder.Default
     @JsonManagedReference
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "country")
     private Set<State> states = new HashSet<>();
 
@@ -108,5 +110,4 @@ public class Country {
             return false;
         return true;
     }
-
 }

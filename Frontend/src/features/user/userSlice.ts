@@ -1,14 +1,19 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
 
-export interface IUser {
+export interface IAddUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
     email: string;
     password: string;
     sex: string;
-    birthday: string;
+    birthday: [];
+}
+
+export interface IUser extends IAddUser {
+    avatarPath: string;
+    fullPathAddress: string;
 }
 
 type ILoginInfo = {
@@ -25,7 +30,7 @@ function setUserToLocalStorage(user: IUser) {
 
 export const addUser = createAsyncThunk(
     'user/addUser',
-    async (postUser: IUser, { dispatch, getState, rejectWithValue }) => {
+    async (postUser: IAddUser, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
                 data: { user, successMessage },
@@ -70,13 +75,13 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValue }) => {
     try {
-        // const {
-        //     data: { successMessage },
-        // } = await api.get('/logout');
+        const {
+            data: { successMessage },
+        } = await api.get('/user/logout');
 
         localStorage.removeItem('user');
 
-        // return { successMessage };
+        return { successMessage };
     } catch ({ data: { errorMessage } }) {
         return rejectWithValue(errorMessage);
     }
@@ -107,13 +112,26 @@ const userSlice = createSlice({
                 state.successMessage = payload.successMessage;
                 state.user = payload.user;
             })
-            .addMatcher(isAnyOf(addUser.pending), state => {
+            .addCase(login.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.successMessage = payload.successMessage;
+                state.user = payload.user;
+            })
+            .addCase(logout.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.successMessage = payload.successMessage;
+                state.user = null;
+            })
+            .addMatcher(isAnyOf(addUser.pending, login.pending, logout.pending), state => {
                 state.loading = true;
             })
-            .addMatcher(isAnyOf(addUser.rejected), (state, { payload }) => {
-                state.loading = false;
-                if (payload) state.errorMessage = payload as string;
-            });
+            .addMatcher(
+                isAnyOf(addUser.rejected, login.rejected, logout.rejected),
+                (state, { payload }) => {
+                    state.loading = false;
+                    if (payload) state.errorMessage = payload as string;
+                }
+            );
     },
 });
 

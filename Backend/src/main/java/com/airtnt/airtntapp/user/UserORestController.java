@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class UserORestController {
         public final String ADD_USER_SUCCESS = "ADD_USER_SUCCESSFULLY";
         public final String ADD_USER_FAILURE = "ADD_USER_FAILURE";
         public final String LOGIN_SUCCESS = "LOGIN_SUCCESSFULLY";
+        public final String LOGOUT_SUCCESS = "LOGOUT_SUCCESSFULLY";
 
         @Autowired
         private UserService userService;
@@ -101,6 +103,23 @@ public class UserORestController {
                 userResponseEntity.setErrorMessage(null);
                 userResponseEntity.setSuccessMessage(LOGIN_SUCCESS);
                 userResponseEntity.setUser(user);
+
+                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userResponseEntity);
+        }
+
+        @GetMapping("/user/logout")
+        public ResponseEntity<UserResponseEntity> logout() {
+                UserResponseEntity userResponseEntity = new UserResponseEntity();
+                HttpCookie cookie = ResponseCookie.from("user", null)
+                                .path("/")
+                                .maxAge(0)
+                                .httpOnly(true)
+                                .secure(false)
+                                .build();
+
+                userResponseEntity.setErrorMessage(null);
+                userResponseEntity.setSuccessMessage(LOGOUT_SUCCESS);
+                userResponseEntity.setUser(null);
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userResponseEntity);
         }

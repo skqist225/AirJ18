@@ -1,16 +1,18 @@
 import { BrowserRouter as Router, Routes, Route, useMatch } from 'react-router-dom';
 import { HomePage, LoginPage, RegisterPage, RoomDetailsPage } from './pages';
+import PersonalInfoPage from './pages/PersonalInfoPage';
 
 function App() {
     return (
         <div className='App'>
             <Router>
                 <Routes>
-                    <Route path='/' element={<HomePage />}></Route>
-                    <Route path='/register' element={<RegisterPage />}></Route>
-                    <Route path='/login' element={<LoginPage />}></Route>
+                    <Route path='/' element={<HomePage />} />
+                    <Route path='/register' element={<RegisterPage />} />
+                    <Route path='/login' element={<LoginPage />} />
+                    <Route path='/account-settings/personal-info' element={<PersonalInfoPage />} />
                     <Route path='/room'>
-                        <Route path=':id' element={<RoomDetailsPage />}></Route>
+                        <Route path=':id' element={<RoomDetailsPage />} />
                     </Route>
                 </Routes>
             </Router>

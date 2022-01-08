@@ -12,7 +12,6 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -31,6 +30,7 @@ import lombok.Setter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+	@JsonIgnore
 	private String avatar;
 
 	@NotEmpty(message = "Tên không được để trống.")
@@ -53,6 +53,7 @@ public class User extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String email;
 
+	@JsonIgnore
 	@NotEmpty(message = "Mật khẩu không được để trống.")
 	@Size(min = 8, max = 512, message = "Mật khẩu phải ít nhất 8 kí tự.")
 	@Column(nullable = false, length = 255)
@@ -114,6 +115,12 @@ public class User extends BaseEntity {
 	@Transient
 	public String getFullName() {
 		return this.firstName + " " + this.lastName;
+	}
+
+	@Transient
+	public String getFullPathAddress() {
+		return this.address.getAprtNoAndStreet() + ", " + this.address.getCity().getName() + ", "
+				+ this.address.getState().getName() + ", " + this.address.getCountry().getName();
 	}
 
 	@Transient
