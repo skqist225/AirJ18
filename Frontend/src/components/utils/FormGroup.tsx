@@ -6,10 +6,8 @@ export interface IFormGroup {
     type: string;
     fieldName: string;
     placeholder?: string;
+    value?: string;
     register: UseFormRegister<FieldValues>;
-    errors: {
-        [x: string]: any;
-    };
 }
 
 export default function FormGroup({
@@ -18,13 +16,18 @@ export default function FormGroup({
     fieldName,
     placeholder,
     register,
-    errors,
+    value,
 }: IFormGroup) {
     return (
         <>
             {' '}
             <FloatingLabel label={label} className='mb-3'>
-                <Form.Control type={type} placeholder={placeholder} {...register(fieldName)} />
+                <Form.Control
+                    type={type}
+                    placeholder={placeholder}
+                    defaultValue={value}
+                    {...register(fieldName)}
+                />
             </FloatingLabel>
         </>
     );

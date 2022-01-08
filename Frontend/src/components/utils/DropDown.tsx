@@ -1,27 +1,27 @@
-import { Dropdown, DropdownButton, FloatingLabel, Form, InputGroup } from 'react-bootstrap';
+import { FloatingLabel, Form } from 'react-bootstrap';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 
-export interface IDropDown {}
+type IOption = {
+    value: string;
+    displayText: string;
+};
 
-export default function DropDown({
-    label,
-    fieldName,
-    register,
-    errors,
-}: {
+export interface IDropDown {
+    id?: string;
+    name?: string;
     label: string;
     fieldName: string;
+    options: IOption[];
     register: UseFormRegister<FieldValues>;
-    errors: {
-        [x: string]: any;
-    };
-}) {
+}
+
+export default function DropDown({ label, fieldName, register, options }: IDropDown) {
     return (
         <FloatingLabel label={label} style={{ marginBottom: '20px' }}>
             <Form.Select {...register(fieldName)}>
-                <option value='MALE'>Nam</option>
-                <option value='FEMALE'>Nữ</option>
-                <option value='OTHER'>Khác</option>
+                {options.map(({ value, displayText }) => (
+                    <option value={value} title={displayText} key={value} />
+                ))}
             </Form.Select>
         </FloatingLabel>
     );

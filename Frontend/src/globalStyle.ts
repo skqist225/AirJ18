@@ -20,6 +20,10 @@ const GlobalStyle = createGlobalStyle`
         text-decoration: none;
     }
 
+    .flex {
+        display: flex;
+    }
+
     .normal-flex {
         display: flex;
         align-items: center;

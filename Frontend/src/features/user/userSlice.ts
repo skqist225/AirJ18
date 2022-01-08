@@ -1,25 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
-
-export interface IAddUser {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    password: string;
-    sex: string;
-    birthday: [];
-}
-
-export interface IUser extends IAddUser {
-    avatarPath: string;
-    fullPathAddress: string;
-}
-
-type ILoginInfo = {
-    email: string;
-    password: string;
-};
+import { IAddUser, ILoginInfo, IUser } from '../../type/type_User';
 
 function setUserToLocalStorage(user: IUser) {
     if (user) {
@@ -87,14 +68,14 @@ export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValu
     }
 });
 
-type CountryState = {
+type UserState = {
     user: IUser | null;
     loading: boolean;
     errorMessage: string | null;
     successMessage: string | null;
 };
 
-const initialState: CountryState = {
+const initialState: UserState = {
     user: null,
     loading: true,
     errorMessage: null,

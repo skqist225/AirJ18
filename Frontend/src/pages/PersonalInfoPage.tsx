@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { FormEdit } from '../components/personal_info/FormEdit';
+import { UserInfo } from '../components/personal_info/UserInfo';
 import formatDate from '../helpers/formatDate';
 import { getImage } from '../helpers/getImage';
 import getUserSex from '../helpers/getUserSex';
@@ -31,43 +32,43 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                         <h2>Thông tin cá nhân</h2>
                         <div style={{ display: 'flex', alignItems: 'flex-start !important' }}>
                             <div className='personal__info' style={{ flex: 1, maxWidth: '65%' }}>
-                                <FormEdit
+                                <UserInfo
                                     title='Tên pháp lý'
                                     dataEdit='firstNameAndLastName'
                                     value={user.firstName + ' ' + user.lastName}
                                 />
-                                <FormEdit
+                                <UserInfo
                                     title='Giới tính'
                                     dataEdit='sex'
                                     value={getUserSex(user.sex)}
                                 />
-                                <FormEdit
+                                <UserInfo
                                     title='Ngày sinh'
                                     dataEdit='birthday'
                                     value={formatDate(user.birthday.join('-'))}
                                 />
-                                <FormEdit
+                                <UserInfo
                                     title='Địa chỉ email'
                                     dataEdit='email'
                                     value={user.email}
                                 />
-                                <FormEdit
+                                <UserInfo
                                     title='Mật khẩu'
                                     dataEdit='password'
                                     value={'**********'}
                                 />
 
-                                <FormEdit
+                                <UserInfo
                                     title='Số điện thoại'
                                     dataEdit='phoneNumber'
                                     value={user.phoneNumber}
                                 />
-                                <FormEdit
+                                <UserInfo
                                     title='Địa chỉ'
                                     dataEdit='address'
                                     value={user.fullPathAddress}
                                 />
-                                <FormEdit
+                                <UserInfo
                                     title='Ảnh đại diện'
                                     dataEdit='avatar'
                                     value={user.avatarPath}

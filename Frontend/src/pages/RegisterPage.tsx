@@ -56,7 +56,6 @@ const RegisterPage: FC<HomeProps> = () => {
 
     const {
         register: register2,
-        control: control2,
         handleSubmit: handleSubmit2,
         formState: { errors: errors2 },
     } = useForm({
@@ -155,7 +154,6 @@ const RegisterPage: FC<HomeProps> = () => {
                             <FormGroup
                                 label='Số điện thoại'
                                 register={register}
-                                errors={errors}
                                 fieldName='phoneNumber'
                                 type='text'
                             />
@@ -177,7 +175,6 @@ const RegisterPage: FC<HomeProps> = () => {
                                 fieldName='firstName'
                                 type='text'
                                 register={register2}
-                                errors={errors2}
                             />
                             {errors2?.firstName && (
                                 <FormError message={errors2.firstName.message} />
@@ -188,7 +185,6 @@ const RegisterPage: FC<HomeProps> = () => {
                                 fieldName='lastName'
                                 type='text'
                                 register={register2}
-                                errors={errors2}
                             />
                             {errors2?.lastName && <FormError message={errors2.lastName.message} />}
                             <FormGroup
@@ -196,13 +192,25 @@ const RegisterPage: FC<HomeProps> = () => {
                                 fieldName='birthday'
                                 type='date'
                                 register={register2}
-                                errors={errors2}
                             />
                             <DropDown
                                 label='Giới tính'
                                 fieldName='sex'
                                 register={register2}
-                                errors={errors2}
+                                options={[
+                                    {
+                                        value: 'MALE',
+                                        displayText: 'Nam',
+                                    },
+                                    {
+                                        value: 'FEMALE',
+                                        displayText: 'Nữ',
+                                    },
+                                    {
+                                        value: 'OTHER',
+                                        displayText: 'Khác',
+                                    },
+                                ]}
                             />
                             {errors2?.sex && <FormError message={errors2.sex.message} />}
                             <FormGroup
@@ -210,7 +218,6 @@ const RegisterPage: FC<HomeProps> = () => {
                                 fieldName='email'
                                 type='text'
                                 register={register2}
-                                errors={errors2}
                             />
                             {errors2?.email && <FormError message={errors2.email.message} />}
                             {errorMessage === 'Duplicate entry email' && (
@@ -221,7 +228,6 @@ const RegisterPage: FC<HomeProps> = () => {
                                 fieldName='password'
                                 type='password'
                                 register={register2}
-                                errors={errors2}
                             />
                             {errors2?.password && <FormError message={errors2.password.message} />}
 
