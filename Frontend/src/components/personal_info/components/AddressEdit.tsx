@@ -38,7 +38,7 @@ export const AddressEdit: FC<IAddressEditProps> = ({ register, address }) => {
                     fieldName='userCountryId'
                     label='Quốc gia/khu vực'
                     options={countryOptions}
-                    selected={'Việt Nam'}
+                    defaultValue={'Việt Nam'}
                 />
             </div>
             <div>

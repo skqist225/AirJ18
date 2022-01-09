@@ -25,7 +25,7 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
     return (
         <>
             {user !== null && (
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)} className={'formEdit_' + dataEdit}>
                     <input type='hidden' value={user.id} name='id' />
                     <input type='hidden' name='updatedField' value={dataEdit} />
                     <div></div>
@@ -37,11 +37,13 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                         />
                     )}
 
-                    {dataEdit === 'sex' && <SexEdit register={register} />}
+                    {dataEdit === 'sex' && <SexEdit register={register} defaultValue={user.sex} />}
                     {dataEdit === 'birthday' && (
                         <BirthdayEdit birthday={user.birthday} register={register} />
                     )}
-                    {dataEdit === 'email' && <EmailEdit register={register} />}
+                    {dataEdit === 'email' && (
+                        <EmailEdit register={register} defaultValue={user.email} />
+                    )}
                     {dataEdit === 'password' && <PasswordEdit register={register} />}
                     {dataEdit === 'phoneNumber' && <PhoneNumberEdit register={register} />}
                     {dataEdit === 'address' && (

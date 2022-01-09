@@ -10,23 +10,22 @@ export interface IDropDown {
     id?: string;
     name?: string;
     label: string;
-    selected?: string;
+    defaultValue?: string;
     fieldName: string;
     options: IOption[];
     register: UseFormRegister<FieldValues>;
 }
 
-export default function DropDown({ label, fieldName, register, options, selected }: IDropDown) {
+export default function DropDown({ label, fieldName, register, options, defaultValue }: IDropDown) {
+    console.log(options);
+
     return (
         <FloatingLabel label={label} style={{ marginBottom: '20px' }}>
-            <Form.Select {...register(fieldName)}>
+            <Form.Select {...register(fieldName)} defaultValue={defaultValue}>
                 {options.map(({ value, displayText }) => (
-                    <option
-                        value={value}
-                        title={displayText}
-                        key={value}
-                        selected={value === selected ? true : false}
-                    />
+                    <option value={value} key={value}>
+                        {displayText}
+                    </option>
                 ))}
             </Form.Select>
         </FloatingLabel>

@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { FormEdit } from '../components/personal_info/FormEdit';
+import $ from 'jquery';
 import { UserInfo } from '../components/personal_info/UserInfo';
 import formatDate from '../helpers/formatDate';
 import { getImage } from '../helpers/getImage';
 import getUserSex from '../helpers/getUserSex';
 import { RootState } from '../store';
 import './css/personal_info.css';
+import { jqueryCode } from '../components/personal_info/js/personalInfo';
 
 type IPersonalInfoPageProps = {};
 
@@ -19,37 +21,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
     const { user } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-        $('.editBtn').each(function () {
-            $(this).on('click', function () {
-                $(this).addClass('editMode'); // ok
-                $(this).parent().addClass('editMode'); // ok
-
-                const formNeedToBeShow = $(this).data('edit');
-
-                const frmOn = $('.formEdit_' + formNeedToBeShow).first();
-                frmOn.addClass('editMode');
-
-                if (formNeedToBeShow === 'address') {
-                    $(this).parent().addClass('needMoreSpace');
-                }
-
-                if (formNeedToBeShow === 'password') {
-                    $(this).parent().addClass('passwordArea');
-                }
-
-                frmOn.siblings('.displayWhenNormalMode').first().addClass('editMode');
-                $('.closeBtn', $(this).parent()).addClass('editMode');
-
-                const _self = $(this);
-
-                $('.editBtn').each(function () {
-                    if ($(this).data('edit') !== _self.data('edit')) {
-                        $(this).attr('disabled', 'true');
-                        $(this).attr('style', 'color: rgb(118, 118, 118) !important');
-                    }
-                });
-            });
-        });
+        jqueryCode();
     }, []);
 
     return (

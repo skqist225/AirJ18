@@ -1,5 +1,9 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { getImage } from '../../helpers/getImage';
+import { FormEdit } from './FormEdit';
+import $ from 'jquery';
+import { jqueryCode } from './js/personalInfo';
+import turnOffEditMode from './js/turnOffEditMode';
 
 interface IUserInfoProps {
     title: string;
@@ -16,7 +20,12 @@ export const UserInfo: FC<IUserInfoProps> = ({ title, dataEdit, value }) => {
                         <div style={{ width: '100%' }} className='flex-space'>
                             <div>{title}</div>
                             <input type='hidden' value={dataEdit} id='turnOffEditModeArgs1' />
-                            <button className='closeBtn'>Hủy</button>
+                            <button
+                                className='closeBtn'
+                                onClick={e => turnOffEditMode($(e.currentTarget))}
+                            >
+                                Hủy
+                            </button>
                         </div>
                     </div>
                     <div>
@@ -35,6 +44,7 @@ export const UserInfo: FC<IUserInfoProps> = ({ title, dataEdit, value }) => {
                             )}
                             {dataEdit === 'address' && <span>{value}</span>}
                         </div>
+                        <FormEdit dataEdit={dataEdit} />
                     </div>
                 </div>
                 <button className='editBtn' data-edit={dataEdit}>

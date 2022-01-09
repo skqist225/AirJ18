@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 import { DropDown } from '../../utils';
+import { IOption } from '../../utils/DropDown';
 import { UserEditError } from './UserEditError';
 
 interface IBirthdayEditProps {
@@ -13,61 +14,68 @@ interface IBirthdayEditProps {
 export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => {
     const date = new Date();
 
-    const years = [];
+    const years: number[] = [];
     for (var i = 1900; i <= date.getFullYear(); i++) {
-        years.push(i);
+        years.unshift(i);
     }
 
-    const dayOptions: { value: string; displayText: string }[] = Array.from(
-        Array(31).keys(),
-        (_, v) => v + 1
-    ).map(day => ({
+    const dayOptions: IOption[] = Array.from(Array(31).keys(), (_, v) => v + 1).map(day => ({
         value: day.toString(),
         displayText: day.toString(),
     }));
 
+    const monthOptions: IOption[] = Array.from(Array(12).keys(), (_, v) => v + 1).map(month => ({
+        value: month.toString(),
+        displayText: month.toString(),
+    }));
+
+    const yearOptions: IOption[] = years.map(year => ({
+        value: year.toString(),
+        displayText: year.toString(),
+    }));
+
     return (
-        <div className='flex'>
-            <div>
+        <div className='normal-flex'>
+            <div style={{ flex: 1, maxWidth: 'calc(100% / 3)' }}>
                 <DropDown
-                    fieldName='day'
-                    label='Ngày sinh'
+                    fieldName='userDayOfBirth'
+                    label='Ngày'
                     id='userDayOfBirth'
                     name='userDayOfBirth'
                     register={register}
                     options={dayOptions}
+                    defaultValue={birthday.split('-')[2]}
                 />
                 <UserEditError id='userDayOfBirthError' />
             </div>
 
-            <div>
-                <select className='custom-select' name='userMonthOfBirth' id='userMonthOfBirth'>
-                    <option disabled value=''>
-                        Tháng
-                    </option>
-                    {Array.from(Array(12).keys(), (_, v) => v + 1).map(month => (
-                        <option
-                            value={month}
-                            selected={month.toString() === birthday.split('-')[1]}
-                        >
-                            tháng {month}
-                        </option>
-                    ))}
-                </select>
+            <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', margin: '0 10px' }}>
+                <DropDown
+                    fieldName='userMonthOfBirth'
+                    label='Tháng'
+                    id='userDayOfBirth'
+                    name='userMonthOfBirth'
+                    register={register}
+                    options={monthOptions}
+                    defaultValue={
+                        birthday.split('-')[1].startsWith('0')
+                            ? birthday.split('-')[1].slice(1)
+                            : birthday.split('-')[1]
+                    }
+                />
                 <UserEditError id='userMonthOfBirthError' />
             </div>
 
-            <div>
-                <select className='custom-select' name='userYearOfBirth' id='userYearOfBirth'>
-                    <option disabled value=''>
-                        Năm
-                    </option>
-                    {years.map(year => (
-                        <option value={year} selected={year.toString() === birthday.split('-')[0]}>
-                            {year}
-                        </option>
-                    ))}
-                </select>
+            <div style={{ flex: 1, maxWidth: 'calc(100% / 3)' }}>
+                <DropDown
+                    fieldName='userYearOfBirth'
+                    label='Năm'
+                    id='userYearOfBirth'
+                    name='userYearOfBirth'
+                    register={register}
+                    options={yearOptions}
+                    defaultValue={birthday.split('-')[0]}
+                />
                 <UserEditError id='userYearOfBirthError' />
             </div>
         </div>
