@@ -11,7 +11,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -47,6 +51,7 @@ public class User extends BaseEntity {
 
 	@Past(message = "Không chọn ngày lớn hơn hiện tại")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthday;
 
 	@NotEmpty(message = "Email không được để trống.")
@@ -121,6 +126,28 @@ public class User extends BaseEntity {
 	public String getFullPathAddress() {
 		return this.address.getAprtNoAndStreet() + ", " + this.address.getCity().getName() + ", "
 				+ this.address.getState().getName() + ", " + this.address.getCountry().getName();
+	}
+
+	@Transient
+	public ObjectNode getAddressDetails() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode objectNode = mapper.createObjectNode();
+		ObjectNode countryNode = mapper.createObjectNode();
+		ObjectNode stateNode = mapper.createObjectNode();
+		ObjectNode cityNode = mapper.createObjectNode();
+
+		Country c = this.address.getCountry();
+		State s = this.address.getState();
+		City city = this.address.getCity();
+
+		objectNode.set("country",
+				countryNode.put("id", c.getId()).put("name", c.getName()));
+		objectNode.set("state",
+				stateNode.put("id", s.getId()).put("name", s.getName()));
+		objectNode.set("city", cityNode.put("id", city.getId()).put("name", city.getName()));
+		objectNode.put("aprtNoAndStreet", this.address.getAprtNoAndStreet());
+
+		return objectNode;
 	}
 
 	@Transient

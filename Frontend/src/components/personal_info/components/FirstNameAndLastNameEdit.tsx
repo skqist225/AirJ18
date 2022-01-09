@@ -1,8 +1,18 @@
 import { FC } from 'react';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { UserEditError } from './UserEditError';
 
-interface IFirstNameAndLastNameEditProps {}
+interface IFirstNameAndLastNameEditProps {
+    register: UseFormRegister<FieldValues>;
+    firstName: string;
+    lastName: string;
+}
 
-export const FirstNameAndLastNameEdit: FC<IFirstNameAndLastNameEditProps> = () => {
+export const FirstNameAndLastNameEdit: FC<IFirstNameAndLastNameEditProps> = ({
+    register,
+    firstName,
+    lastName,
+}) => {
     return (
         <div className='flex'>
             <div className='form-group'>
@@ -11,7 +21,7 @@ export const FirstNameAndLastNameEdit: FC<IFirstNameAndLastNameEditProps> = () =
                     type='text'
                     className='form-control'
                     placeholder='Tên'
-                    defaultValue={user.firstName}
+                    defaultValue={firstName}
                     {...register('firstName')}
                 />
                 <UserEditError id='firstNameError' />
@@ -22,7 +32,7 @@ export const FirstNameAndLastNameEdit: FC<IFirstNameAndLastNameEditProps> = () =
                     type='text'
                     className='form-control'
                     placeholder='Họ'
-                    defaultValue={user.lastName}
+                    defaultValue={lastName}
                     {...register('lastName')}
                 />
                 <UserEditError id='lastNameError' />

@@ -1,5 +1,4 @@
-import { userInfo } from 'os';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -18,6 +17,40 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
     const dispatch = useDispatch();
 
     const { user } = useSelector((state: RootState) => state.user);
+
+    useEffect(() => {
+        $('.editBtn').each(function () {
+            $(this).on('click', function () {
+                $(this).addClass('editMode'); // ok
+                $(this).parent().addClass('editMode'); // ok
+
+                const formNeedToBeShow = $(this).data('edit');
+
+                const frmOn = $('.formEdit_' + formNeedToBeShow).first();
+                frmOn.addClass('editMode');
+
+                if (formNeedToBeShow === 'address') {
+                    $(this).parent().addClass('needMoreSpace');
+                }
+
+                if (formNeedToBeShow === 'password') {
+                    $(this).parent().addClass('passwordArea');
+                }
+
+                frmOn.siblings('.displayWhenNormalMode').first().addClass('editMode');
+                $('.closeBtn', $(this).parent()).addClass('editMode');
+
+                const _self = $(this);
+
+                $('.editBtn').each(function () {
+                    if ($(this).data('edit') !== _self.data('edit')) {
+                        $(this).attr('disabled', 'true');
+                        $(this).attr('style', 'color: rgb(118, 118, 118) !important');
+                    }
+                });
+            });
+        });
+    }, []);
 
     return (
         <>
@@ -45,7 +78,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                 <UserInfo
                                     title='Ngày sinh'
                                     dataEdit='birthday'
-                                    value={formatDate(user.birthday.join('-'))}
+                                    value={formatDate(user.birthday)}
                                 />
                                 <UserInfo
                                     title='Địa chỉ email'

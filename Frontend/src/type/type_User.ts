@@ -5,23 +5,24 @@ export interface IAddUser {
     email: string;
     password: string;
     sex: string;
-    birthday: [] | string;
+    birthday: string;
+}
+
+export interface IAddress {
+    country: { name: string; id: number };
+    state: { name: string; id: number };
+    city: {
+        name: string;
+        id: number;
+    };
+    aprtNoAndStreet: string;
 }
 
 export interface IUser extends IAddUser {
     id: number;
     avatarPath: string;
     fullPathAddress: string;
-    address: {
-        aprtNoAndStreet: string;
-        city: {
-            name: string;
-            id: number;
-        };
-        state: { name: string; id: number };
-        country: { name: string; id: number };
-    };
-    birthday: [];
+    addressDetails: IAddress;
 }
 
 export type ILoginInfo = {

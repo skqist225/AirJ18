@@ -29,16 +29,24 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                     <input type='hidden' value={user.id} name='id' />
                     <input type='hidden' name='updatedField' value={dataEdit} />
                     <div></div>
-                    {dataEdit === 'firstNameAndLastName' && <FirstNameAndLastNameEdit />}
+                    {dataEdit === 'firstNameAndLastName' && (
+                        <FirstNameAndLastNameEdit
+                            firstName={user.firstName}
+                            lastName={user.lastName}
+                            register={register}
+                        />
+                    )}
 
-                    {dataEdit === 'sex' && <SexEdit />}
+                    {dataEdit === 'sex' && <SexEdit register={register} />}
                     {dataEdit === 'birthday' && (
                         <BirthdayEdit birthday={user.birthday} register={register} />
                     )}
                     {dataEdit === 'email' && <EmailEdit register={register} />}
                     {dataEdit === 'password' && <PasswordEdit register={register} />}
                     {dataEdit === 'phoneNumber' && <PhoneNumberEdit register={register} />}
-                    {dataEdit === 'address' && <AddressEdit register={register} />}
+                    {dataEdit === 'address' && (
+                        <AddressEdit register={register} address={user.addressDetails} />
+                    )}
                     {dataEdit === 'avatar' && <AvatarEdit register={register} />}
 
                     <button type='button' className='saveEditBtn' data-edit={dataEdit}>

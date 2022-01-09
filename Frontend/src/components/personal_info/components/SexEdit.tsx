@@ -1,24 +1,36 @@
 import { FC } from 'react';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { DropDown } from '../../utils';
+import { IOption } from '../../utils/DropDown';
 
-interface ISexEditProps {}
+interface ISexEditProps {
+    register: UseFormRegister<FieldValues>;
+}
 
-export const SexEdit: FC<ISexEditProps> = () => {
+export const SexEdit: FC<ISexEditProps> = ({ register }) => {
+    const sexOptions: IOption[] = [
+        {
+            value: 'MALE',
+            displayText: 'Nam',
+        },
+        {
+            value: 'FEMALE',
+            displayText: 'Nữ',
+        },
+        {
+            value: 'OTHER',
+            displayText: 'Khác',
+        },
+    ];
+
     return (
-        <div>
-            <select className='custom-select' name='userSex'>
-                <option disabled value=''>
-                    Chọn
-                </option>
-                <option selected={user.sex === 'MALE'} value='MALE'>
-                    Nam
-                </option>
-                <option selected={user.sex === 'FEMALE'} value='FEMALE'>
-                    Nữ
-                </option>
-                <option selected={user.sex === 'OTHER'} value='OTHER'>
-                    Khác
-                </option>
-            </select>
-        </div>
+        <>
+            <DropDown
+                label='Giới tính'
+                fieldName='userSex'
+                register={register}
+                options={sexOptions}
+            />
+        </>
     );
 };

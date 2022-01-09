@@ -6,7 +6,7 @@ import { DropDown } from '../../utils';
 import { UserEditError } from './UserEditError';
 
 interface IBirthdayEditProps {
-    birthday: never[];
+    birthday: string;
     register: UseFormRegister<FieldValues>;
 }
 
@@ -46,7 +46,10 @@ export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => 
                         Tháng
                     </option>
                     {Array.from(Array(12).keys(), (_, v) => v + 1).map(month => (
-                        <option value={month} selected={month === birthday[1]}>
+                        <option
+                            value={month}
+                            selected={month.toString() === birthday.split('-')[1]}
+                        >
                             tháng {month}
                         </option>
                     ))}
@@ -60,7 +63,7 @@ export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => 
                         Năm
                     </option>
                     {years.map(year => (
-                        <option value={year} selected={year === birthday[0]}>
+                        <option value={year} selected={year.toString() === birthday.split('-')[0]}>
                             {year}
                         </option>
                     ))}

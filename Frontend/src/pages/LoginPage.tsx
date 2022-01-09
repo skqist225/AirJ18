@@ -77,7 +77,6 @@ const LoginPage: FC<HomeProps> = () => {
                                 fieldName='email'
                                 type='text'
                                 register={register}
-                                errors={errors}
                             />
                             {errors?.email && <FormError message={errors.email.message} />}
                             {errorMessage === 'Duplicate entry email' && (
@@ -88,7 +87,6 @@ const LoginPage: FC<HomeProps> = () => {
                                 fieldName='password'
                                 type='password'
                                 register={register}
-                                errors={errors}
                             />
                             {errors?.password && <FormError message={errors.password.message} />}
 
