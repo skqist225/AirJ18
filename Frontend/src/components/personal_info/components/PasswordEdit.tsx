@@ -6,7 +6,7 @@ interface IPasswordEditProps {
     register: UseFormRegister<FieldValues>;
 }
 
-export const PasswordEdit: FC<IPasswordEditProps> = ({ register }) => {
+const PasswordEdit: FC<IPasswordEditProps> = ({ register }) => {
     return (
         <div>
             <div className='form-group'>
@@ -16,6 +16,7 @@ export const PasswordEdit: FC<IPasswordEditProps> = ({ register }) => {
                     className='form-control'
                     id='oldPassword'
                     {...register('oldPassword')}
+                    autoComplete='true'
                 />
                 <UserEditError id='oldPasswordError' />
             </div>
@@ -25,6 +26,7 @@ export const PasswordEdit: FC<IPasswordEditProps> = ({ register }) => {
                     type='password'
                     className='form-control'
                     id='newPassword'
+                    autoComplete='true'
                     {...register('newPassword')}
                 />
                 <UserEditError id='newPasswordError' />
@@ -32,3 +34,5 @@ export const PasswordEdit: FC<IPasswordEditProps> = ({ register }) => {
         </div>
     );
 };
+
+export default PasswordEdit;

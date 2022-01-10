@@ -57,6 +57,11 @@
             th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"
             defer
         ></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const baseURL = /*[[@{/}]]*/ '';
+            /*]]>*/
+        </script>
         <script th:src="@{/js/user/personal_info.js}"></script>
 
         <div th:replace="header :: javascript"></div>

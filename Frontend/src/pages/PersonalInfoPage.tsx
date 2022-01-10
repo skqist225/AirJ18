@@ -2,8 +2,6 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import { FormEdit } from '../components/personal_info/FormEdit';
-import $ from 'jquery';
 import { UserInfo } from '../components/personal_info/UserInfo';
 import formatDate from '../helpers/formatDate';
 import { getImage } from '../helpers/getImage';
@@ -31,8 +29,17 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
             {user !== null && (
                 <div className='personal__info_page'>
                     <div className='page__container'>
-                        <div>
-                            Tài khoản <span>{'>'}</span> Thông tin cá nhân
+                        <div className='normal-flex'>
+                            <span className='personal__info--title'>Tài khoản</span>
+                            <div style={{ margin: '0 10px' }}>
+                                <img
+                                    src={getImage('/svg/next.svg')}
+                                    alt=''
+                                    width={'10px'}
+                                    height={'10px'}
+                                />
+                            </div>{' '}
+                            <span className='personal__info--title'>Thông tin cá nhân</span>
                         </div>
                         <h2>Thông tin cá nhân</h2>
                         <div style={{ display: 'flex', alignItems: 'flex-start !important' }}>

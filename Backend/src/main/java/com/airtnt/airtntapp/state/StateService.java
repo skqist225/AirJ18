@@ -29,4 +29,10 @@ public class StateService {
     public State getStateById(Integer stateId) {
         return stateRepository.findById(stateId).get();
     }
+
+    public List<State> fetchStatesByCountry(Integer countryId) {
+        Country country = new Country(countryId);
+
+        return stateRepository.findByCountryOrderByNameAsc(country);
+    }
 }

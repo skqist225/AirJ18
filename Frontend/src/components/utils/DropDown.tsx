@@ -8,7 +8,6 @@ export type IOption = {
 
 export interface IDropDown {
     id?: string;
-    name?: string;
     label: string;
     defaultValue?: string;
     fieldName: string;
@@ -16,18 +15,27 @@ export interface IDropDown {
     register: UseFormRegister<FieldValues>;
 }
 
-export default function DropDown({ label, fieldName, register, options, defaultValue }: IDropDown) {
-    console.log(options);
-
+export default function DropDown({
+    label,
+    fieldName,
+    register,
+    options,
+    defaultValue,
+    id,
+}: IDropDown) {
     return (
-        <FloatingLabel label={label} style={{ marginBottom: '20px' }}>
-            <Form.Select {...register(fieldName)} defaultValue={defaultValue}>
-                {options.map(({ value, displayText }) => (
-                    <option value={value} key={value}>
-                        {displayText}
-                    </option>
-                ))}
-            </Form.Select>
-        </FloatingLabel>
+        <>
+            {options.length && (
+                <FloatingLabel label={label} style={{ margin: '20px 0' }}>
+                    <Form.Select {...register(fieldName)} defaultValue={defaultValue} id={id}>
+                        {options.map(({ value, displayText }) => (
+                            <option value={value} key={value}>
+                                {displayText}
+                            </option>
+                        ))}
+                    </Form.Select>
+                </FloatingLabel>
+            )}
+        </>
     );
 }

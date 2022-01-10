@@ -7,7 +7,7 @@ interface IEmailEditProps {
     defaultValue: string;
 }
 
-export const EmailEdit: FC<IEmailEditProps> = ({ register, defaultValue }) => {
+const EmailEdit: FC<IEmailEditProps> = ({ register, defaultValue }) => {
     return (
         <>
             <div>
@@ -25,3 +25,5 @@ export const EmailEdit: FC<IEmailEditProps> = ({ register, defaultValue }) => {
         </>
     );
 };
+
+export default EmailEdit;

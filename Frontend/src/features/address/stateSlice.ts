@@ -1,47 +1,46 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
 
-export const fetchCountries = createAsyncThunk(
-    'country/fetchCountries',
-    async (_, { dispatch, getState, rejectWithValue }) => {
+export const fetchStatesByCountry = createAsyncThunk(
+    'state/fetchStatesByCountry',
+    async ({ countryId }: { countryId: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.get(`/countries`);
+            const { data } = await api.get(`/states/country/${countryId}`);
             return { data };
         } catch (error) {}
     }
 );
 
-interface ICountry {
+interface IState {
     id: number;
     name: string;
     code: string;
-    dialCode: string;
 }
 
-type CountryState = {
-    countries: ICountry[];
+type StateState = {
+    states: IState[];
     loading: boolean;
 };
 
-const initialState: CountryState = {
-    countries: [],
+const initialState: StateState = {
+    states: [],
     loading: true,
 };
 
 const stateSlice = createSlice({
-    name: 'country',
+    name: 'state',
     initialState,
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(fetchCountries.fulfilled, (state, { payload }) => {
+            .addCase(fetchStatesByCountry.fulfilled, (state, { payload }) => {
                 state.loading = false;
-                state.countries = payload?.data;
+                state.states = payload?.data;
             })
-            .addMatcher(isAnyOf(fetchCountries.pending), state => {
+            .addMatcher(isAnyOf(fetchStatesByCountry.pending), state => {
                 state.loading = true;
             })
-            .addMatcher(isAnyOf(fetchCountries.rejected), (state, { payload }) => {
+            .addMatcher(isAnyOf(fetchStatesByCountry.rejected), (state, { payload }) => {
                 state.loading = false;
             });
     },

@@ -5,6 +5,12 @@
     right: 0;
 }
 
+.personal__info--title {
+    color: #484848;
+    font-size: 14px;
+    font-weight: 500;
+}
+
 .page__container {
     width: 1050px;
     max-width: 90%;
@@ -60,11 +66,11 @@
 }
 
 .personal__info_part.editMode.passwordArea {
-    height: 300px;
+    height: 250px;
 }
 
 .personal__info_part.editMode.needMoreSpace {
-    height: 400px;
+    height: 450px;
 }
 
 .personal__info_title {

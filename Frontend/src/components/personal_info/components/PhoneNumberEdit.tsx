@@ -4,9 +4,10 @@ import { UserEditError } from './UserEditError';
 
 interface IPhoneNumberEditProps {
     register: UseFormRegister<FieldValues>;
+    defaultValue: string;
 }
 
-export const PhoneNumberEdit: FC<IPhoneNumberEditProps> = ({ register }) => {
+const PhoneNumberEdit: FC<IPhoneNumberEditProps> = ({ register, defaultValue }) => {
     return (
         <div className='input-group mb-3'>
             <div className='input-group-prepend'>
@@ -19,8 +20,11 @@ export const PhoneNumberEdit: FC<IPhoneNumberEditProps> = ({ register }) => {
                 className='form-control'
                 placeholder='Số điện thoại'
                 {...register('phoneNumber')}
+                defaultValue={defaultValue}
             />
             <UserEditError id='phoneNumberError' />
         </div>
     );
 };
+
+export default PhoneNumberEdit;

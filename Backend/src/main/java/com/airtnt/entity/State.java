@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.HashSet;
@@ -38,8 +39,8 @@ public class State {
 	@JoinColumn(name = "country_id")
 	private Country country;
 
+	@JsonIgnore
 	@Builder.Default
-	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "state")
 	private Set<City> cities = new HashSet<>();
 

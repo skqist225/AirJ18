@@ -9,7 +9,7 @@ interface ISexEditProps {
     defaultValue: string;
 }
 
-export const SexEdit: FC<ISexEditProps> = ({ register, defaultValue }) => {
+const SexEdit: FC<ISexEditProps> = ({ register, defaultValue }) => {
     const sexOptions: IOption[] = [
         {
             value: 'MALE',
@@ -37,3 +37,5 @@ export const SexEdit: FC<ISexEditProps> = ({ register, defaultValue }) => {
         </>
     );
 };
+
+export default SexEdit;

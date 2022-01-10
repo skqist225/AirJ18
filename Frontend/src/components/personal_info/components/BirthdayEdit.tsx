@@ -11,7 +11,7 @@ interface IBirthdayEditProps {
     register: UseFormRegister<FieldValues>;
 }
 
-export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => {
+const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => {
     const date = new Date();
 
     const years: number[] = [];
@@ -38,10 +38,8 @@ export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => 
         <div className='normal-flex'>
             <div style={{ flex: 1, maxWidth: 'calc(100% / 3)' }}>
                 <DropDown
-                    fieldName='userDayOfBirth'
                     label='Ngày'
-                    id='userDayOfBirth'
-                    name='userDayOfBirth'
+                    fieldName='dayOfBirth'
                     register={register}
                     options={dayOptions}
                     defaultValue={birthday.split('-')[2]}
@@ -51,10 +49,8 @@ export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => 
 
             <div style={{ flex: 1, maxWidth: 'calc(100% / 3)', margin: '0 10px' }}>
                 <DropDown
-                    fieldName='userMonthOfBirth'
                     label='Tháng'
-                    id='userDayOfBirth'
-                    name='userMonthOfBirth'
+                    fieldName='monthOfBirth'
                     register={register}
                     options={monthOptions}
                     defaultValue={
@@ -68,10 +64,8 @@ export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => 
 
             <div style={{ flex: 1, maxWidth: 'calc(100% / 3)' }}>
                 <DropDown
-                    fieldName='userYearOfBirth'
                     label='Năm'
-                    id='userYearOfBirth'
-                    name='userYearOfBirth'
+                    fieldName='yearOfBirth'
                     register={register}
                     options={yearOptions}
                     defaultValue={birthday.split('-')[0]}
@@ -81,3 +75,5 @@ export const BirthdayEdit: FC<IBirthdayEditProps> = ({ birthday, register }) => 
         </div>
     );
 };
+
+export default BirthdayEdit;

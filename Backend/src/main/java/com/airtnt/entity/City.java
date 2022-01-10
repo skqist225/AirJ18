@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
@@ -21,8 +22,8 @@ public class City {
 	@Column(nullable = false)
 	private String name;
 
+	@JsonIgnore
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "state_id")
 	private State state;
 

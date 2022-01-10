@@ -2,15 +2,24 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { AddressEdit } from './components/AddressEdit';
-import { AvatarEdit } from './components/AvatarEdit';
-import { BirthdayEdit } from './components/BirthdayEdit';
-import { EmailEdit } from './components/EmailEdit';
-import { FirstNameAndLastNameEdit } from './components/FirstNameAndLastNameEdit';
-import { PasswordEdit } from './components/PasswordEdit';
-import { PhoneNumberEdit } from './components/PhoneNumberEdit';
-import { SexEdit } from './components/SexEdit';
-import { UserEditError } from './components/UserEditError';
+import {
+    FirstNameAndLastNameEdit,
+    SexEdit,
+    BirthdayEdit,
+    EmailEdit,
+    PhoneNumberEdit,
+    AvatarEdit,
+    AddressEdit,
+    PasswordEdit,
+} from './components';
+import {
+    checkBirthdayIsGreaterThenPresent,
+    checkEmailDuplicated,
+    checkFirstNameAndLastNameConstraint,
+    checkPasswordConstraint,
+    checkPhoneNumberConstraint,
+} from './js/check_constraints';
+import $ from 'jquery';
 
 interface IFormEditProps {
     dataEdit: string;
@@ -20,7 +29,45 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
     const { handleSubmit, register } = useForm();
     const { user } = useSelector((state: RootState) => state.user);
 
-    const onSubmit = (data: any) => console.log(data);
+    const onSubmit = (data: any) => {
+        console.log(data);
+
+        switch (dataEdit) {
+            case 'firstNameAndLastName': {
+                checkFirstNameAndLastNameConstraint(data.firstName, data.lastName);
+                break;
+            }
+            case 'sex': {
+                break;
+            }
+            case 'birthday': {
+                checkBirthdayIsGreaterThenPresent(
+                    data.yearOfBirth,
+                    data.monthOfBirth,
+                    data.dayOfBirth
+                );
+                break;
+            }
+            case 'email': {
+                checkEmailDuplicated(data.email, user!.id);
+                break;
+            }
+            case 'password': {
+                checkPasswordConstraint(data.oldPassword, data.newPassword, user!.id);
+                break;
+            }
+            case 'phoneNumber': {
+                checkPhoneNumberConstraint(data.phoneNumber);
+                break;
+            }
+            case 'address': {
+                break;
+            }
+            case 'avatar': {
+                break;
+            }
+        }
+    };
     //        action='/user/update-personal-info'
     return (
         <>
@@ -45,14 +92,22 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                         <EmailEdit register={register} defaultValue={user.email} />
                     )}
                     {dataEdit === 'password' && <PasswordEdit register={register} />}
-                    {dataEdit === 'phoneNumber' && <PhoneNumberEdit register={register} />}
+                    {dataEdit === 'phoneNumber' && (
+                        <PhoneNumberEdit register={register} defaultValue={user.phoneNumber} />
+                    )}
                     {dataEdit === 'address' && (
-                        <AddressEdit register={register} address={user.addressDetails} />
+                        <AddressEdit
+                            register={register}
+                            address={user.addressDetails}
+                            countryDefaultValue={user.addressDetails.country.id}
+                            stateDefaultValue={user.addressDetails.state.id}
+                            cityDefaultValue={user.addressDetails.city.id}
+                        />
                     )}
                     {dataEdit === 'avatar' && <AvatarEdit register={register} />}
 
-                    <button type='button' className='saveEditBtn' data-edit={dataEdit}>
-                        <span className='_ftj2sg4'>Lưu</span>
+                    <button type='submit' className='saveEditBtn' data-edit={dataEdit}>
+                        <span>Lưu</span>
                     </button>
                 </form>
             )}

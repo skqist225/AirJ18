@@ -5,7 +5,7 @@ interface IAvatarEditProps {
     register: UseFormRegister<FieldValues>;
 }
 
-export const AvatarEdit: FC<IAvatarEditProps> = ({ register }) => {
+const AvatarEdit: FC<IAvatarEditProps> = ({ register }) => {
     return (
         <div>
             <label>Cập nhật ảnh đại diện</label>
@@ -15,3 +15,5 @@ export const AvatarEdit: FC<IAvatarEditProps> = ({ register }) => {
         </div>
     );
 };
+
+export default AvatarEdit;

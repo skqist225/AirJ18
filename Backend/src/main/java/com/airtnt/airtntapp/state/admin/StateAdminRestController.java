@@ -1,4 +1,4 @@
-package com.airtnt.airtntapp.address;
+package com.airtnt.airtntapp.state.admin;
 
 import java.util.List;
 
@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
-public class StateRestController {
+public class StateAdminRestController {
 
     @Autowired
     StateRepository repo;
- 
+
     @GetMapping("/states/list_state_by_country/{id}")
     public List<State> listAll(@PathVariable("id") Integer id) {
-        Country country = new Country(id); 
+        Country country = new Country(id);
         return repo.findByCountryOrderByNameAsc(country);
     }
 

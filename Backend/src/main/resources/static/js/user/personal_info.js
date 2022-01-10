@@ -1,4 +1,4 @@
-const prefixUrl = 'http://localhost:8001/airtnt';
+const prefixUrl = `${baseURL}api`;
 
 $(document).ready(function () {
     const passwordForm = $('.formEdit_password').first();

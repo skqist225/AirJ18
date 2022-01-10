@@ -1,4 +1,4 @@
-package com.airtnt.airtntapp.address;
+package com.airtnt.airtntapp.city.admin;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
-public class CityRestControler {
+public class CityAdminRestController {
 
     @Autowired
     CityRepository repo;
@@ -37,7 +37,7 @@ public class CityRestControler {
 
     @DeleteMapping("/cities/delete/{id}")
     public void delete(@PathVariable Integer id) {
-        repo.deleteById(id); 
+        repo.deleteById(id);
     }
 
     @PostMapping("/cities/check_name")

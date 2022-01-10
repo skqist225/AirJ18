@@ -33,4 +33,9 @@ public class CityService {
     public List<City> listAll() {
         return (List<City>) cityRepository.findAll();
     }
+
+    public List<City> fetchCitiesByState(Integer stateId) {
+        State state = new State(stateId);
+        return cityRepository.findByStateOrderByNameAsc(state);
+    }
 }
