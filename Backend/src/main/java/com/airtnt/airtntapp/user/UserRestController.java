@@ -119,7 +119,7 @@ public class UserRestController {
         return userService.isEmailUnique(userId, email) ? "OK" : "Duplicated";
     }
 
-    @GetMapping(value = "/add-to-wishlists/{roomId}")
+    @GetMapping(value = "add-to-wishlists/{roomId}")
     public String addToWishLists(@AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("roomId") Integer roomId) {
         Room room = roomService.getRoomById(roomId);
@@ -133,7 +133,7 @@ public class UserRestController {
         return "failure";
     }
 
-    @GetMapping(value = "/remove-from-wishlists/{roomId}")
+    @GetMapping(value = "remove-from-wishlists/{roomId}")
     public String removeFromWishLists(@AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("roomId") Integer roomId) {
         Room room = roomService.getRoomById(roomId);
