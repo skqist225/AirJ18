@@ -10,7 +10,7 @@ const Rule: FC<IRuleProps> = ({ rule }) => {
     return (
         <div className='normal-flex' style={{ marginBottom: '8px' }} key={rule.title}>
             <img src={getImage(rule.icon)} alt='' width={'16px'} height={'16px'} />
-            <span style={{ paddingLeft: '1.6rem', fontSize: '1.6rem' }}>{rule.title}</span>
+            <span style={{ paddingLeft: '16px', fontSize: '16px' }}>{rule.title}</span>
         </div>
     );
 };

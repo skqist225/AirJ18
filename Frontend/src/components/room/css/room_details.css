@@ -1,9 +1,9 @@
 main {
     position: absolute;
-    top: 8rem;
+    top: 80px;
     left: 0;
     right: 0;
-    width: 120rem;
+    width: 1200px;
     max-width: 95%;
     margin: 0 auto;
 }
@@ -13,20 +13,20 @@ main {
 }
 
 .room-createdDate {
-    padding-top: 0.8rem;
+    padding-top: 8px;
     color: #717171;
-    font-size: 1.4rem;
-    line-height: 1.8rem;
+    font-size: 14px;
+    line-height: 18px;
 }
 
 .room-hostName {
-    font-size: 2.2rem;
-    line-height: 2.6rem;
+    font-size: 22px;
+    line-height: 26px;
 }
 
 .customerAvatarWrapper {
-    width: 5.6rem;
-    height: 5.6rem;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     overflow: hidden;
 }
@@ -57,21 +57,21 @@ main {
 }
 
 .rdt_container {
-    width: 120rem;
+    width: 1200px;
     max-width: 95%;
     margin: 0 auto;
     position: absolute;
-    top: 8rem;
+    top: 80px;
     left: 0;
     right: 0;
 }
 
 #rdt__location {
-    height: 60rem;
-    margin-top: 4.8rem;
-    border-top: 0.1rem solid rgb(211, 211, 211);
-    border-bottom: 0.1rem solid rgb(211, 211, 211);
-    padding: 4.8rem 0;
+    height: 600px;
+    margin-top: 48px;
+    border-top: 1px solid rgb(211, 211, 211);
+    border-bottom: 1px solid rgb(211, 211, 211);
+    padding: 48px 0;
 }
 
 .heartSvg.like {
@@ -79,93 +79,93 @@ main {
 }
 
 #map {
-    height: 50rem;
+    height: 500px;
 }
 
 .rdt__header--name {
-    font-size: 2.6rem;
+    font-size: 26px;
     color: #222;
-    line-height: 1.6rem;
-    margin-bottom: 0.4rem;
-    padding-top: 2.4rem;
+    line-height: 16px;
+    margin-bottom: 4px;
+    padding-top: 24px;
 }
 
 .rdt__body--hostDetails {
-    font-size: 2.2rem;
-    line-height: 4rem;
+    font-size: 22px;
+    line-height: 40px;
 }
 
 .rdt__body--room-infos {
-    font-size: 1.6rem;
+    font-size: 16px;
     font-weight: 500;
 }
 
 .rdt__body--userAvatar {
-    width: 6.4rem;
-    height: 6.4rem;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
 }
 
 .rdt__body--calendar__chooseStartDateTitle {
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 5px;
 }
 
 .rdt__body--calendar__chooseEndDateTitle {
     display: none;
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 5px;
 }
 
 .rdt__booking--container {
-    border: 0.1rem solid rgb(221, 221, 221);
-    border-radius: 1.2rem;
-    padding: 2.4rem;
-    box-shadow: rgba(0, 0, 0, 0.12) 0rem 0.6rem 1.6rem;
-    width: 37.3rem;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: rgba(0, 0, 0, 1px 0px 6px 16px);
+    width: 373px;
     float: right;
 }
 
 .rdt__booking--receiveRoom {
-    border: 0.1rem solid #b0b0b0;
-    border-radius: 1rem;
-    font-size: 1.4rem;
+    border: 1px solid #b0b0b0;
+    border-radius: 10px;
+    font-size: 14px;
     overflow: hidden;
-    margin-bottom: 2rem;
+    margin-bottom: 20px;
 }
 
 .rdt_images__left {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 10px;
     position: relative;
 }
 
 .rdt_images {
-    padding-top: 2.4rem;
-    height: 47rem;
+    padding-top: 24px;
+    height: 470px;
 }
 
 .rdt_button__action {
     cursor: pointer;
     display: inline-block;
-    margin: 0rem -0.8rem;
+    margin: 0px -8px;
     position: relative;
     text-align: center;
     width: auto;
     touch-action: manipulation;
-    font-size: 1.4rem;
-    line-height: 1.8rem;
+    font-size: 14px;
+    line-height: 18px;
     font-weight: 600;
-    border-radius: 0.8rem;
-    /* width: 8.0rem; */
+    border-radius: 8px;
+    /* width: 8.0px; */
     outline: none;
-    padding: 0.8rem;
-    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
-        transform 0.1s ease 0s;
+    padding: 8px;
+    transition: box-shadow 2px ease 0s, -ms-transform 1px ease 0s, -webkit-transform 1px ease 0s,
+        transform 1px ease 0s;
     -webkit-tap-highlight-color: transparent;
     border: none;
     background: transparent;
@@ -185,7 +185,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.8rem;
+    padding: 8px;
 }
 
 .rdt_header__action button {
@@ -206,13 +206,13 @@ main {
 }
 
 .rdt_images {
-    height: 47rem;
+    height: 470px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
+    gap: 8px;
 }
 
 .grid__2_1 {
@@ -226,60 +226,60 @@ main {
 }
 
 .image:first-child {
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .roundedBorder:first-child {
-    border-top-right-radius: 1rem;
+    border-top-right-radius: 10px;
 }
 
 .roundedBorder:last-child {
-    border-bottom-right-radius: 1rem;
+    border-bottom-right-radius: 10px;
 }
 
 .host_info {
     display: flex;
     align-items: center;
-    margin-bottom: 2.4rem;
+    margin-bottom: 24px;
 }
 
 .text {
     color: rgb(113, 113, 113);
     text-decoration: underline;
-    font-size: 1.4rem;
+    font-size: 14px;
     font-weight: 600;
-    line-height: 2rem;
-    max-height: 2rem;
+    line-height: 20px;
+    max-height: 20px;
 }
 
 .rdt_body {
-    padding-top: 4.8rem;
+    padding-top: 48px;
 }
 
 .rdt_room__count {
-    padding-bottom: 2.4rem;
-    border-bottom: 0.1rem solid #ddd;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #ddd;
 }
 
 .rdt_room__decor {
-    padding: 2.4rem;
-    border: 0.1rem solid rebeccapurple;
-    height: 14.3rem;
-    width: 20.8rem;
-    border-radius: 1rem;
+    padding: 24px;
+    border: 1px solid rebeccapurple;
+    height: 143px;
+    width: 280px;
+    border-radius: 10px;
 }
 
 .rdt_body__common {
-    padding: 4.8rem 0;
-    /* border-top: .1rem solid #ddd; */
-    border-bottom: 0.1rem solid #ddd;
+    padding: 48px 0;
+    /* border-top: .10px solid #ddd; */
+    border-bottom: 1px solid #ddd;
 }
 
 .rdt_amentity__header {
-    padding-top: 2.4rem;
-    padding-bottom: 2.4rem;
-    font-size: 2.2rem;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    font-size: 22px;
     font-weight: 600;
 }
 
@@ -289,35 +289,35 @@ main {
 }
 
 .rdt__review-line {
-    padding: 0 0.8rem;
-    height: 3.6rem;
-    margin-right: 9.5rem;
+    padding: 0 8px;
+    height: 36px;
+    margin-right: 95px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .rdt__review-line div {
-    font-size: 1.6rem;
+    font-size: 16px;
 }
 
 .rdt__empty-rating {
-    height: 0.4rem;
-    width: 11.6rem;
+    height: 4px;
+    width: 116px;
     background-color: #b0b0b0;
     position: relative;
     overflow: hidden;
-    border-radius: 1rem;
-    margin-right: 1.2rem;
+    border-radius: 10px;
+    margin-right: 12px;
 }
 
 #rdt__review {
-    padding: 4.8rem 0;
-    border-top: 0.1rem solid rgb(211, 211, 211);
+    padding: 48px 0;
+    border-top: 1px solid rgb(211, 211, 211);
 }
 
 #rdt_calender {
-    padding: 4.8rem 0;
+    padding: 48px 0;
 }
 
 .rdt__rating {
@@ -332,26 +332,26 @@ main {
 .rdt__review-box {
     flex: 1;
     max-width: 50%;
-    padding: 0 0.8rem;
-    margin-right: 9.5rem;
+    padding: 0 8px;
+    margin-right: 95px;
 }
 
 .rdt_anchor__container {
-    border: 0.1rem solid #222222;
+    border: 1px solid #222222;
     background: #fff;
-    padding: 1.3rem 2.3rem;
-    height: 4.8rem;
-    width: 23rem;
-    border-radius: 1rem;
+    padding: 13px 23px;
+    height: 48px;
+    width: 230px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 2.4rem;
+    margin-top: 24px;
 }
 
 .rdt_anchor {
     text-decoration: none;
-    font-size: 1.6rem;
+    font-size: 16px;
     font-weight: 600;
     color: #222;
 }
@@ -359,19 +359,19 @@ main {
 .rdt_booking_button {
     cursor: pointer;
     display: inline-block;
-    margin: 0rem;
+    margin: 0px;
     position: relative;
     text-align: center;
     text-decoration: none;
     touch-action: manipulation;
-    font-size: 1.6rem;
-    line-height: 2rem;
+    font-size: 16px;
+    line-height: 20px;
     font-weight: 600;
-    border-radius: 0.8rem;
+    border-radius: 8px;
     outline: none;
-    padding: 1.4rem 2.4rem;
-    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
-        transform 0.1s ease 0s;
+    padding: 14px 24px;
+    transition: box-shadow 2pxase 0s, -ms-transform 1pxase 0s, -webkit-transform 1pxase 0s,
+        transform 1pxase 0s;
     -webkit-tap-highlight-color: transparent;
     border: none;
     background: linear-gradient(
@@ -385,13 +385,13 @@ main {
 }
 
 .rdt__host--avatar {
-    width: 6.4rem;
-    height: 6.4rem;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
 }
 
 .rdt__description {
-    font-size: 1.6rem;
+    font-size: 16px;
 }
 
 .rdt_transparent__btn {
@@ -404,21 +404,21 @@ main {
 
 .rdt__price {
     color: #222;
-    font-size: 2.2rem;
+    font-size: 22px;
     font-weight: 600;
 }
 
 .rdt_showMoreImage {
-    padding: 0.7rem 1.5rem;
+    padding: 7px 15px;
     color: rgb(34, 34, 34);
     background: rgb(255, 255, 255);
-    border: 0.1rem solid rgb(34, 34, 34);
-    border-radius: 0.8rem;
+    border: 1px solid rgb(34, 34, 34);
+    border-radius: 8px;
     position: absolute;
-    right: 2rem;
-    bottom: 2rem;
-    font-size: 1.4rem;
-    line-height: 1.8rem;
+    right: 20px;
+    bottom: 20px;
+    font-size: 14px;
+    line-height: 18px;
     display: flex;
     align-items: center;
     outline: none;
@@ -432,7 +432,7 @@ main {
 }
 
 .rdt_images_show {
-    max-width: 117rem;
+    max-width: 1170px;
     width: 95%;
     margin: 0 auto;
     text-align: center;
@@ -444,15 +444,14 @@ main {
     border-radius: 50%;
     border: none;
     outline: none;
-    margin: 0rem;
-    padding: 0rem;
+    margin: 0px;
+    padding: 0px;
     color: rgb(34, 34, 34);
     cursor: pointer;
     touch-action: manipulation;
     position: relative;
     background: transparent;
-    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
-        transform 0.25s ease 0s;
+    transition: -ms-transform 2pxease 0s, -webkit-transform 2pxease 0s, transform 2pxease 0s;
 }
 
 #rdt__fullScreen {
@@ -482,14 +481,14 @@ main {
 }
 
 #innerContainer {
-    width: 72rem;
-    height: 48rem;
+    width: 720px;
+    height: 480px;
     position: relative;
 }
 
 .bigImage {
-    width: 72rem;
-    height: 48rem;
+    width: 720px;
+    height: 480px;
     object-fit: cover;
     opacity: 0;
     position: absolute;
@@ -507,15 +506,14 @@ main {
     border-radius: 50%;
     border: none;
     outline: none;
-    margin: 0rem;
-    padding: 0rem;
+    margin: 0px;
+    padding: 0px;
     color: rgb(255, 255, 255);
     cursor: pointer;
     touch-action: manipulation;
     position: relative;
     background: transparent;
-    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
-        transform 0.25s ease 0s;
+    transition: -ms-transform 2pxease 0s, -webkit-transform 2pxease 0s, transform 2pxease 0s;
 }
 
 .prevImage {
@@ -524,15 +522,14 @@ main {
     border-radius: 50%;
     border: none;
     outline: none;
-    margin: 0rem;
-    padding: 0rem;
+    margin: 0px;
+    padding: 0px;
     color: rgb(255, 255, 255);
     cursor: pointer;
     touch-action: manipulation;
     position: relative;
     background: transparent;
-    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
-        transform 0.25s ease 0s;
+    transition: -ms-transform 2pxease 0s, -webkit-transform 2pxease 0s, transform 2pxease 0s;
 }
 
 #button__changeImage {
@@ -544,13 +541,13 @@ main {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 0 2rem;
+    padding: 0 20px;
 }
 
 ._1lyyzem {
-    width: 4.8rem;
-    height: 4.8rem;
-    border: 0.2rem solid #fff;
+    width: 48px;
+    height: 48px;
+    border: 2px solid #fff;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -560,24 +557,6 @@ main {
 ._1lyyzem:hover {
     background-color: #484848;
 }
-/* 
--webkit-box-direction: normal;
--webkit-box-orient: vertical;
--webkit-box-pack: center;
--webkit-box-align: center;
-margin-left: .1rem;
-margin-right: .1rem;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-direction: column;
-border-radius: 100%;
-position: relative;
-font-size: 1.4rem;
-line-height: 1.8rem;
-font-weight: 600;
-color: rgb(34, 34, 34);
-border: 1..5rem solid rgb(255, 255, 255); */
 
 .rdt-calendar__header {
     display: flex;
@@ -593,36 +572,36 @@ border: 1..5rem solid rgb(255, 255, 255); */
 .firstMonth {
     flex: 1;
     max-width: 50%;
-    padding: 0 1.3rem;
+    padding: 0 13px;
 }
 
 .secondMonth {
     flex: 1;
     max-width: 50%;
-    padding: 0 1.3rem;
+    padding: 0 13px;
 }
 
 .dayInWeek {
-    width: 4.2rem;
-    height: 4.2rem;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
 
-    margin-left: 0.1rem;
-    margin-right: 0.1rem;
+    margin-left: 1px;
+    margin-right: 1px;
     position: relative;
-    font-size: 1.4rem;
-    line-height: 1.8rem;
+    font-size: 14px;
+    line-height: 18px;
     font-weight: 500;
     color: rgb(34, 34, 34);
-    border: 1.5rem solid rgb(255, 255, 255);
+    border: 15px solid rgb(255, 255, 255);
     cursor: pointer;
 }
 
 .dayInWeek.false:hover {
-    border: 0.1rem solid #222;
+    border: 1px solid #222;
     border-radius: 50%;
 }
 
@@ -631,18 +610,18 @@ border: 1..5rem solid rgb(255, 255, 255); */
     -webkit-box-orient: vertical;
     -webkit-box-pack: center;
     -webkit-box-align: center;
-    margin-left: 0.1rem;
-    margin-right: 0.1rem;
+    margin-left: 1px;
+    margin-right: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     position: relative;
-    font-size: 1.4rem;
-    line-height: 1.8rem;
+    font-size: 14px;
+    line-height: 18px;
     font-weight: 600;
     color: rgb(34, 34, 34);
-    border: 1.5rem solid rgb(247, 247, 247);
+    border: 15px solid rgb(247, 247, 247);
     background-color: palegreen;
 }
 
@@ -651,33 +630,33 @@ border: 1..5rem solid rgb(255, 255, 255); */
     -webkit-box-orient: vertical;
     -webkit-box-pack: center;
     -webkit-box-align: center;
-    margin-left: 0.1rem;
-    margin-right: 0.1rem;
+    margin-left: 1px;
+    margin-right: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     border-radius: 100%;
-    font-size: 1.4rem;
-    line-height: 1.8rem;
+    font-size: 14px;
+    line-height: 18px;
     font-weight: 600;
     background: rgb(34, 34, 34);
-    border: 15. rem solid rgb(34, 34, 34);
+    border: 1px solid rgb(34, 34, 34);
     color: rgb(255, 255, 255);
     position: relative;
 }
 
 .date {
-    width: 4.2rem;
+    width: 42px;
     text-align: center;
-    font-size: 1.4rem;
+    font-size: 14px;
 }
 
 .monthTitle,
 .secondMonthTitle {
     text-align: center;
-    padding: 2.2rem 4.9rem;
-    font-size: 1.6rem;
+    padding: 22px 49px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -699,18 +678,16 @@ border: 1..5rem solid rgb(255, 255, 255); */
     border-radius: 50%;
     border: none;
     outline: none;
-    margin: 0rem;
-    padding: 0rem;
+    margin: 0px;
+    padding: 0px;
     color: rgb(34, 34, 34);
     cursor: pointer;
     touch-action: manipulation;
     position: relative;
     background: transparent;
-    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
-        transform 0.25s ease 0s;
-
-    width: 4.8rem;
-    height: 4.8rem;
+    transition: -ms-transform 2px ease 0s, -webkit-transform 2px ease 0s, transform 2px ease 0s;
+    width: 48px;
+    height: 48px;
 }
 
 .getMonth-btn:hover {
@@ -724,13 +701,13 @@ border: 1..5rem solid rgb(255, 255, 255); */
     -webkit-box-orient: vertical;
     -webkit-box-pack: center;
     -webkit-box-align: center;
-    margin-left: 0.1rem;
-    margin-right: 0.1rem;
+    margin-left: 1px;
+    margin-right: 1px;
     border-radius: 100%;
     position: relative;
-    font-size: 1.4rem;
-    line-height: 1.8rem;
-    border: 1.5rem solid rgb(255, 255, 255);
+    font-size: 14px;
+    line-height: 18px;
+    border: 15px solid rgb(255, 255, 255);
     color: rgb(176, 176, 176);
     font-weight: 400;
     text-decoration: line-through;
@@ -739,38 +716,27 @@ border: 1..5rem solid rgb(255, 255, 255); */
 .totalPriceTitle {
     color: rgb(32, 32, 32);
     font-weight: 600;
-    font-size: 1.6rem;
+    font-size: 16px;
 }
 
 .previewPrice-line {
-    padding-bottom: 1.2rem;
+    padding-bottom: 12px;
     display: none;
 }
 
-.normal-flex {
-    display: flex;
-    align-items: center;
-}
-
-.flex-space {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .rdt__amenity--name {
-    padding-left: 1.6rem;
-    font-size: 1.6rem;
+    padding-left: 16px;
+    font-size: 16px;
 }
 
 .rdt__amenity--icon {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 32px;
+    height: 32px;
 }
 
 .rdt__amenity--wrapper {
-    padding-bottom: 1.6rem;
-    height: 4rem;
+    padding-bottom: 16px;
+    height: 40px;
 }
 
 .rdt__amenities--container {
