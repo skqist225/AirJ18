@@ -14,7 +14,7 @@ function addClickEventForLoveButton(wishlistsArr = [], user = null) {
             if (user === null) alertify.error('Vui lòng đăng nhập để thêm yêu thích');
 
             if (children.hasClass('like')) {
-                getURL = `${baseURL}user/remove-from-wishlists/${roomId}`;
+                getURL = `${baseURL}api/user/remove-from-wishlists/${roomId}`;
                 successMessage = 'Gỡ bỏ danh sách yêu thích thành công';
                 errorMessage = 'Gỡ bỏ danh sách yêu thích thất bại';
 
@@ -27,7 +27,7 @@ function addClickEventForLoveButton(wishlistsArr = [], user = null) {
                     alertify.success(successMessage);
                 } else alertify.error(errorMessage);
             } else {
-                getURL = `${baseURL}user/add-to-wishlists/${roomId}`;
+                getURL = `${baseURL}api/user/add-to-wishlists/${roomId}`;
                 successMessage = 'Thêm vào danh sách yêu thích thành công';
                 errorMessage = 'Thêm vào danh sách yêu thích thất bại';
 

@@ -1,10 +1,7 @@
 package com.airtnt.entity;
 
 import lombok.*;
-
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter

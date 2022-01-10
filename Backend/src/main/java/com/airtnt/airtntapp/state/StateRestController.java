@@ -2,7 +2,6 @@ package com.airtnt.airtntapp.state;
 
 import java.util.List;
 
-import com.airtnt.airtntapp.country.dto.StateDTO;
 import com.airtnt.entity.State;
 
 import org.springframework.beans.factory.annotation.Autowired;
