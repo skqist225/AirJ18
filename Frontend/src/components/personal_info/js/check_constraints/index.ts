@@ -3,7 +3,10 @@ import $ from 'jquery';
 
 const config = { headers: { 'Content-Type': 'application/json' } };
 
-export async function checkFirstNameAndLastNameConstraint(firstName: string, lastName: string) {
+export async function checkFirstNameAndLastNameConstraint(
+    firstName: string,
+    lastName: string
+): Promise<string | void> {
     const firstNameError = $('#firstNameError');
     const lastNameError = $('#lastNameError');
     const displayError = $('.c-validation', $('.formEdit_firstNameAndLastName').first());
@@ -42,16 +45,14 @@ export async function checkFirstNameAndLastNameConstraint(firstName: string, las
         return;
     }
 
-    if (data.status === 'OK') {
-        console.log('ok');
-    }
+    return data.status;
 }
 
 export function checkBirthdayIsGreaterThenPresent(
     yearOfBirth: string,
     monthOfBirth: string,
     dayOfBirth: string
-) {
+): string | void {
     const userYearOfBirthError = $('#userYearOfBirthError');
     const userMonthOfBirthError = $('#userMonthOfBirthError');
     const userDayOfBirthError = $('#userDayOfBirthError');
@@ -77,16 +78,14 @@ export function checkBirthdayIsGreaterThenPresent(
         return;
     }
 
-    console.log('ok');
-
-    // form.submit();
+    return 'OK';
 }
 
 export async function checkPasswordConstraint(
     oldPassword: string,
     newPassword: string,
     userId: number
-) {
+): Promise<string | void> {
     const oldPasswordError = $('#oldPasswordError');
     const newPasswordError = $('#newPasswordError');
     const displayError = $('.c-validation', $('.formEdit_password').first());
@@ -135,12 +134,10 @@ export async function checkPasswordConstraint(
         return;
     }
 
-    if (data.status === 'OK') {
-        console.log('ok');
-    }
+    return data.status;
 }
 
-export async function checkEmailDuplicated(email: string, userId: number) {
+export async function checkEmailDuplicated(email: string, userId: number): Promise<string | void> {
     const emailError = $('#emailError');
     const displayError = $('.c-validation', $('.formEdit_email').first());
 
@@ -163,10 +160,10 @@ export async function checkEmailDuplicated(email: string, userId: number) {
         return;
     }
 
-    console.log('ok');
+    return data;
 }
 
-export function checkPhoneNumberConstraint(phoneNumber: string) {
+export function checkPhoneNumberConstraint(phoneNumber: string): string | void {
     const phoneNumberError = $('#phoneNumberError');
 
     const displayError = $('.c-validation', $('.formEdit_phoneNumber').first());
@@ -183,4 +180,6 @@ export function checkPhoneNumberConstraint(phoneNumber: string) {
         phoneNumberError.html('Số điện thoại không được chứa ký tự chữ');
         return;
     }
+
+    return 'OK';
 }

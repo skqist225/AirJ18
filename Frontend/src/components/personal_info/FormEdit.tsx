@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import {
     FirstNameAndLastNameEdit,
@@ -20,40 +20,138 @@ import {
     checkPhoneNumberConstraint,
 } from './js/check_constraints';
 import $ from 'jquery';
+import { IUserUpdate, updateUserInfo } from '../../features/user/userSlice';
+import { toast } from 'react-toastify';
+import Toast from '../notify/Toast';
 
 interface IFormEditProps {
     dataEdit: string;
 }
 
 export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
-    const { handleSubmit, register } = useForm();
-    const { user } = useSelector((state: RootState) => state.user);
+    const dispatch = useDispatch();
 
-    const onSubmit = (data: any) => {
+    const { handleSubmit, register } = useForm();
+    const { user, successMessage, errorMessage } = useSelector((state: RootState) => state.user);
+
+    useEffect(() => {
+        if (successMessage === 'UPDATE_USER_SUCCESSFULLY')
+            toast.success('🦄' + `Cập nhật thành công`, {
+                position: 'bottom-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+    }, [successMessage]);
+
+    useEffect(() => {
+        if (errorMessage === 'UPDATE_USER_FAILURE')
+            toast.error('🦄' + `Cập nhật thất bại`, {
+                position: 'bottom-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+    }, [errorMessage]);
+
+    function updateInfo(updateInfo: IUserUpdate, field: string) {
+        dispatch(updateUserInfo(updateInfo));
+    }
+
+    const onSubmit = async (data: any) => {
         console.log(data);
 
         switch (dataEdit) {
             case 'firstNameAndLastName': {
-                checkFirstNameAndLastNameConstraint(data.firstName, data.lastName);
+                const { firstName, lastName } = data;
+                const status = await checkFirstNameAndLastNameConstraint(firstName, lastName);
+
+                if (status === 'OK')
+                    updateInfo(
+                        {
+                            updatedField: 'firstNameAndLastName',
+                            updateData: {
+                                firstName,
+                                lastName,
+                            },
+                        },
+                        'họ và tên'
+                    );
                 break;
             }
             case 'sex': {
-                break;
-            }
-            case 'birthday': {
-                checkBirthdayIsGreaterThenPresent(
-                    data.yearOfBirth,
-                    data.monthOfBirth,
-                    data.dayOfBirth
+                const { sex } = data;
+                updateInfo(
+                    {
+                        updatedField: 'sex',
+                        updateData: {
+                            sex,
+                        },
+                    },
+                    'giới tính'
                 );
                 break;
             }
+            case 'birthday': {
+                const { yearOfBirth, monthOfBirth, dayOfBirth } = data;
+                const status = checkBirthdayIsGreaterThenPresent(
+                    yearOfBirth,
+                    monthOfBirth,
+                    dayOfBirth
+                );
+
+                if (status === 'OK')
+                    updateInfo(
+                        {
+                            updatedField: 'birthday',
+                            updateData: {
+                                yearOfBirth,
+                                monthOfBirth,
+                                dayOfBirth,
+                            },
+                        },
+                        'ngày sinh'
+                    );
+
+                break;
+            }
             case 'email': {
-                checkEmailDuplicated(data.email, user!.id);
+                const { email } = data;
+                const status = await checkEmailDuplicated(email, user!.id);
+                console.log(status);
+                if (status === 'OK')
+                    updateInfo(
+                        {
+                            updatedField: 'email',
+                            updateData: {
+                                email,
+                            },
+                        },
+                        'email'
+                    );
                 break;
             }
             case 'password': {
-                checkPasswordConstraint(data.oldPassword, data.newPassword, user!.id);
+                const { oldPassword, newPassword } = data;
+
+                const status = await checkPasswordConstraint(oldPassword, newPassword, user!.id);
+                if (status === 'OK')
+                    updateInfo(
+                        {
+                            updatedField: 'password',
+                            updateData: {
+                                newPassword,
+                            },
+                        },
+                        'mật khẩu'
+                    );
+
                 break;
             }
             case 'phoneNumber': {
@@ -68,9 +166,10 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
             }
         }
     };
-    //        action='/user/update-personal-info'
+
     return (
         <>
+            <Toast />
             {user !== null && (
                 <form onSubmit={handleSubmit(onSubmit)} className={'formEdit_' + dataEdit}>
                     <input type='hidden' value={user.id} name='id' />

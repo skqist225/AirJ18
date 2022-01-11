@@ -45,7 +45,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                 <div className='header__right'>
                     <Link to='/'>
                         <img
-                            src={`${process.env.REACT_APP_SERVER_URL}/images/airtntlogo.png`}
+                            src={getImage('/images/airtntlogo.png')}
                             id='airj18-logo'
                             alt='application-logo'
                             className='image'

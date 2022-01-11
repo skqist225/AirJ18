@@ -31,6 +31,8 @@ const store = configureStore({
             loading: false,
             successMessage: null,
             errorMessage: null,
+            wishlists: [],
+            wishlistsFetching: true,
         },
     },
 });

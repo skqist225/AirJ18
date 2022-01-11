@@ -27,11 +27,11 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
             <Header includeMiddle={false} excludeBecomeHostAndNavigationHeader={false} />
 
             {user !== null && (
-                <div className='personal__info_page'>
-                    <div className='page__container'>
+                <div id='personal-info__page'>
+                    <div id='personal-info__container'>
                         <div className='normal-flex'>
                             <span className='personal__info--title'>Tài khoản</span>
-                            <div style={{ margin: '0 10px' }}>
+                            <div className='personal__info__next-icon'>
                                 <img
                                     src={getImage('/svg/next.svg')}
                                     alt=''
@@ -42,8 +42,8 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                             <span className='personal__info--title'>Thông tin cá nhân</span>
                         </div>
                         <h2>Thông tin cá nhân</h2>
-                        <div style={{ display: 'flex', alignItems: 'flex-start !important' }}>
-                            <div className='personal__info' style={{ flex: 1, maxWidth: '65%' }}>
+                        <div id='personal__content-wrapper'>
+                            <div className='personal-info__left'>
                                 <UserInfo
                                     title='Tên pháp lý'
                                     dataEdit='firstNameAndLastName'
@@ -69,7 +69,6 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                     dataEdit='password'
                                     value={'**********'}
                                 />
-
                                 <UserInfo
                                     title='Số điện thoại'
                                     dataEdit='phoneNumber'
@@ -86,17 +85,9 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                     value={user.avatarPath}
                                 />
                             </div>
-                            <div style={{ flex: 1, maxWidth: '5%' }}></div>
-                            <div
-                                style={{
-                                    flex: 1,
-                                    maxWidth: '30%',
-                                    padding: '0 24px',
-                                    border: '1px solid #e4e4e4',
-                                    height: 'fit-content',
-                                }}
-                            >
-                                <div style={{ margin: '32px 0' }}>
+                            <div id='personal-info__middle--divider'></div>
+                            <div id='personal-info__right'>
+                                <div>
                                     <div>
                                         <img
                                             src={getImage('/svg/block.svg')}

@@ -4,9 +4,11 @@ import { HomeCategories } from '../components/home/HomeCategories';
 import { fetchCategories } from '../features/category/categorySlice';
 import { fetchRoomsByCategoryId } from '../features/room/roomSlice';
 import { RootState } from '../store';
-import '../components/home/css/home.css';
 import { Rooms } from '../components/home/Rooms';
 import Header from '../components/Header';
+
+import '../components/home/css/home.css';
+
 type HomeProps = {};
 
 const HomePage: FC<HomeProps> = () => {
@@ -17,6 +19,7 @@ const HomePage: FC<HomeProps> = () => {
     const { categories, loading: categoryLoading } = useSelector(
         (state: RootState) => state.category
     );
+
     useEffect(() => {
         dispatch(fetchCategories());
         dispatch(fetchRoomsByCategoryId({ categoryId }));
@@ -26,7 +29,7 @@ const HomePage: FC<HomeProps> = () => {
         <div>
             <Header includeMiddle={false} excludeBecomeHostAndNavigationHeader={true} />
 
-            <div style={{ position: 'relative' }}>
+            <div id='home__main--container'>
                 <div className='home__body'>
                     {!categoryLoading && <HomeCategories categories={categories} />}
                     <div>{!roomLoading && <Rooms rooms={rooms} />}</div>

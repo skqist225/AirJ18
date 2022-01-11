@@ -9,6 +9,10 @@ a {
     text-decoration: none;
 }
 
+#home__main--container {
+    position: relative;
+}
+
 .categories__container {
     height: 80px;
     width: 100%;
@@ -209,6 +213,7 @@ a {
     justify-content: center;
     border-style: solid;
     border-width: 1px;
+    -webkit-background-clip: padding-box;
     background-clip: padding-box;
     border-color: rgba(0, 0, 0, 0.08);
     box-shadow: 0px 0px 0px 1px transparent, 0px 0px 0px 4px transparent,
@@ -223,7 +228,10 @@ a {
 }
 
 #rooms__container {
+    display: -ms-grid;
     display: grid;
+
+    -ms-grid-columns: repeat(5, 1fr);
     grid-template-columns: repeat(5, 1fr);
 }
 
@@ -373,7 +381,9 @@ a {
 }
 
 .grid-col-3 {
+    display: -ms-grid;
     display: grid;
+    -ms-grid-column: repeat(3, 1fr);
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }

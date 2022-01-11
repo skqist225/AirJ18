@@ -1,4 +1,4 @@
-.personal__info_page {
+#personal-info__page {
     position: absolute;
     top: 100px;
     left: 0;
@@ -11,7 +11,7 @@
     font-weight: 500;
 }
 
-.page__container {
+#personal-info__container {
     width: 1050px;
     max-width: 90%;
     margin: 0 auto;
@@ -44,6 +44,37 @@
 .formEdit_password.editMode,
 .formEdit_avatar.editMode {
     display: block;
+}
+
+#personal__content-wrapper {
+    display: flex;
+    align-items: flex-start !important;
+}
+
+.personal-info__left {
+    flex: 1;
+    max-width: 65%;
+}
+
+.personal__info__next-icon {
+    margin: 0 10px;
+}
+
+#personal-info__middle--divider {
+    flex: 1;
+    max-width: 5%;
+}
+
+#personal-info__right {
+    flex: 1;
+    max-width: 30%;
+    padding: 0 24px;
+    border: 1px solid #e4e4e4;
+    height: fit-content;
+}
+
+#personal-info__right div:first-child {
+    margin: '32px 0';
 }
 
 .personal__info_part {
@@ -92,6 +123,8 @@
     cursor: pointer;
     margin: 0 px;
     padding: 0 px;
+    -ms-user-select: auto;
+    -webkit-user-select: auto;
     user-select: auto;
     text-align: left;
     outline: none;
@@ -110,10 +143,12 @@
     text-decoration: none;
     appearance: none;
     background: transparent;
-    border: 0 px;
+    border: 0px;
     cursor: pointer;
-    margin: 0 px;
-    padding: 0 px;
+    margin: 0px;
+    padding: 0px;
+    -ms-user-select: auto;
+    -webkit-user-select: auto;
     user-select: auto;
     text-align: left;
     outline: none;

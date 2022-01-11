@@ -68,18 +68,56 @@ export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValu
     }
 });
 
+export const fetchWishlistsOfCurrentUser = createAsyncThunk(
+    'user/fetchWishlistsOfCurrentUser',
+    async (_, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.get(`/user/wishlists`);
+            return { data };
+        } catch (error) {}
+    }
+);
+
+export interface IUserUpdate {
+    updatedField: string;
+    updateData: {};
+}
+
+export const updateUserInfo = createAsyncThunk(
+    'user/updateUserInfo',
+    async (updatedInfo: IUserUpdate, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const {
+                data: { user, successMessage },
+            } = await api.post(`/user/update-personal-info`, updatedInfo, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            //update local user info
+            setUserToLocalStorage(user);
+
+            return { user, successMessage };
+        } catch (error) {}
+    }
+);
+
 type UserState = {
     user: IUser | null;
     loading: boolean;
+    wishlistsFetching: boolean;
     errorMessage: string | null;
     successMessage: string | null;
+    wishlists: number[];
 };
 
 const initialState: UserState = {
     user: null,
     loading: true,
+    wishlistsFetching: true,
     errorMessage: null,
     successMessage: null,
+    wishlists: [],
 };
 
 const userSlice = createSlice({
@@ -93,21 +131,39 @@ const userSlice = createSlice({
                 state.successMessage = payload.successMessage;
                 state.user = payload.user;
             })
-            .addCase(login.fulfilled, (state, { payload }) => {
-                state.loading = false;
-                state.successMessage = payload.successMessage;
-                state.user = payload.user;
-            })
+
             .addCase(logout.fulfilled, (state, { payload }) => {
                 state.loading = false;
                 state.successMessage = payload.successMessage;
                 state.user = null;
             })
+            .addCase(fetchWishlistsOfCurrentUser.fulfilled, (state, { payload }) => {
+                state.wishlistsFetching = false;
+                state.wishlists = payload?.data;
+            })
+            .addCase(fetchWishlistsOfCurrentUser.pending, (state, { payload }) => {
+                state.wishlistsFetching = true;
+            })
+            .addCase(login.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.successMessage = payload.successMessage;
+                state.user = payload.user;
+            })
+            .addCase(updateUserInfo.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.successMessage = payload?.successMessage;
+                state.user = payload?.user;
+            })
             .addMatcher(isAnyOf(addUser.pending, login.pending, logout.pending), state => {
                 state.loading = true;
             })
             .addMatcher(
-                isAnyOf(addUser.rejected, login.rejected, logout.rejected),
+                isAnyOf(
+                    addUser.rejected,
+                    login.rejected,
+                    logout.rejected,
+                    fetchWishlistsOfCurrentUser.rejected
+                ),
                 (state, { payload }) => {
                     state.loading = false;
                     if (payload) state.errorMessage = payload as string;

@@ -31,15 +31,6 @@ public class UserRestController {
 
     private Map<String, String> checkConstraint = new HashMap<>();
 
-    @GetMapping("avatar")
-    public String getUserAvatar(@AuthenticationPrincipal AirtntUserDetails userDetails) {
-        if (userDetails == null)
-            return "images/default_user_avatar.png";
-
-        User user = userService.getByEmail(userDetails.getUsername());
-        return user.getAvatarPath();
-    }
-
     @PostMapping("check-password-constraint")
     public String checkPasswordConstaint(@RequestBody Map<String, String> payLoad,
             @AuthenticationPrincipal AirtntUserDetails userDetails) {
@@ -146,4 +137,5 @@ public class UserRestController {
             return "success";
         return "failure";
     }
+
 }
