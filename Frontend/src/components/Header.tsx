@@ -153,9 +153,9 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                                             <a href='@{/wishlists}'>Danh sách yêu thích</a>
                                         </li>
                                         <li>
-                                            <a href='@{/hosting/listings/1}'>
+                                            <Link to='/hosting/listings/1'>
                                                 Quản lí nhà/phòng cho thuê
-                                            </a>
+                                            </Link>
                                         </li>
                                         <li>
                                             <Link to={'/account-settings/personal-info'}>

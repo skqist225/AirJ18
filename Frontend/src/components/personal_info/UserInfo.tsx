@@ -1,8 +1,7 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { getImage } from '../../helpers/getImage';
 import { FormEdit } from './FormEdit';
 import $ from 'jquery';
-import { jqueryCode } from './js/personalInfo';
 import turnOffEditMode from './js/turnOffEditMode';
 
 interface IUserInfoProps {
