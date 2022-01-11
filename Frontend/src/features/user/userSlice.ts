@@ -108,6 +108,11 @@ type UserState = {
     wishlistsFetching: boolean;
     errorMessage: string | null;
     successMessage: string | null;
+    update: {
+        loading: boolean;
+        errorMessage: string | null;
+        successMessage: string | null;
+    };
     wishlists: number[];
 };
 
@@ -117,6 +122,11 @@ const initialState: UserState = {
     wishlistsFetching: true,
     errorMessage: null,
     successMessage: null,
+    update: {
+        loading: true,
+        errorMessage: null,
+        successMessage: null,
+    },
     wishlists: [],
 };
 
@@ -131,7 +141,6 @@ const userSlice = createSlice({
                 state.successMessage = payload.successMessage;
                 state.user = payload.user;
             })
-
             .addCase(logout.fulfilled, (state, { payload }) => {
                 state.loading = false;
                 state.successMessage = payload.successMessage;
@@ -150,9 +159,12 @@ const userSlice = createSlice({
                 state.user = payload.user;
             })
             .addCase(updateUserInfo.fulfilled, (state, { payload }) => {
-                state.loading = false;
-                state.successMessage = payload?.successMessage;
+                state.update.loading = false;
+                state.update.successMessage = payload?.successMessage;
                 state.user = payload?.user;
+            })
+            .addCase(updateUserInfo.pending, (state, { payload }) => {
+                state.update.loading = true;
             })
             .addMatcher(isAnyOf(addUser.pending, login.pending, logout.pending), state => {
                 state.loading = true;

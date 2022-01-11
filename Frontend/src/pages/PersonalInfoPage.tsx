@@ -9,6 +9,8 @@ import getUserSex from '../helpers/getUserSex';
 import { RootState } from '../store';
 import './css/personal_info.css';
 import { jqueryCode } from '../components/personal_info/js/personalInfo';
+import Toast from '../components/notify/Toast';
+import { toast } from 'react-toastify';
 
 type IPersonalInfoPageProps = {};
 
@@ -16,16 +18,32 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { user } = useSelector((state: RootState) => state.user);
+    const {
+        user,
+        update: { loading, successMessage, errorMessage },
+    } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
         jqueryCode();
     }, []);
 
+    useEffect(() => {
+        if (successMessage === 'UPDATE_USER_SUCCESSFULLY')
+            toast.success('🦄' + `Cập nhật thành công`, {
+                position: 'bottom-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+    }, [successMessage]);
+
     return (
         <>
             <Header includeMiddle={false} excludeBecomeHostAndNavigationHeader={false} />
-
+            <Toast />
             {user !== null && (
                 <div id='personal-info__page'>
                     <div id='personal-info__container'>

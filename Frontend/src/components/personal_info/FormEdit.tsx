@@ -32,20 +32,10 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
     const dispatch = useDispatch();
 
     const { handleSubmit, register } = useForm();
-    const { user, successMessage, errorMessage } = useSelector((state: RootState) => state.user);
-
-    useEffect(() => {
-        if (successMessage === 'UPDATE_USER_SUCCESSFULLY')
-            toast.success('🦄' + `Cập nhật thành công`, {
-                position: 'bottom-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-    }, [successMessage]);
+    const {
+        user,
+        update: { loading, successMessage, errorMessage },
+    } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
         if (errorMessage === 'UPDATE_USER_FAILURE')
@@ -169,7 +159,6 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
 
     return (
         <>
-            <Toast />
             {user !== null && (
                 <form onSubmit={handleSubmit(onSubmit)} className={'formEdit_' + dataEdit}>
                     <input type='hidden' value={user.id} name='id' />

@@ -28,10 +28,15 @@ const store = configureStore({
     preloadedState: {
         user: {
             user: localUser,
-            loading: false,
+            loading: true,
             successMessage: null,
             errorMessage: null,
             wishlists: [],
+            update: {
+                loading: true,
+                successMessage: null,
+                errorMessage: null,
+            },
             wishlistsFetching: true,
         },
     },
