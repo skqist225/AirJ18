@@ -14,7 +14,6 @@ import com.airtnt.airtntapp.room.group.RoomGroupService;
 import com.airtnt.airtntapp.room.privacy.RoomPrivacyService;
 import com.airtnt.airtntapp.rule.RuleService;
 import com.airtnt.airtntapp.user.UserService;
-import com.airtnt.entity.Exception.RoomNotFoundException;
 import com.airtnt.entity.Amentity;
 import com.airtnt.entity.Category;
 import com.airtnt.entity.Country;
@@ -25,6 +24,7 @@ import com.airtnt.entity.RoomGroup;
 import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.Rule;
 import com.airtnt.entity.User;
+import com.airtnt.entity.exception.RoomNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

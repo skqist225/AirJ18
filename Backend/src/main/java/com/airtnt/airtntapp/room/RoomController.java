@@ -14,7 +14,7 @@ import java.util.List;
 
 import com.airtnt.entity.Image;
 import com.airtnt.entity.User;
-import com.airtnt.entity.Exception.RoomNotFoundException;
+import com.airtnt.entity.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.booking.BookedDate;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.review.ReviewService;
@@ -46,7 +46,7 @@ public class RoomController {
 		User user = null;
 		if (userDetails != null) {
 			user = userService.getByEmail(userDetails.getUsername());
-			List<Room> favRooms = new ArrayList<>(user.getRooms());
+			List<Room> favRooms = new ArrayList<>(user.getFavRooms());
 
 			if (favRooms.contains(room)) {
 				model.addAttribute("wishlists", favRooms.get(favRooms.indexOf(room)).getId());
@@ -131,7 +131,7 @@ public class RoomController {
 	@GetMapping(value = "wishlists")
 	public String wishlists(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 		User user = userService.getByEmail(userDetails.getUsername());
-		model.addAttribute("wishlists", user.getRooms());
+		model.addAttribute("wishlists", user.getFavRooms());
 		return new String("room/wishlists");
 	}
 

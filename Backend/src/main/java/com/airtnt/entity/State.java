@@ -10,6 +10,7 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,8 +34,8 @@ public class State {
 	@Column(columnDefinition = "VARCHAR(10)")
 	private String code;
 
-	@ManyToOne
 	@JsonBackReference
+	@ManyToOne
 	@JoinColumn(name = "country_id")
 	private Country country;
 

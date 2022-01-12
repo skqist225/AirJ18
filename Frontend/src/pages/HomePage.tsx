@@ -13,7 +13,7 @@ type HomeProps = {};
 
 const HomePage: FC<HomeProps> = () => {
     const dispatch = useDispatch();
-    const categoryId = 1;
+    const categoryid = 1;
 
     const { rooms, loading: roomLoading } = useSelector((state: RootState) => state.room);
     const { categories, loading: categoryLoading } = useSelector(
@@ -22,8 +22,8 @@ const HomePage: FC<HomeProps> = () => {
 
     useEffect(() => {
         dispatch(fetchCategories());
-        dispatch(fetchRoomsByCategoryId({ categoryId }));
-    }, [dispatch, categoryId]);
+        dispatch(fetchRoomsByCategoryId({ categoryid }));
+    }, [dispatch, categoryid]);
 
     return (
         <div>

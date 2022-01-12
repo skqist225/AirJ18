@@ -7,8 +7,11 @@ import com.airtnt.airtntapp.booking.BookedDate;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
+import com.airtnt.airtntapp.cookie.CookieProcess;
+import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.review.ReviewService;
-import com.airtnt.airtntapp.room.dto.RoomPostDTO;
+import com.airtnt.airtntapp.room.dto.PostAddRoomDTO;
+import com.airtnt.airtntapp.room.response.RoomByUserResponseEntity;
 import com.airtnt.airtntapp.rule.RuleService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.UserService;
@@ -19,8 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,10 +60,12 @@ import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.Rule;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
-import com.airtnt.entity.Exception.RoomNotFoundException;
+import com.airtnt.entity.exception.RoomNotFoundException;
 
 @RestController
 public class RoomRestController {
+
+    private final String FETCH_OWNED_ROOMS_SUCCESS = "FETCH_OWNED_ROOMS_SUCCESSFULLY";
 
     @Autowired
     private RoomService roomService;
@@ -80,7 +88,10 @@ public class RoomRestController {
     @Autowired
     private ReviewService reviewService;
 
-    @RequestMapping("/api/rooms/category/{categoryId}")
+    @Autowired
+    private Authenticate authenticate;
+
+    @RequestMapping("/api/room/category/{categoryId}")
     public String fetchRoomsByCategoryId(@PathVariable("categoryId") Integer categoryId,
             @RequestParam(value = "privacies", required = false, defaultValue = "") String privacies,
             @RequestParam(value = "minPrice", required = false, defaultValue = "0") String minPrice,
@@ -245,7 +256,7 @@ public class RoomRestController {
 
     @PostMapping("room/save")
     public String saveRoom(@AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute RoomPostDTO payload) throws IOException, UserNotFoundException {
+            @ModelAttribute PostAddRoomDTO payload) throws IOException, UserNotFoundException {
         Set<Rule> rules = new HashSet<>();
         Set<Amentity> amenities = new HashSet<>();
         Set<Image> images = new HashSet<>();
@@ -309,5 +320,23 @@ public class RoomRestController {
 
         assert savedRoom != null;
         return savedRoom.getId() + "";
+    }
+
+    @GetMapping("/api/room/user")
+    public ResponseEntity<RoomByUserResponseEntity> fetchUserOwnedRooms(@CookieValue("user") String cookie) {
+        User host = authenticate.getLoggedInUser(cookie);
+
+        RoomByUserResponseEntity roomByUserResponseEntity = new RoomByUserResponseEntity();
+        if (host == null) {
+            roomByUserResponseEntity.setErrorMessage("UNAUTHORIZED");
+            return new ResponseEntity<RoomByUserResponseEntity>(roomByUserResponseEntity, null,
+                    HttpStatus.UNAUTHORIZED);
+        }
+
+        roomByUserResponseEntity.setSuccessMessage(FETCH_OWNED_ROOMS_SUCCESS);
+        roomByUserResponseEntity.setRooms(roomService.fetchUserOwnedRooms(host));
+
+        return new ResponseEntity<RoomByUserResponseEntity>(roomByUserResponseEntity, null,
+                HttpStatus.OK);
     }
 }

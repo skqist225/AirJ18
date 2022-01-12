@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomPostDTO {
+public class PostAddRoomDTO {
     private String name;
     private String[] images;
     private int[] amentities;

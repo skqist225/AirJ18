@@ -29,7 +29,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     public Page<User> findAll(Pageable pageable);
 
-    @Query("SELECT count(*) From User ") 
+    @Query("SELECT count(*) From User ")
     public Integer getNumberOfUser();
-
 }

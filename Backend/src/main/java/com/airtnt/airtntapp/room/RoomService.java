@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.city.CityRepository;
+import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
 import com.airtnt.airtntapp.state.StateRepository;
 import com.airtnt.airtntapp.user.UserRepository;
 import com.airtnt.entity.Amentity;
@@ -36,7 +37,7 @@ import com.airtnt.entity.RoomGroup;
 import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
-import com.airtnt.entity.Exception.RoomNotFoundException;
+import com.airtnt.entity.exception.RoomNotFoundException;
 
 @Service
 @Transactional
@@ -422,4 +423,7 @@ public class RoomService {
 		return roomRepository.getLikedUsers(roomId);
 	}
 
+	public List<RoomListingsDTO> fetchUserOwnedRooms(User host) {
+		return roomRepository.fetchUserOwnedRooms(host);
+	}
 }

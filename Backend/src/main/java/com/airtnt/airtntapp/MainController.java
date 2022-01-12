@@ -79,9 +79,9 @@ public class MainController {
             user = userService.getByEmail(userDetails.getUsername());
             if (user.hasRole("Admin"))
                 return "redirect:/admin/";
-            Integer[] roomIds = new Integer[user.getRooms().size()];
+            Integer[] roomIds = new Integer[user.getFavRooms().size()];
             int i = 0;
-            for (Room r : user.getRooms())
+            for (Room r : user.getFavRooms())
                 roomIds[i++] = r.getId();
             model.addAttribute("wishlists", roomIds);
         }

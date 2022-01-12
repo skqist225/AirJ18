@@ -1,5 +1,6 @@
 package com.airtnt.entity;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -22,7 +24,8 @@ import java.util.*;
 public class Room extends BaseEntity {
 
 	@Builder
-	public Room(int id, String name, Set<Image> images, String thumbnail, byte rating,
+	public Room(
+			Integer id, String name, Set<Image> images, String thumbnail, byte rating,
 			Country country, State state, City city, String street, int bedroomCount, int bathroomCount,
 			int accomodatesCount, int bedCount, RoomGroup roomGroup, Currency currency,
 			Category category, String description, Set<Amentity> amentities, float latitude, float longitude,
@@ -138,6 +141,7 @@ public class Room extends BaseEntity {
 	@JoinColumn(name = "host_id")
 	private User host;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
 	private List<Booking> bookings;
 
@@ -159,11 +163,6 @@ public class Room extends BaseEntity {
 	@Transient
 	public String renderThumbnailImage() {
 		return "/room_images/" + this.host.getEmail() + "/" + this.getId() + "/" + this.thumbnail;
-	}
-
-	@Transient
-	public String getImagePrefix() {
-		return "/room_images/" + this.host.getEmail() + "/" + this.getId() + "/";
 	}
 
 	@Transient

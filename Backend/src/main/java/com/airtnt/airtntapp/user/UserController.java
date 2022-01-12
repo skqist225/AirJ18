@@ -118,9 +118,9 @@ public class UserController {
         User user = null;
         if (userDetails != null) {
             user = userService.getByEmail(userDetails.getUsername());
-            Integer[] roomIds = new Integer[user.getRooms().size()];
+            Integer[] roomIds = new Integer[user.getFavRooms().size()];
             int i = 0;
-            for (Room r : user.getRooms())
+            for (Room r : user.getFavRooms())
                 roomIds[i++] = r.getId();
             model.addAttribute("wishlists", roomIds);
         }

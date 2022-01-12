@@ -77,7 +77,7 @@ public class User extends BaseEntity {
 	@Builder.Default
 	@JsonIgnore
 	@OneToMany(mappedBy = "host", fetch = FetchType.LAZY)
-	private List<Room> room = new ArrayList<>();
+	private List<Room> ownedRooms = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)
@@ -99,7 +99,7 @@ public class User extends BaseEntity {
 	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "users_favorite_rooms", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
-	private Set<Room> rooms = new HashSet<>();
+	private Set<Room> favRooms = new HashSet<>();
 
 	public User(int id) {
 		super(id);
@@ -152,12 +152,12 @@ public class User extends BaseEntity {
 
 	@Transient
 	public void addToWishLists(Room room) {
-		this.rooms.add(room);
+		this.favRooms.add(room);
 	}
 
 	@Transient
 	public void removeFromWishLists(Room room) {
-		this.rooms.remove(room);
+		this.favRooms.remove(room);
 	}
 
 	public boolean hasRole(String role) {

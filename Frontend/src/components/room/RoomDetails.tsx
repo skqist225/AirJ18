@@ -59,7 +59,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
     ];
 
     useEffect(() => {
-        dispatch(fetchRoomById({ roomId: pathname.split('/')[2] }));
+        dispatch(fetchRoomById({ roomid: pathname.split('/')[2] }));
     }, [dispatch, pathname]);
 
     useEffect(() => {

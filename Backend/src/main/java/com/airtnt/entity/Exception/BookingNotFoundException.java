@@ -1,7 +1,7 @@
-package com.airtnt.entity.Exception;
+package com.airtnt.entity.exception;
 
 public class BookingNotFoundException extends Exception {
     public BookingNotFoundException(String message) {
-        super(message); 
+        super(message);
     }
 }

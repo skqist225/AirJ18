@@ -14,17 +14,17 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
 
     const jQuerycode = async () => {
         const catContainers = $('.cat__container');
-        const urlSearchParams = new URLSearchParams(window.location.search).get('categoryId')!;
-        let categoryId = +urlSearchParams;
+        const urlSearchParams = new URLSearchParams(window.location.search).get('categoryid')!;
+        let categoryid = +urlSearchParams;
 
         $('.img_idt').each(function () {
             if ($(this).data('index') * 1 === 1) $(this).addClass('active');
         });
 
         catContainers.each(function () {
-            if ($(this).data('category-id') * 1 === categoryId) {
+            if ($(this).data('category-id') * 1 === categoryid) {
                 setActiveTab(catContainers, $(this));
-                dispatch(fetchRoomsByCategoryId({ categoryId }));
+                dispatch(fetchRoomsByCategoryId({ categoryid }));
             }
         });
 

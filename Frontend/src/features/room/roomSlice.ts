@@ -4,9 +4,9 @@ import { IRoomDetails } from '../../type/type_RoomDetails';
 
 export const fetchRoomsByCategoryId = createAsyncThunk(
     'room/fetchRoomsByCategoryId',
-    async ({ categoryId }: { categoryId: number }, { dispatch, getState, rejectWithValue }) => {
+    async ({ categoryid }: { categoryid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.get(`/rooms/category/${categoryId}`);
+            const { data } = await api.get(`/room/category/${categoryid}`);
             return { data };
         } catch (error) {}
     }
@@ -14,9 +14,9 @@ export const fetchRoomsByCategoryId = createAsyncThunk(
 
 export const fetchRoomById = createAsyncThunk(
     'room/fetchRoomById',
-    async ({ roomId }: { roomId: string }, { dispatch, getState, rejectWithValue }) => {
+    async ({ roomid }: { roomid: string }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.get(`/room/${roomId}`);
+            const { data } = await api.get(`/room/${roomid}`);
 
             return { data };
         } catch (error) {}

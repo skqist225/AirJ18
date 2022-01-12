@@ -2,6 +2,8 @@ package com.airtnt.entity;
 
 import lombok.*;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
@@ -19,7 +21,7 @@ public class City {
 	@Column(nullable = false)
 	private String name;
 
-	@JsonIgnore
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "state_id")
 	private State state;

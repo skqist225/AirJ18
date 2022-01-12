@@ -1,13 +1,25 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
+import { RootState } from '../../store';
 
 interface IListingsPageProps {}
 
- const ListingsPage: FC<IListingsPageProps> = () => {
+const ListingsPage: FC<IListingsPageProps> = () => {
+    const navigate = useNavigate();
+    const { user, loading } = useSelector((state: RootState) => state.user);
+
+    useEffect(() => {
+        if (user === null && !loading) {
+            navigate('/login');
+        }
+    }, []);
+
     return (
         <>
             <Header includeMiddle={true} excludeBecomeHostAndNavigationHeader={true} />
-
+            {/* 
                 <div>
             <div className="listings__container">
                 <div className="listings__header flex">
@@ -18,7 +30,7 @@ interface IListingsPageProps {}
                         <button className="listings__create-new-room" onclick="createNewRoom();">
                             <span>
                                 <img
-                                    th:src="@{/svg/plus.svg}"
+                                    src="@{/svg/plus.svg}"
                                     alt=""
                                     width="16px"
                                     height="16px"
@@ -32,7 +44,7 @@ interface IListingsPageProps {}
                 <div className="listings__filter-container">
                     <div className="listings__search-room">
                         <div className="listings__search-icon-container" onclick="filterRoomByName();">
-                            <img th:src="@{/svg/search.svg}" alt="" width="12px" height="12px" />
+                            <img src="@{/svg/search.svg}" alt="" width="12px" height="12px" />
                         </div>
                         <div style="flex: 1">
                             <input
@@ -50,7 +62,7 @@ interface IListingsPageProps {}
                             <span> Phòng và phòng ngủ</span>
                             <div className="listings__filter-img-container">
                                 <img
-                                    th:src="@{/svg/dropdown.svg}"
+                                    src="@{/svg/dropdown.svg}"
                                     alt=""
                                     width="12px"
                                     height="12px"
@@ -63,24 +75,24 @@ interface IListingsPageProps {}
                                     <div className="flex listings__filter-roomAndBedRoom-row">
                                         <div>Phòng ngủ</div>
                                         <div
-                                            th:replace="hosting/_listings_partial :: incAndDecBtn('listings__bed-room-count', 'roomAndBedRoom')"
+                                            replace="hosting/_listings_partial :: incAndDecBtn('listings__bed-room-count', 'roomAndBedRoom')"
                                         ></div>
                                     </div>
                                     <div className="flex listings__filter-roomAndBedRoom-row">
                                         <div>Giường</div>
                                         <div
-                                            th:replace="hosting/_listings_partial :: incAndDecBtn('listings__bed-count', 'roomAndBedRoom')"
+                                            replace="hosting/_listings_partial :: incAndDecBtn('listings__bed-count', 'roomAndBedRoom')"
                                         ></div>
                                     </div>
                                     <div className="flex listings__filter-roomAndBedRoom-row">
                                         <div>Phòng tắm</div>
                                         <div
-                                            th:replace="hosting/_listings_partial :: incAndDecBtn('listings__bath-room-count', 'roomAndBedRoom')"
+                                            replace="hosting/_listings_partial :: incAndDecBtn('listings__bath-room-count', 'roomAndBedRoom')"
                                         ></div>
                                     </div>
                                 </div>
                                 <div
-                                    th:replace="hosting/_listings_partial :: filterFooter('roomAndBedRoom')"
+                                    replace="hosting/_listings_partial :: filterFooter('roomAndBedRoom')"
                                 ></div>
                             </div>
                         </div>
@@ -93,7 +105,7 @@ interface IListingsPageProps {}
                             <span>Tiện nghi</span>
                             <div className="listings__filter-img-container">
                                 <img
-                                    th:src="@{/svg/dropdown.svg}"
+                                    src="@{/svg/dropdown.svg}"
                                     alt=""
                                     width="12px"
                                     height="12px"
@@ -102,7 +114,7 @@ interface IListingsPageProps {}
                         </button>
                         <div id="listings__filter-amentities">
                             <div className="grid-2 filter-box" style="height: 80%">
-                                <th:block th:each="amentity : ${amentities}">
+                                <block each="amentity : ${amentities}">
                                     <div
                                         className="listings__filter-amentities-row"
                                         style="display: flex; align-items: center"
@@ -112,7 +124,7 @@ interface IListingsPageProps {}
                                                 type="checkbox"
                                                 width="20px"
                                                 height="20px"
-                                                th:value="${amentity.id}"
+                                                value="${amentity.id}"
                                                 className="amentitySelected"
                                             />
                                         </div>
@@ -123,10 +135,10 @@ interface IListingsPageProps {}
                                             [[${amentity.name}]]
                                         </div>
                                     </div>
-                                </th:block>
+                                </block>
                             </div>
                             <div
-                                th:replace="hosting/_listings_partial :: filterFooter('amentities')"
+                                replace="hosting/_listings_partial :: filterFooter('amentities')"
                             ></div>
                         </div>
                     </div>
@@ -138,7 +150,7 @@ interface IListingsPageProps {}
                             <span>Tình trạng nhà/phòng cho thuê</span>
                             <div className="listings__filter-img-container">
                                 <img
-                                    th:src="@{/svg/dropdown.svg}"
+                                    src="@{/svg/dropdown.svg}"
                                     alt=""
                                     width="12px"
                                     height="12px"
@@ -166,7 +178,7 @@ interface IListingsPageProps {}
                                     </div>
                                 </div>
                                 <div
-                                    th:replace="hosting/_listings_partial :: filterFooter('status')"
+                                    replace="hosting/_listings_partial :: filterFooter('status')"
                                 ></div>
                             </div>
                         </div>
@@ -179,7 +191,7 @@ interface IListingsPageProps {}
                             <span>Các bộ lọc khác</span>
                             <div className="listings__filter-img-container">
                                 <img
-                                    th:src="@{/svg/dropdown.svg}"
+                                    src="@{/svg/dropdown.svg}"
                                     alt=""
                                     width="12px"
                                     height="12px"
@@ -205,7 +217,7 @@ interface IListingsPageProps {}
                                     </div>
                                 </div>
                                 <div
-                                    th:replace="hosting/_listings_partial :: filterFooter('others')"
+                                    replace="hosting/_listings_partial :: filterFooter('others')"
                                 ></div>
                             </div>
                         </div>
@@ -220,7 +232,7 @@ interface IListingsPageProps {}
                     </div>
                 </div>
                 <div style="flex: 1">
-                    <div th:replace="hosting/_listings_partial :: listingsTable(${rooms})"></div>
+                    <div replace="hosting/_listings_partial :: listingsTable(${rooms})"></div>
                 </div>
                 <div className="pagination">
                     <a data-page="prev">&laquo;</a>
@@ -233,7 +245,7 @@ interface IListingsPageProps {}
                     <a data-page="next">&raquo;</a>
                 </div>
             </div>
-        </main>
+        </main> */}
         </>
     );
 };

@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
 
@@ -63,4 +65,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
         @Query("SELECT count(*) From Room r")
         public Integer getNumberOfRoom();
 
+        @Query("SELECT new com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO(r.id, r.name, r.thumbnail, r.currency.symbol , r.category.name, r.price, r.priceType, r.bedroomCount, r.bathroomCount, r.bedCount, r.status, r.createdDate, r.updatedDate, CONCAT(r.street, ', ', r.city.name, ', ', r.state.name, ', ', r.country.name)) FROM Room r WHERE r.host = ?1")
+        public List<RoomListingsDTO> fetchUserOwnedRooms(User host);
 }

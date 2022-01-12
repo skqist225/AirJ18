@@ -35,9 +35,8 @@ public class Country {
     @Column(columnDefinition = "VARCHAR(10)")
     private String dialCode;
 
-    @Builder.Default
-    @JsonManagedReference
     @JsonIgnore
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "country")
     private Set<State> states = new HashSet<>();
 

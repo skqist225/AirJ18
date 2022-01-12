@@ -1,4 +1,4 @@
-package com.airtnt.airtntapp.room.dto;
+package com.airtnt.airtntapp.room.dto.page.home;
 
 import java.util.Set;
 

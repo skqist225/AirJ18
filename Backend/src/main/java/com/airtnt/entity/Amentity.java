@@ -35,7 +35,7 @@ public class Amentity extends BaseEntity {
 
 	public Amentity(int id, String name, String description, AmentityCategory amentityCategory) {
 		super(id);
-		this.name = name; 
+		this.name = name;
 		this.description = description;
 		this.amentityCategory = amentityCategory;
 	}
@@ -49,10 +49,5 @@ public class Amentity extends BaseEntity {
 	@Transient
 	public String getIconImagePath() {
 		return "/amentity_images/" + this.iconImage;
-	}
-
-	@Transient
-	public String getIconImagePath1() {
-		return "/amentity_images/" + this.iconImage; 
 	}
 }

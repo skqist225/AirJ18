@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
-import com.airtnt.entity.Exception.BookingNotFoundException;
+import com.airtnt.entity.exception.BookingNotFoundException;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;

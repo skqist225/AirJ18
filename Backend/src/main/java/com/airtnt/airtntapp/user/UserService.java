@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import javax.transaction.Transactional;
 
 import com.airtnt.airtntapp.country.CountryRepository;
+import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
 import com.airtnt.airtntapp.user.admin.RoleRepository;
 import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Country;
@@ -158,7 +159,7 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    public Integer getNumberOfUser(){
+    public Integer getNumberOfUser() {
         return userRepository.getNumberOfUser();
     }
 }

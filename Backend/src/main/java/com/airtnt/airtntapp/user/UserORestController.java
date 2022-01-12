@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.city.CityService;
-import com.airtnt.airtntapp.cookie.CookiePorcess;
+import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.PostAddUserDTO;
@@ -53,7 +53,7 @@ public class UserORestController {
         private UserService userService;
 
         @Autowired
-        private CookiePorcess cookiePorcess;
+        private CookieProcess cookiePorcess;
 
         @Autowired
         private CountryService countryService;
@@ -145,9 +145,9 @@ public class UserORestController {
                 String userEmail = cookiePorcess.readCookie(cookie);
 
                 User user = userService.getByEmail(userEmail);
-                Integer[] wishlists = new Integer[user.getRooms().size()];
+                Integer[] wishlists = new Integer[user.getFavRooms().size()];
                 int i = 0;
-                for (Room r : user.getRooms())
+                for (Room r : user.getFavRooms())
                         wishlists[i++] = r.getId();
 
                 return wishlists;
