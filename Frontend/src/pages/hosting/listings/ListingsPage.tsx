@@ -2,6 +2,7 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header';
+import { AmenityRow } from '../../../components/hosting/listings/AmenityRow';
 import { FilterFooter } from '../../../components/hosting/listings/FilterFooter';
 import { IncAndDecBtn } from '../../../components/hosting/listings/IncAndDecBtn';
 import { RoomDataRow } from '../../../components/hosting/listings/RoomDataRow';
@@ -52,10 +53,10 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                                 alt=''
                                                 width='16px'
                                                 height='16px'
-                                                // style="object-fit: cover"
+                                                style={{ objectFit: 'cover' }}
                                             />
                                         </span>
-                                        {/* <div style="margin-left: 10px">Tạo mục cho thuê</div> */}
+                                        <div style={{ marginLeft: '10px' }}>Tạo mục cho thuê</div>
                                     </button>
                                 </Link>
                             </div>
@@ -141,20 +142,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                 <div id='listings__filter-amentities'>
                                     <div className='grid-2 filter-box h-80'>
                                         {amenities.map(amenity => (
-                                            <div className='listings__filter-amentities-row normal-flex'>
-                                                <div className='flex-2'>
-                                                    <input
-                                                        type='checkbox'
-                                                        width='20px'
-                                                        height='20px'
-                                                        value={amenity.id}
-                                                        className='amentitySelected'
-                                                    />
-                                                </div>
-                                                <div className='flex-2 amn-name'>
-                                                    {amenity.name}
-                                                </div>
-                                            </div>
+                                            <AmenityRow amenity={amenity} key={amenity.id} />
                                         ))}
                                     </div>
 

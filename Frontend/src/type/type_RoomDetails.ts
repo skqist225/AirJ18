@@ -1,4 +1,7 @@
-export interface IAmenity {
+import IHost from './type_Host';
+import { IReview } from './type_Review';
+
+export interface IRDAmenity {
     name: string;
     icon: string;
     id: number;
@@ -7,28 +10,6 @@ export interface IAmenity {
 export interface IRule {
     icon: string;
     title: string;
-}
-
-export interface IReview {
-    comment: string;
-    rating: {
-        cleanliness: number;
-        contact: number;
-        checkin: number;
-        accuracy: number;
-        location: number;
-        value: number;
-    };
-    customer_name: string;
-    customer_avatar: string;
-    created_at: string;
-}
-
-export interface IHost {
-    id: number;
-    name: string;
-    avatar: string;
-    created_date: string;
 }
 
 export interface IBookedDate {
@@ -42,7 +23,7 @@ export type IRoomDetails = {
     description: string;
     bookedDates: IBookedDate[];
     thumbnail: string;
-    amenitities: IAmenity[];
+    amenitities: IRDAmenity[];
     images: string[];
     latitude: number;
     privacy: string;

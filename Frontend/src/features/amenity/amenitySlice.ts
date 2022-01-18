@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
+import IAmenity from '../../type/type_Amenity';
 
 export const fetchAmenities = createAsyncThunk(
     'amenity/fetchAmenities',
@@ -10,25 +11,6 @@ export const fetchAmenities = createAsyncThunk(
         } catch (error) {}
     }
 );
-
-export interface IAmenity {
-    id: number;
-    status: boolean;
-    createdDate: number;
-    updatedDate: number;
-    name: string;
-    iconImage: string;
-    description: string;
-    prominent: boolean;
-    favorite: boolean;
-    safe: boolean;
-    amentityCategory: {
-        id: number;
-        name: string;
-        description: string | null;
-    };
-    iconImagePath: string;
-}
 
 type AmenityState = {
     amenities: IAmenity[];

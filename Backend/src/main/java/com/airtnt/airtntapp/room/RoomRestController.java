@@ -322,10 +322,20 @@ public class RoomRestController {
         return savedRoom.getId() + "";
     }
 
-    @GetMapping("/api/room/user")
-    public ResponseEntity<RoomByUserResponseEntity> fetchUserOwnedRooms(@CookieValue("user") String cookie) {
+    @GetMapping("/api/room/user/page/{pageid}")
+    public ResponseEntity<RoomByUserResponseEntity> fetchUserOwnedRooms(@CookieValue("user") String cookie,
+            @PathVariable("pageid") Integer pageNumber,
+            @RequestParam(name = "BATHROOMS", required = false, defaultValue = "0") String bathRoomsCount,
+            @RequestParam(name = "BEDROOMS", required = false, defaultValue = "0") String bedRoomsCount,
+            @RequestParam(name = "BEDS", required = false, defaultValue = "0") String bedsCount,
+            @RequestParam(name = "query", required = false, defaultValue = "") String query,
+            @RequestParam(name = "sort_dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
+            @RequestParam(name = "AMENITY_IDS", required = false, defaultValue = "") String amentitiesFilter,
+            @RequestParam(name = "STATUSES", required = false, defaultValue = "ACTIVE UNLISTED") String status) {
         User host = authenticate.getLoggedInUser(cookie);
 
+        // When user not logged in
         RoomByUserResponseEntity roomByUserResponseEntity = new RoomByUserResponseEntity();
         if (host == null) {
             roomByUserResponseEntity.setErrorMessage("UNAUTHORIZED");
@@ -333,8 +343,20 @@ public class RoomRestController {
                     HttpStatus.UNAUTHORIZED);
         }
 
+        // When user logged in
+
+        Map<String, String> filters = new HashMap<>();
+        filters.put("bedroomCount", bedRoomsCount);
+        filters.put("bathroomCount", bathRoomsCount);
+        filters.put("bedCount", bedsCount);
+        filters.put("query", query);
+        filters.put("sortDir", sortDir);
+        filters.put("sortField", sortField);
+        filters.put("amentities", amentitiesFilter);
+        filters.put("status", status);
+
         roomByUserResponseEntity.setSuccessMessage(FETCH_OWNED_ROOMS_SUCCESS);
-        roomByUserResponseEntity.setRooms(roomService.fetchUserOwnedRooms(host));
+        roomByUserResponseEntity.setRooms(roomService.fetchUserOwnedRooms(host, pageNumber, filters).toList());
 
         return new ResponseEntity<RoomByUserResponseEntity>(roomByUserResponseEntity, null,
                 HttpStatus.OK);
