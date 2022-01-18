@@ -4,3 +4,4 @@ export { default as countrySlice } from './country/countrySlice';
 export { default as userSlice } from './user/userSlice';
 export { default as citySlice } from './address/citySlice';
 export { default as stateSlice } from './address/stateSlice';
+export { default as amenitySlice } from './amenity/amenitySlice';

@@ -2,7 +2,7 @@ package com.airtnt.airtntapp.settings;
 
 import java.util.List;
 
-import com.airtnt.airtntapp.amentity.AmentityCategorySerivce;
+import com.airtnt.airtntapp.amentity.category.AmentityCategorySerivce;
 import com.airtnt.entity.AmentityCategory;
 
 import org.springframework.beans.factory.annotation.Autowired;

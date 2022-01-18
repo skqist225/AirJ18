@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
 import { IRoomDetails } from '../../type/type_RoomDetails';
+import { IRoomListings } from '../../type/type_RoomListings';
 
 export const fetchRoomsByCategoryId = createAsyncThunk(
     'room/fetchRoomsByCategoryId',
@@ -23,14 +24,29 @@ export const fetchRoomById = createAsyncThunk(
     }
 );
 
+export const fetchUserOwnedRoom = createAsyncThunk(
+    'room/fetchUserOwnedRoom',
+    async (_, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const {
+                data: { rooms, successMessage },
+            } = await api.get(`/room/user`);
+
+            return { rooms, successMessage };
+        } catch (error) {}
+    }
+);
+
 type RoomState = {
     rooms: [];
+    roomsListings: IRoomListings[];
     room: IRoomDetails;
     loading: boolean;
 };
 
 const initialState: RoomState = {
     rooms: [],
+    roomsListings: [],
     room: null,
     loading: true,
 };
@@ -48,6 +64,10 @@ const roomSlice = createSlice({
             .addCase(fetchRoomById.fulfilled, (state, { payload }) => {
                 state.loading = false;
                 state.room = payload?.data;
+            })
+            .addCase(fetchUserOwnedRoom.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.roomsListings = payload?.rooms;
             })
             .addMatcher(isAnyOf(fetchRoomsByCategoryId.pending, fetchRoomById.pending), state => {
                 state.loading = true;

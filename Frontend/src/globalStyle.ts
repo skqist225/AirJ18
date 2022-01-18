@@ -50,6 +50,22 @@ const GlobalStyle = createGlobalStyle`
         flex: 1;
         max-width: 50%;
     }
+
+    .f1 {
+        flex: 1;
+    }
+
+    .inline-block {
+        display: inline-block;
+    }
+
+    .overflow-hidden {
+        overflow: hidden;
+    }
+
+    .p-relative {
+        position: relative;
+    }
 `;
 
 export const MainButton = styled.button`

@@ -7,6 +7,7 @@ import {
     userSlice,
     stateSlice,
     citySlice,
+    amenitySlice,
 } from './features';
 
 const rootReducer = combineReducers({
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
     state: stateSlice,
     city: citySlice,
     user: userSlice,
+    amenity: amenitySlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

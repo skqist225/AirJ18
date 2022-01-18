@@ -30,6 +30,7 @@ public class RoomListingsDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
 
