@@ -1,10 +1,12 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header';
 import { AmenityRow } from '../../../components/hosting/listings/AmenityRow';
 import { FilterFooter } from '../../../components/hosting/listings/FilterFooter';
 import { IncAndDecBtn } from '../../../components/hosting/listings/IncAndDecBtn';
+import hostingListings from '../../../components/hosting/listings/js/listings';
+import { Pagination } from '../../../components/hosting/listings/Pagination';
 import { RoomDataRow } from '../../../components/hosting/listings/RoomDataRow';
 import { fetchAmenities } from '../../../features/amenity/amenitySlice';
 import { fetchUserOwnedRoom } from '../../../features/room/roomSlice';
@@ -19,6 +21,10 @@ const ListingsPage: FC<IListingsPageProps> = () => {
     const navigate = useNavigate();
     const { user, loading } = useSelector((state: RootState) => state.user);
     const { amenities, loading: amenityLoading } = useSelector((state: RootState) => state.amenity);
+    const {
+        hosting: { rooms, totalRecords },
+    } = useSelector((state: RootState) => state.room);
+    const { pathname } = useLocation();
 
     useEffect(() => {
         if (user === null && !loading) {
@@ -28,20 +34,25 @@ const ListingsPage: FC<IListingsPageProps> = () => {
 
     useEffect(() => {
         dispatch(fetchAmenities());
-        dispatch(fetchUserOwnedRoom());
     }, []);
 
-    const { roomsListings } = useSelector((state: RootState) => state.room);
+    useEffect(() => {
+        dispatch(fetchUserOwnedRoom({ pageNumber: parseInt(pathname.split('/').pop() as string) }));
+    }, [pathname]);
+
+    useEffect(() => {
+        hostingListings();
+    }, [rooms]);
 
     return (
         <>
             <Header includeMiddle={true} excludeBecomeHostAndNavigationHeader={true} />
-            {roomsListings.length && (
+            {rooms.length ? (
                 <div id='listings__main-conainer'>
                     <div className='listings__container'>
                         <div className='listings__header flex'>
                             <div className='listings__header-rooms-length'>
-                                {roomsListings.length} nhà/phòng cho thuê
+                                {totalRecords} nhà/phòng cho thuê
                             </div>
                             <div>
                                 <Link to={'/'}>
@@ -352,7 +363,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                                 </button>
                                             </div>
                                         </th>
-                                        <th>
+                                        <th style={{ width: '400px' }}>
                                             <div>
                                                 <button
                                                     className='listings__table-header'
@@ -456,7 +467,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {roomsListings.map(room => (
+                                    {rooms.map(room => (
                                         <RoomDataRow
                                             room={room}
                                             key={room.id}
@@ -465,34 +476,12 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                     ))}
                                 </tbody>
                             </table>
-                            {roomsListings.length == 0 && (
-                                <div className='flex-2 no-room-style'>Không tìm thấy kết quả</div>
-                            )}
                         </div>
-                        <div className='pagination'>
-                            <a data-page='prev'>&laquo;</a>
-                            <a data-page='1' className='active listings__link'>
-                                1
-                            </a>
-                            <a data-page='2' className='listings__link'>
-                                2
-                            </a>
-                            <a data-page='3' className='listings__link'>
-                                3
-                            </a>
-                            <a data-page='4' className='listings__link'>
-                                4
-                            </a>
-                            <a data-page='5' className='listings__link'>
-                                5
-                            </a>
-                            <a data-page='6' className='listings__link'>
-                                6
-                            </a>
-                            <a data-page='next'>&raquo;</a>
-                        </div>
+                        <Pagination />
                     </div>
                 </div>
+            ) : (
+                <div className='flex-2 no-room-style'>Không tìm thấy kết quả</div>
             )}
         </>
     );

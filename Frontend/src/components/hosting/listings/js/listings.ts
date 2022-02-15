@@ -1,15 +1,7 @@
 import $ from 'jquery';
 
-function jQueryCode() {
+export default function hostingListings() {
     $('.listings__minus-btn').attr('disabled', 'true');
-
-    const currentUrl = window.location.href;
-    let pageNumber = 1;
-    if (currentUrl.toString().includes('?')) {
-        pageNumber = parseInt(currentUrl.split('?')[0].split('/').pop() as string);
-    } else pageNumber = parseInt(window.location.href.split('/').pop() as string);
-
-    highlightCurrentPageNumber(pageNumber);
 
     const allInputColumn = $('.columnDisplay');
     const selectedColumns = $('input[class="columnDisplay"]:checked');
@@ -215,26 +207,6 @@ function jQueryCode() {
     // $('.deleteAllFilterOption').click(function () {
     //     window.location.href = `${baseURL}hosting/listings/1`;
     // });
-
-    // $('.listings__link').each(function () {
-    //     $(this).attr(
-    //         'href',
-    //         `${baseURL}hosting/listings/${$(this).data('page')}${window.location.search}`
-    //     );
-    // });
-}
-
-function highlightCurrentPageNumber(pageNumber: number) {
-    $('.pagination').children().filter('.active').removeClass('active');
-    $('.pagination')
-        .children()
-        .each(function () {
-            const pageNum = $(this).data('page');
-            if (pageNum.toString() === pageNumber.toString()) {
-                $(this).addClass('active');
-                return false;
-            }
-        });
 }
 
 // function filterRoomByName() {

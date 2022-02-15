@@ -2,11 +2,6 @@ package com.airtnt.airtntapp.cookie;
 
 import java.util.Base64;
 
-import com.airtnt.airtntapp.user.UserService;
-import com.airtnt.airtntapp.user.admin.UserNotFoundException;
-import com.airtnt.entity.User;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;

@@ -43,7 +43,7 @@ import com.airtnt.entity.exception.RoomNotFoundException;
 @Transactional
 public class RoomService {
 	public static final int MAX_ROOM_PER_FETCH = 40;
-	public static final int MAX_ROOM_PER_FETCH_BY_HOST = 10;
+	public static final int MAX_ROOM_PER_FETCH_BY_HOST = 9;
 	public static final int ROOMS_PER_PAGE = 10;
 
 	@Autowired
@@ -423,7 +423,7 @@ public class RoomService {
 		return roomRepository.getLikedUsers(roomId);
 	}
 
-	public Page<Room> fetchUserOwnedRooms(User host, Integer pageNumber, Map<String, String> filters) {
+	public Page<RoomListingsDTO> fetchUserOwnedRooms(User host, Integer pageNumber, Map<String, String> filters) {
 		/*-------------------------------------------FILTER KEY------------------------------------------------*/
 		int bedroomCount = Integer.parseInt(filters.get("bedroomCount"));
 		int bathroomCount = Integer.parseInt(filters.get("bathroomCount"));
@@ -481,28 +481,10 @@ public class RoomService {
 		}
 		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
 
-		if (amentitiesID.size() == 0) {
-			return roomRepository.findAll(new Specification<Room>() {
-				@Override
-				public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-					List<Predicate> predicates = new ArrayList<>();
-
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("host"), host)));
-					predicates.add(criteriaBuilder.and(criteriaBuilder.like(root.get("name"), "%" + roomName + "%")));
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.greaterThanOrEqualTo(root.get("bedroomCount"), bedroomCount)));
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.greaterThanOrEqualTo(root.get("bathroomCount"), bathroomCount)));
-					predicates.add(
-							criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("bedCount"), bedCount)));
-					Expression<Boolean> status = root.get("status");
-					Predicate predicate = status.in(statusesID);
-					predicates.add(predicate);
-
-					return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-				}
-			}, pageable);
-		}
+		if (amentitiesID.size() == 0)
+			return roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
+					bedCount,
+					statusesID, pageable);
 
 		Page<RoomListingsDTO> rooms = roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
 				bedCount,

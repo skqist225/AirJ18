@@ -10,8 +10,6 @@ interface IRoomDataRowProps {
 }
 
 export const RoomDataRow: FC<IRoomDataRowProps> = ({ room, email }) => {
-    console.log(new Date().getTime() - parseDBDate(room.updatedDate).getTime());
-
     return (
         <tr data-room-id={room.id}>
             <td>

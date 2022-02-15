@@ -16,4 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RoomByUserResponseEntity extends CommonResponse {
     private List<RoomListingsDTO> rooms;
+    private long totalRecords;
+    private int totalPages;
 }

@@ -8,7 +8,7 @@ export const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
     return (
         <>
             <div id='filter-footer__container'>
-                <div className='flex'>
+                <div className='flex p-24'>
                     <button
                         className={`listings__transparent-btn deleteBtn inline-block ${footerOf}`}
                         data-modify={footerOf}

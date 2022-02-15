@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { getImage } from '../../../helpers/getImage';
 
 interface IIncAndDecBtnProps {
     dataEdit: string;
@@ -17,7 +18,7 @@ export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger }) 
                 >
                     <span>
                         <img
-                            src='@{/svg/minus.svg}'
+                            src={getImage('/svg/minus.svg')}
                             alt='minus icon'
                             width='12px'
                             height='12px'
@@ -36,7 +37,7 @@ export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger }) 
                 >
                     <span>
                         <img
-                            src='@{/svg/plus.svg}'
+                            src={getImage('/svg/plus.svg')}
                             alt='plus icon'
                             width='12px'
                             height='12px'

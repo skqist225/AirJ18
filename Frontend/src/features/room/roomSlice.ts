@@ -26,27 +26,37 @@ export const fetchRoomById = createAsyncThunk(
 
 export const fetchUserOwnedRoom = createAsyncThunk(
     'room/fetchUserOwnedRoom',
-    async (_, { dispatch, getState, rejectWithValue }) => {
+    async ({ pageNumber }: { pageNumber: number }, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
-                data: { rooms, successMessage },
-            } = await api.get(`/room/user`);
+                data: { rooms, successMessage, totalPages, totalRecords },
+            } = await api.get(`/room/user/page/${pageNumber}`);
 
-            return { rooms, successMessage };
+            return { rooms, successMessage, totalPages, totalRecords };
         } catch (error) {}
     }
 );
 
 type RoomState = {
     rooms: [];
-    roomsListings: IRoomListings[];
+    hosting: {
+        rooms: IRoomListings[];
+        loading: boolean;
+        totalPages: number;
+        totalRecords: number;
+    };
     room: IRoomDetails;
     loading: boolean;
 };
 
 const initialState: RoomState = {
     rooms: [],
-    roomsListings: [],
+    hosting: {
+        rooms: [],
+        loading: true,
+        totalPages: 0,
+        totalRecords: 0,
+    },
     room: null,
     loading: true,
 };
@@ -66,8 +76,13 @@ const roomSlice = createSlice({
                 state.room = payload?.data;
             })
             .addCase(fetchUserOwnedRoom.fulfilled, (state, { payload }) => {
-                state.loading = false;
-                state.roomsListings = payload?.rooms;
+                state.hosting.loading = false;
+                state.hosting.rooms = payload?.rooms;
+                state.hosting.totalRecords = payload?.totalRecords;
+                state.hosting.totalPages = payload?.totalPages;
+            })
+            .addCase(fetchUserOwnedRoom.pending, (state, { payload }) => {
+                state.hosting.loading = true;
             })
             .addMatcher(isAnyOf(fetchRoomsByCategoryId.pending, fetchRoomById.pending), state => {
                 state.loading = true;

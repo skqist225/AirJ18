@@ -7,10 +7,10 @@ import com.airtnt.airtntapp.booking.BookedDate;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
-import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.room.dto.PostAddRoomDTO;
+import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
 import com.airtnt.airtntapp.room.response.RoomByUserResponseEntity;
 import com.airtnt.airtntapp.rule.RuleService;
 import com.airtnt.airtntapp.state.StateService;
@@ -21,6 +21,7 @@ import com.airtnt.entity.Room;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -356,7 +357,11 @@ public class RoomRestController {
         filters.put("status", status);
 
         roomByUserResponseEntity.setSuccessMessage(FETCH_OWNED_ROOMS_SUCCESS);
-        roomByUserResponseEntity.setRooms(roomService.fetchUserOwnedRooms(host, pageNumber, filters).toList());
+        Page<RoomListingsDTO> roomListingsDTOs = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
+
+        roomByUserResponseEntity.setRooms(roomListingsDTOs.toList());
+        roomByUserResponseEntity.setTotalRecords(roomListingsDTOs.getTotalElements());
+        roomByUserResponseEntity.setTotalPages(roomListingsDTOs.getTotalPages());
 
         return new ResponseEntity<RoomByUserResponseEntity>(roomByUserResponseEntity, null,
                 HttpStatus.OK);

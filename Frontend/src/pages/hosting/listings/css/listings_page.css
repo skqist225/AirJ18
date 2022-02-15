@@ -654,3 +654,8 @@ input[type='checkbox']:checked:before {
     width: 56px;
     height: 40px;
 }
+
+/* .filter-footer__container {
+    padding: 24px;
+    border-top: 1px solid #b0b0b0;
+} */
