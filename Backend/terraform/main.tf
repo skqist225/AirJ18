@@ -114,7 +114,7 @@ resource "aws_instance" "my_server" {
 
   provisioner "file" {
     source      = "/mnt/c/Users/thuan/Desktop/Commands/install-tomcat-ubuntu.sh"
-    destination = "~/"
+    destination = "/home/ubuntu/install-tomcat-ubuntu.sh"
 
     connection {
       type        = "ssh"
@@ -127,7 +127,7 @@ resource "aws_instance" "my_server" {
 
   provisioner "file" {
     source      = "/mnt/c/Users/thuan/Desktop/Commands/airj18-build.sh"
-    destination = "~/"
+    destination = "/home/ubuntu/airj18-build.sh"
 
     connection {
       type        = "ssh"
@@ -148,6 +148,7 @@ resource "aws_instance" "my_server" {
     }
 
     inline = [
+      "chmod +x ~/install-tomcat-ubuntu.sh ~/airj18-build.sh",
       "~/install-tomcat-ubuntu.sh",
     ]
   }
