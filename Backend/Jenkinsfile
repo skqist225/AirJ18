@@ -33,7 +33,7 @@ pipeline {
                     input message: 'Approve PRODUCTION Deployment?'
                 }
 
-                sshPublisher(publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "~/airtnt-build.sh $DB_URL $DB_USER $DB_PASS", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '~/airtnt-build.sh airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com admin 12345678', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             }
         }
     }
