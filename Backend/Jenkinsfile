@@ -1,0 +1,26 @@
+pipeline {
+    agent any 
+    options {
+        skipStagesAfterUnstable()
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+
+            }
+            post {
+                success {
+                    echo 'Now archiving the artifacts...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
+            }
+        }
+        // stage('Get artifact from s3 bucket') {
+
+        // }
+        // stage('Deploy') {
+
+        // }
+    }
+}
