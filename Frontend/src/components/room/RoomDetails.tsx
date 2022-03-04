@@ -13,6 +13,7 @@ import roomDetails from './script/room_details';
 import 'alertifyjs/build/css/alertify.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './css/room_details.css';
+import { DivWithHeightAndWidth } from '../../globalStyle';
 
 interface IRoomDetailsProps {}
 
@@ -118,33 +119,39 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                         </div>
 
                         <section className='rdt_images grid'>
-                            <div style={{ height: '480px' }}>
+                            <DivWithHeightAndWidth height='480px'>
                                 <img
                                     src={getImage(room.thumbnail)}
-                                    width='100%'
-                                    height='100%'
-                                    className='image'
+                                    className='image w100-h100'
+                                    alt={room.thumbnail}
                                 />
-                            </div>
-                            <div style={{ position: 'relative' }}>
-                                <div className='rdt_images__left' style={{ height: '470px' }}>
-                                    {room.images.map((image: string, index: number) => (
-                                        <div
-                                            style={{ width: '100%', height: 'calc(470px / 2)' }}
-                                            key={image + index}
-                                        >
-                                            <img
-                                                src={getImage(image)}
-                                                style={{ width: '100%', height: '100%' }}
-                                                className={
-                                                    index % 2 === 0
-                                                        ? 'roundedBorder image'
-                                                        : 'image'
-                                                }
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
+                            </DivWithHeightAndWidth>
+                            <div className='p-relative'>
+                                <DivWithHeightAndWidth
+                                    className='rdt_images__left'
+                                    height={'470px'}
+                                >
+                                    {room.images.map((image: string, index: number) => {
+                                        if (index > 3) return null;
+
+                                        return (
+                                            <DivWithHeightAndWidth
+                                                height='calc(470px / 2)'
+                                                key={image + index}
+                                            >
+                                                <img
+                                                    src={getImage(image)}
+                                                    className={
+                                                        index % 2 === 0
+                                                            ? 'roundedBorder image w100-h100'
+                                                            : 'image w100-h100'
+                                                    }
+                                                    alt={image}
+                                                />
+                                            </DivWithHeightAndWidth>
+                                        );
+                                    })}
+                                </DivWithHeightAndWidth>
                                 <Link to={`${room.id}/images`}>
                                     <div className='rdt_showMoreImage'>
                                         <svg

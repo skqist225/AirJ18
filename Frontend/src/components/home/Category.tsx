@@ -14,15 +14,14 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
 
     const jQuerycode = async () => {
         const catContainers = $('.cat__container');
-        const urlSearchParams = new URLSearchParams(window.location.search).get('categoryid')!;
-        let categoryid = +urlSearchParams;
+        const categoryid = parseInt(new URLSearchParams(window.location.search).get('categoryid')!);
 
         $('.img_idt').each(function () {
-            if ($(this).data('index') * 1 === 1) $(this).addClass('active');
+            if (parseInt($(this).data('index')) === 1) $(this).addClass('active');
         });
 
         catContainers.each(function () {
-            if ($(this).data('category-id') * 1 === categoryid) {
+            if (parseInt($(this).data('category-id')) === categoryid) {
                 setActiveTab(catContainers, $(this));
                 dispatch(fetchRoomsByCategoryId({ categoryid }));
             }
@@ -37,8 +36,7 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
             });
 
             $(self).addClass('active');
-            const image = $('.cat__image', self);
-            image.addClass('active');
+            $('.cat__image', self).addClass('active');
         }
     };
 
@@ -53,7 +51,7 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
                 className='button__container'
                 onClick={e => {
                     e.preventDefault();
-                    window.location.href = `/?categoryId=${category.id}`;
+                    window.location.href = `/?categoryid=${category.id}`;
                 }}
             >
                 <div>

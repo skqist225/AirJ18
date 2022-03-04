@@ -13,7 +13,7 @@ interface IHomeCategoriesProps {
 
 export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
     return (
-        <div className='flex'>
+        <div className='flex' style={{ marginBottom: '25px' }}>
             {categories.length > 0 &&
                 categories.map((category: ICategory, index: number) => {
                     return (

@@ -66,6 +66,11 @@ const GlobalStyle = createGlobalStyle`
     .p-relative {
         position: relative;
     }
+
+    .w100-h100 {
+        width: 100%;
+        height: 100%;
+    }
 `;
 
 export const MainButton = styled.button`
@@ -100,6 +105,16 @@ export const Divider = styled.div`
     width: 100%;
     height: 1px;
     background-color: rgb(228, 228, 228);
+`;
+
+interface DivProps {
+    width?: string;
+    height?: string;
+}
+
+export const DivWithHeightAndWidth = styled.div`
+    width: ${(props: DivProps) => props.width || '100%'};
+    height: ${(props: DivProps) => props.height || '100%'};
 `;
 
 export default GlobalStyle;

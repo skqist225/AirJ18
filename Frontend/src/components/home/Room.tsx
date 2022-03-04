@@ -154,7 +154,7 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                             displayType={'text'}
                             renderText={(formattedValue: any) => (
                                 <div>
-                                    {formattedValue} {room.stay_type}
+                                    {formattedValue}/{room.stay_type}
                                 </div>
                             )}
                         />
