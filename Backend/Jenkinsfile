@@ -9,31 +9,31 @@ pipeline {
                 sh 'echo $(pwd)'
                 sh 'mvn clean package --file */pom.xml'
             }
-            post {
-                success {
-                    echo 'Now archiving the artifacts...'
-                    archiveArtifacts artifacts: '**/target/*.war'
-                }
-            }
+            // post {
+                // success {
+                    // echo 'Now archiving the artifacts...'
+                    // archiveArtifacts artifacts: '**/target/*.war'
+                // }
+            // }
         }
         stage('Copy Artifact To AWS EC2') {
             steps {
-                sh 'aws s3 cp /var/lib/jenkins/workspace/Build_AirJ18/Backend/target/*.war s3://airj18'
+                sh 'aws s3 cp /var/lib/jenkins/workspace/Package_Application_Code_Pipeline/Backend/target/*.war s3://airj18'
                 // build job: 'Copy_Artifact_To_AWS_EC2'
             }
         }
         stage('Deploy Application Prodution Stage') {
-            environment { 
-                DB_URL = credentials('airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com')
-                DB_USER = credentials('admin')
-                DB_PASS = credentials('12345678')
-            }
+            // environment { 
+            //     DB_URL = credentials('airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com')
+            //     DB_USER = credentials('admin')
+            //     DB_PASS = credentials('12345678')
+            // }
             steps {
                 timeout(time:5, unit:'DAYS') {
                     input message: 'Approve PRODUCTION Deployment?'
                 }
-
-                sshPublisher(publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '~/airtnt-build.sh airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com admin 12345678', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                build job: 'Deploy_AirJ18'
+                // sshPublisher(publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '~/airtnt-build.sh airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com admin 12345678', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             }
         }
     }
