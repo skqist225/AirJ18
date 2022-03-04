@@ -71,6 +71,26 @@ const GlobalStyle = createGlobalStyle`
         width: 100%;
         height: 100%;
     }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    .fw-600 {
+        font-weight: 600;
+    }
+
+    .fs-16 {
+        font-size: 16px;
+    }
+
+    .fs-14 {
+        font-size: 14px;
+    }
+
+    .of-c {
+        object-fit: cover;
+    }
 `;
 
 export const MainButton = styled.button`
@@ -110,11 +130,26 @@ export const Divider = styled.div`
 interface DivProps {
     width?: string;
     height?: string;
+    margin?: string;
+    padding?: string;
 }
 
-export const DivWithHeightAndWidth = styled.div`
+interface ImageProps {
+    size: string;
+}
+
+export const Div = styled.div`
     width: ${(props: DivProps) => props.width || '100%'};
     height: ${(props: DivProps) => props.height || '100%'};
+    margin: ${(props: DivProps) => props.margin || '0 0 0 0'};
+    padding: ${(props: DivProps) => props.padding || '0 0 0 0'};
+`;
+
+export const Image = styled.img.attrs(props => ({
+    alt: props.src,
+}))`
+    width: ${(props: ImageProps) => props.size};
+    height: ${(props: ImageProps) => props.size};
 `;
 
 export default GlobalStyle;

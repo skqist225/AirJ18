@@ -1,0 +1,74 @@
+*,
+*::before,
+*::after {
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+}
+
+.wishlists__container {
+    padding: 80px 80px;
+    width: 1440px;
+    max-width: 90%;
+    height: 100vh;
+    margin: 0 auto;
+}
+
+.wishlists__word {
+    font-size: 32px;
+    line-height: 36px;
+    font-weight: 500;
+    color: rgb(34, 34, 34);
+    margin-top: 20px;
+    contain: paint;
+    margin-bottom: 20px;
+}
+
+#wishlists__wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.wishlists__room-box {
+    width: calc(136px + 277px);
+    display: grid;
+    grid-gap: 10px;
+    grid-template-areas:
+        'a b'
+        'a c';
+    cursor: pointer;
+}
+
+.wishlists__room-thumbnail {
+    grid-area: a;
+    width: 277px;
+    height: 215px;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    overflow: hidden;
+}
+
+.wishlists__room-image-2 {
+    grid-area: b;
+    width: 136px;
+    height: 106px;
+    border-top-right-radius: 16px;
+    overflow: hidden;
+}
+
+.wishlists__room-image-3 {
+    grid-area: c;
+    width: 136px;
+    height: 106px;
+    border-bottom-right-radius: 16px;
+    overflow: hidden;
+}

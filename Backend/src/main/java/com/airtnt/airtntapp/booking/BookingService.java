@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
 
+import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
@@ -108,6 +109,10 @@ public class BookingService {
 
     public List<Booking> getBookingsByUser(Integer customerId, String query) {
         return bookingRepository.getByCustomer(customerId, query);
+    }
+
+    public List<BookedRoomDTO> getBookedRoomsByUser(Integer customerId, String query) {
+        return bookingRepository.getBookedRoomsByUser(customerId, query);
     }
 
     public Page<Booking> getBookingsByRooms(Integer[] roomIds, int pageNumber, Map<String, String> filters)

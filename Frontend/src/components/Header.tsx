@@ -150,7 +150,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                                             <a href='@{/user/bookings}'>Phòng đã đặt</a>
                                         </li>
                                         <li>
-                                            <a href='@{/wishlists}'>Danh sách yêu thích</a>
+                                            <Link to={'/wishlists'}>Danh sách yêu thích</Link>
                                         </li>
                                         <li>
                                             <Link to='/hosting/listings/1'>

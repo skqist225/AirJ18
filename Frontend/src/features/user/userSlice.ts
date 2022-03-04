@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { number, string } from 'yup';
 import api from '../../axios';
 import { IAddUser, ILoginInfo, IUser } from '../../type/type_User';
 
@@ -68,6 +69,16 @@ export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValu
     }
 });
 
+export const fetchWishlistsIDsOfCurrentUser = createAsyncThunk(
+    'user/fetchWishlistsIDsOfCurrentUser',
+    async (_, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.get(`/user/wishlists/ids`);
+            return { data };
+        } catch (error) {}
+    }
+);
+
 export const fetchWishlistsOfCurrentUser = createAsyncThunk(
     'user/fetchWishlistsOfCurrentUser',
     async (_, { dispatch, getState, rejectWithValue }) => {
@@ -102,6 +113,11 @@ export const updateUserInfo = createAsyncThunk(
     }
 );
 
+interface RoomWishlists {
+    id: number;
+    images: string[];
+}
+
 type UserState = {
     user: IUser | null;
     loading: boolean;
@@ -113,7 +129,8 @@ type UserState = {
         errorMessage: string | null;
         successMessage: string | null;
     };
-    wishlists: number[];
+    wishlistsIDs: number[];
+    wishlists: RoomWishlists[];
 };
 
 const initialState: UserState = {
@@ -127,6 +144,7 @@ const initialState: UserState = {
         errorMessage: null,
         successMessage: null,
     },
+    wishlistsIDs: [],
     wishlists: [],
 };
 
@@ -145,6 +163,10 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.successMessage = payload.successMessage;
                 state.user = null;
+            })
+            .addCase(fetchWishlistsIDsOfCurrentUser.fulfilled, (state, { payload }) => {
+                state.wishlistsFetching = false;
+                state.wishlistsIDs = payload?.data;
             })
             .addCase(fetchWishlistsOfCurrentUser.fulfilled, (state, { payload }) => {
                 state.wishlistsFetching = false;

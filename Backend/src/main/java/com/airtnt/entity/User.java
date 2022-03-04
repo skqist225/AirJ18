@@ -34,7 +34,7 @@ import lombok.Setter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-	@JsonIgnore
+	// @JsonIgnore
 	private String avatar;
 
 	@NotEmpty(message = "Tên không được để trống.")

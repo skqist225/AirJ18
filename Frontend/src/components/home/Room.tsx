@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { getImage } from '../../helpers/getImage';
 import NumberFormat from 'react-number-format';
 import './css/home.css';
+import { ToastContainer } from 'react-toastify';
 
 interface IRoomsProps {
     room: IRoom;
@@ -14,14 +15,14 @@ interface IRoomsProps {
 export const Room: FC<IRoomsProps> = ({ room, index }) => {
     const jQuerycode = async () => {
         $('.img_idt').each(function () {
-            if ($(this).data('index') * 1 === 1) $(this).addClass('active');
+            if (parseInt($(this).data('index')) === 1) $(this).addClass('active');
         });
     };
 
     const getIndex = (array: JQuery<HTMLElement>, index: number): number => {
         array.each(function () {
             if ($(this).hasClass('active')) {
-                index = $(this).data('index')! * 1;
+                index = parseInt($(this).data('index')!);
                 $(this).removeClass('active');
                 return false;
             }
@@ -31,8 +32,7 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
     };
     const addActiveClass = (array: JQuery<HTMLElement>, index: number) => {
         array.each(function () {
-            const dataIndex = $(this).data('index')! * 1;
-            if (dataIndex === index) $(this).addClass('active');
+            if (parseInt($(this).data('index')!) === index) $(this).addClass('active');
         });
     };
 
@@ -143,6 +143,17 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                     </button>
                 </div>
             </div>
+            <ToastContainer
+                position='bottom-right'
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <Link to={'room/' + room.id}>
                 <div className='normal-flex' style={{ paddingTop: '15px' }}>
                     <div className='room__name'>{room.name}</div>

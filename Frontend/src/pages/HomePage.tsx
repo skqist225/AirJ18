@@ -8,6 +8,8 @@ import { Rooms } from '../components/home/Rooms';
 import Header from '../components/Header';
 
 import '../components/home/css/home.css';
+import { Image } from '../globalStyle';
+import { getImage } from '../helpers/getImage';
 
 type HomeProps = {};
 
@@ -33,6 +35,15 @@ const HomePage: FC<HomeProps> = () => {
                 <div className='home__body'>
                     {!categoryLoading && <HomeCategories categories={categories} />}
                     <div>{!roomLoading && <Rooms rooms={rooms} />}</div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <Image src={getImage('/svg/close.svg')} size='12px' />
+                            <div>Danh sách yêu thích của bạn</div>
+                        </div>
+                        <div></div>
+                    </div>
                 </div>
             </div>
         </div>

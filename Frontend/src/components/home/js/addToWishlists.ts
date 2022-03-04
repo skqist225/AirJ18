@@ -1,6 +1,7 @@
 import api from '../../../axios';
 import $ from 'jquery';
 import { IUser } from '../../../type/type_User';
+import { toast } from 'react-toastify';
 
 export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser | null) {
     $('.room__likeBtn').each(function () {
@@ -19,18 +20,34 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
             if (user === null) console.error('Vui lòng đăng nhập để thêm yêu thích');
 
             if (children.hasClass('like')) {
-                successMessage = 'Gỡ bỏ danh sách yêu thích thành công';
-                errorMessage = 'Gỡ bỏ danh sách yêu thích thất bại';
+                successMessage = 'Gỡ bỏ khỏi danh sách yêu thích thành công';
+                errorMessage = 'Gỡ bỏ khỏi danh sách yêu thích thất bại';
 
                 const { data } = await api.get(`/user/remove-from-wishlists/${roomId}`);
                 if (data === 'success') {
                     $('.room__likeBtn').each(function () {
-                        if ($(this).data('room-id') * 1 === parseInt(roomId))
+                        if (parseInt($(this).data('room-id')) === parseInt(roomId))
                             $(this).children('.heartSvg').removeClass('like');
                     });
-                    // alertify.success(successMessage);
-                    console.log(successMessage);
-                } else console.error(errorMessage);
+                    toast.success(`🦄 ${successMessage}`, {
+                        position: 'bottom-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                } else
+                    toast.error(`🦄 ${errorMessage}`, {
+                        position: 'bottom-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
             } else {
                 successMessage = 'Thêm vào danh sách yêu thích thành công';
                 errorMessage = 'Thêm vào danh sách yêu thích thất bại';
@@ -41,8 +58,25 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
                         if ($(this).data('room-id') * 1 === parseInt(roomId))
                             $(this).children('.heartSvg').addClass('like');
                     });
-                    // alertify.success(successMessage);
-                } else console.log(errorMessage);
+                    toast.success(`🦄 ${successMessage}`, {
+                        position: 'bottom-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                } else
+                    toast.error(`🦄 ${errorMessage}`, {
+                        position: 'bottom-right',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
             }
         });
     });

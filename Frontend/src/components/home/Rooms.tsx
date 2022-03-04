@@ -2,7 +2,10 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { Room } from './Room';
-import { fetchWishlistsOfCurrentUser } from '../../features/user/userSlice';
+import {
+    fetchWishlistsIDsOfCurrentUser,
+    fetchWishlistsOfCurrentUser,
+} from '../../features/user/userSlice';
 import { addClickEventForLoveButton } from '../../components/home/js/addToWishlists';
 
 export interface IRoom {
@@ -22,15 +25,15 @@ interface IRoomsProps {
 
 export const Rooms: FC<IRoomsProps> = ({ rooms }) => {
     const dispatch = useDispatch();
-    const { user, wishlists, wishlistsFetching } = useSelector((state: RootState) => state.user);
+    const { user, wishlistsIDs, wishlistsFetching } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-        if (user !== null) dispatch(fetchWishlistsOfCurrentUser());
+        if (user !== null) dispatch(fetchWishlistsIDsOfCurrentUser());
     }, [user]);
 
     useEffect(() => {
-        if (!wishlistsFetching) addClickEventForLoveButton(wishlists, user);
-    }, [wishlists, user]);
+        if (!wishlistsFetching) addClickEventForLoveButton(wishlistsIDs, user);
+    }, [wishlistsIDs, user]);
 
     return (
         <section className='room__section'>

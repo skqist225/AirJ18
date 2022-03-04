@@ -433,9 +433,9 @@ export default async function roomDetails(roomPrice: number, bookedDates: IBooke
         const date = new Date();
         let daysInMonthJs: string[] = [];
         let weeks = daysInMonth.split('*');
-        console.log('weeks');
+
         weeks.forEach(week => {
-            daysInMonthJs.push('<tr>');
+            daysInMonthJs.push('<tbody class="calendar"><tr>');
             const weekArray = week.trim().split(' ');
             weekArray.forEach((dayInWeek: string) => {
                 if (dayInWeek === '') {
@@ -476,9 +476,8 @@ export default async function roomDetails(roomPrice: number, bookedDates: IBooke
                     daysInMonthJs.push(dayInHtml);
                 }
             });
-            daysInMonthJs.push('</tr>');
+            daysInMonthJs.push('</tr></tbody>');
         });
-        console.log(daysInMonthJs);
         return daysInMonthJs;
     }
 

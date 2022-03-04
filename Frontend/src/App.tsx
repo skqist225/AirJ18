@@ -1,5 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, useMatch } from 'react-router-dom';
-import { HomePage, ListingsPage, LoginPage, RegisterPage, RoomDetailsPage } from './pages';
+import {
+    HomePage,
+    ListingsPage,
+    LoginPage,
+    RegisterPage,
+    RoomDetailsPage,
+    WishListsPage,
+} from './pages';
 import PersonalInfoPage from './pages/PersonalInfoPage';
 
 function App() {
@@ -17,6 +24,7 @@ function App() {
                     <Route path='/hosting/listings'>
                         <Route path=':page' element={<ListingsPage />} />
                     </Route>
+                    <Route path='/wishlists' element={<WishListsPage />}></Route>
                 </Routes>
             </Router>
         </div>

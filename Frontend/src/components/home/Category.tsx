@@ -14,7 +14,8 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
 
     const jQuerycode = async () => {
         const catContainers = $('.cat__container');
-        const categoryid = parseInt(new URLSearchParams(window.location.search).get('categoryid')!);
+        const categoryid =
+            parseInt(new URLSearchParams(window.location.search).get('categoryid')!) || 1;
 
         $('.img_idt').each(function () {
             if (parseInt($(this).data('index')) === 1) $(this).addClass('active');

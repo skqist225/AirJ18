@@ -569,6 +569,10 @@ main {
     justify-content: space-between;
 }
 
+tbody.calendar tr {
+    height: 0;
+}
+
 .firstMonth {
     flex: 1;
     max-width: 50%;

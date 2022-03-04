@@ -13,7 +13,7 @@ import roomDetails from './script/room_details';
 import 'alertifyjs/build/css/alertify.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './css/room_details.css';
-import { DivWithHeightAndWidth } from '../../globalStyle';
+import { Div, Image } from '../../globalStyle';
 
 interface IRoomDetailsProps {}
 
@@ -119,26 +119,20 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                         </div>
 
                         <section className='rdt_images grid'>
-                            <DivWithHeightAndWidth height='480px'>
+                            <Div height='480px'>
                                 <img
                                     src={getImage(room.thumbnail)}
                                     className='image w100-h100'
                                     alt={room.thumbnail}
                                 />
-                            </DivWithHeightAndWidth>
+                            </Div>
                             <div className='p-relative'>
-                                <DivWithHeightAndWidth
-                                    className='rdt_images__left'
-                                    height={'470px'}
-                                >
+                                <Div className='rdt_images__left' height={'470px'}>
                                     {room.images.map((image: string, index: number) => {
                                         if (index > 3) return null;
 
                                         return (
-                                            <DivWithHeightAndWidth
-                                                height='calc(470px / 2)'
-                                                key={image + index}
-                                            >
+                                            <Div height='calc(470px / 2)' key={image + index}>
                                                 <img
                                                     src={getImage(image)}
                                                     className={
@@ -148,10 +142,10 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                     }
                                                     alt={image}
                                                 />
-                                            </DivWithHeightAndWidth>
+                                            </Div>
                                         );
                                     })}
-                                </DivWithHeightAndWidth>
+                                </Div>
                                 <Link to={`${room.id}/images`}>
                                     <div className='rdt_showMoreImage'>
                                         <svg
@@ -239,15 +233,10 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 </span>
                                             ))} */}
                                             </div>
-                                            <div
-                                                style={{
-                                                    marginBottom: '8px',
-                                                    fontSize: '16px',
-                                                }}
-                                            >
+                                            <Div margin='0 0 8px 0' className='fs-16'>
                                                 Phòng ngủ
-                                            </div>
-                                            <div style={{ fontSize: '1.4rem' }}>
+                                            </Div>
+                                            <div className='fs-14'>
                                                 <span>{room.bed}</span>
                                                 giường đơn
                                             </div>
@@ -278,10 +267,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                         </div>
                                         <div style={{ color: '#717171' }}>
                                             <div id='beforeEndDateContainer'>
-                                                <span
-                                                    id='beforeChooseDay'
-                                                    style={{ fontSize: '14px' }}
-                                                >
+                                                <span id='beforeChooseDay' className='fs-14'>
                                                     Thêm ngày đi để biết giá chính xác
                                                 </span>
                                             </div>
@@ -306,12 +292,11 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                                 }
                                                             >
                                                                 <span>
-                                                                    <img
+                                                                    <Image
                                                                         src={getImage(
                                                                             '/svg/close3.svg'
                                                                         )}
-                                                                        width='12px'
-                                                                        height='12px'
+                                                                        size='12px'
                                                                     />
                                                                 </span>
                                                             </button>
@@ -322,9 +307,9 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                         </div>
                                                     </div>
                                                     <div className='rdt_calender__body'>
-                                                        <div
+                                                        <Div
                                                             className='flex3'
-                                                            style={{ width: 'calc(44px * 7)' }}
+                                                            width='calc(44px * 7)'
                                                         >
                                                             <div className='date'>CN</div>
                                                             <div className='date'>T2</div>
@@ -333,7 +318,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                             <div className='date'>T5</div>
                                                             <div className='date'>T6</div>
                                                             <div className='date'>T7</div>
-                                                        </div>
+                                                        </Div>
                                                         <table className='rdt_calender__days'></table>
                                                     </div>
                                                 </div>
@@ -354,21 +339,20 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                                 }
                                                             >
                                                                 <span>
-                                                                    <img
+                                                                    <Image
                                                                         src={getImage(
                                                                             '/svg/nextMonth.svg'
                                                                         )}
-                                                                        width='12px'
-                                                                        height='12px'
+                                                                        size='12px'
                                                                     />
                                                                 </span>
                                                             </button>
                                                         </div>
                                                     </div>
                                                     <div className='rdt_calender__body'>
-                                                        <div
+                                                        <Div
                                                             className='flex3'
-                                                            style={{ width: 'calc(44px * 7)' }}
+                                                            width='calc(44px * 7)'
                                                         >
                                                             <div className='date'>CN</div>
                                                             <div className='date'>T2</div>
@@ -377,7 +361,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                             <div className='date'>T5</div>
                                                             <div className='date'>T6</div>
                                                             <div className='date'>T7</div>
-                                                        </div>
+                                                        </Div>
                                                         <table className='rdt_calender__days_plus-1'></table>
                                                     </div>
                                                 </div>
@@ -388,26 +372,19 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
 
                                 <article className='rdt__booking'>
                                     <div className='rdt__booking--container'>
-                                        <div style={{ marginBottom: '24px' }}>
+                                        <Div margin='0 0 24px 0'>
                                             <MyNumberForMat
                                                 price={room.price}
                                                 currency={room.currency}
                                                 stayType={room.stay_type}
                                             />
-                                        </div>
+                                        </Div>
                                         <div className='rdt__booking--receiveRoom'>
                                             <div className='flex'>
-                                                <div
-                                                    style={{
-                                                        padding: '10px 12px 10px',
-                                                        width: '50%',
-                                                    }}
-                                                >
-                                                    <div style={{ fontWeight: 600 }}>
-                                                        Nhận phòng
-                                                    </div>
+                                                <Div padding='10px 12px 10px' width='50%'>
+                                                    <div className='fw-600'>Nhận phòng</div>
                                                     <div id='checkinDate'>Thêm ngày</div>
-                                                </div>
+                                                </Div>
                                                 <div
                                                     style={{
                                                         padding: '10px 12px 10px',
@@ -416,9 +393,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                             '0.5px solid rgb(211, 211, 211)',
                                                     }}
                                                 >
-                                                    <div style={{ fontWeight: '600' }}>
-                                                        Trả phòng
-                                                    </div>
+                                                    <div className='fw-600'>Trả phòng</div>
                                                     <div id='checkoutDate'>Thêm ngày</div>
                                                 </div>
                                             </div>
@@ -550,40 +525,33 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                         />
                                                     );
                                                 })}
-                                                <div
-                                                    className='normal-flex'
-                                                    style={{ marginBottom: '20px' }}
-                                                >
+                                                <Div className='normal-flex' margin='0 0 20px 0'>
                                                     <div className='customerAvatarWrapper'>
                                                         <img
                                                             src={getImage(review.customer_avatar)}
                                                             className='normal-img'
+                                                            alt={review.customer_avatar}
                                                         />
                                                     </div>
                                                     <div>
-                                                        <div
-                                                            style={{
-                                                                fontWeight: 600,
-                                                                fontSize: '1.6rem',
-                                                            }}
-                                                        >
+                                                        <div className='fs-16 fw-600'>
                                                             {review.customer_name}
                                                         </div>
                                                         <div
                                                             style={{
                                                                 color: '#717171',
-                                                                fontSize: '1.4rem',
                                                             }}
+                                                            className='fs-14'
                                                         >
                                                             {review.created_at}
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </Div>
                                                 <div
                                                     style={{
                                                         maxWidth: '457px',
-                                                        fontSize: '1.6rem',
                                                     }}
+                                                    className='fs-16'
                                                 >
                                                     {review.comment}
                                                 </div>
@@ -603,6 +571,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             <img
                                                 src={getImage(room.host.avatar)}
                                                 className='rdt__host--avatar'
+                                                alt={room.host.avatar}
                                             />
                                         </div>
                                         <div style={{ marginLeft: '20px' }}>

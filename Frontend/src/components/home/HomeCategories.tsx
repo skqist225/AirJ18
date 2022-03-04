@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { Div } from '../../globalStyle';
 import { Category } from './Category';
 
 export interface ICategory {
@@ -13,7 +14,7 @@ interface IHomeCategoriesProps {
 
 export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
     return (
-        <div className='flex' style={{ marginBottom: '25px' }}>
+        <Div className='flex' margin='0 0 25px 0'>
             {categories.length > 0 &&
                 categories.map((category: ICategory, index: number) => {
                     return (
@@ -24,6 +25,6 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
                         />
                     );
                 })}
-        </div>
+        </Div>
     );
 };

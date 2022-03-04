@@ -2,22 +2,30 @@ package com.airtnt.airtntapp.user;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.airtnt.airtntapp.FileUploadUtil;
+import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.state.StateService;
+import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostAddUserDTO;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
+import com.airtnt.airtntapp.user.dto.WishlistsDTO;
+import com.airtnt.airtntapp.user.response.UserBookedRoomsResponseEntity;
 import com.airtnt.airtntapp.user.response.UserResponseEntity;
 import com.airtnt.entity.Address;
+import com.airtnt.entity.Booking;
 import com.airtnt.entity.City;
 import com.airtnt.entity.Country;
+import com.airtnt.entity.Image;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.Sex;
 import com.airtnt.entity.State;
@@ -32,6 +40,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
@@ -51,6 +60,9 @@ public class UserORestController {
 
         @Autowired
         private UserService userService;
+
+        @Autowired
+        private BookingService bookingService;
 
         @Autowired
         private CookieProcess cookiePorcess;
@@ -140,8 +152,8 @@ public class UserORestController {
                                 cookiePorcess.writeCookie("user", null).toString()).body(userResponseEntity);
         }
 
-        @GetMapping("/wishlists")
-        public Integer[] fetchWishlists(@CookieValue("user") String cookie) {
+        @GetMapping("/wishlists/ids")
+        public Integer[] fetchWishlistsIds(@CookieValue("user") String cookie) {
                 String userEmail = cookiePorcess.readCookie(cookie);
 
                 User user = userService.getByEmail(userEmail);
@@ -150,6 +162,30 @@ public class UserORestController {
                 for (Room r : user.getFavRooms())
                         wishlists[i++] = r.getId();
 
+                return wishlists;
+        }
+
+        @GetMapping("/wishlists")
+        public WishlistsDTO[] fetchWishlists(@CookieValue("user") String cookie) {
+                String userEmail = cookiePorcess.readCookie(cookie);
+
+                User user = userService.getByEmail(userEmail);
+                WishlistsDTO[] wishlists = new WishlistsDTO[user.getFavRooms().size()];
+                int i = 0;
+
+                for (Room r : user.getFavRooms()) {
+                        WishlistsDTO wlDTO = new WishlistsDTO();
+                        wlDTO.setId(r.getId());
+                        String[] images = new String[3];
+                        int j = 0;
+                        for (Image image : r.getImages()) {
+                                if (j == 3)
+                                        break;
+                                images[j++] = image.getImagePath(userEmail, r.getId());
+                        }
+                        wlDTO.setImages(images);
+                        wishlists[i++] = wlDTO;
+                }
                 return wishlists;
         }
 
@@ -255,5 +291,31 @@ public class UserORestController {
                 userResponseEntity.setUser(savedUser);
 
                 return new ResponseEntity<UserResponseEntity>(userResponseEntity, null, HttpStatus.SC_OK);
+        }
+
+        @GetMapping(value = "bookedRooms")
+        public ResponseEntity<UserBookedRoomsResponseEntity> getUserBookedRooms(
+                        @CookieValue("user") String cookie,
+                        @RequestParam(value = "query", required = false, defaultValue = "") String query) {
+                String userEmail = cookiePorcess.readCookie(cookie);
+                User user = userService.getByEmail(userEmail);
+
+                List<BookedRoomDTO> bookings = bookingService.getBookedRoomsByUser(user.getId(), query);
+
+                UserBookedRoomsResponseEntity userBookedRoomsResponseEntity = new UserBookedRoomsResponseEntity();
+                userBookedRoomsResponseEntity.setBookedRooms(bookings);
+
+                // Integer[] starLoop = new Integer[] { 1, 2, 3, 4, 5 };
+                // String[] ratingLabel = new String[] { "Mức độ sạch sẽ", "Độ chính xác", "Liên
+                // lạc", "Vị trí",
+                // "Nhận phòng",
+                // "Giá trị" };
+                // List<RatingDTO> ratings = new ArrayList<>();
+                // for (int i = 0; i < ratingLabel.length; i++) {
+                // ratings.add(new RatingDTO(ratingLabel[i], starLoop));
+                // }
+
+                return new ResponseEntity<UserBookedRoomsResponseEntity>(userBookedRoomsResponseEntity, null,
+                                HttpStatus.SC_OK);
         }
 }

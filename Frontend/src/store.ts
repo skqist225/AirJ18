@@ -33,6 +33,7 @@ const store = configureStore({
             loading: true,
             successMessage: null,
             errorMessage: null,
+            wishlistsIDs: [],
             wishlists: [],
             update: {
                 loading: true,
