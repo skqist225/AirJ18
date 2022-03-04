@@ -4,7 +4,8 @@ pipeline {
         skipStagesAfterUnstable()
     }
     stages {
-        stage('Build') {
+        stage('Build Application') {
+            build job: 'Build_AirJ18'
             steps {
                 sh 'echo $(pwd)'
                 sh 'mvn clean package --file */pom.xml'
@@ -16,11 +17,25 @@ pipeline {
                 }
             }
         }
-        // stage('Get artifact from s3 bucket') {
-
-        // }
-        // stage('Deploy') {
-
-        // }
+        stage('Copy Artifact To AWS EC2') {
+            steps {
+                // sh 'aws s3 cp /var/lib/jenkins/workspace/Build_AirJ18/Backend/target/*.war s3://airj18'
+                build job: 'Copy_Artifact_To_AWS_EC2'
+            }
+        }
+        stage('Deploy Application Prodution Stage') {
+            //  environment { 
+            //     DB_URL = credentials('airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com')
+            //     DB_USER = credentials('admin')
+            //     DB_PASS = credentials('12345678')
+            // }
+            steps {
+                timeout(time:5, unit:'DAYS') {
+                    input message: 'Approve PRODUCTION Deployment?'
+                }
+                // sh("~/airtnt-build.sh $DB_URL $DB_USER $DB_PASS")
+                build job: 'Deploy_AirJ18'
+            }
+        }
     }
 }
