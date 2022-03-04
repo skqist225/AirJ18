@@ -5,7 +5,6 @@ pipeline {
     }
     stages {
         stage('Build Application') {
-            build job: 'Build_AirJ18'
             steps {
                 sh 'echo $(pwd)'
                 sh 'mvn clean package --file */pom.xml'
