@@ -6,8 +6,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean package'
-
+                sh 'echo $(pwd)'
+                sh 'mvn clean package --file */pom.xml'
             }
             post {
                 success {
