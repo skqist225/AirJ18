@@ -42,6 +42,8 @@ main {
     font-weight: 600;
     border-radius: 8px;
     padding: 4px;
+    width: 90px;
+    background-color: #efefef;
     /* border: 1px solid rgb(255, 56, 92); */
     display: flex;
     align-items: center;
@@ -212,6 +214,22 @@ input {
     margin-left: 20px;
 }
 
+.ratingContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    -ms-grid-columns: repeat(2, 1fr);
+    padding: 29px 0;
+    column-gap: 10px;
+}
+
+.ratingStar {
+    display: block;
+    margin-right: 5px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+}
+
 .ratingStar.selected {
     fill: #d0011b;
 }
@@ -234,4 +252,70 @@ input {
 
 .mr-10 {
     margin-right: 10px;
+}
+
+.button {
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+    touch-action: manipulation;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    border-radius: 8px;
+    outline: none;
+    padding: 14px 2px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    color: rgb(255, 255, 255);
+    width: 180px;
+    height: 42px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button.bg-red {
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+}
+
+.button.bg-normal {
+    background-color: #fff;
+    border: 1px solid #4e54c8;
+    color: #222;
+    transition: all 0.1s ease;
+}
+
+.button.bg-normal:hover {
+    background-color: #4e54c8;
+    color: #fff;
+}
+
+.unactive {
+    height: 100vh;
+    overflow-y: hidden;
+}
+
+#ratingComment {
+    height: 69px;
+}
+
+.heartSvg {
+    display: block;
+    fill: none;
+    height: 16px;
+    width: 16px;
+    stroke: currentcolor;
+    stroke-width: 2;
+    overflow: visible;
 }

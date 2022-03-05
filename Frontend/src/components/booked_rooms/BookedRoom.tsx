@@ -1,9 +1,14 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Div, Image } from '../../globalStyle';
 import { getImage } from '../../helpers/getImage';
 import { IBookedRoom, IRatingLabel } from '../../type/user/type_User';
 import { MyNumberForMat } from '../utils';
+import $ from 'jquery';
+import { addClickEventForLoveButton } from '../home/js/addToWishlists';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { toast, ToastContainer } from 'react-toastify';
 
 interface IBookedRoomProps {
     booking: IBookedRoom;
@@ -11,6 +16,291 @@ interface IBookedRoomProps {
 }
 
 const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
+    const { wishlistsIDs, user } = useSelector((state: RootState) => state.user);
+    const [ratingComment, setRatingComment] = useState(booking.bookingReview);
+
+    let cleanlinessRating = 0;
+    let accuracyRating = 0;
+    let contactRating = 0;
+    let locationRating = 0;
+    let checkinRating = 0;
+    let valueRating = 0;
+
+    const jQueryCode = () => {
+        addClickEventForLoveButton(wishlistsIDs, user);
+
+        $('.bookingDate').each(function () {
+            //customer can cancel booking if
+            //1. less than 24h
+            const bookingDate = new Date($(this).val()! as number).getTime();
+            const nextDateOfBookingDate = bookingDate + 86_400_000;
+            const currentTime = new Date().getTime();
+
+            //2. is-cancel = false
+            const isCancel = $(this).data('is-cancel');
+
+            //3.if complete refund totalfee - sitefee else refund 100%
+            const isComplete = $(this).data('is-complete');
+
+            if (currentTime <= nextDateOfBookingDate && currentTime >= bookingDate && !isCancel)
+                $(this).siblings('.cancelBookingBtn').css('display', 'block');
+            else $(this).siblings('.cancelBookingBtn').css('display', 'none');
+        });
+
+        $(document).on('keypress', function (event) {
+            if (event.key === 'Enter') {
+                filterBookings();
+            }
+        });
+
+        $('input[name="ratingComment"]').on('change', function () {
+            console.log($(this).val());
+            setRatingComment($(this).val()! as string);
+        });
+
+        (function () {
+            $('.ratingStar').each(function () {
+                $(this).on('click', function () {
+                    const starValue = $(this).data('star-value') * 1;
+                    const ratingName = $(this).parent().parent().parent().data('rating-name');
+                    let isHavingGreaterRating = false;
+
+                    if ($(this).hasClass('selected')) {
+                        $(this)
+                            .parent()
+                            .siblings()
+                            .each(function () {
+                                if (
+                                    $(this).children('.ratingStar').data('star-value') * 1 >
+                                        starValue &&
+                                    $(this).children('.ratingStar').hasClass('selected')
+                                ) {
+                                    $(this).children('.ratingStar').removeClass('selected');
+                                    isHavingGreaterRating = true;
+                                }
+                            });
+
+                        if (!isHavingGreaterRating) {
+                            $(this)
+                                .parent()
+                                .siblings()
+                                .each(function () {
+                                    if (
+                                        $(this).children('.ratingStar').data('star-value') * 1 <
+                                        starValue
+                                    ) {
+                                        $(this).children('.ratingStar').removeClass('selected');
+                                    }
+                                });
+
+                            $(this).removeClass('selected');
+                        } else {
+                            switch (ratingName) {
+                                case 'Mức độ sạch sẽ': {
+                                    cleanlinessRating = starValue;
+                                    break;
+                                }
+                                case 'Độ chính xác': {
+                                    accuracyRating = starValue;
+                                    break;
+                                }
+                                case 'Liên lạc': {
+                                    contactRating = starValue;
+                                    break;
+                                }
+                                case 'Vị trí': {
+                                    locationRating = starValue;
+                                    break;
+                                }
+                                case 'Nhận phòng': {
+                                    checkinRating = starValue;
+                                    break;
+                                }
+                                case 'Giá trị': {
+                                    valueRating = starValue;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        $(this)
+                            .parent()
+                            .siblings()
+                            .each(function () {
+                                if (
+                                    $(this).children('.ratingStar').data('star-value') * 1 <=
+                                    starValue
+                                )
+                                    $(this).children('.ratingStar').addClass('selected');
+                            });
+                        $(this).addClass('selected');
+
+                        switch (ratingName) {
+                            case 'Mức độ sạch sẽ': {
+                                cleanlinessRating = starValue;
+                                break;
+                            }
+                            case 'Độ chính xác': {
+                                accuracyRating = starValue;
+                                break;
+                            }
+                            case 'Liên lạc': {
+                                contactRating = starValue;
+                                break;
+                            }
+                            case 'Vị trí': {
+                                locationRating = starValue;
+                                break;
+                            }
+                            case 'Nhận phòng': {
+                                checkinRating = starValue;
+                                break;
+                            }
+                            case 'Giá trị': {
+                                valueRating = starValue;
+                                break;
+                            }
+                        }
+                    }
+                });
+            });
+        })();
+
+        function filterBookings() {
+            const searchValue = $('#user-bookings__search-input').val();
+
+            // const filterOption =
+            //     (window.location.href = `${baseURL}user/bookings?query=${searchValue}`);
+        }
+    };
+
+    function reviewSubmit(self: JQuery<HTMLElement>) {
+        if (!ratingComment) {
+            toast.warn('🦄 Vui lòng để lại bình luận!', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+
+        window.location.href = `${window.location.origin}/user/rating/${self.data(
+            'booking-id'
+        )}?cleanlinessRating=${cleanlinessRating}&contactRating=${contactRating}&checkinRating=${checkinRating}&accuracyRating=${accuracyRating}&locationRating=${locationRating}&valueRating=${valueRating}&comment=${ratingComment}`;
+    }
+
+    useEffect(() => {
+        jQueryCode();
+    }, []);
+
+    function hideEditThumbnailBox() {
+        $('.chooseRoomThumbnail').removeClass('active');
+        $('#user-bookings__mainContainer').removeClass('unactive');
+    }
+
+    function displayEditThumbnailBox(self: JQuery<HTMLElement>) {
+        //find matching booking id and open up review section.
+        $('.chooseRoomThumbnail').each(function () {
+            if (parseInt($(this).data('booking-id')) === parseInt(self.data('booking-id'))) {
+                $(this).addClass('active');
+                $('#user-bookings__mainContainer').addClass('unactive');
+            }
+        });
+
+        $('.ratingContainer', '.chooseRoomThumbnail.active').each(function () {
+            const cleanliness = $(this).data('rating-cleanliness') * 1;
+            const contact = $(this).data('rating-contact') * 1;
+            const checkin = $(this).data('rating-checkin') * 1;
+            const accuracy = $(this).data('rating-accuracy') * 1;
+            const location = $(this).data('rating-location') * 1;
+            const value = $(this).data('rating-value') * 1;
+
+            cleanlinessRating = cleanliness;
+            contactRating = contact;
+            checkinRating = checkin;
+            accuracyRating = accuracy;
+            locationRating = location;
+            valueRating = value;
+
+            $('.ratingStarContainer').each(function () {
+                const children = $(this).children();
+                const label = $(this).data('label');
+
+                switch (label) {
+                    case 'Mức độ sạch sẽ': {
+                        children.each(function () {
+                            const svg = $(this).children('svg');
+                            if (
+                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                cleanlinessRating
+                            )
+                                $(this).children('.ratingStar').addClass('selected');
+                        });
+                        break;
+                    }
+                    case 'Độ chính xác': {
+                        children.each(function () {
+                            const svg = $(this).children('svg');
+                            if (
+                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                accuracyRating
+                            )
+                                $(this).children('.ratingStar').addClass('selected');
+                        });
+                        break;
+                    }
+                    case 'Liên lạc': {
+                        children.each(function () {
+                            const svg = $(this).children('svg');
+                            if (
+                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                contactRating
+                            )
+                                $(this).children('.ratingStar').addClass('selected');
+                        });
+                        break;
+                    }
+                    case 'Vị trí': {
+                        children.each(function () {
+                            const svg = $(this).children('svg');
+                            if (
+                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                locationRating
+                            )
+                                $(this).children('.ratingStar').addClass('selected');
+                        });
+                        break;
+                    }
+                    case 'Nhận phòng': {
+                        children.each(function () {
+                            const svg = $(this).children('svg');
+                            if (
+                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                checkinRating
+                            )
+                                $(this).children('.ratingStar').addClass('selected');
+                        });
+                        break;
+                    }
+                    case 'Giá trị': {
+                        children.each(function () {
+                            const svg = $(this).children('svg');
+                            if (
+                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                valueRating
+                            )
+                                $(this).children('.ratingStar').addClass('selected');
+                        });
+                        break;
+                    }
+                }
+            });
+        });
+    }
     return (
         <>
             <div className='user-bookings__booking-box'>
@@ -27,15 +317,6 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         aria-hidden='true'
                                         focusable='false'
                                         role='presentation'
-                                        style={{
-                                            display: 'block',
-                                            fill: 'none',
-                                            height: '16px',
-                                            width: '16px',
-                                            stroke: 'currentcolor',
-                                            strokeWidth: 2,
-                                            overflow: 'visible',
-                                        }}
                                         viewBox='0 0 32 32'
                                         className='heartSvg'
                                     >
@@ -51,7 +332,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                     <img
                                         src={getImage(booking.hostAvatar)}
                                         alt=''
-                                        className='w100-h100 rounded-border'
+                                        className='w100-h100 rounded-border of-c'
                                     />
                                 </Div>
                                 <div className='user-bookings__customer-name'>
@@ -84,7 +365,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         >
                                             <path
                                                 d='M5.297 13.213L.293 8.255c-.39-.394-.39-1.033 0-1.426s1.024-.394 1.414 0l4.294 4.224 8.288-8.258c.39-.393 1.024-.393 1.414 0s.39 1.033 0 1.426L6.7 13.208a.994.994 0 0 1-1.402.005z'
-                                                fill-rule='evenodd'
+                                                fillRule='evenodd'
                                             ></path>
                                         </svg>
                                     </span>
@@ -116,7 +397,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         >
                                             <path
                                                 d='M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16zm1-8.577V4a1 1 0 1 0-2 0v4a1 1 0 0 0 .517.876l2.581 1.49a1 1 0 0 0 1-1.732z'
-                                                fill-rule='evenodd'
+                                                fillRule='evenodd'
                                             ></path>
                                         </svg>
                                     </span>
@@ -147,7 +428,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         >
                                             <path
                                                 d='M10.5 5a5 5 0 0 1 0 10 1 1 0 0 1 0-2 3 3 0 0 0 0-6l-6.586-.007L6.45 9.528a1 1 0 0 1-1.414 1.414L.793 6.7a.997.997 0 0 1 0-1.414l4.243-4.243A1 1 0 0 1 6.45 2.457L3.914 4.993z'
-                                                fill-rule='evenodd'
+                                                fillRule='evenodd'
                                             ></path>
                                         </svg>
                                     </span>
@@ -165,7 +446,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                         <Div width='80px' height='80px'>
                             <img
                                 src={getImage(booking.roomThumbnail)}
-                                className='img'
+                                className='w100-h100'
                                 style={{ borderRadius: '8px' }}
                                 alt={booking.roomThumbnail}
                             />
@@ -195,12 +476,9 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                 style={{ maxWidth: '35%', alignItems: 'flex-end' }}
                                 className='col-flex f1'
                             >
-                                <div style={{ display: 'flex', width: '100%' }}>
+                                <Div width='100%' className='flex'>
                                     <div className='fw-600 fs-16'>Giá thuê phòng:</div>
-                                    <div
-                                        style={{ justifyContent: 'flex-end' }}
-                                        className='normal-flex f1'
-                                    >
+                                    <div className='normal-flex f1 jc-fe'>
                                         <span
                                             className='
                                                             user-bookings__currency-symbol
@@ -210,15 +488,16 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                             {booking.currency}
                                         </span>
                                         <span>
-                                            <span className='fw-600 fs-16'>
+                                            <span className='fw-600'>
                                                 <MyNumberForMat
                                                     currency={booking.currency}
                                                     price={booking.pricePerDay}
+                                                    fontSize='16px'
                                                 />
                                             </span>
                                         </span>
                                     </div>
-                                </div>
+                                </Div>
                                 <Div width='100%' className='flex'>
                                     <div className='fw-600 fs-16'>Phí dịch vụ:</div>
                                     <div className='normal-flex f1 jc-fe'>
@@ -243,7 +522,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                     <div className='normal-flex fw-600 jc-fe f1'>
                                         {booking.numberOfDays}
                                         <span style={{ marginLeft: '5px' }}>
-                                            {booking.priceType === 'PER_NIGTH' ? 'dêm' : 'tuần'}
+                                            {booking.priceType === 'PER_NIGHT' ? 'đêm' : 'tuần'}
                                         </span>
                                     </div>
                                 </Div>
@@ -252,42 +531,42 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                     </div>
                 </div>
                 <div className='col-flex user-bookings__booking-footer'>
-                    <div style={{ alignSelf: 'flex-end', marginBottom: '10px' }} className='f1'>
+                    <div
+                        style={{ alignSelf: 'flex-end', marginBottom: '10px' }}
+                        className='f1 flex'
+                    >
                         <span className='fw-600 fs-16'>Tổng số tiền: </span>
-                        <span>
-                            <span
-                                style={{ fontSize: '20px', color: 'rgb(255, 56, 92)' }}
-                                className='fw-600'
-                            >
+                        <span className='inline-block' style={{ marginLeft: '10px' }}>
+                            <span style={{ color: 'rgb(255, 56, 92)' }} className='fw-600'>
                                 <MyNumberForMat
                                     price={
                                         booking.pricePerDay * booking.numberOfDays + booking.siteFee
                                     }
                                     currency={booking.currency}
-                                    // stayType={booking.priceType}
+                                    fontSize='20px'
+                                    isSuffix
                                 />
                             </span>
                         </span>
                     </div>
                     <div className='normal-flex'>
-                        <div className='flex flex jc-fe w100'>
+                        <div className='flex jc-fe w-100'>
                             <Link to={`/room/${booking.roomId}`}>
-                                <div style={{ marginRight: '10px' }}>
+                                <div className='mr-10'>
                                     <button className='button bg-red'>Xem phòng</button>
                                 </div>
                             </Link>
                             <Link to={'/'}>
-                                <div style={{ marginRight: '10px' }}>
+                                <div className='mr-10'>
                                     <button className='button bg-normal'>Tiếp tục đặt phòng</button>
                                 </div>
                             </Link>
                             {booking.refund === false && (
-                                <div style={{ marginRight: '10px' }}>
+                                <div className='mr-10'>
                                     <button
                                         className='button bg-normal'
                                         data-booking-id={booking.roomId}
-                                        // onclick='displayEditThumbnailBox($(this));'
-                                        // th:if='${removeReview != true}'
+                                        onClick={e => displayEditThumbnailBox($(e.currentTarget))}
                                     >
                                         Đánh giá
                                     </button>
@@ -296,11 +575,10 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         className='chooseRoomThumbnail'
                                         data-booking-id={booking.roomId}
                                     >
-                                        <div className='flex jc-center'>
+                                        <div className='flex jc-center h-100'>
                                             <div className='innerWrapper'>
                                                 <div id='boxHeader' className='normal-flex'>
-                                                    {/*onClick='hideEditThumbnailBox();'*/}
-                                                    <div>
+                                                    <div onClick={() => hideEditThumbnailBox()}>
                                                         <Image
                                                             src={getImage('/svg/close2.svg')}
                                                             size='16px'
@@ -333,6 +611,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                                 <div>
                                                                     <div className='fs-14 717171'>
                                                                         {booking.privacyType} tại{' '}
+                                                                        <span> </span>
                                                                         {booking.roomCategory}
                                                                     </div>
                                                                 </div>
@@ -340,31 +619,45 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                         </div>
                                                     </div>
                                                     <div
-                                                        style={{
-                                                            display: 'grid',
-                                                            gridTemplateColumns: 'repeat(2,1fr)',
-                                                            padding: '29px 0',
-                                                            columnGap: '10px',
-                                                        }}
-                                                        data-rating-cleanliness='${booking.review != null ? booking.review.subRating.cleanliness : 0}'
-                                                        data-rating-contact='${booking.review != null ? booking.review.subRating.contact : 0}'
-                                                        data-rating-checkin='${booking.review != null ? booking.review.subRating.checkin : 0}'
-                                                        data-rating-accuracy='${booking.review != null ? booking.review.subRating.accuracy : 0}'
-                                                        data-rating-location='${booking.review != null ? booking.review.subRating.location : 0}'
-                                                        data-rating-value='${booking.review != null ? booking.review.subRating.value : 0}'
+                                                        data-rating-cleanliness={
+                                                            booking.reviewRating != null
+                                                                ? booking.reviewRating.cleanliness
+                                                                : 0
+                                                        }
+                                                        data-rating-contact={
+                                                            booking.reviewRating != null
+                                                                ? booking.reviewRating.contact
+                                                                : 0
+                                                        }
+                                                        data-rating-checkin={
+                                                            booking.reviewRating != null
+                                                                ? booking.reviewRating.checkin
+                                                                : 0
+                                                        }
+                                                        data-rating-accuracy={
+                                                            booking.reviewRating != null
+                                                                ? booking.reviewRating.accuracy
+                                                                : 0
+                                                        }
+                                                        data-rating-location={
+                                                            booking.reviewRating != null
+                                                                ? booking.reviewRating.location
+                                                                : 0
+                                                        }
+                                                        data-rating-value={
+                                                            booking.reviewRating != null
+                                                                ? booking.reviewRating.value
+                                                                : 0
+                                                        }
                                                         className='ratingContainer'
                                                     >
                                                         {ratingLabels.map((rating, index) => (
                                                             <div
-                                                                className='normal-flex'
-                                                                style={{
-                                                                    justifyContent: 'space-between',
-                                                                }}
+                                                                className='normal-flex jc-sb'
                                                                 data-rating-name={rating.label}
+                                                                key={rating.label}
                                                             >
-                                                                <label style={{ margin: 0 }}>
-                                                                    {rating.label}
-                                                                </label>
+                                                                <label>{rating.label}</label>
                                                                 <div
                                                                     className='
                                                                                 normal-flex
@@ -380,27 +673,23 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                                                     viewBox='0 0 15 15'
                                                                                     x='0'
                                                                                     y='0'
-                                                                                    width='32px'
-                                                                                    height='32px'
-                                                                                    style={{
-                                                                                        display:
-                                                                                            'block',
-                                                                                        marginRight:
-                                                                                            '5px',
-                                                                                        cursor: 'pointer',
-                                                                                    }}
                                                                                     data-star-value={
                                                                                         idx + 1
                                                                                     }
                                                                                     className='
                                                                                             ratingStar
                                                                                         '
+                                                                                    key={
+                                                                                        star +
+                                                                                        idx +
+                                                                                        1
+                                                                                    }
                                                                                 >
                                                                                     <polygon
                                                                                         points='7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4'
-                                                                                        stroke-linecap='round'
-                                                                                        stroke-linejoin='round'
-                                                                                        stroke-miterlimit='10'
+                                                                                        strokeLinecap='round'
+                                                                                        strokeLinejoin='round'
+                                                                                        strokeMiterlimit='10'
                                                                                     ></polygon>
                                                                                 </svg>
                                                                             </div>
@@ -418,13 +707,12 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                             <input
                                                                 type='text'
                                                                 id='ratingComment'
-                                                                style={{ height: '69px' }}
                                                                 name='ratingComment'
-                                                                value={
-                                                                    booking.bookingReview !== null
-                                                                        ? booking.bookingReview
-                                                                        : ''
+                                                                value={ratingComment}
+                                                                onChange={e =>
+                                                                    setRatingComment(e.target.value)
                                                                 }
+                                                                placeholder='Để lại bình luận ở đây!'
                                                             />
                                                         </div>
                                                     </div>
@@ -435,7 +723,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                             className='
                                                                         manage-photos__cancel-btn
                                                                     '
-                                                            // onclick='hideEditThumbnailBox();'
+                                                            onClick={() => hideEditThumbnailBox()}
                                                         >
                                                             Hủy
                                                         </button>
@@ -446,7 +734,9 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                                         manage-photos__save-edit-btn
                                                                     '
                                                             data-booking-id={booking.bookingId}
-                                                            // onclick='reviewSubmit($(this));'
+                                                            onClick={e =>
+                                                                reviewSubmit($(e.currentTarget))
+                                                            }
                                                         >
                                                             Đánh giá
                                                         </button>
@@ -466,15 +756,30 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                 data-is-complete={booking.complete}
                             />
 
-                            <div className='cancelBookingBtn mr-10'>
-                                <Link to={`/booking/${booking.bookingId}/cancel`}>
-                                    <button className='button bg-normal'>Hủy đặt phòng</button>
-                                </Link>
-                            </div>
+                            {booking.refund === false && booking.complete === false && (
+                                <div className='cancelBookingBtn mr-10'>
+                                    <Link to={`/booking/${booking.bookingId}/cancel`}>
+                                        <button className='button bg-normal'>Hủy đặt phòng</button>
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position='top-right'
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            {/* Same as */}
+            <ToastContainer />
         </>
     );
 };

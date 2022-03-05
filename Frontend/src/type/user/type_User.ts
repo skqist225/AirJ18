@@ -55,6 +55,14 @@ export interface IBookedRoom {
     roomCategory: string;
     priceType: string;
     bookingReview: string;
+    reviewRating: {
+        cleanliness: number;
+        contact: number;
+        checkin: number;
+        accuracy: number;
+        location: number;
+        value: number;
+    };
 }
 
 export interface IUserUpdate {

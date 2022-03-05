@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import BookedRoom from '../components/booked_rooms/BookedRoom';
 import Header from '../components/Header';
-import { fetchBookedRooms } from '../features/user/userSlice';
+import { fetchBookedRooms, fetchWishlistsIDsOfCurrentUser } from '../features/user/userSlice';
 import { Image } from '../globalStyle';
 import { getImage } from '../helpers/getImage';
 import { RootState } from '../store';
@@ -17,13 +17,18 @@ const BookedRoomsPage: FC<IBookedRoomsPageProps> = () => {
 
     useEffect(() => {
         dispatch(fetchBookedRooms({ query: '' }));
+        dispatch(fetchWishlistsIDsOfCurrentUser());
     }, []);
 
     return (
         <>
             <Header includeMiddle={true} excludeBecomeHostAndNavigationHeader={true} />
-            <div style={{ minHeight: '100vh' }} className='p-relative'>
-                <main>
+            <div
+                style={{ minHeight: '100vh' }}
+                className='p-relative'
+                id='user-bookings__mainContainer'
+            >
+                <div>
                     <div id='user-bookings__container'>
                         <div style={{ textAlign: 'center' }}>
                             {/* <span
@@ -71,7 +76,7 @@ const BookedRoomsPage: FC<IBookedRoomsPageProps> = () => {
                             />
                         ))}
                     </div>
-                </main>
+                </div>
             </div>
         </>
     );

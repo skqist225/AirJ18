@@ -76,6 +76,14 @@ const GlobalStyle = createGlobalStyle`
         width: 100%;
     }
 
+    .h-100 {
+        height: 100%;
+    }
+
+    .jc-sb {
+        justify-content: space-between;
+    }
+
     .fw-600 {
         font-weight: 600;
     }
@@ -102,6 +110,10 @@ const GlobalStyle = createGlobalStyle`
 
     .717171 {
         color: #717171;
+    }
+
+    .rounded-border {
+        border-radius: 50%;
     }
 `;
 
