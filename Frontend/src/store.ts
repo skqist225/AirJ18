@@ -35,6 +35,8 @@ const store = configureStore({
             errorMessage: null,
             wishlistsIDs: [],
             wishlists: [],
+            bookedRooms: [],
+            ratingLabels: [],
             update: {
                 loading: true,
                 successMessage: null,

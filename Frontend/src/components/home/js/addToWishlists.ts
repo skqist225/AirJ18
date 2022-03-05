@@ -1,6 +1,6 @@
 import api from '../../../axios';
 import $ from 'jquery';
-import { IUser } from '../../../type/type_User';
+import { IUser } from '../../../type/user/type_User';
 import { toast } from 'react-toastify';
 
 export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser | null) {

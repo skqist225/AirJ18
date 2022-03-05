@@ -20,9 +20,10 @@ import {
     checkPhoneNumberConstraint,
 } from './js/check_constraints';
 import $ from 'jquery';
-import { IUserUpdate, updateUserInfo } from '../../features/user/userSlice';
+import { updateUserInfo } from '../../features/user/userSlice';
 import { toast } from 'react-toastify';
 import Toast from '../notify/Toast';
+import { IUserUpdate } from '../../type/user/type_User';
 
 interface IFormEditProps {
     dataEdit: string;

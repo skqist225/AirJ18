@@ -91,6 +91,18 @@ const GlobalStyle = createGlobalStyle`
     .of-c {
         object-fit: cover;
     }
+
+    .jc-fe {
+        justify-content: flex-end;
+    }
+
+    .jc-center {
+        justify-content: center;
+    }
+
+    .717171 {
+        color: #717171;
+    }
 `;
 
 export const MainButton = styled.button`

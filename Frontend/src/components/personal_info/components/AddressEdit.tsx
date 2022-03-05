@@ -5,7 +5,7 @@ import { fetchCitiesByState } from '../../../features/address/citySlice';
 import { fetchStatesByCountry } from '../../../features/address/stateSlice';
 import { fetchCountries } from '../../../features/country/countrySlice';
 import { RootState } from '../../../store';
-import { IAddress } from '../../../type/type_User';
+import { IAddress } from '../../../type/user/type_User';
 import { DropDown, FormGroup } from '../../utils';
 import { IOption } from '../../utils/DropDown';
 import $ from 'jquery';

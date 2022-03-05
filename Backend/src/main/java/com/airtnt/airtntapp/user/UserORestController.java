@@ -300,20 +300,23 @@ public class UserORestController {
                 String userEmail = cookiePorcess.readCookie(cookie);
                 User user = userService.getByEmail(userEmail);
 
+                System.out.println(query);
+
                 List<BookedRoomDTO> bookings = bookingService.getBookedRoomsByUser(user.getId(), query);
 
                 UserBookedRoomsResponseEntity userBookedRoomsResponseEntity = new UserBookedRoomsResponseEntity();
                 userBookedRoomsResponseEntity.setBookedRooms(bookings);
 
-                // Integer[] starLoop = new Integer[] { 1, 2, 3, 4, 5 };
-                // String[] ratingLabel = new String[] { "Mức độ sạch sẽ", "Độ chính xác", "Liên
-                // lạc", "Vị trí",
-                // "Nhận phòng",
-                // "Giá trị" };
-                // List<RatingDTO> ratings = new ArrayList<>();
-                // for (int i = 0; i < ratingLabel.length; i++) {
-                // ratings.add(new RatingDTO(ratingLabel[i], starLoop));
-                // }
+                Integer[] starLoop = new Integer[] { 1, 2, 3, 4, 5 };
+                String[] ratingLabel = new String[] { "Mức độ sạch sẽ", "Độ chính xác", "Liên lạc", "Vị trí",
+                                "Nhận phòng",
+                                "Giá trị" };
+                List<RatingDTO> ratings = new ArrayList<>();
+                for (int i = 0; i < ratingLabel.length; i++) {
+                        ratings.add(new RatingDTO(ratingLabel[i], starLoop));
+                }
+
+                userBookedRoomsResponseEntity.setRatingLabels(ratings);
 
                 return new ResponseEntity<UserBookedRoomsResponseEntity>(userBookedRoomsResponseEntity, null,
                                 HttpStatus.SC_OK);

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useMatch } from 'react-router-dom';
 import {
+    BookedRoomsPage,
     HomePage,
     ListingsPage,
     LoginPage,
@@ -25,6 +26,7 @@ function App() {
                         <Route path=':page' element={<ListingsPage />} />
                     </Route>
                     <Route path='/wishlists' element={<WishListsPage />}></Route>
+                    <Route path='/user/booked-rooms' element={<BookedRoomsPage />}></Route>
                 </Routes>
             </Router>
         </div>

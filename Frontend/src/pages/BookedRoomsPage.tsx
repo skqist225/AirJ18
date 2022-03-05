@@ -1,13 +1,24 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import BookedRoom from '../components/booked_rooms/BookedRoom';
 import Header from '../components/Header';
+import { fetchBookedRooms } from '../features/user/userSlice';
 import { Image } from '../globalStyle';
 import { getImage } from '../helpers/getImage';
+import { RootState } from '../store';
 import './css/booked_rooms.css';
 
 interface IBookedRoomsPageProps {}
 
 const BookedRoomsPage: FC<IBookedRoomsPageProps> = () => {
+    const dispatch = useDispatch();
+    const { bookedRooms, ratingLabels } = useSelector((state: RootState) => state.user);
+
+    useEffect(() => {
+        dispatch(fetchBookedRooms({ query: '' }));
+    }, []);
+
     return (
         <>
             <Header includeMiddle={true} excludeBecomeHostAndNavigationHeader={true} />
@@ -52,7 +63,13 @@ const BookedRoomsPage: FC<IBookedRoomsPageProps> = () => {
                                 </Link>
                             </div>
                         </div>
-                        <th:block th:each='booking : ${bookings}'></th:block>
+                        {bookedRooms.map(bookedRoom => (
+                            <BookedRoom
+                                booking={bookedRoom}
+                                ratingLabels={ratingLabels}
+                                key={bookedRoom.bookingId}
+                            />
+                        ))}
                     </div>
                 </main>
             </div>

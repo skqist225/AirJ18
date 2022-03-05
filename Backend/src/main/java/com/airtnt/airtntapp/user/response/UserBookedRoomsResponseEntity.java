@@ -2,6 +2,7 @@ package com.airtnt.airtntapp.user.response;
 
 import java.util.List;
 
+import com.airtnt.airtntapp.user.RatingDTO;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.entity.Booking;
 
@@ -15,5 +16,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserBookedRoomsResponseEntity {
+    private List<RatingDTO> ratingLabels;
     private List<BookedRoomDTO> bookedRooms;
 }
