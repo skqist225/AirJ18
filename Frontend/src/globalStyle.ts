@@ -88,12 +88,20 @@ const GlobalStyle = createGlobalStyle`
         font-weight: 600;
     }
 
+    .fs-14 {
+        font-size: 14px;
+    }
+
     .fs-16 {
         font-size: 16px;
     }
 
-    .fs-14 {
-        font-size: 14px;
+    .fs-18 {
+        font-size: 18px;
+    }
+
+    .fs-20 {
+        font-size: 20px;
     }
 
     .of-c {

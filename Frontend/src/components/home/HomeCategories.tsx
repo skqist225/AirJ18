@@ -115,11 +115,17 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
         $('#home__mainContainer').addClass('remove-scroll');
     }
 
+    function displayMoreCategory() {}
+
     return (
-        <div className='flex' style={{ marginBottom: '25px' }}>
-            <div className='flex f1' style={{ maxWidth: '80%' }}>
+        <div className='flex' style={{ marginBottom: '25px', marginTop: '10px' }}>
+            <div className='flex f1' style={{ maxWidth: '50%' }}>
                 {categories.length > 0 &&
                     categories.map((category: ICategory, index: number) => {
+                        if (index > 7) {
+                            return null;
+                        }
+
                         return (
                             <Category
                                 category={category}
@@ -128,6 +134,23 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
                             />
                         );
                     })}
+                <div className='cat__container p-relative'>
+                    <button
+                        className='button__container normal-flex'
+                        style={{ justifyContent: 'center' }}
+                        onClick={e => {
+                            displayMoreCategory();
+                        }}
+                    >
+                        <div className='cat__name normal-flex' style={{ marginRight: '5px' }}>
+                            Thêm
+                        </div>
+                        <div>
+                            <Image src={getImage('/svg/dropdown.svg')} size='10px' />
+                        </div>
+                    </button>
+                    <div id='home__moreCategory'></div>
+                </div>
             </div>
             <div className='f1 normal-flex' style={{ maxWidth: '20%', justifyContent: 'flex-end' }}>
                 <div>

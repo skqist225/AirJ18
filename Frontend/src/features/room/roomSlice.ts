@@ -51,6 +51,7 @@ export const fetchRoomPrivacies = createAsyncThunk(
 interface IRoomPrivacy {
     id: number;
     name: string;
+    description: string;
 }
 
 type RoomState = {

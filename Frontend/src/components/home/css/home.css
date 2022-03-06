@@ -28,7 +28,6 @@ a {
     cursor: pointer;
     border: none;
     outline: none;
-    margin: 6px 6px 6px 0px;
     font-size: 14px;
     line-height: 18px;
     font-weight: 600;
@@ -43,19 +42,24 @@ a {
     align-items: center;
 }
 
+.button__container:hover {
+    background-color: #f7f7f7;
+}
+
 .cat__image {
     width: 20px;
     height: 20px;
-    opacity: 0;
+    display: none;
 }
 
 .cat__image.active {
-    opacity: 1;
+    display: block;
 }
 
 .cat__name {
     font-size: 14px;
     white-space: nowrap;
+    font-weight: 500;
     margin-left: 10px;
 }
 
@@ -535,11 +539,20 @@ input[type='checkbox'] {
     fill: currentcolor;
 }
 
-.listings__filter-roomAndBedRoom-row {
-    height: 48px;
-}
-
 .remove-scroll {
     height: 100vh;
     overflow-y: hidden;
+}
+
+#home__moreCategory {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 0;
+}
+
+.incAndDecBtn:hover {
+    color: rgb(34, 34, 34);
+    border-color: rgb(34, 34, 34);
+    background: rgb(255, 255, 255);
 }

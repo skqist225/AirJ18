@@ -26,6 +26,9 @@ public class RoomPrivacy {
     @Column(unique = true, columnDefinition = "VARCHAR(100) NOT NULL")
     private String name;
 
+    @Column
+    private String description;
+
     public RoomPrivacy(int id) {
         this.id = id;
     }
