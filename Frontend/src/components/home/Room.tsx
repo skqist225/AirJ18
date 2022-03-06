@@ -14,12 +14,6 @@ interface IRoomsProps {
 }
 
 export const Room: FC<IRoomsProps> = ({ room, index }) => {
-    const jQuerycode = async () => {
-        $('.img_idt').each(function () {
-            if (parseInt($(this).data('index')) === 1) $(this).addClass('active');
-        });
-    };
-
     const getIndex = (array: JQuery<HTMLElement>, index: number): number => {
         array.each(function () {
             if ($(this).hasClass('active')) {
@@ -53,6 +47,12 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
 
         addActiveClass(roomImages, index);
     }
+
+    const jQuerycode = async () => {
+        $('.img_idt').each(function () {
+            if (parseInt($(this).data('index')) === 1) $(this).addClass('active');
+        });
+    };
 
     useEffect(() => {
         jQuerycode();
@@ -144,19 +144,8 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                     </button>
                 </div>
             </div>
-            <ToastContainer
-                position='bottom-right'
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <Link to={'room/' + room.id}>
-                <Div className='normal-flex' padding='15px 0 0 0'>
+                <div className='normal-flex' style={{ padding: '15px 0 0 0' }}>
                     <div className='room__name'>{room.name}</div>
                     <div className='room__price'>
                         <NumberFormat
@@ -171,7 +160,7 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                             )}
                         />
                     </div>
-                </Div>
+                </div>
             </Link>
         </div>
     );

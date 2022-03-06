@@ -180,7 +180,7 @@ public class UserORestController {
                         for (Image image : r.getImages()) {
                                 if (j == 3)
                                         break;
-                                images[j++] = image.getImagePath(userEmail, r.getId());
+                                images[j++] = image.getImagePath(r.getHost().getEmail(), r.getId());
                         }
                         wlDTO.setImages(images);
                         wishlists[i++] = wlDTO;

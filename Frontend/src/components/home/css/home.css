@@ -9,10 +9,6 @@ a {
     text-decoration: none;
 }
 
-#home__main--container {
-    position: relative;
-}
-
 .categories__container {
     height: 80px;
     width: 100%;
@@ -262,6 +258,11 @@ a {
     align-items: center;
 }
 
+.filterButton span:last-child {
+    color: #222;
+    margin-left: 6px;
+}
+
 #index__filter-container {
     flex: 1;
     max-width: 30%;
@@ -285,8 +286,6 @@ a {
 }
 
 .innerWrapper {
-    width: 780px;
-    height: calc(65px + calc(739px + 81px));
     background-color: white;
     margin-top: 40px;
     border-radius: 16px;
@@ -358,23 +357,6 @@ a {
     border-color: rgb(34, 34, 34);
     background: rgb(255, 255, 255);
     color: rgb(34, 34, 34);
-}
-
-.normal-flex {
-    display: flex;
-    align-items: center;
-}
-
-.flex-space {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .grid-col-3 {
@@ -551,4 +533,13 @@ input[type='checkbox'] {
     width: 10px;
     display: block;
     fill: currentcolor;
+}
+
+.listings__filter-roomAndBedRoom-row {
+    height: 48px;
+}
+
+.remove-scroll {
+    height: 100vh;
+    overflow-y: hidden;
 }

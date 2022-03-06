@@ -37,6 +37,22 @@ export const fetchUserOwnedRoom = createAsyncThunk(
     }
 );
 
+export const fetchRoomPrivacies = createAsyncThunk(
+    'room/fetchRoomPrivacies',
+    async (_, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.get(`/room-privacy`);
+
+            return { data };
+        } catch (error) {}
+    }
+);
+
+interface IRoomPrivacy {
+    id: number;
+    name: string;
+}
+
 type RoomState = {
     rooms: [];
     hosting: {
@@ -47,6 +63,7 @@ type RoomState = {
     };
     room: IRoomDetails;
     loading: boolean;
+    roomPrivacies: IRoomPrivacy[];
 };
 
 const initialState: RoomState = {
@@ -59,6 +76,7 @@ const initialState: RoomState = {
     },
     room: null,
     loading: true,
+    roomPrivacies: [],
 };
 
 const roomSlice = createSlice({
@@ -83,6 +101,9 @@ const roomSlice = createSlice({
             })
             .addCase(fetchUserOwnedRoom.pending, (state, { payload }) => {
                 state.hosting.loading = true;
+            })
+            .addCase(fetchRoomPrivacies.fulfilled, (state, { payload }) => {
+                state.roomPrivacies = payload?.data;
             })
             .addMatcher(isAnyOf(fetchRoomsByCategoryId.pending, fetchRoomById.pending), state => {
                 state.loading = true;
