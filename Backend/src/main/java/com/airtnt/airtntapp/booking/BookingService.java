@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
 
+import com.airtnt.airtntapp.booking.dto.BookingListDTO;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
@@ -205,6 +206,98 @@ public class BookingService {
             return bookingRepository.getBookingsByRooms(roomIds, bookingId, pageable);
         else
             return bookingRepository.getBookingsByRooms(roomIds, query, isCompleteLst, isCancelledLst,
+                    bookingDate, bookingDate2, totalFee, pageable);
+    }
+
+    public Page<BookingListDTO> getBookingListByRooms(Integer[] roomIds, int pageNumber, Map<String, String> filters) {
+        String sortField = filters.get("sortField");
+        String sortDir = filters.get("sortDir");
+        String query = filters.get("query");
+
+        LocalDateTime bookingDate = LocalDateTime.now();
+        LocalDateTime bookingDate2 = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+        String bookingDateStr = filters.get("bookingDate");
+        if (!bookingDateStr.isEmpty()) {
+            String[] bookingDateLst = bookingDateStr.split("-");
+            int year = Integer.parseInt(bookingDateLst[0]);
+            int month = Integer.parseInt(bookingDateLst[1]);
+            int day = Integer.parseInt(bookingDateLst[2]);
+
+            bookingDate = LocalDateTime.of(year, month, day, 23, 0, 0);
+            bookingDate2 = LocalDateTime.of(year, month, day, 0, 0, 0);
+        }
+
+        Integer bookingId = -1;
+        if (NumberUtils.isNumber(query)) {
+            bookingId = Integer.parseInt(query);
+        }
+        // Default case: get all bookings with 3 stage
+        List<Boolean> isCompleteLst = new ArrayList<>();
+        isCompleteLst.add(true);
+        isCompleteLst.add(false);
+        List<Boolean> isCancelledLst = new ArrayList<>();
+        isCancelledLst.add(true);
+        isCancelledLst.add(false);
+        // End of default case
+
+        Sort sort = Sort.by(sortField);
+        if (sortField.equals("room-name")) {
+            sort = Sort.by("room.name");
+        }
+        if (sortField.equals("customer-fullName")) {
+            Sort sortByCustomerFirstName = Sort.by("customer.firstName");
+            Sort sortByCustomerLastName = Sort.by("customer.lastName");
+            sort = sortByCustomerFirstName.and(sortByCustomerLastName);
+        }
+
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, MAX_BOOKING_PER_FETCH_BY_HOST, sort); // pase base 0
+
+        String isCompleteStr = filters.get("isComplete");
+        if (!isCompleteStr.isEmpty()) {
+
+            if (isCompleteStr.contains("1") && isCompleteStr.contains("0") && isCompleteStr.contains("2")) {
+
+            } else if (isCompleteStr.contains("1") && isCompleteStr.contains("0")) {
+                isCancelledLst.remove(true);
+            } else if (isCompleteStr.contains("0") && isCompleteStr.contains("2")) {
+                isCompleteLst.remove(true);
+            } else if (isCompleteStr.contains("1") && isCompleteStr.contains("2")) {
+                return bookingRepository.getBookingListByRooms(roomIds, query, true, true, pageable);
+            } else {
+                String[] isComplete = isCompleteStr.split(" ");
+
+                for (int i = 0; i < isComplete.length; i++) {
+                    if (isComplete[i].equals("1")) {
+                        isCompleteLst.remove(false);
+                        isCancelledLst.remove(true);
+                    }
+                    if (isComplete[i].equals("0")) {
+                        isCompleteLst.remove(true);
+                        isCancelledLst.remove(true);
+                    }
+                    if (isComplete[i].equals("2")) {
+                        if (!isCancelledLst.contains(true))
+                            isCancelledLst.add(true);
+                        isCancelledLst.remove(false);
+                    }
+                }
+            }
+        }
+
+        String bookingDateYear = filters.get("bookingDateYear");
+        String bookingDateMonth = filters.get("bookingDateMonth");
+        Float totalFee = Float.parseFloat(filters.get("totalFee"));
+
+        if (!bookingDateMonth.isEmpty() && !bookingDateYear.isEmpty()) {
+            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
+                    Integer.parseInt(bookingDateYear), Integer.parseInt(bookingDateMonth), pageable);
+        }
+
+        if (bookingId != -1)
+            return bookingRepository.getBookingListByRooms(roomIds, bookingId, pageable);
+        else
+            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
                     bookingDate, bookingDate2, totalFee, pageable);
     }
 

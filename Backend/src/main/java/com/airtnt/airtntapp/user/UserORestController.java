@@ -22,7 +22,6 @@ import com.airtnt.airtntapp.user.dto.WishlistsDTO;
 import com.airtnt.airtntapp.user.response.UserBookedRoomsResponseEntity;
 import com.airtnt.airtntapp.user.response.UserResponseEntity;
 import com.airtnt.entity.Address;
-import com.airtnt.entity.Booking;
 import com.airtnt.entity.City;
 import com.airtnt.entity.Country;
 import com.airtnt.entity.Image;

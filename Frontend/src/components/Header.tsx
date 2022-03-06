@@ -71,14 +71,14 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                                 </a>
                             </li>
                             <li className='nav__container'>
-                                <a href='@{/hosting/listings/1}' className='nav__link'>
+                                <Link to='/hosting/listings/1' className='nav__link'>
                                     Quản lí nhà/phòng cho thuê
-                                </a>
+                                </Link>
                             </li>
                             <li className='nav__container'>
-                                <a href='@{/booking/listings/1}' className='nav__link'>
+                                <Link to='/booking/listings/1' className='nav__link'>
                                     Quản lí đặt phòng
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>

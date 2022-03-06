@@ -6,6 +6,7 @@ import { getImage } from '../../helpers/getImage';
 import NumberFormat from 'react-number-format';
 import './css/home.css';
 import { ToastContainer } from 'react-toastify';
+import { Div } from '../../globalStyle';
 
 interface IRoomsProps {
     room: IRoom;
@@ -155,7 +156,7 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                 pauseOnHover
             />
             <Link to={'room/' + room.id}>
-                <div className='normal-flex' style={{ paddingTop: '15px' }}>
+                <Div className='normal-flex' padding='15px 0 0 0'>
                     <div className='room__name'>{room.name}</div>
                     <div className='room__price'>
                         <NumberFormat
@@ -170,7 +171,7 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                             )}
                         />
                     </div>
-                </div>
+                </Div>
             </Link>
         </div>
     );

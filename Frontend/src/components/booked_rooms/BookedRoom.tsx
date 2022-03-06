@@ -16,7 +16,9 @@ interface IBookedRoomProps {
 }
 
 const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
-    const { wishlistsIDs, user } = useSelector((state: RootState) => state.user);
+    const { wishlistsIDs, user, wishlistsIDsFetching } = useSelector(
+        (state: RootState) => state.user
+    );
     const [ratingComment, setRatingComment] = useState(booking.bookingReview);
 
     let cleanlinessRating = 0;
@@ -27,8 +29,6 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
     let valueRating = 0;
 
     const jQueryCode = () => {
-        addClickEventForLoveButton(wishlistsIDs, user);
-
         $('.bookingDate').each(function () {
             //customer can cancel booking if
             //1. less than 24h
@@ -60,41 +60,84 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
 
         (function () {
             $('.ratingStar').each(function () {
-                $(this).on('click', function () {
-                    const starValue = $(this).data('star-value') * 1;
-                    const ratingName = $(this).parent().parent().parent().data('rating-name');
-                    let isHavingGreaterRating = false;
+                if (ratingComment !== null) {
+                    $('.ratingStar').off('click');
+                } else
+                    $(this).on('click', function () {
+                        const starValue = parseInt($(this).data('star-value'));
+                        const ratingName = $(this).parent().parent().parent().data('rating-name');
+                        let isHavingGreaterRating = false;
 
-                    if ($(this).hasClass('selected')) {
-                        $(this)
-                            .parent()
-                            .siblings()
-                            .each(function () {
-                                if (
-                                    $(this).children('.ratingStar').data('star-value') * 1 >
-                                        starValue &&
-                                    $(this).children('.ratingStar').hasClass('selected')
-                                ) {
-                                    $(this).children('.ratingStar').removeClass('selected');
-                                    isHavingGreaterRating = true;
-                                }
-                            });
-
-                        if (!isHavingGreaterRating) {
+                        if ($(this).hasClass('selected')) {
                             $(this)
                                 .parent()
                                 .siblings()
                                 .each(function () {
                                     if (
-                                        $(this).children('.ratingStar').data('star-value') * 1 <
-                                        starValue
+                                        $(this).children('.ratingStar').data('star-value') * 1 >
+                                            starValue &&
+                                        $(this).children('.ratingStar').hasClass('selected')
                                     ) {
                                         $(this).children('.ratingStar').removeClass('selected');
+                                        isHavingGreaterRating = true;
                                     }
                                 });
 
-                            $(this).removeClass('selected');
+                            if (!isHavingGreaterRating) {
+                                $(this)
+                                    .parent()
+                                    .siblings()
+                                    .each(function () {
+                                        if (
+                                            $(this).children('.ratingStar').data('star-value') * 1 <
+                                            starValue
+                                        ) {
+                                            $(this).children('.ratingStar').removeClass('selected');
+                                        }
+                                    });
+
+                                $(this).removeClass('selected');
+                            } else {
+                                switch (ratingName) {
+                                    case 'Mức độ sạch sẽ': {
+                                        cleanlinessRating = starValue;
+                                        break;
+                                    }
+                                    case 'Độ chính xác': {
+                                        accuracyRating = starValue;
+                                        break;
+                                    }
+                                    case 'Liên lạc': {
+                                        contactRating = starValue;
+                                        break;
+                                    }
+                                    case 'Vị trí': {
+                                        locationRating = starValue;
+                                        break;
+                                    }
+                                    case 'Nhận phòng': {
+                                        checkinRating = starValue;
+                                        break;
+                                    }
+                                    case 'Giá trị': {
+                                        valueRating = starValue;
+                                        break;
+                                    }
+                                }
+                            }
                         } else {
+                            $(this)
+                                .parent()
+                                .siblings()
+                                .each(function () {
+                                    if (
+                                        $(this).children('.ratingStar').data('star-value') * 1 <=
+                                        starValue
+                                    )
+                                        $(this).children('.ratingStar').addClass('selected');
+                                });
+                            $(this).addClass('selected');
+
                             switch (ratingName) {
                                 case 'Mức độ sạch sẽ': {
                                     cleanlinessRating = starValue;
@@ -122,47 +165,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                 }
                             }
                         }
-                    } else {
-                        $(this)
-                            .parent()
-                            .siblings()
-                            .each(function () {
-                                if (
-                                    $(this).children('.ratingStar').data('star-value') * 1 <=
-                                    starValue
-                                )
-                                    $(this).children('.ratingStar').addClass('selected');
-                            });
-                        $(this).addClass('selected');
-
-                        switch (ratingName) {
-                            case 'Mức độ sạch sẽ': {
-                                cleanlinessRating = starValue;
-                                break;
-                            }
-                            case 'Độ chính xác': {
-                                accuracyRating = starValue;
-                                break;
-                            }
-                            case 'Liên lạc': {
-                                contactRating = starValue;
-                                break;
-                            }
-                            case 'Vị trí': {
-                                locationRating = starValue;
-                                break;
-                            }
-                            case 'Nhận phòng': {
-                                checkinRating = starValue;
-                                break;
-                            }
-                            case 'Giá trị': {
-                                valueRating = starValue;
-                                break;
-                            }
-                        }
-                    }
-                });
+                    });
             });
         })();
 
@@ -197,6 +200,10 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
         jQueryCode();
     }, []);
 
+    useEffect(() => {
+        if (!wishlistsIDsFetching) addClickEventForLoveButton(wishlistsIDs, user);
+    }, [wishlistsIDsFetching, user]);
+
     function hideEditThumbnailBox() {
         $('.chooseRoomThumbnail').removeClass('active');
         $('#user-bookings__mainContainer').removeClass('unactive');
@@ -212,12 +219,12 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
         });
 
         $('.ratingContainer', '.chooseRoomThumbnail.active').each(function () {
-            const cleanliness = $(this).data('rating-cleanliness') * 1;
-            const contact = $(this).data('rating-contact') * 1;
-            const checkin = $(this).data('rating-checkin') * 1;
-            const accuracy = $(this).data('rating-accuracy') * 1;
-            const location = $(this).data('rating-location') * 1;
-            const value = $(this).data('rating-value') * 1;
+            const cleanliness = parseInt($(this).data('rating-cleanliness'));
+            const contact = parseInt($(this).data('rating-contact'));
+            const checkin = parseInt($(this).data('rating-checkin'));
+            const accuracy = parseInt($(this).data('rating-accuracy'));
+            const location = parseInt($(this).data('rating-location'));
+            const value = parseInt($(this).data('rating-value'));
 
             cleanlinessRating = cleanliness;
             contactRating = contact;
@@ -318,6 +325,15 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         focusable='false'
                                         role='presentation'
                                         viewBox='0 0 32 32'
+                                        style={{
+                                            display: 'block',
+                                            fill: 'none',
+                                            height: '16px',
+                                            width: '16px',
+                                            stroke: 'currentcolor',
+                                            strokeWidth: 2,
+                                            overflow: 'visible',
+                                        }}
                                         className='heartSvg'
                                     >
                                         <path d='m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z'></path>
@@ -568,7 +584,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         data-booking-id={booking.roomId}
                                         onClick={e => displayEditThumbnailBox($(e.currentTarget))}
                                     >
-                                        Đánh giá
+                                        {ratingComment !== null ? 'Xem đánh giá' : 'Đánh giá'}
                                     </button>
 
                                     <div
@@ -712,6 +728,11 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                                 onChange={e =>
                                                                     setRatingComment(e.target.value)
                                                                 }
+                                                                disabled={
+                                                                    ratingComment !== null
+                                                                        ? true
+                                                                        : false
+                                                                }
                                                                 placeholder='Để lại bình luận ở đây!'
                                                             />
                                                         </div>
@@ -737,6 +758,12 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                             onClick={e =>
                                                                 reviewSubmit($(e.currentTarget))
                                                             }
+                                                            style={{
+                                                                display:
+                                                                    ratingComment !== null
+                                                                        ? 'none'
+                                                                        : 'block',
+                                                            }}
                                                         >
                                                             Đánh giá
                                                         </button>

@@ -132,7 +132,7 @@ export const fetchBookedRooms = createAsyncThunk(
 type UserState = {
     user: IUser | null;
     loading: boolean;
-    wishlistsFetching: boolean;
+    wishlistsIDsFetching: boolean;
     errorMessage: string | null;
     successMessage: string | null;
     update: {
@@ -149,7 +149,7 @@ type UserState = {
 const initialState: UserState = {
     user: null,
     loading: true,
-    wishlistsFetching: true,
+    wishlistsIDsFetching: true,
     errorMessage: null,
     successMessage: null,
     update: {
@@ -179,16 +179,19 @@ const userSlice = createSlice({
                 state.successMessage = payload.successMessage;
                 state.user = null;
             })
+            .addCase(fetchWishlistsIDsOfCurrentUser.pending, (state, { payload }) => {
+                state.wishlistsIDsFetching = true;
+            })
             .addCase(fetchWishlistsIDsOfCurrentUser.fulfilled, (state, { payload }) => {
-                state.wishlistsFetching = false;
+                state.wishlistsIDsFetching = false;
                 state.wishlistsIDs = payload?.data;
             })
             .addCase(fetchWishlistsOfCurrentUser.fulfilled, (state, { payload }) => {
-                state.wishlistsFetching = false;
+                // state.wishlistsIDsFetching = false;
                 state.wishlists = payload?.data;
             })
             .addCase(fetchWishlistsOfCurrentUser.pending, (state, { payload }) => {
-                state.wishlistsFetching = true;
+                state.wishlistsIDsFetching = true;
             })
             // .addCase(fetchWishlistsOfCurrentUser.pending, (state, { payload }) => {
             //     state.wishlistsFetching = true;

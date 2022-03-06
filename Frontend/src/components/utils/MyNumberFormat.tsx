@@ -7,6 +7,7 @@ export interface IMoneyForMat {
     fontSize?: string;
     isPrefix?: boolean;
     isSuffix?: boolean;
+    color?: string;
 }
 
 export default function MyNumberForMat({
@@ -16,6 +17,7 @@ export default function MyNumberForMat({
     fontSize,
     isPrefix,
     isSuffix,
+    color,
 }: IMoneyForMat) {
     return (
         <>
@@ -30,8 +32,8 @@ export default function MyNumberForMat({
                         <div>
                             {fontSize !== null ? (
                                 <>
-                                    <span style={{ fontSize }}>{formattedValue} </span>
-                                    <span style={{ fontSize }}>{stayType}</span>
+                                    <span style={{ fontSize, color }}>{formattedValue} </span>
+                                    <span style={{ fontSize, color }}>{stayType}</span>
                                 </>
                             ) : (
                                 <>
@@ -52,8 +54,8 @@ export default function MyNumberForMat({
                         <div>
                             {fontSize !== null ? (
                                 <>
-                                    <span style={{ fontSize }}>{formattedValue} </span>
-                                    <span style={{ fontSize }}>{stayType}</span>
+                                    <span style={{ fontSize, color }}>{formattedValue} </span>
+                                    <span style={{ fontSize, color }}>{stayType}</span>
                                 </>
                             ) : (
                                 <>
@@ -73,8 +75,8 @@ export default function MyNumberForMat({
                         <div>
                             {fontSize !== null ? (
                                 <>
-                                    <span style={{ fontSize }}>{formattedValue} </span>
-                                    <span style={{ fontSize }}>{stayType}</span>
+                                    <span style={{ fontSize, color }}>{formattedValue} </span>
+                                    <span style={{ fontSize, color }}>{stayType}</span>
                                 </>
                             ) : (
                                 <>

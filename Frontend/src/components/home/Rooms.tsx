@@ -25,15 +25,17 @@ interface IRoomsProps {
 
 export const Rooms: FC<IRoomsProps> = ({ rooms }) => {
     const dispatch = useDispatch();
-    const { user, wishlistsIDs, wishlistsFetching } = useSelector((state: RootState) => state.user);
+    const { user, wishlistsIDs, wishlistsIDsFetching } = useSelector(
+        (state: RootState) => state.user
+    );
 
     useEffect(() => {
         if (user !== null) dispatch(fetchWishlistsIDsOfCurrentUser());
     }, [user]);
 
     useEffect(() => {
-        if (!wishlistsFetching) addClickEventForLoveButton(wishlistsIDs, user);
-    }, [wishlistsIDs, user]);
+        if (!wishlistsIDsFetching) addClickEventForLoveButton(wishlistsIDs, user);
+    }, [wishlistsIDsFetching, user]);
 
     return (
         <section className='room__section'>

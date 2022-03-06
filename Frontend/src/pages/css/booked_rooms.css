@@ -309,13 +309,3 @@ input {
 #ratingComment {
     height: 69px;
 }
-
-.heartSvg {
-    display: block;
-    fill: none;
-    height: 16px;
-    width: 16px;
-    stroke: currentcolor;
-    stroke-width: 2;
-    overflow: visible;
-}

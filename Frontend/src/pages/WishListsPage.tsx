@@ -11,7 +11,7 @@ interface WishListsPage {}
 
 const WishListsPage: FC<WishListsPage> = () => {
     const dispatch = useDispatch();
-    const { user, wishlists, wishlistsFetching } = useSelector((state: RootState) => state.user);
+    const { user, wishlists, wishlistsIDsFetching } = useSelector((state: RootState) => state.user);
 
     console.log(wishlists);
 

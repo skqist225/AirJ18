@@ -8,6 +8,7 @@ import {
     stateSlice,
     citySlice,
     amenitySlice,
+    bookingSlice,
 } from './features';
 
 const rootReducer = combineReducers({
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
     city: citySlice,
     user: userSlice,
     amenity: amenitySlice,
+    booking: bookingSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -42,7 +44,7 @@ const store = configureStore({
                 successMessage: null,
                 errorMessage: null,
             },
-            wishlistsFetching: true,
+            wishlistsIDsFetching: true,
         },
     },
 });

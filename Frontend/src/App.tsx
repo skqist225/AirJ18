@@ -4,6 +4,7 @@ import {
     HomePage,
     ListingsPage,
     LoginPage,
+    ManageBookingPage,
     RegisterPage,
     RoomDetailsPage,
     WishListsPage,
@@ -27,6 +28,9 @@ function App() {
                     </Route>
                     <Route path='/wishlists' element={<WishListsPage />}></Route>
                     <Route path='/user/booked-rooms' element={<BookedRoomsPage />}></Route>
+                    <Route path='/booking/listings'>
+                        <Route path=':page' element={<ManageBookingPage />} />
+                    </Route>
                 </Routes>
             </Router>
         </div>
