@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
-import { IRoomDetails } from '../../type/type_RoomDetails';
-import { IRoomListings } from '../../type/type_RoomListings';
+import { IRoomGroup, IRoomPrivacy } from '../../type/room/type_Room';
+import { IRoomDetails } from '../../type/room/type_RoomDetails';
+import { IRoomListings } from '../../type/room/type_RoomListings';
 
 export const fetchRoomsByCategoryId = createAsyncThunk(
     'room/fetchRoomsByCategoryId',
@@ -48,11 +49,16 @@ export const fetchRoomPrivacies = createAsyncThunk(
     }
 );
 
-interface IRoomPrivacy {
-    id: number;
-    name: string;
-    description: string;
-}
+export const fetchRoomGroups = createAsyncThunk(
+    'room/fetchRoomGroups',
+    async (_, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.get(`/room-group`);
+
+            return { data };
+        } catch (error) {}
+    }
+);
 
 type RoomState = {
     rooms: [];
@@ -65,6 +71,7 @@ type RoomState = {
     room: IRoomDetails;
     loading: boolean;
     roomPrivacies: IRoomPrivacy[];
+    roomGroups: IRoomGroup[];
 };
 
 const initialState: RoomState = {
@@ -78,6 +85,7 @@ const initialState: RoomState = {
     room: null,
     loading: true,
     roomPrivacies: [],
+    roomGroups: [],
 };
 
 const roomSlice = createSlice({
@@ -105,6 +113,9 @@ const roomSlice = createSlice({
             })
             .addCase(fetchRoomPrivacies.fulfilled, (state, { payload }) => {
                 state.roomPrivacies = payload?.data;
+            })
+            .addCase(fetchRoomGroups.fulfilled, (state, { payload }) => {
+                state.roomGroups = payload?.data;
             })
             .addMatcher(isAnyOf(fetchRoomsByCategoryId.pending, fetchRoomById.pending), state => {
                 state.loading = true;

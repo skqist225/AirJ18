@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { fetchRoomById } from '../../features/room/roomSlice';
 import { getImage } from '../../helpers/getImage';
 import { RootState } from '../../store';
-import { IRoomDetails } from '../../type/type_RoomDetails';
+import { IRoomDetails } from '../../type/room/type_RoomDetails';
 import { getRoomlocation } from '../../utils/getLocation';
 import Header from '../Header';
 import { MyNumberForMat } from '../../components/utils';

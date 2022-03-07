@@ -1,0 +1,140 @@
+*,
+*::before,
+*::after {
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.room-group__container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.logoWrapper {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 99;
+}
+
+.room-group__left-title {
+    font-size: 48px;
+    line-height: 56px;
+    margin-bottom: 12px;
+    color: #fff;
+}
+
+#airTntLogo {
+    width: 100px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.become-a-host__right-cancelBtn {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    cursor: pointer;
+    text-align: center;
+    border: none rgb(176, 176, 176);
+    background-color: rgb(34, 34, 34);
+    outline: none;
+    padding: 0px 16px;
+    margin: 0px;
+    border-radius: 32px;
+    color: rgb(255, 255, 255);
+    position: relative;
+    height: 32px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    border-radius: 32px;
+    height: 32px;
+    width: calc(64px * 2);
+    max-width: calc(64px * 2);
+}
+
+.room-group__prev-step {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    border-color: black;
+    width: auto;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    outline: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease, transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: transparent;
+    color: #222222;
+    text-decoration: underline;
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.room-group__prev-step:hover {
+    color: #222222;
+    text-decoration: underline;
+}
+
+.stepProcess {
+    width: 100%;
+    height: 2px;
+    background-color: #222222;
+}
+
+.stepProcess.room-group-step {
+    width: calc(100% / 11 * 1);
+}
+
+.room-group__box {
+    width: 464px;
+    height: 90px;
+    border: 2px solid #f7f7f7;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+}
+
+.room-group__box:hover {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.room-group__box.active {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.room-group__name {
+    font-size: 18px;
+    line-height: 24px;
+    font-style: bold;
+}

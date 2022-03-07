@@ -1,5 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { string } from 'yup';
 
 const GlobalStyle = createGlobalStyle`
     body {
@@ -72,6 +73,10 @@ const GlobalStyle = createGlobalStyle`
         height: 100%;
     }
 
+    .w-50 {
+        width: 50%;
+    }
+
     .w-100 {
         width: 100%;
     }
@@ -86,6 +91,10 @@ const GlobalStyle = createGlobalStyle`
 
     .fw-600 {
         font-weight: 600;
+    }
+
+    .fw-500 {
+        font-weight: 500;
     }
 
     .fs-14 {
@@ -125,6 +134,11 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+interface IMainButton {
+    width?: string;
+    height?: string;
+}
+
 export const MainButton = styled.button`
     cursor: pointer;
     display: inline-block;
@@ -150,7 +164,8 @@ export const MainButton = styled.button`
         rgb(215, 4, 102) 100%
     );
     color: rgb(255, 255, 255);
-    width: 100%;
+    width: ${(props: IMainButton) => props.width || 'auto'};
+    height: ${(props: IMainButton) => props.height || 'auto'};
 `;
 
 export const Divider = styled.div`
@@ -182,6 +197,15 @@ export const Image = styled.img.attrs(props => ({
 }))`
     width: ${(props: ImageProps) => props.size};
     height: ${(props: ImageProps) => props.size};
+`;
+
+interface IDivWithBackGroundProps {
+    src: string;
+}
+
+export const DivWithBackGround = styled.div`
+    background-image: ${(props: IDivWithBackGroundProps) => 'url(' + props.src + ')'};
+    background-position: center;
 `;
 
 export default GlobalStyle;

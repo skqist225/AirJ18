@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, useMatch } from 'react-router-dom';
 import {
+    BecomeAHostIndexPage,
     BookedRoomsPage,
     HomePage,
     ListingsPage,
     LoginPage,
     ManageBookingPage,
+    PropertyCategoryPage,
+    PropertyGroupPage,
     RegisterPage,
     RoomDetailsPage,
     WishListsPage,
@@ -30,6 +33,11 @@ function App() {
                     <Route path='/user/booked-rooms' element={<BookedRoomsPage />}></Route>
                     <Route path='/booking/listings'>
                         <Route path=':page' element={<ManageBookingPage />} />
+                    </Route>
+                    <Route path='become-a-host'>
+                        <Route path='intro' element={<BecomeAHostIndexPage />}></Route>
+                        <Route path='property-type-group' element={<PropertyGroupPage />} />
+                        <Route path='property-category' element={<PropertyCategoryPage />} />
                     </Route>
                 </Routes>
             </Router>

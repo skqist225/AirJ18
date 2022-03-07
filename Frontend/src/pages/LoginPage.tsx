@@ -90,7 +90,12 @@ const LoginPage: FC<HomeProps> = () => {
                             />
                             {errors?.password && <FormError message={errors.password.message} />}
 
-                            <MainButton type='submit' className='customBtn'>
+                            <MainButton
+                                type='submit'
+                                className='customBtn'
+                                width='100%'
+                                height='auto'
+                            >
                                 <span>Đăng nhập</span>
                             </MainButton>
                         </form>

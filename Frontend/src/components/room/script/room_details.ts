@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import api from '../../../axios';
 import { seperateNumber } from '../../../helpers/seperateNumber';
-import { IBookedDate } from '../../../type/type_RoomDetails';
+import { IBookedDate } from '../../../type/room/type_RoomDetails';
 
 const active = 'active';
 let haveStartDate = false;
