@@ -19,7 +19,7 @@ public class CategoryRestController {
     private CategoryService categoryService;
 
     @GetMapping("/categories")
-    public String fetchCategories() {
+    public List<Category> fetchCategories() {
         List<Category> categories = categoryService.findAllCategoriesWithDesiredField();
 
         JSONArray jsonArray = new JSONArray();
@@ -28,6 +28,6 @@ public class CategoryRestController {
                     category.getIconPath()));
         }
 
-        return jsonArray.toString();
+        return categories;
     }
 }
