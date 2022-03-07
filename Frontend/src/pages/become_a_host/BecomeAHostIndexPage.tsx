@@ -1,7 +1,9 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
+import { RightPageContent } from '../../components/become_a_host';
+import { Div } from '../../globalStyle';
 import { getImage } from '../../helpers/getImage';
-import './css/become_a_host_index_page.css';
+import './css/index.css';
 
 interface IBecomeAHostIndexPageProps {}
 
@@ -11,58 +13,45 @@ const BecomeAHostIndexPage: FC<IBecomeAHostIndexPageProps> = () => {
     }
 
     return (
-        <>
-            <div className='become-a-host__main'>
-                <div className='become-a-host__container'>
-                    <div className='become-a-host__left'>
-                        <video
-                            src={getImage('/images/become_a_host.mp4')}
-                            autoPlay
-                            preload='auto'
-                            className='w-100 h-100 of-c'
-                            controls
-                            loop
-                        ></video>
-                        <div className='logoWrapper'>
-                            <Link to={'/'}>
-                                <img
-                                    src={getImage('/images/airtntlogo.png')}
-                                    alt=''
-                                    id='airTntLogo'
-                                />
-                            </Link>
-                        </div>
+        <Div height='100vh'>
+            <Div className='flex'>
+                <Div className='p-relative flex-1'>
+                    <video
+                        src={getImage('/images/become_a_host.mp4')}
+                        autoPlay
+                        preload='auto'
+                        className='w-100 h-100 of-c'
+                        controls
+                        loop
+                    ></video>
+                    <div className='logoWrapper'>
+                        <Link to={'/'}>
+                            <img src={getImage('/images/airtntlogo.png')} alt='' id='airTntLogo' />
+                        </Link>
                     </div>
-                    <div className='become-a-host__right'>
-                        <div className='become-a-host__right-first'>
-                            <button
-                                className='become-a-host__right-cancelBtn'
-                                // onclick='backtoHomePage();'
-                            >
-                                <span>Thoát</span>
-                            </button>
-                        </div>
-                        <div className='become-a-host__right-middle'>
-                            <div className='become-a-host__right-middle__main-text'>
-                                Trở thành Chủ nhà sau 10 bước dễ dàng
-                            </div>
-                            <div className='become-a-host__right-middle__sub-text'>
+                </Div>
+
+                <RightPageContent
+                    MainContent={
+                        <Div
+                            className='col-flex'
+                            style={{ justifyContent: 'center', alignItems: 'center' }}
+                        >
+                            <h1 className='become-a-host__main--text'>
+                                Trở thành Chủ nhà sau 11 bước dễ dàng
+                            </h1>
+                            <h4 className='become-a-host__sub-text'>
                                 Hãy tham gia cùng chúng tôi. Chúng tôi sẽ trợ giúp bạn qua từng bước
                                 của quy trình.
-                            </div>
-                        </div>
-                        <div className='become-a-host__right-last'>
-                            <button
-                                className='become-a-host__right-startBtn'
-                                onClick={() => start()}
-                            >
-                                <span>Bắt đầu thôi!</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+                            </h4>
+                        </Div>
+                    }
+                    nextPage='property-type-group'
+                    stepNumber={0}
+                    backgroundColor='#000000'
+                />
+            </Div>
+        </Div>
     );
 };
 

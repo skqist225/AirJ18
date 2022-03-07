@@ -1,20 +1,12 @@
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
 import { getImage } from '../../helpers/getImage';
-import { RootState } from '../../store';
 import { Category } from './Category';
-import { IncAndDecBtn } from '../../components/hosting/listings/IncAndDecBtn';
-import { Div, Image } from '../../globalStyle';
+import { Image } from '../../globalStyle';
 import $ from 'jquery';
-
-export interface ICategory {
-    name: string;
-    icon: string;
-    id: number;
-}
+import { ICategory } from '../../features/category/categorySlice';
 
 interface IHomeCategoriesProps {
-    categories: Array<ICategory>;
+    categories: ICategory[];
 }
 
 export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {

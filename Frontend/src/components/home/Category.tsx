@@ -1,8 +1,8 @@
 import { FC, useEffect } from 'react';
-import { ICategory } from './HomeCategories';
 import $ from 'jquery';
 import { useDispatch } from 'react-redux';
 import { fetchRoomsByCategoryId } from '../../features/room/roomSlice';
+import { ICategory } from '../../features/category/categorySlice';
 
 interface ICategoryProps {
     category: ICategory;
@@ -57,7 +57,7 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
             >
                 <div>
                     <img
-                        src={`${process.env.REACT_APP_SERVER_URL}${category.icon}`}
+                        src={`${process.env.REACT_APP_SERVER_URL}${category.iconPath}`}
                         alt={category.name + "'s icon"}
                         className='cat__image'
                     />

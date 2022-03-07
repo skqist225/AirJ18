@@ -1,39 +1,3 @@
-*,
-*::before,
-*::after {
-    font-family: 'Roboto', sans-serif;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-.room-group__container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-.logoWrapper {
-    position: absolute;
-    top: 32px;
-    left: 32px;
-    z-index: 99;
-}
-
-.room-group__left-title {
-    font-size: 48px;
-    line-height: 56px;
-    margin-bottom: 12px;
-    color: #fff;
-}
-
-#airTntLogo {
-    width: 100px;
-    height: 50px;
-    object-fit: contain;
-}
-
 .become-a-host__right-cancelBtn {
     -webkit-box-direction: normal;
     -webkit-box-orient: horizontal;
@@ -63,7 +27,7 @@
     max-width: calc(64px * 2);
 }
 
-.room-group__prev-step {
+#right--content__prev--step {
     cursor: pointer;
     display: inline-block;
     margin: 0px;
@@ -100,41 +64,4 @@
 .room-group__prev-step:hover {
     color: #222222;
     text-decoration: underline;
-}
-
-.stepProcess {
-    width: 100%;
-    height: 2px;
-    background-color: #222222;
-}
-
-.stepProcess.room-group-step {
-    width: calc(100% / 11 * 1);
-}
-
-.room-group__box {
-    width: 464px;
-    height: 90px;
-    border: 2px solid #f7f7f7;
-    border-radius: 16px;
-    transition: all 0.2s ease;
-    margin-bottom: 12px;
-    padding: 12px 24px;
-    cursor: pointer;
-}
-
-.room-group__box:hover {
-    box-shadow: 0 0 0 2px #222222;
-    background-color: #f7f7f7;
-}
-
-.room-group__box.active {
-    box-shadow: 0 0 0 2px #222222;
-    background-color: #f7f7f7;
-}
-
-.room-group__name {
-    font-size: 18px;
-    line-height: 24px;
-    font-style: bold;
 }

@@ -53,11 +53,7 @@ body {
 .room-group__left {
     position: relative;
     background: rgb(34, 193, 195);
-    background: linear-gradient(
-        0deg,
-        rgba(34, 193, 195, 1) 0%,
-        rgba(253, 187, 45, 1) 100%
-    );
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 
 #airTntLogo {
@@ -152,8 +148,8 @@ body {
     border-radius: 8 px;
     outline: none;
     padding: 14 px 24 px;
-    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s,
-        -webkit-transform 0.1s ease 0s, transform 0.1s ease 0s;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
     -webkit-tap-highlight-color: transparent;
     border: none;
     background: linear-gradient(
@@ -190,11 +186,10 @@ body {
     padding-bottom: 10 px;
     padding-left: 10 px;
     padding-right: 10 px;
-    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease,
-        transform 0.1s ease;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease, transform 0.1s ease;
     -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
-    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease,
-        -webkit-transform 0.1s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
     -webkit-tap-highlight-color: transparent;
     border: none;
     background: transparent;
@@ -332,11 +327,10 @@ body {
     padding-bottom: 14px;
     padding-left: 24px;
     padding-right: 24px;
-    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease,
-        transform 0.1s ease;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease, transform 0.1s ease;
     -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
-    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease,
-        -webkit-transform 0.1s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
     -webkit-tap-highlight-color: transparent;
     border: none;
     background: #222222;

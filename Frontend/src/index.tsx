@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import GlobalStyle from './globalStyle';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 ReactDOM.render(
     <Provider store={store}>

@@ -7,7 +7,6 @@ import {
 } from '../../components/become_a_host';
 import { fetchRoomGroups } from '../../features/room/roomSlice';
 import { Div } from '../../globalStyle';
-import './css/room_group.css';
 
 interface IPropertyGroupPageProps {}
 
@@ -26,8 +25,9 @@ const PropertyGroupPage: FC<IPropertyGroupPageProps> = () => {
                         title='Bạn sẽ cho thuê loại chỗ ở nào?'
                     />
                     <RightPageContent
-                        nextPageURL='/become-a-host/property-type'
+                        nextPage='property-category'
                         MainContent={<PropertyGroupMainContent />}
+                        stepNumber={1}
                     />
                 </Div>
             </Div>

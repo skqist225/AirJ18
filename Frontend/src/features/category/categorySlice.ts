@@ -11,12 +11,25 @@ export const fetchCategories = createAsyncThunk(
     }
 );
 
+export interface ICategory {
+    id: number;
+    name: string;
+    iconPath: string;
+}
+
+type CategoryState = {
+    loading: boolean;
+    categories: ICategory[];
+};
+
+const initialState: CategoryState = {
+    loading: true,
+    categories: [],
+};
+
 const roomSlice = createSlice({
     name: 'category',
-    initialState: {
-        loading: true,
-        categories: [],
-    },
+    initialState,
     reducers: {},
     extraReducers: builder => {
         builder

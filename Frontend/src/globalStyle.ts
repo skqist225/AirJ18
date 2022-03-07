@@ -1,18 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import { Link } from 'react-router-dom';
-import { string } from 'yup';
 
 const GlobalStyle = createGlobalStyle`
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Open Sans', sans-serif;
-    }
-
-    *,*::before, *::after {
-        box-sizing: border-box;
-    }
-
     ul {
         padding-left: 0;
     }
@@ -45,6 +33,13 @@ const GlobalStyle = createGlobalStyle`
     .col-flex {
         display: flex;
         flex-direction: column;
+    }
+
+    .col-flex-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .flex-1 {
@@ -132,6 +127,12 @@ const GlobalStyle = createGlobalStyle`
     .rounded-border {
         border-radius: 50%;
     }
+
+    .content__box--name {
+        font-size: 18px;
+        line-height: 24px;
+        font-style: bold;
+    }
 `;
 
 interface IMainButton {
@@ -179,6 +180,7 @@ interface DivProps {
     height?: string;
     margin?: string;
     padding?: string;
+    backgroundColor?: string;
 }
 
 interface ImageProps {
@@ -190,6 +192,7 @@ export const Div = styled.div`
     height: ${(props: DivProps) => props.height || '100%'};
     margin: ${(props: DivProps) => props.margin || '0 0 0 0'};
     padding: ${(props: DivProps) => props.padding || '0 0 0 0'};
+    background-color: ${(props: DivProps) => props.backgroundColor};
 `;
 
 export const Image = styled.img.attrs(props => ({

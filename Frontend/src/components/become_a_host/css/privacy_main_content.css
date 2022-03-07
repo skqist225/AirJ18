@@ -1,0 +1,23 @@
+.privacy-type__box {
+    display: flex;
+    flex-direction: column;
+    width: 464px;
+    height: 90px;
+    border: 2px solid #f7f7f7;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    padding: 24px;
+}
+
+.privacy-type__box:hover {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.privacy-type__box.active {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}

@@ -1,22 +1,25 @@
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 
+export const accessToken =
+    'pk.eyJ1IjoibG9yZGVkc3dpZnQyMjUiLCJhIjoiY2t3MDJvZ2E5MDB0dDJxbndxbjZxM20wOCJ9.hYxzgffyfc93Aiogipp5bA';
+mapboxgl.accessToken = accessToken;
+
 export function getRoomlocation(
     roomLat: number,
     roomLng: number,
     userid: number,
-    userimage: string,
-    username: string
+    userAvatar: string,
+    userName: string
 ) {
-    const accessToken =
-        'pk.eyJ1IjoibG9yZGVkc3dpZnQyMjUiLCJhIjoiY2t3MDJvZ2E5MDB0dDJxbndxbjZxM20wOCJ9.hYxzgffyfc93Aiogipp5bA';
-    mapboxgl.accessToken = accessToken;
-
-    showPosition({
-        coords: {
-            latitude: roomLat,
-            longitude: roomLng,
+    showPosition(
+        {
+            coords: {
+                latitude: roomLat,
+                longitude: roomLng,
+            },
         },
-    });
+        true
+    );
 
     async function showPosition(
         position: {
@@ -25,7 +28,7 @@ export function getRoomlocation(
                 longitude: number;
             };
         },
-        doReverseSearch = true
+        doReverseSearch: boolean = true
     ) {
         let userLat = position.coords.latitude;
         let userLng = position.coords.longitude;
@@ -53,27 +56,27 @@ export function getRoomlocation(
         };
 
         const image: HTMLImageElement = document.createElement('img');
-        image.setAttribute('src', `${process.env.REACT_APP_SERVER_URL}${userimage}`);
+        image.setAttribute('src', userAvatar);
         image.setAttribute('style', 'width:40px; height:40px; border-radius:50%; object-fit:cover');
 
-        const marker = new mapboxgl.Marker(image)
+        new mapboxgl.Marker(image)
             .setPopup(
                 new mapboxgl.Popup({
                     offset: popupOffsets,
                     className: 'my-class',
                 }) // add popups
-                    .setHTML(`<h2>${username}</h2>`)
+                    .setHTML(`<h2>${userName}</h2>`)
                     .setMaxWidth('300px')
             )
             .setLngLat([userLng, userLat])
             .addTo(map);
 
-        const popup = new mapboxgl.Popup({
+        new mapboxgl.Popup({
             offset: popupOffsets,
             className: 'my-class',
         })
             .setLngLat([userLng, userLat])
-            .setHTML(`<h3 style="margin:0;">${username}</h3>`)
+            .setHTML(`<h3 style="margin:0;">${userName}</h3>`)
             .setMaxWidth('300px')
             .addTo(map);
     }

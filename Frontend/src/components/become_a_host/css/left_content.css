@@ -1,0 +1,21 @@
+#left-content__title {
+    font-size: 48px;
+    line-height: 56px;
+    margin-bottom: 12px;
+    color: #fff;
+    padding: 0 55px;
+    max-width: 85%;
+}
+
+.logoWrapper {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 99;
+}
+
+#airTntLogo {
+    width: 100px;
+    height: 50px;
+    object-fit: contain;
+}

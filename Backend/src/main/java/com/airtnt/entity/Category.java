@@ -21,6 +21,7 @@ public class Category extends BaseEntity {
 	@Column(nullable = false)
 	private String name;
 
+	@JsonIgnore
 	@Column(columnDefinition = "TEXT NOT NULL")
 	private String icon;
 

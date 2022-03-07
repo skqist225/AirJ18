@@ -1,0 +1,33 @@
+.logoWrapper {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 99;
+}
+
+#airTntLogo {
+    width: 100px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.become-a-host__main--text {
+    margin-bottom: 32px;
+    color: #fff;
+    width: 50%;
+    font-size: 48px;
+    text-align: center;
+}
+
+.become-a-host__sub-text {
+    width: 40%;
+    text-align: center;
+    font-size: 18px;
+    color: #fff;
+}
+
+@media (min-width: 991px) {
+    .become-a-host__right-middle h1 {
+        width: 40%;
+    }
+}

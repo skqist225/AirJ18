@@ -8,6 +8,8 @@ import {
     ManageBookingPage,
     PropertyCategoryPage,
     PropertyGroupPage,
+    PropertyLocationPage,
+    PropertyPrivacyPage,
     RegisterPage,
     RoomDetailsPage,
     WishListsPage,
@@ -38,6 +40,8 @@ function App() {
                         <Route path='intro' element={<BecomeAHostIndexPage />}></Route>
                         <Route path='property-type-group' element={<PropertyGroupPage />} />
                         <Route path='property-category' element={<PropertyCategoryPage />} />
+                        <Route path='privacy-type' element={<PropertyPrivacyPage />} />
+                        <Route path='location' element={<PropertyLocationPage />} />
                     </Route>
                 </Routes>
             </Router>
