@@ -359,6 +359,7 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
                 />
                 <RightPageContent
                     nextPage='room-info'
+                    prevPage='privacy-type'
                     beforeMiddle={
                         <>
                             <div className='location__search-location'>

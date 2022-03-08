@@ -1,7 +1,6 @@
 package com.airtnt.airtntapp.booking.response;
 
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
-import com.airtnt.entity.Booking;
 
 import org.springframework.data.domain.Page;
 

@@ -26,6 +26,7 @@ const PropertyPrivacyPage: FC<IPropertyPrivacyPageProps> = () => {
                 />
                 <RightPageContent
                     nextPage='location'
+                    prevPage='property-category'
                     MainContent={<PropertyPrivacyMainContent />}
                     stepNumber={3}
                 />

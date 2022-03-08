@@ -18,6 +18,7 @@ const PropertyPricePage: FC<IPropertyPricePageProps> = () => {
                 />
                 <RightPageContent
                     nextPage='preview'
+                    prevPage='description'
                     MainContent={<PropertyPriceMainContent />}
                     stepNumber={10}
                 />

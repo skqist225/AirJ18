@@ -1,4 +1,4 @@
-.content__box {
+.room-group__box {
     width: 464px;
     height: 90px;
     border: 2px solid #f7f7f7;
@@ -9,12 +9,12 @@
     cursor: pointer;
 }
 
-.content__box:hover {
+.room-group__box:hover {
     box-shadow: 0 0 0 2px #222222;
     background-color: #f7f7f7;
 }
 
-.content__box.active {
+.room-group__box.active {
     box-shadow: 0 0 0 2px #222222;
     background-color: #f7f7f7;
 }

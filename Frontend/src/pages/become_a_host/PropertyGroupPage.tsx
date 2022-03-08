@@ -7,6 +7,7 @@ import {
 } from '../../components/become_a_host';
 import { fetchRoomGroups } from '../../features/room/roomSlice';
 import { Div } from '../../globalStyle';
+import $ from 'jquery';
 
 interface IPropertyGroupPageProps {}
 
@@ -26,6 +27,7 @@ const PropertyGroupPage: FC<IPropertyGroupPageProps> = () => {
                     />
                     <RightPageContent
                         nextPage='property-category'
+                        prevPage='intro'
                         MainContent={<PropertyGroupMainContent />}
                         stepNumber={1}
                     />

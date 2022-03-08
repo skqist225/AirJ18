@@ -25,8 +25,9 @@ const PropertyCategoryPage: FC<IPropertyCategoryPageProps> = () => {
                         title='Điều nào sau đây mô tả chính xác nhất về nơi ở của bạn?'
                     />
                     <RightPageContent
-                        MainContent={<PropertyCategoryMainContent />}
                         nextPage='privacy-type'
+                        prevPage='property-type-group'
+                        MainContent={<PropertyCategoryMainContent />}
                         stepNumber={2}
                     />
                 </Div>

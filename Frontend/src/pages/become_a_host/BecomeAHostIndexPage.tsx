@@ -32,6 +32,8 @@ const BecomeAHostIndexPage: FC<IBecomeAHostIndexPageProps> = () => {
                 </Div>
 
                 <RightPageContent
+                    nextPage='property-type-group'
+                    prevPage=''
                     MainContent={
                         <Div
                             className='col-flex'
@@ -46,7 +48,6 @@ const BecomeAHostIndexPage: FC<IBecomeAHostIndexPageProps> = () => {
                             </h4>
                         </Div>
                     }
-                    nextPage='property-type-group'
                     stepNumber={0}
                     backgroundColor='#000000'
                 />

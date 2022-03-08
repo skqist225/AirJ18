@@ -8,6 +8,7 @@ import { accessToken } from '../../utils/getLocation';
 
 interface IRightPageContentProps {
     nextPage: string;
+    prevPage: string;
     MainContent: React.ReactNode;
     stepNumber: number;
     backgroundColor?: string;
@@ -16,36 +17,52 @@ interface IRightPageContentProps {
 
 const RightPageContent: FC<IRightPageContentProps> = ({
     nextPage,
+    prevPage,
     MainContent,
     stepNumber,
     backgroundColor,
     beforeMiddle,
 }) => {
     function moveToNextPage() {
-        const choosenRoomGroup = parseInt(
-            $('div.room-group__box').filter('.active').children('input').val()! as string
-        );
-        const choosenRoomGroupText = $('div.room-group__box')
-            .filter('.active')
-            .children('.room-type__name')
-            .text();
-
         let room = {};
-        if (!localStorage.getItem('room')) {
-            room = {
-                roomGroup: choosenRoomGroup,
-                roomGroupText: choosenRoomGroupText,
-            };
-        } else {
-            room = JSON.parse(localStorage.getItem('room')!);
-            room = {
-                ...room,
-                roomGroup: choosenRoomGroup,
-                roomGroupText: choosenRoomGroupText,
-            };
-        }
-        localStorage.setItem('room', JSON.stringify(room));
+        switch (stepNumber) {
+            case 1: {
+                const choosenGroup = $('div.room-group__box').filter('.active');
 
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        roomGroup: parseInt(choosenGroup.data('group-id')! as string),
+                        roomGroupText: choosenGroup.data('group-name'),
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        roomGroup: parseInt(choosenGroup.data('group-id')! as string),
+                        roomGroupText: choosenGroup.data('group-name'),
+                    };
+                }
+                break;
+            }
+            case 2: {
+                const choosenCategory = $('div.category__box').filter('.active');
+
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        category: choosenCategory.data('category-id'),
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        category: choosenCategory.data('category-id'),
+                    };
+                }
+                break;
+            }
+        }
+
+        localStorage.setItem('room', JSON.stringify(room));
         window.location.href = `${window.location.origin}/become-a-host/${nextPage}`;
     }
 
@@ -130,7 +147,7 @@ const RightPageContent: FC<IRightPageContentProps> = ({
             >
                 <div>
                     <Link
-                        to={`/become-a-host/intro`}
+                        to={`/become-a-host/${prevPage}`}
                         id='right--content__prev--step'
                         style={{ color: backgroundColor === '#000000' ? '#fff' : '#222' }}
                     >

@@ -18,6 +18,7 @@ const PropertyRoomInfoPage: FC<IPropertyRoomInfoPageProps> = () => {
                 />
                 <RightPageContent
                     nextPage='amenities'
+                    prevPage='location'
                     MainContent={<PropertyRoomInfoMainContent />}
                     stepNumber={5}
                 />

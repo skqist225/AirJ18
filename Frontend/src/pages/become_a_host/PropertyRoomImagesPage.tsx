@@ -19,6 +19,7 @@ const PropertyRoomImagesPage: FC<IPropertyRoomImagesPageProps> = () => {
                 />
                 <RightPageContent
                     nextPage='title'
+                    prevPage='amenities'
                     MainContent={<PropertyRoomImagesMainContent />}
                     stepNumber={7}
                 />

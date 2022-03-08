@@ -30,6 +30,7 @@ const PropertyTitlePage: FC<IPropertyTitlePageProps> = () => {
                 />
                 <RightPageContent
                     nextPage='price'
+                    prevPage='title'
                     MainContent={<PropertyDescriptionMainContent />}
                     stepNumber={9}
                 />

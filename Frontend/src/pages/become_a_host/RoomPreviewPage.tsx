@@ -18,6 +18,7 @@ const RoomPreviewPage: FC<IRoomPreviewPageProps> = () => {
                 />
                 <RightPageContent
                     nextPage='description'
+                    prevPage='price'
                     MainContent={<RoomPreviewMainContent />}
                     stepNumber={11}
                 />
