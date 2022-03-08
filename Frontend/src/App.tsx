@@ -6,12 +6,19 @@ import {
     ListingsPage,
     LoginPage,
     ManageBookingPage,
+    PropertyAmenitiesPage,
     PropertyCategoryPage,
+    PropertyDescriptionPage,
     PropertyGroupPage,
     PropertyLocationPage,
+    PropertyPricePage,
     PropertyPrivacyPage,
+    PropertyRoomImagesPage,
+    PropertyRoomInfoPage,
+    PropertyTitlePage,
     RegisterPage,
     RoomDetailsPage,
+    RoomPreviewPage,
     WishListsPage,
 } from './pages';
 import PersonalInfoPage from './pages/PersonalInfoPage';
@@ -42,6 +49,13 @@ function App() {
                         <Route path='property-category' element={<PropertyCategoryPage />} />
                         <Route path='privacy-type' element={<PropertyPrivacyPage />} />
                         <Route path='location' element={<PropertyLocationPage />} />
+                        <Route path='room-info' element={<PropertyRoomInfoPage />} />
+                        <Route path='amenities' element={<PropertyAmenitiesPage />} />
+                        <Route path='photos' element={<PropertyRoomImagesPage />} />
+                        <Route path='title' element={<PropertyTitlePage />} />
+                        <Route path='description' element={<PropertyDescriptionPage />} />
+                        <Route path='price' element={<PropertyPricePage />} />
+                        <Route path='preview' element={<RoomPreviewPage />} />
                     </Route>
                 </Routes>
             </Router>

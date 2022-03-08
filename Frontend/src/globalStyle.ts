@@ -204,11 +204,14 @@ export const Image = styled.img.attrs(props => ({
 
 interface IDivWithBackGroundProps {
     src: string;
+    gradientBg?: string;
 }
 
 export const DivWithBackGround = styled.div`
     background-image: ${(props: IDivWithBackGroundProps) => 'url(' + props.src + ')'};
     background-position: center;
+    background-size: cover;
+    ${(props: IDivWithBackGroundProps) => props.gradientBg}
 `;
 
 export default GlobalStyle;

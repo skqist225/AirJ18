@@ -358,7 +358,7 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
                     title='Chỗ ở của bạn nằm ở đâu?'
                 />
                 <RightPageContent
-                    nextPage='location'
+                    nextPage='room-info'
                     beforeMiddle={
                         <>
                             <div className='location__search-location'>

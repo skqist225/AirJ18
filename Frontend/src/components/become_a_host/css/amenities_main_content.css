@@ -1,0 +1,91 @@
+.amentities__card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 16px;
+    width: 100%;
+}
+
+.amentity__card {
+    height: 148px;
+    padding: 24px 6px 40px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.amentities__right-middle {
+    flex: 1;
+    padding: 0 48px;
+    max-width: 90%;
+    margin: 0 auto;
+    overflow-y: scroll;
+}
+
+.iconImage {
+    /* background-image: url('/airtnt/images/lo_nuong_BBQ.svg'), none; */
+    width: 50px;
+    height: 50px;
+}
+
+.amentity__name {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    color: #222222;
+    text-align: center;
+    margin: 0px 20px;
+}
+
+.amentities__title {
+    font-size: 22px;
+    line-height: 26px;
+    padding-left: 8px;
+    margin: 15px 0;
+    font-weight: 600;
+}
+
+.prominentAmentities:hover,
+.favoriteAmentities:hover,
+.safeAmentities:hover {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.prominentAmentities.choosen,
+.favoriteAmentities.choosen,
+.safeAmentities.choosen {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.stepProcess.room-amentities-step {
+    width: calc(100% / 11 * 6);
+}
+
+.favoriteAmentitiesImg:nth-child(1),
+.favoriteAmentitiesImg:nth-child(2),
+.favoriteAmentitiesImg:nth-child(3),
+.favoriteAmentitiesImg:nth-child(4),
+.favoriteAmentitiesImg:nth-child(5) {
+    width: 34px;
+    height: 34px;
+}
+
+.favoriteAmentitiesImg:nth-child(6),
+.favoriteAmentitiesImg:nth-child(7),
+.favoriteAmentitiesImg:nth-child(8),
+.favoriteAmentitiesImg:nth-child(9) {
+    width: 52px;
+    height: 52px;
+}
+
+.safeAmentitiesImg:nth-child(1),
+.safeAmentitiesImg:nth-child(2) {
+    width: 34px;
+    height: 34px;
+}

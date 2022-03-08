@@ -7,11 +7,16 @@ import './css/left_content.css';
 interface ILeftPageContentProps {
     background: string;
     title: string;
+    gradientBackground?: string;
 }
 
-const LeftPageContent: FC<ILeftPageContentProps> = ({ background, title }) => {
+const LeftPageContent: FC<ILeftPageContentProps> = ({ background, title, gradientBackground }) => {
     return (
-        <DivWithBackGround className='p-relative h-100 w-50' src={getImage(background)}>
+        <DivWithBackGround
+            className='p-relative h-100 w-50'
+            src={getImage(background)}
+            gradientBg={gradientBackground}
+        >
             <div className='flex-center h-100'>
                 <h1 id='left-content__title'>{title}</h1>
             </div>

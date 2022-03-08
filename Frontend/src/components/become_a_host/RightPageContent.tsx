@@ -93,8 +93,24 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                     <span className='fw-500'>Lưu và thoát</span>
                 </button>
             </Div>
-            {beforeMiddle}
-            <div className='flex-center f1'>{MainContent}</div>
+            {stepNumber === 4 && beforeMiddle}
+
+            {stepNumber === 6 ? (
+                <div
+                    className='flex-center f1'
+                    style={{
+                        overflowY: 'scroll',
+                        flex: 1,
+                        padding: '0 48px',
+                        maxWidth: '90%',
+                        margin: '0 auto',
+                    }}
+                >
+                    {MainContent}
+                </div>
+            ) : (
+                <div className='flex-center f1'>{MainContent}</div>
+            )}
 
             <StepProcess stepNumber={stepNumber} />
             <Div

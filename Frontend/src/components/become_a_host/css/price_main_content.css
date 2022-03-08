@@ -1,0 +1,54 @@
+.room-price__btn {
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    -webkit-box-flex: 0;
+    width: 48px;
+    height: 48px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: inline-flex;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    text-decoration: none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(176, 176, 176);
+    color: rgb(113, 113, 113);
+    font-family: inherit;
+    outline: none;
+    touch-action: manipulation;
+    align-items: center;
+    justify-content: center;
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+}
+
+input {
+    width: 324px;
+    outline: none;
+    padding: 8px 12px;
+    min-height: 1px;
+    background-color: transparent;
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 80px;
+    appearance: none;
+    border-radius: 10px;
+    border: 1px solid rgb(34, 34, 34);
+    margin: 0 40px;
+    text-align: center;
+}
+
+input::placeholder {
+    font-size: 48px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.per-night {
+    font-size: 16px !important;
+    line-height: 20px !important;
+    padding-top: 12px;
+}

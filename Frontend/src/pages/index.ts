@@ -11,3 +11,10 @@ export { default as PropertyCategoryPage } from './become_a_host/PropertyCategor
 export { default as PropertyGroupPage } from './become_a_host/PropertyGroupPage';
 export { default as PropertyPrivacyPage } from './become_a_host/PropertyPrivacyPage';
 export { default as PropertyLocationPage } from './become_a_host/PropertyLocationPage';
+export { default as PropertyRoomInfoPage } from './become_a_host/PropertyRoomInfoPage';
+export { default as PropertyAmenitiesPage } from './become_a_host/PropertyAmenitiesPage';
+export { default as PropertyRoomImagesPage } from './become_a_host/PropertyRoomImagesPage';
+export { default as PropertyTitlePage } from './become_a_host/PropertyTitlePage';
+export { default as PropertyDescriptionPage } from './become_a_host/PropertyDescriptionPage';
+export { default as PropertyPricePage } from './become_a_host/PropertyPricePage';
+export { default as RoomPreviewPage } from './become_a_host/RoomPreviewPage';

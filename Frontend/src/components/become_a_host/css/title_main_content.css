@@ -1,0 +1,37 @@
+#room-name {
+    color: rgb(34, 34, 34);
+    display: block;
+    outline: none;
+    border: 1px solid rgb(176, 176, 176);
+    margin: 0px;
+    box-sizing: border-box;
+    background-color: transparent;
+    appearance: none;
+    resize: vertical;
+    padding: 16px;
+    border-radius: 8px;
+    text-overflow: ellipsis;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 38px;
+    overflow-y: hidden;
+    height: 164px;
+    width: 576px;
+}
+.title__label {
+    font-size: 22px;
+    line-height: 28px;
+    padding-bottom: 24px;
+}
+
+.title__right-middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#numberOfTextPerMaxLength {
+    align-self: flex-start;
+}
