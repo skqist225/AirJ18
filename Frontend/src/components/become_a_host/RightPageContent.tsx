@@ -2,9 +2,9 @@ import { FC, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Div, MainButton } from '../../globalStyle';
 import $ from 'jquery';
-import './css/right_content.css';
 import StepProcess from './StepProcess';
-import { accessToken } from '../../utils/getLocation';
+import './css/right_content.css';
+import { toast, ToastContainer } from 'react-toastify';
 
 interface IRightPageContentProps {
     nextPage: string;
@@ -13,6 +13,9 @@ interface IRightPageContentProps {
     stepNumber: number;
     backgroundColor?: string;
     beforeMiddle?: React.ReactNode;
+    userLng?: number;
+    userLat?: number;
+    placeName?: string;
 }
 
 const RightPageContent: FC<IRightPageContentProps> = ({
@@ -22,6 +25,9 @@ const RightPageContent: FC<IRightPageContentProps> = ({
     stepNumber,
     backgroundColor,
     beforeMiddle,
+    userLng,
+    userLat,
+    placeName,
 }) => {
     function moveToNextPage() {
         let room = {};
@@ -60,6 +66,179 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                 }
                 break;
             }
+            case 3: {
+                const choosenPrivacy = parseInt(
+                    $('div.privacy-type__box').filter('.active').data('privacy-id')
+                );
+
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        privacyType: choosenPrivacy,
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        privacyType: choosenPrivacy,
+                    };
+                }
+                break;
+            }
+            case 4: {
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        longitude: userLng,
+                        latitude: userLat,
+                        placeName,
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        longitude: userLng,
+                        latitude: userLat,
+                        placeName,
+                    };
+                }
+                break;
+            }
+            case 5: {
+                const guestNumber = parseInt($('#guestNumber').text());
+                const bedNumber = parseInt($('#bedNumber').text());
+                const bedRoomNumber = parseInt($('#bedRoomNumber').text());
+                const bathRoomNumber = parseInt($('#bathRoomNumber').text());
+
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        guestNumber,
+                        bedNumber,
+                        bedRoomNumber,
+                        bathRoomNumber,
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        guestNumber,
+                        bedNumber,
+                        bedRoomNumber,
+                        bathRoomNumber,
+                    };
+                }
+                break;
+            }
+            case 6: {
+                const prominentAmentity = parseInt(
+                    $('.prominentAmentities')
+                        .filter('.choosen')
+                        .children('input')
+                        .first()
+                        .val() as string
+                );
+                const prominentAmentityName = $('.prominentAmentities')
+                    .filter('.choosen')
+                    .children('input[class="amentityName"]')
+                    .val();
+
+                const prominentAmentityImageName = $('.prominentAmentities')
+                    .filter('.choosen')
+                    .children('input')
+                    .last()
+                    .val();
+
+                const favoriteAmentity = parseInt(
+                    $('.favoriteAmentities')
+                        .filter('.choosen')
+                        .children('input')
+                        .first()
+                        .val() as string
+                );
+
+                const favoriteAmentityImageName = $('.favoriteAmentities')
+                    .filter('.choosen')
+                    .children('input')
+                    .last()
+                    .val();
+
+                const favoriteAmentityName = $('.favoriteAmentities')
+                    .filter('.choosen')
+                    .children('input[class="amentityName"]')
+                    .val();
+                const safeAmentity = parseInt(
+                    $('.safeAmentities')
+                        .filter('.choosen')
+                        .children('input')
+                        .first()
+                        .val() as string
+                );
+
+                const safeAmentityImageName = $('.safeAmentities')
+                    .filter('.choosen')
+                    .children('input')
+                    .last()
+                    .val();
+
+                const safeAmentityName = $('.safeAmentities')
+                    .filter('.choosen')
+                    .children('input[class="amentityName"]')
+                    .val();
+
+                if (isNaN(prominentAmentity) || isNaN(favoriteAmentity) || isNaN(safeAmentity)) {
+                    toast.error('🦄 Vui lòng chọn tiện ích trước khi tiếp tục!', {
+                        position: 'top-center',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+
+                    return;
+                }
+
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        prominentAmentity,
+                        favoriteAmentity,
+                        safeAmentity,
+                        prominentAmentityImageName,
+                        favoriteAmentityImageName,
+                        safeAmentityImageName,
+                        prominentAmentityName,
+                        favoriteAmentityName,
+                        safeAmentityName,
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        prominentAmentity,
+                        favoriteAmentity,
+                        safeAmentity,
+                        prominentAmentityImageName,
+                        favoriteAmentityImageName,
+                        safeAmentityImageName,
+                        prominentAmentityName,
+                        favoriteAmentityName,
+                        safeAmentityName,
+                    };
+                }
+                break;
+            }
+            case 7: {
+                room = JSON.parse(localStorage.getItem('room')!);
+                break;
+            }
+            case 8: {
+                break;
+            }
+            case 9: {
+                break;
+            }
+            case 10: {
+                break;
+            }
         }
 
         localStorage.setItem('room', JSON.stringify(room));
@@ -69,22 +248,6 @@ const RightPageContent: FC<IRightPageContentProps> = ({
     function backToHomePage() {
         window.location.href = window.location.origin;
     }
-
-    const jQueryCode = () => {
-        const addressSearchInput = $('#addressLocation');
-        addressSearchInput.on('focus', function () {
-            $('.location__search-location').first().addClass('input-focus');
-            $('.location__location-option-box').first().addClass('input-focus');
-        });
-
-        // $('#location__search-btn').on('click', function () {
-        //     getPositionFromInput(addressSearchInput.val()! as string, accessToken);
-        // });
-    };
-
-    useEffect(() => {
-        if (beforeMiddle !== null) jQueryCode();
-    }, []);
 
     return (
         <Div
@@ -158,6 +321,17 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                     <span className='fw-500'>Tiếp theo</span>
                 </MainButton>
             </Div>
+            <ToastContainer
+                position='top-center'
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </Div>
     );
 };

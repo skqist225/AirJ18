@@ -1,7 +1,8 @@
 package com.airtnt.airtntapp.host;
 
+import java.io.File;
 import java.io.IOException;
-
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 
 @RestController
-@RequestMapping("/become-a-host/")
+@RequestMapping("/api/become-a-host/")
 public class HostRestController {
 
-    private final String STATIC_PATH = "src/main/resources/static/room_images/";
+    private final String STATIC_PATH = "Backend/src/main/resources/static/room_images/";
 
     @Autowired
     private RoomService roomService;
@@ -37,6 +38,7 @@ public class HostRestController {
         String uploadDir = "";
 
         if (payload.getRoomId() != null) {
+            System.out.println("existed room triggered");
             uploadDir = STATIC_PATH + payload.getHost() + "/" + payload.getRoomId();
             FileUploadUtil.cleanDir(uploadDir);
         } else
@@ -87,7 +89,7 @@ public class HostRestController {
     }
 
     @PostMapping("get-upload-photos")
-    public String getUploadPhoto(@ModelAttribute GetPhoto payload) {
+    public String getUploadPhoto(@ModelAttribute GetPhoto payload) throws IOException {
         String userName = payload.getUsername();
         String[] roomImages = payload.getRoomImages();
 

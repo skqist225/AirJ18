@@ -8,6 +8,12 @@
     left: 0;
 }
 
+input {
+    background-color: #fff;
+    text-align: left;
+    font-size: 16px;
+}
+
 .location__search-location {
     position: absolute;
     top: 30%;
@@ -133,8 +139,7 @@
     outline: none;
     width: 100%;
     color: rgb(34, 34, 34);
-    font-weight: 400;
-    font-size: 18px;
+    font-weight: 500;
 }
 
 .location__input-container.focus {
@@ -163,7 +168,8 @@
     display: flex;
     align-items: center;
     padding-left: 10px;
-    color: #484848;
+    color: #717171;
+    font-size: 16px;
 }
 
 .location__label-input.focus {
@@ -208,21 +214,21 @@
 
 #location__enter-address-option {
     width: 600px;
-    height: 600px;
+    height: 680px;
     position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     display: none;
     transition: all 0.2 ease-in-out;
 }
 
-#location__enter-address-option.active {
-    display: block;
+#location__enter-address-option div:first-child {
+    background-color: #fff;
+    border-radius: 16px;
 }
 
-#location__enter-address-option__body {
-    flex: 1;
-    overflow: hidden;
-    border-radius: 8px;
-    border: 1px solid rgb(176, 176, 176);
+#location__enter-address-option.active {
+    display: block;
 }
 
 .location__location-option-box-first {
@@ -239,8 +245,8 @@
 .location__confirm-address {
     flex: 1;
     text-align: center;
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 20px;
+    font-weight: 500;
 }
 
 button:disabled {

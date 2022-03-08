@@ -26,7 +26,7 @@ async function restoreRoomImages(uploadPhotos) {
             roomImages.forEach(image => formData.append('roomImages', image));
 
             const { data } = await axios.post(
-                `${baseURL}become-a-host/get-upload-photos`,
+                `${baseURL}api/become-a-host/get-upload-photos`,
                 formData,
                 {
                     headers: {
@@ -365,7 +365,7 @@ async function uploadImagesToFolder() {
 
     const {
         data: { status, username },
-    } = await axios.post(`${baseURL}become-a-host/upload-room-photos`, formData, {
+    } = await axios.post(`${baseURL}api/become-a-host/upload-room-photos`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },

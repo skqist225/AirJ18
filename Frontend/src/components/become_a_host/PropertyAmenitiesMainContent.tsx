@@ -5,6 +5,7 @@ import { Div } from '../../globalStyle';
 import { RootState } from '../../store';
 import IAmenity from '../../type/type_Amenity';
 import AmenitiyPartial from './AmenitiyPartial';
+import $ from 'jquery';
 import './css/amenities_main_content.css';
 
 interface IPropertyAmenitiesMainContentProps {}
@@ -20,6 +21,67 @@ const PropertyAmenitiesMainContent: FC<IPropertyAmenitiesMainContentProps> = () 
     const prominentAmentities: IAmenity[] = amenities.filter(a => a.prominent === true);
     const favoriteAmentities: IAmenity[] = amenities.filter(a => a.favorite === true);
     const safeAmentities: IAmenity[] = amenities.filter(a => a.safe === true);
+
+    useEffect(() => {
+        const prominentAmentities = $('.prominentAmentities');
+        const favoriteAmentities = $('.favoriteAmentities');
+        const safeAmentities = $('.safeAmentities');
+
+        if (localStorage.getItem('room')) {
+            const { prominentAmentity, favoriteAmentity, safeAmentity } = JSON.parse(
+                localStorage.getItem('room')!
+            );
+
+            prominentAmentities.each(function () {
+                if ($(this).children('input').first().val() === prominentAmentity + '') {
+                    $(this).addClass('choosen');
+                    return false;
+                }
+            });
+
+            favoriteAmentities.each(function () {
+                if ($(this).children('input').first().val() === favoriteAmentity + '') {
+                    $(this).addClass('choosen');
+                    return false;
+                }
+            });
+
+            safeAmentities.each(function () {
+                if ($(this).children('input').first().val() === safeAmentity + '') {
+                    $(this).addClass('choosen');
+                    return false;
+                }
+            });
+        }
+
+        prominentAmentities.each(function () {
+            $(this).on('click', function () {
+                prominentAmentities.each(function () {
+                    $(this).removeClass('choosen');
+                });
+
+                $(this).addClass('choosen');
+            });
+        });
+        favoriteAmentities.each(function () {
+            $(this).on('click', function () {
+                favoriteAmentities.each(function () {
+                    $(this).removeClass('choosen');
+                });
+
+                $(this).addClass('choosen');
+            });
+        });
+        safeAmentities.each(function () {
+            $(this).on('click', function () {
+                safeAmentities.each(function () {
+                    $(this).removeClass('choosen');
+                });
+
+                $(this).addClass('choosen');
+            });
+        });
+    }, [amenities]);
 
     return (
         <>

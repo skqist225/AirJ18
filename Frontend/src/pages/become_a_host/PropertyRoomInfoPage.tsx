@@ -15,6 +15,18 @@ const PropertyRoomInfoPage: FC<IPropertyRoomInfoPageProps> = () => {
                 <LeftPageContent
                     background=''
                     title='Điều nào sau đây mô tả chính xác nhất về nơi ở của bạn?'
+                    gradientBackground={`    
+                    background: #fc5c7d;
+                    background: -webkit-linear-gradient(
+                        to right,
+                        #6a82fb,
+                        #fc5c7d
+                    );
+                    background: linear-gradient(
+                        to right,
+                        #6a82fb,
+                        #fc5c7d
+                    );`}
                 />
                 <RightPageContent
                     nextPage='amenities'

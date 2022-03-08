@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LeftPageContent, RightPageContent } from '../../components/become_a_host';
 import PropertyLocationMainContent from '../../components/become_a_host/PropertyLocationMainContent';
@@ -14,125 +14,112 @@ import './css/location.css';
 interface IPropertyLocationPageProps {}
 
 const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
-    const dispatch = useDispatch();
-
-    // useEffect(() => {
-    //     dispatch(fetchRoomPrivacies());
-    // }, []);
-
     const accessToken =
         'pk.eyJ1IjoibG9yZGVkc3dpZnQyMjUiLCJhIjoiY2t3MDJvZ2E5MDB0dDJxbndxbjZxM20wOCJ9.hYxzgffyfc93Aiogipp5bA';
 
     mapboxgl.accessToken = accessToken;
-    let userLat = 0,
-        userLng = 0,
-        isAprtNoAndStreetFilledUp = false,
-        isCityFilledUp = false,
-        place_name = '';
+    const [userLat, setUserLat] = useState(0);
+    const [userLng, setUserLng] = useState(0);
+    const [placeName, setPlaceName] = useState('');
+    const [isAprtNoAndStreetFilledUp, setIsAprtNoAndStreetFilledUp] = useState(false);
+    const [isCityFilledUp, setIsCityFilledUp] = useState(false);
 
     const { user } = useSelector((state: RootState) => state.user);
     const userName = user?.firstName + ' ' + user?.lastName;
     const userAvatar = user!.avatarPath;
 
     const jQueryCode = () => {
-        $(document).on('ready', function () {
-            const locationInputContainer = $('.location__input-container');
+        const locationInputContainer = $('.location__input-container');
 
-            if (localStorage.getItem('room')) {
-                const { longitude, latitude } = JSON.parse(localStorage.getItem('room')!);
-                showPosition(
-                    {
-                        coords: {
-                            latitude,
-                            longitude,
-                        },
+        if (localStorage.getItem('room')) {
+            const { longitude, latitude } = JSON.parse(localStorage.getItem('room')!);
+            showPosition(
+                {
+                    coords: {
+                        latitude,
+                        longitude,
                     },
-                    true
-                );
+                },
+                true
+            );
+        }
+
+        locationInputContainer.each(function () {
+            $(this).on('click', function () {
+                locationInputContainer.each(function () {
+                    if ($(this).hasClass('focus')) {
+                        $(this).removeClass('focus');
+                        const input = $(this).children().last().children('input');
+                        if (!input.val()) {
+                            $(this).children().first().removeClass('focus');
+
+                            input.removeClass('focus');
+                        }
+                    }
+                });
+
+                $(this).children().first().addClass('focus');
+                $(this).children().last().children('input').addClass('focus');
+                $(this).addClass('focus');
+            });
+        });
+
+        const addressSearchInput = $('#addressLocation');
+        addressSearchInput.on('focus', function () {
+            $('.location__search-location').first().addClass('input-focus');
+            $('.location__location-option-box').first().addClass('input-focus');
+        });
+
+        $('#location__search-btn').on('click', function () {
+            getPositionFromInput(addressSearchInput.val()! as string, accessToken);
+        });
+
+        $('#location__btn-complete-address-id').on('click', function (event) {
+            event.preventDefault();
+
+            const aprtNoAndStreet = $('#aprtNoAndStreet').val() || '';
+            const city = $('#city').val() || '';
+            const state = $('#state').val() || '';
+            const country = $('#country').val() || '';
+
+            const placeToSearch = aprtNoAndStreet + ' ' + city + ' ' + state + ' ' + country;
+            $('#map').empty();
+            getPositionFromInput(placeToSearch, accessToken);
+
+            $('#location__enter-address-option').removeClass('active');
+            $('.location__search-location').first().addClass('active');
+        });
+
+        const aprtNoAndStreet = $('#aprtNoAndStreet');
+        const city = $('#city');
+
+        let aprtNoAndStreetLength = 0;
+        let cityLength = 0;
+
+        aprtNoAndStreet.on('keydown', function (event) {
+            console.log('on key down');
+
+            if (event.key !== 'Backspace') {
+                aprtNoAndStreetLength = ($(this).val() as string).length + 1;
+            } else {
+                aprtNoAndStreetLength--;
             }
 
-            locationInputContainer.each(function () {
-                $(this).click(function () {
-                    locationInputContainer.each(function () {
-                        if ($(this).hasClass('focus')) {
-                            $(this).removeClass('focus');
-                            const input = $(this).children().last().children('input');
-                            if (!input.val()) {
-                                $(this).children().first().removeClass('focus');
+            if (aprtNoAndStreetLength > 0) setIsAprtNoAndStreetFilledUp(true);
+            else setIsAprtNoAndStreetFilledUp(false);
+        });
 
-                                input.removeClass('focus');
-                            }
-                        }
-                    });
+        city.on('keydown', function (event) {
+            console.log('on key down');
 
-                    $(this).children().first().addClass('focus');
-                    $(this).children().last().children('input').addClass('focus');
-                    $(this).addClass('focus');
-                });
-            });
+            if (event.key !== 'Backspace') {
+                cityLength = ($(this).val() as string).length + 1;
+            } else {
+                cityLength--;
+            }
 
-            $('#location__btn-complete-address-id').on('click', function (event) {
-                event.preventDefault();
-
-                const aprtNoAndStreet = $('#aprtNoAndStreet').val();
-                const city = $('#city').val();
-                const state = $('#state').val();
-                const country = $('#country').val();
-
-                const placeToSearch = aprtNoAndStreet + ' ' + city + ' ' + state + ' ' + country;
-
-                getPositionFromInput(placeToSearch, accessToken);
-            });
-
-            const aprtNoAndStreet = $('#aprtNoAndStreet');
-            const city = $('#city');
-            const completeButton = $('.location__btn-complete-address');
-            let aprtNoAndStreetLength = 0;
-            let cityLength = 0;
-
-            aprtNoAndStreet.on('keydown', function (event) {
-                if (event.key !== 'Backspace') {
-                    aprtNoAndStreetLength = ($(this).val() as string).length + 1;
-                } else {
-                    aprtNoAndStreetLength--;
-                }
-
-                if (aprtNoAndStreetLength > 0) {
-                    isAprtNoAndStreetFilledUp = true;
-
-                    if (isAprtNoAndStreetFilledUp && isCityFilledUp) {
-                        completeButton.attr('disabled', 'false');
-                    }
-                } else {
-                    isAprtNoAndStreetFilledUp = false;
-
-                    if (!isAprtNoAndStreetFilledUp || !isCityFilledUp) {
-                        completeButton.attr('disabled', 'true');
-                    }
-                }
-            });
-
-            city.on('keydown', function (event) {
-                if (event.key !== 'Backspace') {
-                    cityLength = ($(this).val() as string).length + 1;
-                } else {
-                    cityLength--;
-                }
-
-                if (cityLength > 0) {
-                    isCityFilledUp = true;
-
-                    if (isAprtNoAndStreetFilledUp && isCityFilledUp) {
-                        completeButton.attr('disabled', 'false');
-                    }
-                } else {
-                    isCityFilledUp = false;
-
-                    if (!isAprtNoAndStreetFilledUp || !isCityFilledUp) {
-                        completeButton.attr('disabled', 'true');
-                    }
-                }
-            });
+            if (cityLength > 0) setIsCityFilledUp(true);
+            else setIsCityFilledUp(false);
         });
     };
 
@@ -149,17 +136,13 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
         $('.location__location-option-box').first().removeClass('input-focus');
     }
 
-    function expandSelectTag() {
-        $('#selectTagContainer').css('display', 'block');
-    }
-
     async function getPositionFromInput(placeToSearch: string, accessToken: string) {
         console.log(placeToSearch);
         const { data } = await axios.get(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${placeToSearch}.json?access_token=${accessToken}`
         );
 
-        place_name = data.features[0].place_name;
+        setPlaceName(data.features[0].place_name);
 
         const position = {
             coords: {
@@ -192,14 +175,14 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
         },
         doReverseSearch = true
     ) {
-        userLat = position.coords.latitude;
-        userLng = position.coords.longitude;
+        setUserLat(position.coords.latitude);
+        setUserLng(position.coords.longitude);
         if (doReverseSearch) {
             const { data } = await axios.get(
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${userLng},${userLat}.json?access_token=${accessToken}`
             );
             console.log(data);
-            place_name = data.features[0].place_name;
+            setPlaceName(data.features[0].place_name);
         }
 
         var map = new mapboxgl.Map({
@@ -233,7 +216,7 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
                     offset: popupOffsets as any,
                     className: 'my-class',
                 }) // add popups
-                    .setHTML(`<h2>${userName}</h2>`)
+                    .setHTML(`<p style="font-size: 22px;margin: 0;">${userName}</p>`)
                     .setMaxWidth('300px')
             )
             .setLngLat([userLng, userLat])
@@ -244,7 +227,7 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
             className: 'my-class',
         })
             .setLngLat([userLng, userLat])
-            .setHTML(`<h1>${userName}</h1>`)
+            .setHTML(`<p style="font-size: 22px;margin: 0;">${userName}</p>`)
             .setMaxWidth('300px')
             .addTo(map);
 
@@ -254,8 +237,8 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
             $('.location__search-location').first().removeClass('input-focus');
             $('.location__location-option-box').first().removeClass('input-focus');
 
-            userLat = e.lngLat.lat;
-            userLng = e.lngLat.lng;
+            setUserLat(e.lngLat.lat);
+            setUserLng(e.lngLat.lng);
 
             if (marker) marker.remove();
             if (popup) popup.remove();
@@ -289,28 +272,6 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
         });
     }
 
-    // function onKeyDown(event) {
-    //     const input = $('.location__input-container')
-    //         .filter('.focus')
-    //         .children()
-    //         .last()
-    //         .children('input.focus');
-
-    //     const currentValue = input.val();
-    //     console.log(currentValue);
-    //     console.log(currentValue.toString().length);
-    //     if (event.key === 'Backspace') {
-    //         if (currentValue.length === 1) {
-    //             input.parent().siblings().removeClass('focus');
-    //         }
-    //     }
-    // }
-
-    function backToSearchLocation() {
-        $('#location__enter-address-option').removeClass('active');
-        $('.location__search-location').first().addClass('active');
-    }
-
     function displayEnterLocation() {
         $('#location__enter-address-option').addClass('active');
 
@@ -323,28 +284,6 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
     }
 
     function showError(error: any) {}
-
-    function nextPage() {
-        let room = {};
-        if (!localStorage.getItem('room')) {
-            room = {
-                longitude: userLng,
-                latitude: userLat,
-                place_name,
-            };
-        } else {
-            room = JSON.parse(localStorage.getItem('room')!);
-            room = {
-                ...room,
-                longitude: userLng,
-                latitude: userLat,
-                place_name,
-            };
-        }
-        localStorage.setItem('room', JSON.stringify(room));
-
-        window.location.href = `${window.location.origin}/become-a-host/room-info`;
-    }
 
     useEffect(() => {
         jQueryCode();
@@ -402,8 +341,16 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
                             </div>
                         </>
                     }
-                    MainContent={<PropertyLocationMainContent />}
+                    MainContent={
+                        <PropertyLocationMainContent
+                            isAprtNoAndStreetFilledUp={isAprtNoAndStreetFilledUp}
+                            isCityFilledUp={isCityFilledUp}
+                        />
+                    }
                     stepNumber={4}
+                    userLng={userLng}
+                    userLat={userLat}
+                    placeName={placeName}
                 />
             </Div>
         </Div>
