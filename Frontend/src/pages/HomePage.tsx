@@ -2,7 +2,11 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HomeCategories } from '../components/home/HomeCategories';
 import { fetchCategories } from '../features/category/categorySlice';
-import { fetchRoomPrivacies, fetchRoomsByCategoryId } from '../features/room/roomSlice';
+import {
+    fetchRoomPrivacies,
+    fetchRoomsByCategoryAndConditions,
+    getAverageRoomPricePerNight,
+} from '../features/room/roomSlice';
 import { RootState } from '../store';
 import { Rooms } from '../components/home/Rooms';
 import Header from '../components/Header';
@@ -30,12 +34,16 @@ const HomePage: FC<HomeProps> = () => {
 
     useEffect(() => {
         dispatch(fetchCategories());
-        dispatch(fetchRoomsByCategoryId({ categoryid }));
+        dispatch(fetchRoomsByCategoryAndConditions({ categoryid }));
     }, [dispatch, categoryid]);
 
     useEffect(() => {
         dispatch(fetchRoomPrivacies());
         dispatch(fetchAmenities());
+    }, []);
+
+    useEffect(() => {
+        dispatch(getAverageRoomPricePerNight());
     }, []);
 
     return (

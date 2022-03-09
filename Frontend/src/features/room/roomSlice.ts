@@ -1,14 +1,43 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
-import { IRoomGroup, IRoomPrivacy } from '../../type/room/type_Room';
+import { IRoom, IRoomGroup, IRoomPrivacy } from '../../type/room/type_Room';
 import { IRoomDetails } from '../../type/room/type_RoomDetails';
 import { IRoomListings } from '../../type/room/type_RoomListings';
 
-export const fetchRoomsByCategoryId = createAsyncThunk(
+interface IFetchRoomsByCategoryAndConditions {
+    categoryid: number;
+    privacies?: number[];
+    minPrice?: string;
+    maxPrice?: string;
+    bedRoomCount?: number;
+    bedCount?: number;
+    bathRoomCount?: number;
+    selectedAmentities?: number[];
+}
+
+export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
     'room/fetchRoomsByCategoryId',
-    async ({ categoryid }: { categoryid: number }, { dispatch, getState, rejectWithValue }) => {
+    async (
+        {
+            categoryid,
+            privacies = [],
+            minPrice = '0',
+            maxPrice = '1000000000',
+            bedRoomCount = 0,
+            bedCount = 0,
+            bathRoomCount = 0,
+            selectedAmentities = [],
+        }: IFetchRoomsByCategoryAndConditions,
+        { dispatch, getState, rejectWithValue }
+    ) => {
         try {
-            const { data } = await api.get(`/room/category/${categoryid}`);
+            const { data } = await api.get(
+                `/rooms?categoryId=${categoryid}&privacies=${privacies.join(
+                    ' '
+                )}&minPrice=${minPrice}&maxPrice=${maxPrice}&bedRoom=${bedRoomCount}&bed=${bedCount}&bathRoom=${bathRoomCount}&amentities=${selectedAmentities.join(
+                    ' '
+                )}`
+            );
             return { data };
         } catch (error) {}
     }
@@ -60,8 +89,19 @@ export const fetchRoomGroups = createAsyncThunk(
     }
 );
 
+export const getAverageRoomPricePerNight = createAsyncThunk(
+    'room/getAverageRoomPricePerNight',
+    async (_, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.get(`/getAverageRoomPricePerNight`);
+
+            return { data };
+        } catch (error) {}
+    }
+);
+
 type RoomState = {
-    rooms: [];
+    rooms: IRoom[];
     hosting: {
         rooms: IRoomListings[];
         loading: boolean;
@@ -72,6 +112,7 @@ type RoomState = {
     loading: boolean;
     roomPrivacies: IRoomPrivacy[];
     roomGroups: IRoomGroup[];
+    averageRoomPricePerNight: number;
 };
 
 const initialState: RoomState = {
@@ -86,6 +127,7 @@ const initialState: RoomState = {
     loading: true,
     roomPrivacies: [],
     roomGroups: [],
+    averageRoomPricePerNight: 0,
 };
 
 const roomSlice = createSlice({
@@ -94,7 +136,7 @@ const roomSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(fetchRoomsByCategoryId.fulfilled, (state, { payload }) => {
+            .addCase(fetchRoomsByCategoryAndConditions.fulfilled, (state, { payload }) => {
                 state.loading = false;
                 state.rooms = payload?.data;
             })
@@ -117,11 +159,17 @@ const roomSlice = createSlice({
             .addCase(fetchRoomGroups.fulfilled, (state, { payload }) => {
                 state.roomGroups = payload?.data;
             })
-            .addMatcher(isAnyOf(fetchRoomsByCategoryId.pending, fetchRoomById.pending), state => {
-                state.loading = true;
+            .addCase(getAverageRoomPricePerNight.fulfilled, (state, { payload }) => {
+                state.averageRoomPricePerNight = payload?.data;
             })
             .addMatcher(
-                isAnyOf(fetchRoomsByCategoryId.rejected, fetchRoomById.rejected),
+                isAnyOf(fetchRoomsByCategoryAndConditions.pending, fetchRoomById.pending),
+                state => {
+                    state.loading = true;
+                }
+            )
+            .addMatcher(
+                isAnyOf(fetchRoomsByCategoryAndConditions.rejected, fetchRoomById.rejected),
                 (state, { payload }) => {
                     state.loading = false;
                 }

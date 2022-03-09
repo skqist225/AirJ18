@@ -10,6 +10,8 @@ import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.room.dto.PostAddRoomDTO;
+import com.airtnt.airtntapp.room.dto.RoomHomePageDTO;
+import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
 import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
 import com.airtnt.airtntapp.room.response.RoomByUserResponseEntity;
 import com.airtnt.airtntapp.rule.RuleService;
@@ -92,8 +94,8 @@ public class RoomRestController {
     @Autowired
     private Authenticate authenticate;
 
-    @RequestMapping("/api/room/category/{categoryId}")
-    public String fetchRoomsByCategoryId(@PathVariable("categoryId") Integer categoryId,
+    @RequestMapping("/api/rooms")
+    public List<RoomHomePageDTO> fetchRoomsByCategoryId(@RequestParam("categoryId") Integer categoryId,
             @RequestParam(value = "privacies", required = false, defaultValue = "") String privacies,
             @RequestParam(value = "minPrice", required = false, defaultValue = "0") String minPrice,
             @RequestParam(value = "maxPrice", required = false, defaultValue = "1000000000") String maxPrice,
@@ -101,7 +103,6 @@ public class RoomRestController {
             @RequestParam(value = "bed", required = false, defaultValue = "0") String bed,
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
             @RequestParam(value = "amentities", required = false, defaultValue = "") String amentitiesFilter) {
-        JSONArray roomsJSON = new JSONArray();
 
         Map<String, String> filters = new HashMap<>();
         filters.put("privacies", privacies);
@@ -113,7 +114,7 @@ public class RoomRestController {
         filters.put("amentities", amentitiesFilter);
 
         List<Room> rooms = roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getContent();
-
+        List<RoomHomePageDTO> roomHomePageDTOs = new ArrayList<>();
         for (Room room : rooms) {
             List<Integer> likedByUsers = roomService.getLikedUsers(room.getId());
             Set<Image> roomImages = room.getImages();
@@ -122,16 +123,20 @@ public class RoomRestController {
                 images.add(image.getImagePath(room.getHost().getEmail(), room.getId()));
             }
 
-            roomsJSON
-                    .put(new JSONObject().put("name", room.getName()).put("thumbnail", room.renderThumbnailImage())
-                            .put("images", images)
-                            .put("price", room.getPrice()).put("currency", room.getCurrency().getSymbol())
-                            .put("stay_type", room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
-                            .put("liked_by_users", likedByUsers)
-                            .put("id", room.getId()));
+            RoomHomePageDTO roomHomePageDTO = RoomHomePageDTO.builder()
+                    .thumbnail(room.renderThumbnailImage())
+                    .images(images)
+                    .price(room.getPrice())
+                    .currencySymbol(room.getCurrency().getSymbol())
+                    .stayType(room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
+                    .likedByUsers(likedByUsers)
+                    .id(room.getId())
+                    .build();
+
+            roomHomePageDTOs.add(roomHomePageDTO);
         }
 
-        return roomsJSON.toString();
+        return roomHomePageDTOs;
     }
 
     @GetMapping("/api/room/{roomId}")
@@ -365,5 +370,24 @@ public class RoomRestController {
 
         return new ResponseEntity<RoomByUserResponseEntity>(roomByUserResponseEntity, null,
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/api/getAverageRoomPricePerNight")
+    public double getAverageRoomPricePerNight() {
+        List<RoomPricePerCurrency> roomPricePerCurrencies = roomService.getAverageRoomPricePerNight();
+        double averageRoomPricePerNight = 0;
+        long totalRecords = 0;
+        for (RoomPricePerCurrency rp : roomPricePerCurrencies) {
+            if (rp.getUnit().equals("USD")) {
+                averageRoomPricePerNight += rp.getTotalPricePerNight() * 23000;
+            } else {
+                averageRoomPricePerNight += rp.getTotalPricePerNight();
+            }
+            totalRecords += rp.getTotalRecords();
+        }
+        System.out.println(totalRecords);
+        System.out.println(averageRoomPricePerNight);
+
+        return (averageRoomPricePerNight / totalRecords);
     }
 }

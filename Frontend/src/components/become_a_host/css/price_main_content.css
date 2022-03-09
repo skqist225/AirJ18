@@ -25,7 +25,7 @@
     border-radius: 50%;
 }
 
-input {
+#room-price {
     width: 324px !important;
     height: 80px !important;
     outline: none !important;
@@ -42,7 +42,7 @@ input {
     text-align: center !important;
 }
 
-input::placeholder {
+#room-price::placeholder {
     font-size: 48px;
     font-weight: 400;
     text-align: center;

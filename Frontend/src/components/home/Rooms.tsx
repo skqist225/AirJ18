@@ -7,17 +7,7 @@ import {
     fetchWishlistsOfCurrentUser,
 } from '../../features/user/userSlice';
 import { addClickEventForLoveButton } from '../../components/home/js/addToWishlists';
-
-export interface IRoom {
-    id: number;
-    thumbnail: string;
-    images: string[];
-    likedByUsers: number[];
-    price: number;
-    name: string;
-    currency: string;
-    stay_type: string;
-}
+import { IRoom } from '../../type/room/type_Room';
 
 interface IRoomsProps {
     rooms: Array<IRoom>;

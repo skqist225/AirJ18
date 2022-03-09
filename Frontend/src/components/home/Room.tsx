@@ -1,13 +1,10 @@
 import { FC, useEffect } from 'react';
-import $ from 'jquery';
-import { IRoom } from './Rooms';
 import { Link } from 'react-router-dom';
 import { getImage } from '../../helpers/getImage';
 import NumberFormat from 'react-number-format';
+import { IRoom } from '../../type/room/type_Room';
+import $ from 'jquery';
 import './css/home.css';
-import { ToastContainer } from 'react-toastify';
-import { Div } from '../../globalStyle';
-
 interface IRoomsProps {
     room: IRoom;
     index: number;
@@ -150,12 +147,12 @@ export const Room: FC<IRoomsProps> = ({ room, index }) => {
                     <div className='room__price'>
                         <NumberFormat
                             value={room.price}
-                            prefix={room.currency}
+                            prefix={room.currencySymbol}
                             thousandSeparator={true}
                             displayType={'text'}
                             renderText={(formattedValue: any) => (
                                 <div>
-                                    {formattedValue}/{room.stay_type}
+                                    {formattedValue}/{room.stayType}
                                 </div>
                             )}
                         />

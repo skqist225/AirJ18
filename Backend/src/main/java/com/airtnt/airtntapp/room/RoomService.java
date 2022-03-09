@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.city.CityRepository;
+import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
 import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
 import com.airtnt.airtntapp.state.StateRepository;
 import com.airtnt.airtntapp.user.UserRepository;
@@ -490,5 +491,9 @@ public class RoomService {
 				bedCount,
 				amentitiesID, statusesID, pageable);
 		return rooms;
+	}
+
+	public List<RoomPricePerCurrency> getAverageRoomPricePerNight() {
+		return roomRepository.getAverageRoomPricePerNight();
 	}
 }

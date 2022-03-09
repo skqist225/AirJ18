@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import $ from 'jquery';
 import { useDispatch } from 'react-redux';
-import { fetchRoomsByCategoryId } from '../../features/room/roomSlice';
+import { fetchRoomsByCategoryAndConditions } from '../../features/room/roomSlice';
 import { ICategory } from '../../features/category/categorySlice';
 
 interface ICategoryProps {
@@ -24,7 +24,7 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
         catContainers.each(function () {
             if (parseInt($(this).data('category-id')) === categoryid) {
                 setActiveTab(catContainers, $(this));
-                dispatch(fetchRoomsByCategoryId({ categoryid }));
+                dispatch(fetchRoomsByCategoryAndConditions({ categoryid }));
             }
         });
 
