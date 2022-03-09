@@ -8,7 +8,7 @@ export interface IReview {
         location: number;
         value: number;
     };
-    customer_name: string;
-    customer_avatar: string;
-    created_at: string;
+    customerName: string;
+    customerAvatar: string;
+    createdAt: string;
 }

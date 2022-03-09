@@ -247,7 +247,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             Nơi này có những gì cho bạn
                                         </h4>
                                         <div className='rdt__amenities--container'>
-                                            {room.amenitities.map(amenity => (
+                                            {room.amenities.map(amenity => (
                                                 <Amenity amenity={amenity} key={amenity.name} />
                                             ))}
                                         </div>
@@ -262,7 +262,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 id='numberOfDaysContainer'
                                             >
                                                 <span id='daysAtHere'>1</span> đêm tại
-                                                room.city.name
+                                                {room.cityName}
                                             </div>
                                         </div>
                                         <div style={{ color: '#717171' }}>
@@ -376,7 +376,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             <MyNumberForMat
                                                 price={room.price}
                                                 currency={room.currency}
-                                                stayType={room.stay_type}
+                                                stayType={room.stayType}
                                             />
                                         </Div>
                                         <div className='rdt__booking--receiveRoom'>
@@ -431,7 +431,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                             <MyNumberForMat
                                                                 price={room.price}
                                                                 currency={room.currency}
-                                                                stayType={room.stay_type}
+                                                                stayType={room.stayType}
                                                             />{' '}
                                                             x<span id='numberOfNight'>7</span>
                                                             &nbsp;đêm&nbsp;
@@ -492,7 +492,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             }}
                                         >
                                             {room.reviews.length > 0 && (
-                                                <span>{room.average_rating}</span>
+                                                <span>{room.averageRating}</span>
                                             )}
 
                                             <span>{room.reviews.length || 0} đánh giá</span>
@@ -512,10 +512,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                     </div>
                                     <div id='ratingDetailsContainer'>
                                         {room.reviews.map(review => (
-                                            <div
-                                                className='rdt__review-box'
-                                                key={review.created_at}
-                                            >
+                                            <div className='rdt__review-box' key={review.createdAt}>
                                                 {Object.keys(review.rating).map(k => {
                                                     return (
                                                         <ReviewValue
@@ -528,14 +525,14 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 <Div className='normal-flex' margin='0 0 20px 0'>
                                                     <div className='customerAvatarWrapper'>
                                                         <img
-                                                            src={getImage(review.customer_avatar)}
+                                                            src={getImage(review.customerAvatar)}
                                                             className='normal-img'
-                                                            alt={review.customer_avatar}
+                                                            alt={review.customerAvatar}
                                                         />
                                                     </div>
                                                     <div>
                                                         <div className='fs-16 fw-600'>
-                                                            {review.customer_name}
+                                                            {review.customerName}
                                                         </div>
                                                         <div
                                                             style={{
@@ -543,7 +540,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                             }}
                                                             className='fs-14'
                                                         >
-                                                            {review.created_at}
+                                                            {review.createdAt}
                                                         </div>
                                                     </div>
                                                 </Div>
@@ -577,7 +574,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                         <div style={{ marginLeft: '20px' }}>
                                             <h2 className='room-hostName'>{room.host.name}</h2>
                                             <div className='room-createdDate'>
-                                                {room.host.created_date}
+                                                {room.host.createdDate}
                                             </div>
                                         </div>
                                     </div>

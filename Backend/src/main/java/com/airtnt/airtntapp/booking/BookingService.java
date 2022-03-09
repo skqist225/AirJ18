@@ -69,8 +69,8 @@ public class BookingService {
         return savedBooking;
     }
 
-    public List<BookedDate> getBookedDate(Room room) throws ParseException {
-        List<BookedDate> bookedDates = new ArrayList<>();
+    public List<BookedDateDTO> getBookedDate(Room room) throws ParseException {
+        List<BookedDateDTO> bookedDates = new ArrayList<>();
         List<Booking> bookingsList = new ArrayList<>();
         Iterator<Booking> bookings = bookingRepository.findByRoom(room).iterator();
         bookings.forEachRemaining(bookingsList::add);
@@ -85,7 +85,7 @@ public class BookingService {
                 String[] checkoutDate2 = checkoutDate.toString().split("T")[0].split(" ")[0].split("-");
 
                 bookedDates
-                        .add(new BookedDate(checkinDate2[2] + "/" + checkinDate2[1] + "/" +
+                        .add(new BookedDateDTO(checkinDate2[2] + "/" + checkinDate2[1] + "/" +
                                 checkinDate2[0],
                                 checkoutDate2[2] + "/" + checkoutDate2[1] + "/" + checkoutDate2[0]));
             }

@@ -3,13 +3,17 @@ package com.airtnt.airtntapp.room;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.airtnt.airtntapp.booking.BookedDate;
+import com.airtnt.airtntapp.amentity.dto.AmenityRoomDetailsDTO;
+import com.airtnt.airtntapp.booking.BookedDateDTO;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.review.ReviewService;
+import com.airtnt.airtntapp.review.dto.ReviewDTO;
+import com.airtnt.airtntapp.room.dto.HostDTO;
 import com.airtnt.airtntapp.room.dto.PostAddRoomDTO;
+import com.airtnt.airtntapp.room.dto.RoomDetailsDTO;
 import com.airtnt.airtntapp.room.dto.RoomHomePageDTO;
 import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
 import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
@@ -20,7 +24,6 @@ import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Room;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -140,7 +143,8 @@ public class RoomRestController {
     }
 
     @GetMapping("/api/room/{roomId}")
-    public String fetchRoomById(@PathVariable("roomId") Integer id) throws RoomNotFoundException, ParseException {
+    public RoomDetailsDTO fetchRoomById(@PathVariable("roomId") Integer id)
+            throws RoomNotFoundException, ParseException {
         Room room = roomService.getById(id);
 
         List<Booking> bookings = bookingService.getBookingsByRoom(room);
@@ -162,66 +166,73 @@ public class RoomRestController {
         if (reviews.size() > 0)
             avgRatings /= reviews.size();
 
-        JSONArray amentities = new JSONArray();
-        JSONArray rules = new JSONArray();
-        JSONArray images = new JSONArray();
-        JSONArray reviewsJSON = new JSONArray();
-
-        for (Amentity a : room.getAmentities()) {
-            amentities.put(
-                    new JSONObject().put("name", a.getName()).put("icon", a.getIconImagePath()).put("id", a.getId()));
-        }
-
-        for (Rule r : room.getRules()) {
-            rules.put(new JSONObject().put("title", r.getTitle()).put("icon", r.getIconPath()));
-        }
+        List<String> images = new ArrayList<>();
+        List<ReviewDTO> reviewDTOs = new ArrayList<>();
+        List<AmenityRoomDetailsDTO> amenityRoomDetailsDTOs = new ArrayList<>();
 
         for (Image image : room.getImages()) {
             if (image.getImage().equals(room.getThumbnail()))
                 continue;
 
-            images.put(image.getImagePath(room.getHost().getEmail(), room.getId()));
+            images.add(image.getImagePath(room.getHost().getEmail(), room.getId()));
+        }
+
+        for (Amentity a : room.getAmentities()) {
+            AmenityRoomDetailsDTO amenityRoomDetailsDTO = AmenityRoomDetailsDTO.builder()
+                    .id(a.getId())
+                    .icon(a.getIconImagePath())
+                    .name(a.getName())
+                    .build();
+
+            amenityRoomDetailsDTOs.add(amenityRoomDetailsDTO);
         }
 
         for (Review r : reviews) {
-            reviewsJSON.put(new JSONObject().put("comment", r.getComment())
-                    .put("customer_name", r.getBooking().getCustomer().getFullName())
-                    .put("customer_avatar", r.getBooking().getCustomer().getAvatarPath()).put("rating",
-                            new JSONObject().put("cleanliness", r.getSubRating().getCleanliness())
-                                    .put("contact", r.getSubRating().getContact())
-                                    .put("checkin", r.getSubRating().getCheckin())
-                                    .put("accuracy", r.getSubRating().getAccuracy())
-                                    .put("location", r.getSubRating().getLocation())
-                                    .put("value", r.getSubRating().getValue())));
+            ReviewDTO reviewDTO = ReviewDTO.builder()
+                    .comment(r.getComment())
+                    .customerName(r.getBooking().getCustomer().getFullName())
+                    .customerAvatar(r.getBooking().getCustomer().getAvatarPath())
+                    .rating(r.getSubRating())
+                    .createdAt(r.getCreatedDate())
+                    .build();
+            reviewDTOs.add(reviewDTO);
         }
-        List<BookedDate> bookedDates = bookingService.getBookedDate(room);
+        List<BookedDateDTO> bookedDates = bookingService.getBookedDate(room);
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", room.getId()).put("images", images)
-                .put("name", room.getName())
-                .put("thumbnail", room.renderThumbnailImage())
-                .put("description", room.getDescription())
-                .put("location",
-                        room.getStreet() + " " + room.getCity().getName() + " " + room.getState().getName() + " "
-                                + room.getCountry().getName())
-                .put("privacy", room.getPrivacyType().getName()).put("guest", room.getAccomodatesCount())
-                .put("bedroom", room.getBedroomCount()).put("bed", room.getBedCount())
-                .put("bathroom", room.getBathroomCount())
-                .put("host",
-                        new JSONObject().put("name", room.getHost().getFullName()).put("avatar",
-                                room.getHost().getAvatarPath()).put("id", room.getHost().getId())
-                                .put("created_date", room.getHost().getCreatedDate()))
-                .put("price", room.getPrice())
-                .put("currency", room.getCurrency().getSymbol())
-                .put("stay_type", room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
-                .put("amenitities", amentities)
-                .put("longitude", room.getLongitude())
-                .put("latitude", room.getLatitude())
-                .put("average_rating", avgRatings)
-                .put("reviews", reviewsJSON).put("rules", rules)
-                .put("bookedDates", bookedDates);
+        HostDTO hostDTO = HostDTO.builder()
+                .name(room.getHost().getFullName())
+                .avatar(room.getHost().getAvatarPath())
+                .createdDate(room.getHost().getCreatedDate())
+                .build();
 
-        return jsonObject.toString();
+        RoomDetailsDTO roomDetailsDTO = RoomDetailsDTO.builder()
+                .thumbnail(room.renderThumbnailImage())
+                .amenities(
+                        amenityRoomDetailsDTOs)
+                .rules(room.getRules())
+                .images(images)
+                .reviews(reviewDTOs)
+                .id(room.getId())
+                .name(room.getName())
+                .description(room.getDescription())
+                .location(room.getStreet() + " " + room.getCity().getName() + " " + room.getState().getName() + " "
+                        + room.getCountry().getName())
+                .privacy(room.getPrivacyType().getName()).guest(room.getAccomodatesCount()).host(hostDTO)
+                .bed(room.getBedCount())
+                .bathroom(room.getBathroomCount())
+                .bedroom(room.getBedroomCount())
+                .price(room.getPrice())
+                .currencySymbol(room.getCurrency().getSymbol())
+                .stayType(room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
+                .longitude(room.getLongitude())
+                .latitude(room.getLatitude())
+                .averageRating(avgRatings)
+                .bookedDates(
+                        bookedDates)
+                .cityName(room.getCity().getName())
+                .build();
+
+        return roomDetailsDTO;
     }
 
     @PostMapping("/rooms/checkName")

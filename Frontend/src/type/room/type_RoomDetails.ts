@@ -8,7 +8,7 @@ export interface IRDAmenity {
 }
 
 export interface IRule {
-    icon: string;
+    iconPath: string;
     title: string;
 }
 
@@ -23,14 +23,14 @@ export type IRoomDetails = {
     description: string;
     bookedDates: IBookedDate[];
     thumbnail: string;
-    amenitities: IRDAmenity[];
+    amenities: IRDAmenity[];
     images: string[];
     latitude: number;
     privacy: string;
-    average_rating: number;
+    averageRating: number;
     rules: IRule[];
     bedroom: number;
-    stay_type: string;
+    stayType: string;
     reviews: IReview[];
     price: number;
     location: string;
@@ -41,4 +41,5 @@ export type IRoomDetails = {
     host: IHost;
     longitude: number;
     image_prefix: string;
+    cityName: string;
 } | null;

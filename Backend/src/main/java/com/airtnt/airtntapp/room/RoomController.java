@@ -15,7 +15,7 @@ import java.util.List;
 import com.airtnt.entity.Image;
 import com.airtnt.entity.User;
 import com.airtnt.entity.exception.RoomNotFoundException;
-import com.airtnt.airtntapp.booking.BookedDate;
+import com.airtnt.airtntapp.booking.BookedDateDTO;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.user.UserService;
@@ -53,7 +53,7 @@ public class RoomController {
 			}
 		}
 
-		List<BookedDate> bookedDates = bookingService.getBookedDate(room);
+		List<BookedDateDTO> bookedDates = bookingService.getBookedDate(room);
 		List<Image> images = new ArrayList<>(room.getImages());
 		List<Image> secondToFive = new ArrayList<>();
 		for (int i = 0; i < images.size(); i++) {
