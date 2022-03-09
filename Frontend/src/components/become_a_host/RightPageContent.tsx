@@ -16,6 +16,7 @@ interface IRightPageContentProps {
     userLng?: number;
     userLat?: number;
     placeName?: string;
+    descriptions?: string[];
 }
 
 const RightPageContent: FC<IRightPageContentProps> = ({
@@ -28,9 +29,37 @@ const RightPageContent: FC<IRightPageContentProps> = ({
     userLng,
     userLat,
     placeName,
+    descriptions,
 }) => {
     function moveToNextPage() {
-        let room = {};
+        interface IPostAddRoom {
+            roomGroup?: number;
+            roomGroupText?: string;
+            category?: number;
+            privacyType?: number;
+            longitude?: number;
+            latitude?: number;
+            placeName?: string;
+            guestNumber?: number;
+            bedNumber?: number;
+            bedRoomNumber?: number;
+            bathRoomNumber?: number;
+            prominentAmentity?: number;
+            favoriteAmentity?: number;
+            safeAmentity?: number;
+            prominentAmentityImageName?: string;
+            favoriteAmentityImageName?: string;
+            safeAmentityImageName?: string;
+            prominentAmentityName?: string;
+            favoriteAmentityName?: string;
+            safeAmentityName?: string;
+            roomImages?: string[];
+            roomTitle?: string;
+            descriptions?: string[];
+            roomPricePerNight?: string;
+        }
+
+        let room: IPostAddRoom = {};
         switch (stepNumber) {
             case 1: {
                 const choosenGroup = $('div.room-group__box').filter('.active');
@@ -138,13 +167,13 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                 const prominentAmentityName = $('.prominentAmentities')
                     .filter('.choosen')
                     .children('input[class="amentityName"]')
-                    .val();
+                    .val()! as string;
 
                 const prominentAmentityImageName = $('.prominentAmentities')
                     .filter('.choosen')
                     .children('input')
                     .last()
-                    .val();
+                    .val()! as string;
 
                 const favoriteAmentity = parseInt(
                     $('.favoriteAmentities')
@@ -158,12 +187,12 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                     .filter('.choosen')
                     .children('input')
                     .last()
-                    .val();
+                    .val()! as string;
 
                 const favoriteAmentityName = $('.favoriteAmentities')
                     .filter('.choosen')
                     .children('input[class="amentityName"]')
-                    .val();
+                    .val()! as string;
                 const safeAmentity = parseInt(
                     $('.safeAmentities')
                         .filter('.choosen')
@@ -176,12 +205,12 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                     .filter('.choosen')
                     .children('input')
                     .last()
-                    .val();
+                    .val()! as string;
 
                 const safeAmentityName = $('.safeAmentities')
                     .filter('.choosen')
                     .children('input[class="amentityName"]')
-                    .val();
+                    .val()! as string;
 
                 if (isNaN(prominentAmentity) || isNaN(favoriteAmentity) || isNaN(safeAmentity)) {
                     toast.error('🦄 Vui lòng chọn tiện ích trước khi tiếp tục!', {
@@ -227,16 +256,97 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                 break;
             }
             case 7: {
-                room = JSON.parse(localStorage.getItem('room')!);
+                if (localStorage.getItem('room')) {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    if (room['roomImages'] && room.roomImages.length < 5) {
+                        toast.warn('🦄 Vui lòng tải lên 5 ảnh', {
+                            position: 'top-right',
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        return;
+                    }
+                }
                 break;
             }
             case 8: {
+                const roomTitle = $('textarea').val()! as string;
+
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        roomTitle,
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        roomTitle,
+                    };
+                }
                 break;
             }
             case 9: {
+                if (descriptions && descriptions.length == 2) {
+                    if (!localStorage.getItem('room')) {
+                        room = {
+                            descriptions,
+                        };
+                    } else {
+                        room = JSON.parse(localStorage.getItem('room')!);
+                        room = {
+                            ...room,
+                            descriptions,
+                        };
+                    }
+                } else {
+                    toast.error('🦄 Vui lòng chọn 2 mô tả cho nhà/phòng của bạn', {
+                        position: 'top-center',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    return;
+                }
                 break;
             }
             case 10: {
+                const roomPricePerNight = ($('#room-price').val() as string).replace('₫', '');
+
+                if (!localStorage.getItem('room')) {
+                    room = {
+                        roomPricePerNight,
+                    };
+                } else {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    room = {
+                        ...room,
+                        roomPricePerNight,
+                    };
+                }
+                if (parseInt(($('#room-price').val() as string).replace('₫', '')) > 1_000_000_000) {
+                    alert('Vui lòng nhập dưới 1.000.000.000đ');
+                    return;
+                }
+                if (isNaN(parseInt(($('#room-price').val() as string).replace('₫', '')))) {
+                    toast.error('🦄 Số tiền không hợp lệ', {
+                        position: 'top-center',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    return;
+                }
+
                 break;
             }
         }

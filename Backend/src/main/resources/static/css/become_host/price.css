@@ -42,7 +42,7 @@
     border-radius: 50%;
 }
 
-input {
+#room-price {
     width: 324px;
     outline: none;
     padding: 8px 12px;
@@ -89,8 +89,8 @@ input::placeholder {
     border-radius: 8px;
     outline: none;
     padding: 14px 2px;
-    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s,
-        -webkit-transform 0.1s ease 0s, transform 0.1s ease 0s;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
     -webkit-tap-highlight-color: transparent;
     border: none;
     background: linear-gradient(

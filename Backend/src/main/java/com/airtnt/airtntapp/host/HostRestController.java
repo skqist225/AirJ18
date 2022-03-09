@@ -1,8 +1,6 @@
 package com.airtnt.airtntapp.host;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +25,7 @@ import org.springframework.mock.web.MockMultipartFile;
 @RequestMapping("/api/become-a-host/")
 public class HostRestController {
 
-    private final String STATIC_PATH = "Backend/src/main/resources/static/room_images/";
+    private final String STATIC_PATH = "/Backend/src/main/resources/static/room_images/";
 
     @Autowired
     private RoomService roomService;

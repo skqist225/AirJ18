@@ -1,4 +1,4 @@
-import { FC, HTMLInputTypeAttribute, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Image } from '../../globalStyle';
 import { getImage } from '../../helpers/getImage';
 import axios from '../../axios';
@@ -6,15 +6,16 @@ import $ from 'jquery';
 import './css/room_images_main_content.css';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { toast, ToastContainer } from 'react-toastify';
 
 interface IPropertyRoomImagesMainContentProps {}
 
 const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = () => {
-    let photos: File[] = [];
     let fileReaderResult = new Map();
     let isUploaded = false;
 
     const { user } = useSelector((state: RootState) => state.user);
+    let photos: File[] = [];
 
     useEffect(() => {
         const uploadPhotos: JQuery<HTMLInputElement> = $('#uploadPhotos');
@@ -35,38 +36,29 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
             const { roomImages, username } = JSON.parse(localStorage.getItem('room')!);
             if (roomImages && roomImages.length >= 5) {
                 isUploaded = true;
-                const formData = new FormData();
-                formData.set('username', username);
-                roomImages.forEach((image: string) => formData.append('roomImages', image));
-
-                const { data } = await axios.post(`/become-a-host/get-upload-photos`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                const filesArr = data.roomImages.map((e: any) => {
-                    var array = new Uint8Array(e.bytes);
-                    const blob = new Blob([array], { type: 'image/jpeg' });
-                    return new File([blob], e.name, {
-                        type: `image/jpeg`,
-                    });
-                });
-
-                readURL(filesArr, uploadPhotos);
             }
+
+            const formData = new FormData();
+            formData.set('username', username);
+            roomImages.forEach((image: string) => formData.append('roomImages', image));
+
+            const { data } = await axios.post(`/become-a-host/get-upload-photos`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            const filesArr = data.roomImages.map((e: any) => {
+                var array = new Uint8Array(e.bytes);
+                const blob = new Blob([array], { type: 'image/jpeg' });
+                return new File([blob], e.name, {
+                    type: `image/jpeg`,
+                });
+            });
+
+            readURL(filesArr, uploadPhotos);
         }
     }
-
-    // function _base64ToArrayBuffer(base64) {
-    //     var binary_string = window.atob(base64);
-    //     var len = binary_string.length;
-    //     var bytes = new Uint8Array(len);
-    //     for (var i = 0; i < len; i++) {
-    //         bytes[i] = binary_string.charCodeAt(i);
-    //     }
-    //     return bytes.buffer;
-    // }
 
     function previewImage(
         file: File,
@@ -78,7 +70,7 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         const fileReader = new FileReader();
         const photoAction = $(`
         <div class="photoAction">
-            <button class="photo-action__btn" onClick="{(e) => {displayAction(e.currentTarget)}}" data-index="${modifier}">
+            <button class="photo-action__btn" data-index="${modifier}">
                 <span>
                     <img src="${getImage(
                         '/amentity_images/threedot.svg'
@@ -87,14 +79,10 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
             </button>
             <div class="photo-action__div-hidden">
                 <ul data-index="${modifier}">
-                    <li onclick="moveImageBack($(this).parent('ul').data('index') *
-                        1);">Di chuyển về phía sau</li>
-                    <li onclick="moveImageForward($(this).parent('ul').data('index') *
-                        1);">Di chuyển về phía trước</li>
-                    <li onclick="makeMainImage($(this).parent('ul').data('index') *
-                        1);">Chọn làm ảnh chính</li>
-                    <li onclick="deleteImage($(this).parent('ul').data('index') *
-                        1);">Xóa ảnh</li>
+                    <li class="moveImageBackward">Di chuyển về phía sau</li>
+                    <li class="moveImageForward">Di chuyển về phía trước</li>
+                    <li class="makeMainImage">Chọn làm ảnh chính</li>
+                    <li class="deleteImage">Xóa ảnh</li>
                 </ul>
             </div>
         </div>
@@ -122,6 +110,46 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         };
 
         fileReader.onloadend = function () {
+            $('.photo-action__btn').each(function () {
+                $(this)
+                    .off('click')
+                    .on('click', function () {
+                        displayAction($(this));
+                    });
+            });
+
+            $('.moveImageBackward').each(function () {
+                $(this)
+                    .off('click')
+                    .on('click', function () {
+                        moveImageBackward(parseInt($(this).parent('ul').data('index')));
+                    });
+            });
+
+            $('.moveImageForward').each(function () {
+                $(this)
+                    .off('click')
+                    .on('click', function () {
+                        moveImageForward(parseInt($(this).parent('ul').data('index')));
+                    });
+            });
+
+            $('.makeMainImage').each(function () {
+                $(this)
+                    .off('click')
+                    .on('click', function () {
+                        makeMainImage(parseInt($(this).parent('ul').data('index')));
+                    });
+            });
+
+            $('.deleteImage').each(function () {
+                $(this)
+                    .off('click')
+                    .on('click', function () {
+                        deleteImage(parseInt($(this).parent('ul').data('index')));
+                    });
+            });
+
             defer.resolve();
         };
 
@@ -129,7 +157,7 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         return defer.promise();
     }
 
-    function doPreviewImage(files: File[], subImagesContainer: JQuery<HTMLElement>) {
+    function doPreviewImage(files: File[] | FileList, subImagesContainer: JQuery<HTMLElement>) {
         //first image for thumbnail
         const defer = $.Deferred();
 
@@ -145,20 +173,19 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
                 const promise = previewImage(files[i], subImagesContainer, false, i);
                 promise.done(function () {
                     photos.push(files[i]);
-
-                    if (photos.length === files.length) {
-                        defer.resolve();
-                    }
+                    if (photos.length === files.length) defer.resolve();
                 });
             }
         });
 
         //the rest of images
-
         return defer.promise();
     }
 
-    function doPreviewImageSecondTime(files: File[], subImagesContainer: JQuery<HTMLElement>) {
+    function doPreviewImageSecondTime(
+        files: File[] | FileList,
+        subImagesContainer: JQuery<HTMLElement>
+    ) {
         const defer = $.Deferred();
         let count = 0;
 
@@ -179,7 +206,6 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
                     promise.done(function () {
                         photos.push(files[i]);
                         count++;
-
                         if (count === files.length) {
                             defer.resolve();
                         }
@@ -191,7 +217,7 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         return defer.promise();
     }
 
-    function readURL(files: File[], uploadPhotos: JQuery<HTMLInputElement>) {
+    function readURL(files: File[] | FileList, uploadPhotos: JQuery<HTMLInputElement>) {
         const subImagesContainer = $('#subImages');
 
         if (photos.length === 0) {
@@ -199,10 +225,9 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
                 $('.photosContainer').addClass('active');
                 $('.drag_n_drop_zone').addClass('disabled');
 
-                // if (photos.length === 5) $('#addAtLeast5Images').text('Hoàn tất!');
+                if (files.length === 5) $('#addAtLeast5Images').text('Hoàn tất! Bạn thấy thế nào?');
 
                 var promise = doPreviewImage(files, subImagesContainer);
-
                 promise.done(function () {
                     addEmptyImage(files, uploadPhotos, subImagesContainer);
                 });
@@ -211,10 +236,9 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
             const singleImageContainer = $('.singleImageContainer');
             singleImageContainer.remove();
 
-            if (photos.length === 5) $('#addAtLeast5Images').text('Hoàn tất!');
+            if (photos.length === 5) $('#addAtLeast5Images').text('Hoàn tất! Bạn thấy thế nào?');
 
             var promise = doPreviewImageSecondTime(files, subImagesContainer);
-
             promise.done(function () {
                 addEmptyImage(photos, uploadPhotos, subImagesContainer);
             });
@@ -222,7 +246,7 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
     }
 
     function addEmptyImage(
-        files: File[],
+        files: File[] | FileList,
         uploadPhotos: JQuery<HTMLInputElement>,
         subImagesContainer: JQuery<HTMLElement>
     ) {
@@ -265,10 +289,8 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         }
     }
 
-    function displayAction(self: any) {
-        const _self = $(self);
-
-        const sibling = _self.siblings('.photo-action__div-hidden');
+    function displayAction(self: JQuery<HTMLElement>) {
+        const sibling = self.siblings('.photo-action__div-hidden');
 
         if (sibling.hasClass('active')) sibling.removeClass('active');
         else sibling.addClass('active');
@@ -323,7 +345,7 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         closeAction(index);
     }
 
-    function moveImageBack(index: number) {
+    function moveImageBackward(index: number) {
         if (index === 1) {
             makeMainImage(index);
         } else {
@@ -355,30 +377,54 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
 
         for (let i = index + 1; i < photos.length; i++) {
             //shift left all remain image
-            moveImageBack(i);
+            moveImageBackward(i);
+        }
+
+        console.log(photos[photos.length - 1]);
+        if (localStorage.getItem('room')) {
+            const room = JSON.parse(localStorage.getItem('room')!);
+            if (room.roomImages && room.roomImages.length) {
+                delete room.roomImages[index];
+                room.roomImages.length--;
+            }
+
+            localStorage.setItem('room', JSON.stringify(room));
         }
 
         //delete image from photos
         delete photos[photos.length - 1];
         photos.length--;
+
         if (photos.length < 5) {
             isUploaded = false;
         }
+
+        console.log(photos.length);
         // Remove preview image
         const lastElement = $('#subImages').children('.photo-cover').last();
         lastElement.remove();
 
         const subImagesContainer = $('#subImages');
         const uploadPhotos: JQuery<HTMLInputElement> = $('#uploadPhotos');
+        let b = 0;
         if (photos.length < 4) {
-            addEmptyImage(photos, uploadPhotos, subImagesContainer);
+            $('.singleImageContainer.containerOfImageIcon').length > 2
+                ? (b = 1)
+                : addEmptyImage(photos, uploadPhotos, subImagesContainer);
         }
     }
 
-    let _currentFolderIndex = 0;
     async function uploadImagesToFolder() {
         if (photos.length < 5) {
-            // alertify.warning('Vui lòng chọn ít nhất 5 hình ảnh.');
+            toast.warn('🦄 Thêm ít nhất 5 ảnh', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -396,7 +442,15 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
 
         if (status === 'success') {
             isUploaded = true;
-            // alertify.success('Tải ảnh lên thành công!');
+            toast.success('🦄 Tải ảnh lên thành công', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
 
             let room = {};
             if (!localStorage.getItem('room')) {
@@ -422,7 +476,8 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
 
         // FileList object.
         var files = e.dataTransfer.files;
-        // readURL(files);
+        const uploadPhotos: JQuery<HTMLInputElement> = $('#uploadPhotos');
+        readURL(files, uploadPhotos);
     }
 
     function dragoverHandler(e: React.DragEvent<HTMLDivElement>) {
@@ -443,7 +498,7 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
                     <Image src={getImage('/amentity_images/photos.svg')} size='64px' />
                 </div>
                 <div className='photos__drag-title'>Kéo ảnh của bạn vào đây</div>
-                <div>Thêm ít nhất 5 ảnh</div>
+                <div id=''>Thêm ít nhất 5 ảnh</div>
                 <div style={{ textAlign: 'center', marginTop: '20px' }}>
                     <button className='photos__btn__load-images' id='triggerUploadPhotosInput'>
                         Tải lên từ thiết bị của bạn
@@ -496,6 +551,17 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
                     <div id='subImages'></div>
                 </div>
             </div>
+            <ToastContainer
+                position='top-right'
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </>
     );
 };

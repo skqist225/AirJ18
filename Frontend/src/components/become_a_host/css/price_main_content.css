@@ -26,19 +26,20 @@
 }
 
 input {
-    width: 324px;
-    outline: none;
-    padding: 8px 12px;
-    min-height: 1px;
-    background-color: transparent;
-    font-size: 48px;
-    font-weight: 500;
-    line-height: 80px;
-    appearance: none;
-    border-radius: 10px;
-    border: 1px solid rgb(34, 34, 34);
-    margin: 0 40px;
-    text-align: center;
+    width: 324px !important;
+    height: 80px !important;
+    outline: none !important;
+    padding: 8px 12px !important;
+    min-height: 1px !important;
+    background-color: transparent !important;
+    font-size: 48px !important;
+    font-weight: 500 !important;
+    line-height: 80px !important;
+    appearance: none !important;
+    border-radius: 10px !important;
+    border: 1px solid rgb(34, 34, 34) !important;
+    margin: 0 40px !important;
+    text-align: center !important;
 }
 
 input::placeholder {

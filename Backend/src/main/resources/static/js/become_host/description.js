@@ -1,17 +1,13 @@
 let descriptions = [];
 jQuery(document).ready(function () {
     if (localStorage.getItem('room')) {
-        const { descriptions: lsDescriptions } = JSON.parse(
-            localStorage.getItem('room')
-        );
+        const { descriptions: lsDescriptions } = JSON.parse(localStorage.getItem('room'));
         if (lsDescriptions) {
             descriptions = lsDescriptions;
 
             if (descriptions.length === 2) {
                 jQuery('.description__title-container').each(function () {
-                    if (
-                        descriptions.includes($(this).children().last().text())
-                    ) {
+                    if (descriptions.includes($(this).children().last().text())) {
                         $(this).addClass('choosen');
                     }
                 });
@@ -24,15 +20,12 @@ jQuery(document).ready(function () {
             if ($(this).hasClass('choosen')) {
                 $(this).removeClass('choosen');
                 descriptions = descriptions.filter(
-                    description =>
-                        description !== $(this).children().last().text()
+                    description => description !== $(this).children().last().text()
                 );
             } else {
                 if (descriptions.length === 2) {
                     jQuery('.description__title-container').each(function () {
-                        if (
-                            $(this).children().last().text() === descriptions[0]
-                        ) {
+                        if ($(this).children().last().text() === descriptions[0]) {
                             $(this).removeClass('choosen');
                         }
                     });
@@ -81,6 +74,6 @@ function nextPage() {
 
         window.location.href = `${baseURL}become-a-host/price`;
     } else {
-        alert('Vui lòng chọn 2 mô tả cho căn nhà của bạn');
+        alert('Vui lòng chọn 2 mô tả cho nhà/phòng của bạn');
     }
 }

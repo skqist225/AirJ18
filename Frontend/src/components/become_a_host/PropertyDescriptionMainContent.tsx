@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { getImage } from '../../helpers/getImage';
+
 import './css/description_main_content.css';
 
 interface IPropertyDescriptionMainContentProps {}

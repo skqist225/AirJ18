@@ -1,14 +1,70 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Image } from '../../globalStyle';
 import { getImage } from '../../helpers/getImage';
 import { RootState } from '../../store';
+import $ from 'jquery';
 import './css/room_preview_main_content.css';
+import { seperateNumber } from '../../helpers/seperateNumber';
 
 interface IRoomPreviewMainContentProps {}
 
 const RoomPreviewMainContent: FC<IRoomPreviewMainContentProps> = () => {
     const { user } = useSelector((state: RootState) => state.user);
+
+    useEffect(() => {
+        if (localStorage.getItem('room')) {
+            const room = JSON.parse(localStorage.getItem('room')!);
+            const privacyType = room.privacyType + '';
+
+            $('#roomThumbnail').attr(
+                'src',
+                getImage(`/room_images/${user?.email}/${room.roomImages[0]}`)
+            );
+            $('#room-preview__room-title').text(room.roomTitle);
+
+            $('#room-preview__room-type').text(
+                `${privacyType.substring(0, privacyType.lastIndexOf(' '))} ${
+                    room.roomGroupText
+                } cho thuê. Chủ nhà ${room.username}`
+            );
+            $('#room-preview__room-info').text(
+                `${room.guestNumber} khách · ${room.bedRoomNumber} phòng ngủ  · ${room.bedNumber} giường · ${room.bathRoomNumber} phòng tắm`
+            );
+            $('#room-preview__room-description').text(
+                `Thư giãn tại địa điểm nghỉ dưỡng ${room.descriptions[0]
+                    .toString()
+                    .toLowerCase()} và ${room.descriptions[1].toString().toLowerCase()} này.`
+            );
+
+            $('#room-preview__room-price').text(seperateNumber(room.roomPricePerNight) + 'đ / đêm');
+
+            /*-------------------------------AMENTITIES-----------------------------------------*/
+            $('#prominentAmentity').attr(
+                'src',
+                getImage(`/amentity_images/${room.prominentAmentityImageName}`)
+            );
+            $('#favoriteAmentity').attr(
+                'src',
+                getImage(`/amentity_images/${room.favoriteAmentityImageName}`)
+            );
+            $('#safeAmentity').attr(
+                'src',
+                getImage(`/amentity_images/${room.safeAmentityImageName}`)
+            );
+            $('#prominentAmentityName').text(room.prominentAmentityName);
+            $('#favoriteAmentityName').text(room.favoriteAmentityName);
+            $('#safeAmentityName').text(room.safeAmentityName);
+            /*-------------------------------AMENTITIES-----------------------------------------*/
+
+            /*-------------------------------LOCATION-----------------------------------------*/
+            $('#room-preview__room-location-txt').text(room.placeName);
+            /*-------------------------------LOCATION-----------------------------------------*/
+        } else {
+            window.location.href = window.location.origin;
+        }
+    }, []);
+
     return (
         <div className='room-preview__container'>
             <div className='room-preview__wrapper'>
