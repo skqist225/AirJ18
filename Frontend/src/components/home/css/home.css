@@ -241,7 +241,6 @@
 
 .filterButton {
     cursor: pointer;
-    text-align: center;
     border: 1px solid rgb(221, 221, 221);
     background-color: rgb(255, 255, 255);
     outline: none;
@@ -254,6 +253,7 @@
     line-height: 16px;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .filterButton span:last-child {
@@ -333,7 +333,7 @@
     margin-left: 20px;
 }
 
-.manage-photos__cancel-btn {
+.filter--footer__cancelBtn {
     cursor: pointer;
     display: inline-block;
     margin: 0px;
@@ -502,7 +502,7 @@ input[type='checkbox'] {
     height: 35px;
 }
 
-#index__filter-btn {
+.filter--footer__applyBtn {
     cursor: pointer;
     display: inline-block;
     margin: 0px;
@@ -524,6 +524,9 @@ input[type='checkbox'] {
     height: 48px;
     width: 100px;
     margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nextImageSvg {
@@ -586,4 +589,8 @@ input[type='checkbox'] {
 #test {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+}
+
+.mr-10 {
+    margin-right: 10px;
 }

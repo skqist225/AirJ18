@@ -1,0 +1,142 @@
+#filterTime__box {
+    height: 585px;
+    width: 750px;
+    background-color: #fff;
+    position: absolute;
+    top: 54px;
+    right: 0;
+    left: auto;
+    display: none;
+    z-index: 100;
+    border-radius: 16px;
+    box-shadow: rgb(0 0 0 / 15%) 0px 10px 37px;
+}
+
+#filterTime__footer {
+    padding: 0 24px;
+    height: 59px;
+
+    padding: 12px 14px;
+    border-top: 1px solid rgb(235, 235, 235);
+}
+
+.filterTime__filter--option {
+    border-radius: 100px;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    border: none;
+
+    color: rgb(34, 34, 34);
+    padding: 5px 14px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-right: 6px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    position: relative;
+    outline: none;
+    cursor: default;
+}
+
+.filterTime__filter--option.active {
+    background: rgb(255, 255, 255);
+}
+
+.filterTime__filter--option:hover {
+    background: rgb(247, 247, 247);
+}
+
+.filterTime__option--container {
+    padding-top: 24px;
+    padding-bottom: 12px;
+}
+
+#filterTime__option--wrapper {
+    background-color: rgb(235, 235, 235);
+    border-radius: 100px;
+    display: flex;
+    padding: 0 4px;
+}
+
+.filter--footer__applyBtn.smaller {
+    height: 34px;
+    font-size: 14px;
+    width: 56px;
+}
+
+.filterTime__flexibleDayBtn {
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid rgb(221, 221, 221);
+    background-color: rgb(255, 255, 255);
+    outline: none;
+    margin: 0px;
+    color: rgb(34, 34, 34);
+    position: relative;
+    transition-property: -ms-transform, -webkit-transform, transform, background-color, border-color;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-in-out;
+    padding: 4px 12px;
+    min-height: 32px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 18px;
+    margin-right: 10px;
+}
+
+.filterTime__flexibleDayBtn:hover {
+    color: rgb(0, 0, 0);
+    border-color: rgb(0, 0, 0);
+}
+
+.filterTime__flexibleDayBtn.selected {
+    border-color: #222;
+    border: 2px solid;
+}
+
+.filterTime__monthSelected {
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid rgb(34, 34, 34);
+    outline: none;
+    padding: 0px;
+    margin: 0px;
+    position: relative;
+    transition-property: -ms-transform, -webkit-transform, transform, background-color, border-color;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-in-out;
+    border-radius: 16px;
+    font-size: 12px;
+    line-height: 16px;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(247, 247, 247);
+    color: rgb(34, 34, 34);
+}
+
+.filterTime__monthSelected div:nth-child(2) {
+    padding-top: 8px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.filterTime__monthSelected div:last-child {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: rgb(113, 113, 113);
+    padding-top: 4px;
+}
+
+.filterTime__flexibleDay--title {
+    font-size: 18px !important;
+    line-height: 24px !important;
+    font-weight: 400 !important;
+    text-align: center !important;
+    color: rgb(113, 113, 113) !important;
+    padding-top: 8px !important;
+    padding-bottom: 16px !important;
+    margin: 0px !important;
+}

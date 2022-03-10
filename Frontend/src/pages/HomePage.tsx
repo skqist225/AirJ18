@@ -21,6 +21,7 @@ import FilterRoomBox from '../components/home/FilterRoomBox';
 import { RootState } from '../store';
 import { animated, useSpring } from '@react-spring/web';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { FilterTimeBox } from '../components/home';
 
 export const FadeIn = ({ children, delayTime }: { children: any; delayTime: number }) => {
     const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: delayTime });
@@ -34,7 +35,6 @@ const HomePage: FC<HomeProps> = () => {
     const categoryidString = new URLSearchParams(window.location.search).get('categoryid') || '1';
     const categoryid = parseInt(categoryidString);
     let { rooms, mockingRoomLoading } = useSelector((state: RootState) => state.room);
-    // let [roomLoading, setRoomLoading] = useState(true);
 
     useEffect(() => {
         dispatch(fetchRoomsByCategoryAndConditions({ categoryid }));
@@ -96,6 +96,8 @@ const HomePage: FC<HomeProps> = () => {
             </div>
 
             <FilterRoomBox />
+
+            {/*748 474 583*/}
 
             <ToastContainer
                 position='bottom-right'

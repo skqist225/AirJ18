@@ -10,7 +10,10 @@ import { Slider } from 'antd';
 import $ from 'jquery';
 import { seperateNumber } from '../../helpers/seperateNumber';
 import { MyNumberForMat } from '../utils';
-import { fetchRoomsByCategoryAndConditions } from '../../features/room/roomSlice';
+import {
+    fetchRoomsByCategoryAndConditions,
+    setMockingRoomLoading,
+} from '../../features/room/roomSlice';
 
 interface IFilterRoomBoxProps {}
 
@@ -69,18 +72,19 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                 selectedAmentities.push(parseInt($(this).val() as string));
             });
 
-            // dispatch(
-            //     fetchRoomsByCategoryAndConditions({
-            //         categoryid: categoryId,
-            //         privacies: choosenPrivacy,
-            //         minPrice,
-            //         maxPrice,
-            //         bedRoomCount,
-            //         bedCount,
-            //         bathRoomCount,
-            //         selectedAmentities,
-            //     })
-            // );
+            dispatch(setMockingRoomLoading(true));
+            dispatch(
+                fetchRoomsByCategoryAndConditions({
+                    categoryid: categoryId,
+                    privacies: choosenPrivacy,
+                    minPrice,
+                    maxPrice,
+                    bedRoomCount,
+                    bedCount,
+                    bathRoomCount,
+                    selectedAmentities,
+                })
+            );
         });
 
     return (
@@ -92,11 +96,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                         height='calc(65px + calc(739px + 81px))'
                         className='innerWrapper'
                     >
-                        <div
-                            id='boxHeader'
-                            className='normal-flex'
-                            onClick={() => hideEditThumbnailBox()}
-                        >
+                        <div id='boxHeader' className='normal-flex' onClick={hideEditThumbnailBox}>
                             <div>
                                 <Image
                                     src={getImage('/svg/close2.svg')}
@@ -266,14 +266,14 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                         <div id='boxFooter' className='flex-space'>
                             <div>
                                 <button
-                                    className='manage-photos__cancel-btn'
-                                    onClick={() => hideEditThumbnailBox()}
+                                    className='filter--footer__cancelBtn'
+                                    onClick={hideEditThumbnailBox}
                                 >
                                     Hủy
                                 </button>
                             </div>
                             <div>
-                                <button id='index__filter-btn'>Áp dụng</button>
+                                <button className='filter--footer__applyBtn'>Áp dụng</button>
                             </div>
                         </div>
                     </Div>

@@ -11,9 +11,10 @@ import { MyNumberForMat } from '../../components/utils';
 import { ReviewLine, Amenity, ReviewValue, Rule } from './components';
 import roomDetails from './script/room_details';
 import $ from 'jquery';
-import { Div, Image } from '../../globalStyle';
+import { Div } from '../../globalStyle';
 import './css/room_details.css';
-import Calendar from '../utils/Calendar';
+import Calendar, { getElementsOfDate } from '../utils/Calendar';
+import { seperateNumber } from '../../helpers/seperateNumber';
 
 interface IRoomDetailsProps {}
 
@@ -24,11 +25,101 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
     const { room, loading }: { room: IRoomDetails; loading: boolean } = useSelector(
         (state: RootState) => state.room
     );
+    const { user, wishlistsIDs } = useSelector((state: RootState) => state.user);
 
     const jQuerycode = () => {
         $('html,body').scrollTop(0);
-        roomDetails(room!.price, room!.bookedDates);
+        roomDetails(wishlistsIDs, user!);
     };
+
+    function displayStartDateAndEndDate(startDateArgs: string, endDateArgs: string) {
+        $('#fromDayToDayContainer').css('display', 'block');
+        $('#beforeEndDateContainer').css('display', 'none');
+        $('#fromDay').text(startDateArgs);
+        $('#toDay').text(endDateArgs);
+    }
+
+    function setCheckInAndOutDate(startDateArgs: string, endDateArgs: string) {
+        $('#checkinDate').text(startDateArgs);
+        $('#checkoutDate').text(endDateArgs);
+    }
+
+    function displayNumberOfDays(manyDays: number) {
+        $('#numberOfDaysContainer').css('display', 'block');
+        $('#numberOfDaysContainer').siblings('div').css('display', 'none');
+        $('#daysAtHere').text(manyDays + 2);
+        $('#numberOfNight').text(manyDays + 2);
+        displayPreviewLine();
+        setTotalPrice(manyDays + 2, room!.price);
+    }
+
+    function lockBookedDatesInCalendar() {
+        room!.bookedDates.forEach(
+            ({ checkinDate, checkoutDate }: { checkinDate: string; checkoutDate: string }) => {
+                blockBetween(checkinDate, checkoutDate);
+            }
+        );
+    }
+
+    function blockBetween(startDateArgs: string, endDateArgs: string) {
+        const [startDateDate, startDateMonth, startDateYear] = getElementsOfDate(startDateArgs);
+        const [endDateDate, endDateMonth, endDateYear] = getElementsOfDate(endDateArgs);
+
+        $('.dayInWeek.false').each(function () {
+            const [currDate, currMonth, currYear] = getElementsOfDate(
+                $(this).text() + '/' + $(this).data('month') + '/' + $(this).data('year')
+            );
+
+            if (currMonth === startDateMonth && currMonth === endDateMonth) {
+                if (
+                    currDate > startDateDate &&
+                    currDate < endDateDate &&
+                    currMonth >= startDateMonth &&
+                    currMonth <= endDateMonth &&
+                    currYear >= startDateYear &&
+                    currYear <= endDateYear
+                ) {
+                    addBlockClassAndRemoveClick($(this));
+                }
+            }
+            if (startDateMonth !== endDateMonth) {
+                if (currMonth === startDateMonth) {
+                    if (currDate > startDateDate) {
+                        addBlockClassAndRemoveClick($(this));
+                    }
+                } else if (currMonth === endDateMonth) {
+                    if (currDate < endDateDate) {
+                        addBlockClassAndRemoveClick($(this));
+                    }
+                } else {
+                    if (currMonth > startDateMonth && currMonth < endDateMonth) {
+                        addBlockClassAndRemoveClick($(this));
+                    }
+                }
+            }
+        });
+    }
+
+    function addBlockClassAndRemoveClick(self: JQuery<HTMLElement>) {
+        self.addClass('block__date');
+        self.removeClass('false');
+    }
+
+    function setTotalPrice(manyDays: any, roomPrice: number) {
+        manyDays = parseInt(manyDays);
+
+        const totalRoomPrice = roomPrice * manyDays;
+        const siteFee = totalRoomPrice * 0.05;
+
+        $('#totalPrice').text(seperateNumber(manyDays * roomPrice));
+        $('#siteFee').text(seperateNumber(Math.ceil(siteFee)));
+        $('#finalTotalPrice').text(seperateNumber(Math.ceil(totalRoomPrice + siteFee)));
+    }
+
+    function displayPreviewLine() {
+        $('.previewPrice-line').css('display', 'block');
+        $('.previewPrice-line').last().css('border-bottom', '1px solid rgb(211,211,211)');
+    }
 
     const leftReviewLines = [
         {
@@ -263,6 +354,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 id='numberOfDaysContainer'
                                             >
                                                 <span id='daysAtHere'>1</span> đêm tại
+                                                <span> </span>
                                                 {room.cityName}
                                             </div>
                                         </div>
@@ -280,7 +372,12 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 <span id='toDay'>đến ngày</span>
                                             </div>
                                         </div>
-                                        <Calendar />
+                                        <Calendar
+                                            displayStartDateAndEndDate={displayStartDateAndEndDate}
+                                            setCheckInAndOutDate={setCheckInAndOutDate}
+                                            displayNumberOfDays={displayNumberOfDays}
+                                            lockBookedDatesInCalendar={lockBookedDatesInCalendar}
+                                        />
                                     </div>
                                 </article>
 

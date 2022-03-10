@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import { getImage } from '../../helpers/getImage';
 import { Category } from './Category';
 import { Image } from '../../globalStyle';
-import $ from 'jquery';
 import { ICategory } from '../../features/category/categorySlice';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,12 +9,15 @@ import {
     fetchRoomsByCategoryAndConditions,
     setMockingRoomLoading,
 } from '../../features/room/roomSlice';
+import $ from 'jquery';
+import FilterTimeBox from './FilterTimeBox';
 
 interface IHomeCategoriesProps {}
 
 export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
     const dispatch = useDispatch();
     const [isMoreCategoryClicked, setIsMoreCategoryClicked] = useState(false);
+    const [isTimeFilterClicked, setIsTimeFilterClicked] = useState(false);
     const { categories, loading: categoryLoading } = useSelector(
         (state: RootState) => state.category
     );
@@ -58,10 +60,19 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
         closeMoreCategoryBox();
     }
 
+    function displayTimeSelect() {
+        if (!isTimeFilterClicked) {
+            $('#filterTime__box').css('display', 'block');
+            setIsTimeFilterClicked(true);
+        } else {
+            $('#filterTime__box').css('display', 'none');
+            setIsTimeFilterClicked(false);
+        }
+    }
+
     function displayMoreCategory() {
         if (!isMoreCategoryClicked) {
             $('#home__moreCategory').css('display', 'block');
-
             setIsMoreCategoryClicked(true);
         } else {
             closeMoreCategoryBox();
@@ -137,6 +148,16 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
                         className='f1 normal-flex'
                         style={{ maxWidth: '20%', justifyContent: 'flex-end' }}
                     >
+                        <div className='p-relative mr-10'>
+                            <button className='filterButton' onClick={displayTimeSelect}>
+                                <span className='inline-block fs-14'>Bất cứ lúc nào</span>{' '}
+                                <span>
+                                    <Image src={getImage('/svg/dropdown.svg')} size='12px' />
+                                </span>
+                            </button>
+
+                            <FilterTimeBox />
+                        </div>
                         <div>
                             <button className='filterButton' onClick={displayEditThumbnailBox}>
                                 <span>
