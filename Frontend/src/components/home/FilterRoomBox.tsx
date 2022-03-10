@@ -44,46 +44,44 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
         setMaxPrice(value[1]);
     }
 
-    useEffect(() => {
-        $('#index__filter-btn')
-            .off('click')
-            .on('click', function () {
-                const categoryId = parseInt(
-                    new URLSearchParams(window.location.search).get('categoryid')! as string
-                );
-                console.log(categoryId);
+    $('#index__filter-btn')
+        .off('click')
+        .on('click', function () {
+            const categoryId =
+                parseInt(new URLSearchParams(window.location.search).get('categoryid') as string) ||
+                1;
+            console.log(categoryId);
 
-                let choosenPrivacy: number[] = [];
-                $('input[name="privacyFilter"]:checked').each(function () {
-                    choosenPrivacy.push(parseInt($(this).val()! as string));
-                });
-
-                const minPrice = ($('#min-input__modify').val() as string).replace(/\./g, '');
-                const maxPrice = ($('#max-input__modify').val() as string).replace(/\./g, '');
-
-                const bedRoomCount = parseInt($('#listings__bed-room-count').text());
-                const bedCount = parseInt($('#listings__bed-count').text());
-                const bathRoomCount = parseInt($('#listings__bath-room-count').text());
-
-                const selectedAmentities: number[] = [];
-                $('input[class="amentitySelected"]:checked').each(function () {
-                    selectedAmentities.push(parseInt($(this).val() as string));
-                });
-
-                dispatch(
-                    fetchRoomsByCategoryAndConditions({
-                        categoryid: categoryId,
-                        privacies: choosenPrivacy,
-                        minPrice,
-                        maxPrice,
-                        bedRoomCount,
-                        bedCount,
-                        bathRoomCount,
-                        selectedAmentities,
-                    })
-                );
+            let choosenPrivacy: number[] = [];
+            $('input[name="privacyFilter"]:checked').each(function () {
+                choosenPrivacy.push(parseInt($(this).val()! as string));
             });
-    }, [averageRoomPricePerNight]);
+
+            const minPrice = ($('#min-input__modify').val() as string).replace(/\./g, '');
+            const maxPrice = ($('#max-input__modify').val() as string).replace(/\./g, '');
+
+            const bedRoomCount = parseInt($('#listings__bed-room-count').text());
+            const bedCount = parseInt($('#listings__bed-count').text());
+            const bathRoomCount = parseInt($('#listings__bath-room-count').text());
+
+            const selectedAmentities: number[] = [];
+            $('input[class="amentitySelected"]:checked').each(function () {
+                selectedAmentities.push(parseInt($(this).val() as string));
+            });
+
+            // dispatch(
+            //     fetchRoomsByCategoryAndConditions({
+            //         categoryid: categoryId,
+            //         privacies: choosenPrivacy,
+            //         minPrice,
+            //         maxPrice,
+            //         bedRoomCount,
+            //         bedCount,
+            //         bathRoomCount,
+            //         selectedAmentities,
+            //     })
+            // );
+        });
 
     return (
         <>

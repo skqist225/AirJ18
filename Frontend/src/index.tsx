@@ -8,6 +8,7 @@ import GlobalStyle from './globalStyle';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 ReactDOM.render(
     <Provider store={store}>

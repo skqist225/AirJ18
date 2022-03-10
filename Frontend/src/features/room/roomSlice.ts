@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { data } from 'jquery';
 import api from '../../axios';
 import { IRoom, IRoomGroup, IRoomPrivacy } from '../../type/room/type_Room';
 import { IRoomDetails } from '../../type/room/type_RoomDetails';
@@ -16,7 +17,7 @@ interface IFetchRoomsByCategoryAndConditions {
 }
 
 export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
-    'room/fetchRoomsByCategoryId',
+    'room/fetchRoomsByCategoryAndConditions',
     async (
         {
             categoryid,
@@ -113,6 +114,7 @@ type RoomState = {
     roomPrivacies: IRoomPrivacy[];
     roomGroups: IRoomGroup[];
     averageRoomPricePerNight: number;
+    mockingRoomLoading: boolean;
 };
 
 const initialState: RoomState = {
@@ -127,13 +129,19 @@ const initialState: RoomState = {
     loading: true,
     roomPrivacies: [],
     roomGroups: [],
+    mockingRoomLoading: true,
     averageRoomPricePerNight: 0,
 };
 
 const roomSlice = createSlice({
     name: 'room',
     initialState,
-    reducers: {},
+    reducers: {
+        setMockingRoomLoading: (state, { payload }) => {
+            console.log(payload);
+            state.mockingRoomLoading = payload;
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(fetchRoomsByCategoryAndConditions.fulfilled, (state, { payload }) => {
@@ -176,5 +184,7 @@ const roomSlice = createSlice({
             );
     },
 });
-
+export const {
+    actions: { setMockingRoomLoading },
+} = roomSlice;
 export default roomSlice.reducer;

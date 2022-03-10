@@ -1,159 +1,153 @@
-import { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { getImage } from '../../helpers/getImage';
 import { Category } from './Category';
 import { Image } from '../../globalStyle';
 import $ from 'jquery';
 import { ICategory } from '../../features/category/categorySlice';
+import { RootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    fetchRoomsByCategoryAndConditions,
+    setMockingRoomLoading,
+} from '../../features/room/roomSlice';
 
-interface IHomeCategoriesProps {
-    categories: ICategory[];
-}
+interface IHomeCategoriesProps {}
 
-export const HomeCategories: FC<IHomeCategoriesProps> = ({ categories }) => {
-    const jQueryCode = () => {
-        $('.listings__minus-btn').attr('disabled', 'true');
-        const maxModifyInput = $('#max-input__modify');
-        const minModifyInput = $('#min-input__modify');
-        const roomPriceRange = $('#roomPriceRange');
-
-        maxModifyInput.val(roomPriceRange.attr('max')!);
-        minModifyInput.val(parseInt(roomPriceRange.attr('min')! as string));
-
-        maxModifyInput.on('change', function () {
-            roomPriceRange.attr('max', parseInt($(this).val()! as string));
-        });
-
-        minModifyInput.on('change', function () {
-            roomPriceRange.attr('min', parseInt($(this).val() as string));
-        });
-
-        $('.incAndDecBtn').each(function () {
-            $(this).on('click', function () {
-                const spanInfoTag = $(this).siblings(`#${$(this).data('edit')}`);
-                let spanValue = parseInt(spanInfoTag.text()! as string);
-                const dataFunction = $(this).data('function');
-                const deleteButton = $('.deleteBtn.' + $(this).data('trigger'));
-                const applyButton = $('.applyBtn.' + $(this).data('trigger'));
-                const self = $(this);
-
-                if (dataFunction === 'dec') {
-                    if (spanValue > 0) {
-                        if (spanValue === 1) $(this).attr('disabled', 'true');
-                        spanInfoTag.text(--spanValue);
-                    }
-                    let countZero = 0;
-                    if (spanValue === 0)
-                        $('.listings__minus-btn').each(function () {
-                            if (!$(this).is(self)) {
-                                const spanValue = parseInt(
-                                    $(this)
-                                        .siblings(`#${$(this).data('edit')}`)
-                                        .text()! as string
-                                );
-                                if (spanValue === 0) countZero++;
-                            }
-                        });
-
-                    if (countZero === $('.listings__minus-btn').length - 1)
-                        deleteButton.attr('disabled', 'true');
-                }
-
-                if (dataFunction === 'inc') {
-                    if (spanValue === 0)
-                        $(this)
-                            .siblings(`.listings__minus-btn.incAndDecBtn`)
-                            .removeAttr('disabled');
-                    spanInfoTag.text(++spanValue);
-
-                    if (spanValue > 0) deleteButton.removeAttr('disabled');
-                }
-            });
-        });
-
-        $('#index__filter-btn').click(function () {
-            $(this).click(function () {
-                const categoryId = new URLSearchParams(window.location.search).get('categoryId');
-
-                let choosenPrivacy: number[] = [];
-                $('input[name="privacyFilter"]:checked').each(function () {
-                    choosenPrivacy.push(parseInt($(this).val()! as string));
-                });
-
-                const minPrice = ($('#min-input__modify').val() as string).replace(/\./g, '');
-                const maxPrice = $('#max-input__modify').val();
-
-                const bedRoomCount = parseInt($('#listings__bed-room-count').text()! as string);
-                const bedCount = parseInt($('#listings__bed-count').text()! as string);
-                const bathRoomCount = parseInt($('#listings__bath-room-count').text()! as string);
-
-                const selectedAmentities: number[] = [];
-                $('input[class="amentitySelected"]:checked').each(function () {
-                    selectedAmentities.push(parseInt($(this).val() as string));
-                });
-
-                window.location.href = `${
-                    window.location.href
-                }?categoryId=${categoryId}&privacies=${choosenPrivacy.join(
-                    ' '
-                )}&minPrice=${minPrice}&maxPrice=${maxPrice}&bedRoom=${bedRoomCount}&bed=${bedCount}&bathRoom=${bathRoomCount}&amentities=${selectedAmentities.join(
-                    ' '
-                )}`;
-            });
-        });
-    };
+export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
+    const dispatch = useDispatch();
+    const [isMoreCategoryClicked, setIsMoreCategoryClicked] = useState(false);
+    const { categories, loading: categoryLoading } = useSelector(
+        (state: RootState) => state.category
+    );
 
     function displayEditThumbnailBox() {
         $('#chooseRoomThumbnail').css('display', 'block');
         $('#home__mainContainer').addClass('remove-scroll');
     }
 
-    function displayMoreCategory() {}
+    function closeMoreCategoryBox() {
+        $('#home__moreCategory').css('display', 'none');
+        setIsMoreCategoryClicked(false);
+    }
+
+    function setActiveTab(catContainers: JQuery<HTMLElement>, tabNeedActive: JQuery<HTMLElement>) {
+        catContainers.each(function () {
+            $(this).removeClass('active');
+
+            const insideLoopimage = $('.cat__image', this);
+            insideLoopimage.removeClass('active');
+        });
+
+        tabNeedActive.addClass('active');
+        $('.cat__image', tabNeedActive).addClass('active');
+    }
+
+    function setLastItem(event: React.MouseEvent<HTMLLIElement, MouseEvent>) {
+        const self = $(event.currentTarget!);
+        $('#getMoreCategoryBtn').text(self.text());
+
+        dispatch(setMockingRoomLoading(true));
+        dispatch(fetchRoomsByCategoryAndConditions({ categoryid: self.data('category-id') }));
+        const addMoreIcon = $('#addMoreIcon');
+        addMoreIcon.addClass('active');
+        addMoreIcon.attr('src', getImage(self.data('category-icon')));
+
+        const catContainers = $('.cat__container');
+        setActiveTab(catContainers, self.parent().parent().parent());
+
+        closeMoreCategoryBox();
+    }
+
+    function displayMoreCategory() {
+        if (!isMoreCategoryClicked) {
+            $('#home__moreCategory').css('display', 'block');
+
+            setIsMoreCategoryClicked(true);
+        } else {
+            closeMoreCategoryBox();
+        }
+    }
 
     return (
-        <div className='flex' style={{ marginBottom: '25px', marginTop: '10px' }}>
-            <div className='flex f1' style={{ maxWidth: '50%' }}>
-                {categories.length > 0 &&
-                    categories.map((category: ICategory, index: number) => {
-                        if (index > 7) {
-                            return null;
-                        }
+        <>
+            {!categoryLoading && (
+                <div className='flex' style={{ marginBottom: '25px', marginTop: '10px' }}>
+                    <div className='normal-flex f1' style={{ maxWidth: '60%' }}>
+                        {categories.length > 0 &&
+                            categories.map((category: ICategory, index: number) => {
+                                if (index > 7) {
+                                    return null;
+                                }
 
-                        return (
-                            <Category
-                                category={category}
-                                index={index}
-                                key={category.name + '-' + category.id}
-                            />
-                        );
-                    })}
-                <div className='cat__container p-relative'>
-                    <button
-                        className='button__container normal-flex'
-                        style={{ justifyContent: 'center' }}
-                        onClick={e => {
-                            displayMoreCategory();
-                        }}
+                                return (
+                                    <Category
+                                        category={category}
+                                        index={index}
+                                        key={category.name + '-' + category.id}
+                                    />
+                                );
+                            })}
+                        <div className='cat__container p-relative'>
+                            <div className='normal-flex'>
+                                <div>
+                                    <img id='addMoreIcon' className='cat__image' src='' />
+                                </div>
+                                <button
+                                    className='button__container normal-flex'
+                                    id='getMoreCategoryBtn'
+                                    style={{ justifyContent: 'center' }}
+                                    onClick={displayMoreCategory}
+                                >
+                                    <div
+                                        className='cat__name normal-flex'
+                                        style={{ marginRight: '5px' }}
+                                    >
+                                        Thêm
+                                    </div>
+                                    <div>
+                                        <Image src={getImage('/svg/dropdown.svg')} size='10px' />
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div id='home__moreCategory'>
+                                <ul>
+                                    {categories.length > 0 &&
+                                        categories.map((category: ICategory, index: number) => {
+                                            if (index <= 7) {
+                                                return null;
+                                            }
+
+                                            return (
+                                                <li
+                                                    data-category-id={category.id}
+                                                    data-category-icon={category.iconPath}
+                                                    key={category.name + '-' + category.id}
+                                                    onClick={setLastItem}
+                                                >
+                                                    {category.name}
+                                                </li>
+                                            );
+                                        })}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        className='f1 normal-flex'
+                        style={{ maxWidth: '20%', justifyContent: 'flex-end' }}
                     >
-                        <div className='cat__name normal-flex' style={{ marginRight: '5px' }}>
-                            Thêm
-                        </div>
                         <div>
-                            <Image src={getImage('/svg/dropdown.svg')} size='10px' />
+                            <button className='filterButton' onClick={displayEditThumbnailBox}>
+                                <span>
+                                    <Image src={getImage('/svg/filter.svg')} size='16px' />
+                                </span>
+                                <span className='inline-block fs-14'>Bộ lọc</span>
+                            </button>
                         </div>
-                    </button>
-                    <div id='home__moreCategory'></div>
+                    </div>
                 </div>
-            </div>
-            <div className='f1 normal-flex' style={{ maxWidth: '20%', justifyContent: 'flex-end' }}>
-                <div>
-                    <button className='filterButton' onClick={() => displayEditThumbnailBox()}>
-                        <span>
-                            <Image src={getImage('/svg/filter.svg')} size='16px' />
-                        </span>
-                        <span className='inline-block fs-14'>Bộ lọc</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+            )}
+        </>
     );
 };

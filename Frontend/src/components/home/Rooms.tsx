@@ -2,15 +2,13 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { Room } from './Room';
-import {
-    fetchWishlistsIDsOfCurrentUser,
-    fetchWishlistsOfCurrentUser,
-} from '../../features/user/userSlice';
+import { fetchWishlistsIDsOfCurrentUser } from '../../features/user/userSlice';
 import { addClickEventForLoveButton } from '../../components/home/js/addToWishlists';
+
 import { IRoom } from '../../type/room/type_Room';
 
 interface IRoomsProps {
-    rooms: Array<IRoom>;
+    rooms: IRoom[];
 }
 
 export const Rooms: FC<IRoomsProps> = ({ rooms }) => {
@@ -28,17 +26,19 @@ export const Rooms: FC<IRoomsProps> = ({ rooms }) => {
     }, [wishlistsIDsFetching, user]);
 
     return (
-        <section className='room__section'>
-            <div id='rooms__container'>
-                {rooms.length > 0 &&
-                    rooms.map((room: IRoom, index: number) => {
-                        return (
-                            <div id='rooms__component--wrapper' key={room.name + '-' + room.id}>
-                                <Room room={room} index={index} />
-                            </div>
-                        );
-                    })}
-            </div>
-        </section>
+        <>
+            <section className='room__section'>
+                <div id='rooms__container'>
+                    {rooms.length &&
+                        rooms.map((room: IRoom, index: number) => {
+                            return (
+                                <div id='rooms__component--wrapper' key={room.name + '-' + room.id}>
+                                    <Room room={room} index={index} />
+                                </div>
+                            );
+                        })}
+                </div>
+            </section>
+        </>
     );
 };

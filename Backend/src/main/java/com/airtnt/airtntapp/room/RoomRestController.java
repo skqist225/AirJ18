@@ -127,6 +127,7 @@ public class RoomRestController {
             }
 
             RoomHomePageDTO roomHomePageDTO = RoomHomePageDTO.builder()
+                    .name(room.getName())
                     .thumbnail(room.renderThumbnailImage())
                     .images(images)
                     .price(room.getPrice())
@@ -396,8 +397,6 @@ public class RoomRestController {
             }
             totalRecords += rp.getTotalRecords();
         }
-        System.out.println(totalRecords);
-        System.out.println(averageRoomPricePerNight);
 
         return (averageRoomPricePerNight / totalRecords);
     }

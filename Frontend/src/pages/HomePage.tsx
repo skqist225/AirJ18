@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HomeCategories } from '../components/home/HomeCategories';
 import { fetchCategories } from '../features/category/categorySlice';
@@ -6,45 +6,54 @@ import {
     fetchRoomPrivacies,
     fetchRoomsByCategoryAndConditions,
     getAverageRoomPricePerNight,
+    setMockingRoomLoading,
 } from '../features/room/roomSlice';
-import { RootState } from '../store';
 import { Rooms } from '../components/home/Rooms';
 import Header from '../components/Header';
 
 import '../components/home/css/home.css';
-import { Div, Image } from '../globalStyle';
+import { Image } from '../globalStyle';
 import { getImage } from '../helpers/getImage';
 import { ToastContainer } from 'react-toastify';
 
 import { fetchAmenities } from '../features/amenity/amenitySlice';
-import { IncAndDecBtn } from '../components/hosting/listings/IncAndDecBtn';
-import $ from 'jquery';
 import FilterRoomBox from '../components/home/FilterRoomBox';
+import { RootState } from '../store';
+import { animated, useSpring } from '@react-spring/web';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
+export const FadeIn = ({ children, delayTime }: { children: any; delayTime: number }) => {
+    const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: delayTime });
+
+    return <animated.div style={props}>{children}</animated.div>;
+};
 type HomeProps = {};
 
 const HomePage: FC<HomeProps> = () => {
     const dispatch = useDispatch();
-    const categoryid = 1;
+    const categoryidString = new URLSearchParams(window.location.search).get('categoryid') || '1';
+    const categoryid = parseInt(categoryidString);
+    let { rooms, mockingRoomLoading } = useSelector((state: RootState) => state.room);
+    // let [roomLoading, setRoomLoading] = useState(true);
 
-    const { rooms, loading: roomLoading } = useSelector((state: RootState) => state.room);
-    const { categories, loading: categoryLoading } = useSelector(
-        (state: RootState) => state.category
-    );
+    useEffect(() => {
+        dispatch(fetchRoomsByCategoryAndConditions({ categoryid }));
+    }, [categoryid]);
 
     useEffect(() => {
         dispatch(fetchCategories());
-        dispatch(fetchRoomsByCategoryAndConditions({ categoryid }));
-    }, [dispatch, categoryid]);
-
-    useEffect(() => {
         dispatch(fetchRoomPrivacies());
         dispatch(fetchAmenities());
+        dispatch(getAverageRoomPricePerNight());
     }, []);
 
     useEffect(() => {
-        dispatch(getAverageRoomPricePerNight());
-    }, []);
+        const timer = setTimeout(() => {
+            dispatch(setMockingRoomLoading(false));
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [rooms]);
 
     return (
         <div className='p-relative' id='home__mainContainer'>
@@ -52,8 +61,28 @@ const HomePage: FC<HomeProps> = () => {
 
             <div>
                 <div className='home__body'>
-                    {!categoryLoading && <HomeCategories categories={categories} />}
-                    <div>{!roomLoading && <Rooms rooms={rooms} />}</div>
+                    <HomeCategories />
+
+                    {!mockingRoomLoading ? (
+                        <div>
+                            <FadeIn delayTime={333} children={<Rooms rooms={rooms} />} />
+                        </div>
+                    ) : (
+                        <div id='test'>
+                            {Array.from({ length: 20 }).map((_, index) => (
+                                <SkeletonTheme key={index}>
+                                    <p style={{ marginRight: '10px' }}>
+                                        <Skeleton
+                                            count={1}
+                                            height='300px'
+                                            width='300px'
+                                            duration={1}
+                                        />
+                                    </p>
+                                </SkeletonTheme>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div>
                     <div>
