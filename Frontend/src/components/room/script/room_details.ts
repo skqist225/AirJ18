@@ -508,7 +508,7 @@ export default async function roomDetails(roomPrice: number, bookedDates: IBooke
 
     function addClickEventForDay() {
         $('.dayInWeek.false').each(function () {
-            $(this).click(function () {
+            $(this).on('click', function () {
                 $('.dayInWeek.false').each(function () {
                     if ($(this).hasClass('checked')) {
                         haveStartDate = true;

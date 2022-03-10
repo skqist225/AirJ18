@@ -10,10 +10,10 @@ import Header from '../Header';
 import { MyNumberForMat } from '../../components/utils';
 import { ReviewLine, Amenity, ReviewValue, Rule } from './components';
 import roomDetails from './script/room_details';
-import 'alertifyjs/build/css/alertify.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import './css/room_details.css';
+import $ from 'jquery';
 import { Div, Image } from '../../globalStyle';
+import './css/room_details.css';
+import Calendar from '../utils/Calendar';
 
 interface IRoomDetailsProps {}
 
@@ -26,6 +26,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
     );
 
     const jQuerycode = () => {
+        $('html,body').scrollTop(0);
         roomDetails(room!.price, room!.bookedDates);
     };
 
@@ -279,94 +280,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 <span id='toDay'>đến ngày</span>
                                             </div>
                                         </div>
-                                        <div className='rdt_calender__header'>
-                                            <div className='flex3'>
-                                                <div className='firstMonth'>
-                                                    <div className='normal-flex'>
-                                                        <div>
-                                                            <button
-                                                                type='button'
-                                                                className={
-                                                                    'getThePrevTwoMonth' +
-                                                                    ' getMonth-btn'
-                                                                }
-                                                            >
-                                                                <span>
-                                                                    <Image
-                                                                        src={getImage(
-                                                                            '/svg/close3.svg'
-                                                                        )}
-                                                                        size='12px'
-                                                                    />
-                                                                </span>
-                                                            </button>
-                                                        </div>
-
-                                                        <div className='monthTitle firstMonthAndYear'>
-                                                            Tháng MM năm YYY
-                                                        </div>
-                                                    </div>
-                                                    <div className='rdt_calender__body'>
-                                                        <Div
-                                                            className='flex3'
-                                                            width='calc(44px * 7)'
-                                                        >
-                                                            <div className='date'>CN</div>
-                                                            <div className='date'>T2</div>
-                                                            <div className='date'>T3</div>
-                                                            <div className='date'>T4</div>
-                                                            <div className='date'>T5</div>
-                                                            <div className='date'>T6</div>
-                                                            <div className='date'>T7</div>
-                                                        </Div>
-                                                        <table className='rdt_calender__days'></table>
-                                                    </div>
-                                                </div>
-                                                <div className='secondMonth'>
-                                                    <div className='normal-flex'>
-                                                        <div className='pseudoContainer'>
-                                                            <div className='secondMonthAndYear monthTitle'>
-                                                                Tháng MM + 1 năm YYYY
-                                                            </div>
-                                                        </div>
-
-                                                        <div>
-                                                            <button
-                                                                type='button'
-                                                                className={
-                                                                    'getTheNextTwoMonth' +
-                                                                    ' getMonth-btn'
-                                                                }
-                                                            >
-                                                                <span>
-                                                                    <Image
-                                                                        src={getImage(
-                                                                            '/svg/nextMonth.svg'
-                                                                        )}
-                                                                        size='12px'
-                                                                    />
-                                                                </span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div className='rdt_calender__body'>
-                                                        <Div
-                                                            className='flex3'
-                                                            width='calc(44px * 7)'
-                                                        >
-                                                            <div className='date'>CN</div>
-                                                            <div className='date'>T2</div>
-                                                            <div className='date'>T3</div>
-                                                            <div className='date'>T4</div>
-                                                            <div className='date'>T5</div>
-                                                            <div className='date'>T6</div>
-                                                            <div className='date'>T7</div>
-                                                        </Div>
-                                                        <table className='rdt_calender__days_plus-1'></table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <Calendar />
                                     </div>
                                 </article>
 

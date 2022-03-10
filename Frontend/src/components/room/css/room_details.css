@@ -573,18 +573,6 @@ tbody.calendar tr {
     height: 0;
 }
 
-.firstMonth {
-    flex: 1;
-    max-width: 50%;
-    padding: 0 13px;
-}
-
-.secondMonth {
-    flex: 1;
-    max-width: 50%;
-    padding: 0 13px;
-}
-
 .dayInWeek {
     width: 42px;
     height: 42px;
@@ -602,6 +590,7 @@ tbody.calendar tr {
     color: rgb(34, 34, 34);
     border: 15px solid rgb(255, 255, 255);
     cursor: pointer;
+    margin: 0.9px;
 }
 
 .dayInWeek.false:hover {
@@ -626,7 +615,8 @@ tbody.calendar tr {
     font-weight: 600;
     color: rgb(34, 34, 34);
     border: 15px solid rgb(247, 247, 247);
-    background-color: palegreen;
+    background-color: #bee3f8;
+    border-color: #bee3f8;
 }
 
 .dayInWeek.false.checked {
@@ -644,60 +634,15 @@ tbody.calendar tr {
     font-size: 14px;
     line-height: 18px;
     font-weight: 600;
-    background: rgb(34, 34, 34);
-    border: 1px solid rgb(34, 34, 34);
+    background: #3182ce;
+    border: 1px solid #3182ce;
     color: rgb(255, 255, 255);
     position: relative;
-}
-
-.date {
-    width: 42px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.monthTitle,
-.secondMonthTitle {
-    text-align: center;
-    padding: 22px 49px;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.secondMonthTitle {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding-bottom: 0;
 }
 
 .pseudoContainer {
     flex: 1;
     text-align: center;
-}
-
-.getMonth-btn {
-    appearance: none;
-    display: inline-block;
-    border-radius: 50%;
-    border: none;
-    outline: none;
-    margin: 0px;
-    padding: 0px;
-    color: rgb(34, 34, 34);
-    cursor: pointer;
-    touch-action: manipulation;
-    position: relative;
-    background: transparent;
-    transition: -ms-transform 2px ease 0s, -webkit-transform 2px ease 0s, transform 2px ease 0s;
-    width: 48px;
-    height: 48px;
-}
-
-.getMonth-btn:hover {
-    border: none !important;
-    background: rgb(247, 247, 247) !important;
-    color: rgb(0, 0, 0) !important;
 }
 
 .block__date {

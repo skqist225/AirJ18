@@ -1,0 +1,51 @@
+.month__container {
+    /* padding: 0 13px; */
+    max-width: 334px;
+    padding-right: 26px;
+}
+
+.month__getMonthBtn {
+    appearance: none;
+    display: inline-block;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    color: rgb(34, 34, 34);
+    cursor: pointer;
+    touch-action: manipulation;
+    position: relative;
+    background: transparent;
+    transition: -ms-transform 2px ease 0s, -webkit-transform 2px ease 0s, transform 2px ease 0s;
+    width: 48px;
+    height: 48px;
+}
+
+.month__getMonthBtn:hover {
+    border: none !important;
+    background: rgb(247, 247, 247) !important;
+    color: rgb(0, 0, 0) !important;
+}
+
+.month__title {
+    text-align: center;
+    padding: 22px;
+    margin-right: 26px;
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+    max-width: 334px;
+}
+
+.month__title.secondMonthAndYear {
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 79%;
+}
+
+.date {
+    width: 42px;
+    text-align: center;
+    font-size: 14px;
+}
