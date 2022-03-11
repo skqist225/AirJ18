@@ -119,9 +119,9 @@ public class RoomRestController {
         filters.put("bookingDates", bookingDates);
 
         List<Room> rooms = roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getContent();
-        System.out.println("Number of elements");
+        System.out.println("total eles: ");
         System.out.println(roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getTotalElements());
-        System.out.println("-------------------");
+        System.out.println("-------------");
 
         List<RoomHomePageDTO> roomHomePageDTOs = new ArrayList<>();
         for (Room room : rooms) {

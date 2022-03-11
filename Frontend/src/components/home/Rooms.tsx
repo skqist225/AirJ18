@@ -29,7 +29,7 @@ export const Rooms: FC<IRoomsProps> = ({ rooms }) => {
         <>
             <section className='room__section'>
                 <div id='rooms__container'>
-                    {rooms.length &&
+                    {rooms?.length &&
                         rooms.map((room: IRoom, index: number) => {
                             return (
                                 <div id='rooms__component--wrapper' key={room.name + '-' + room.id}>

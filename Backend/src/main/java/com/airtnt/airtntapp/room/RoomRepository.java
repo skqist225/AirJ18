@@ -27,7 +27,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
                         + " AND r.price >= :minPrice AND r.price <= :maxPrice"
                         + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
                         + " AND ra.id IN (:amentitiesID) AND r.privacyType.id IN (:privacies)"
-                        + " AND rb.checkinDate NOT IN (:bookingDates) AND rb.checkoutDate NOT IN (:bookingDates)")
+                        + " AND ((rb.checkinDate NOT IN (:bookingDates) OR rb.checkinDate = NULL) AND (rb.checkoutDate NOT IN (:bookingDates) OR rb.checkoutDate = NULL)) GROUP BY r.id")
         public Page<Room> getRoomByCategoryAndConditions(Integer categoryId, boolean status,
                         float minPrice, float maxPrice, int bedroomCount,
                         int bedCount,
@@ -44,11 +44,11 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
                         int bedCount,
                         int bathroomCount, @Param("privacies") List<Integer> privacies, Pageable pageable);
 
-        @Query("SELECT r FROM Room r JOIN r.bookings rb WHERE r.category.id = :categoryId AND r.status = :status"
+        @Query("SELECT r FROM Room r LEFT JOIN r.bookings rb WHERE r.category.id = :categoryId AND r.status = :status"
                         + " AND r.price >= :minPrice AND r.price <= :maxPrice"
                         + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
                         + " AND r.privacyType.id IN (:privacies)"
-                        + " AND rb.checkinDate NOT IN (:bookingDates) AND rb.checkoutDate NOT IN (:bookingDates)")
+                        + " AND ((rb.checkinDate NOT IN (:bookingDates) OR rb.checkinDate = NULL) AND (rb.checkoutDate NOT IN (:bookingDates) OR rb.checkoutDate = NULL)) GROUP BY r.id")
         public Page<Room> getRoomByCategoryAndConditions(Integer categoryId, boolean status, float minPrice,
                         float maxPrice, int bedroomCount,
                         int bedCount,

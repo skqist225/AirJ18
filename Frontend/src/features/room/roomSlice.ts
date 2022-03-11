@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { data } from 'jquery';
 import api from '../../axios';
 import { IRoom, IRoomGroup, IRoomPrivacy } from '../../type/room/type_Room';
 import { IRoomDetails } from '../../type/room/type_RoomDetails';
@@ -8,12 +7,13 @@ import { IRoomListings } from '../../type/room/type_RoomListings';
 interface IFetchRoomsByCategoryAndConditions {
     categoryid: number;
     privacies?: number[];
-    minPrice?: string;
-    maxPrice?: string;
+    minPrice?: number;
+    maxPrice?: number;
     bedRoomCount?: number;
     bedCount?: number;
     bathRoomCount?: number;
     selectedAmentities?: number[];
+    bookingDates?: string[];
 }
 
 export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
@@ -22,12 +22,13 @@ export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
         {
             categoryid,
             privacies = [],
-            minPrice = '0',
-            maxPrice = '1000000000',
+            minPrice = 0,
+            maxPrice = 1000000000,
             bedRoomCount = 0,
             bedCount = 0,
             bathRoomCount = 0,
             selectedAmentities = [],
+            bookingDates = [],
         }: IFetchRoomsByCategoryAndConditions,
         { dispatch, getState, rejectWithValue }
     ) => {
@@ -37,8 +38,9 @@ export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
                     ' '
                 )}&minPrice=${minPrice}&maxPrice=${maxPrice}&bedRoom=${bedRoomCount}&bed=${bedCount}&bathRoom=${bathRoomCount}&amentities=${selectedAmentities.join(
                     ' '
-                )}`
+                )}&bookingDates=${bookingDates.join(',')}`
             );
+            if (data) dispatch(setMockingRoomLoading(true));
             return { data };
         } catch (error) {}
     }
@@ -115,6 +117,16 @@ type RoomState = {
     roomGroups: IRoomGroup[];
     averageRoomPricePerNight: number;
     mockingRoomLoading: boolean;
+    filterObject: {
+        choosenPrivacy: number[];
+        minPrice: number;
+        maxPrice: number;
+        bedCount: number;
+        bedRoomCount: number;
+        bathRoomCount: number;
+        selectedAmentities: number[];
+        bookingDates: string[];
+    };
 };
 
 const initialState: RoomState = {
@@ -131,6 +143,16 @@ const initialState: RoomState = {
     roomGroups: [],
     mockingRoomLoading: true,
     averageRoomPricePerNight: 0,
+    filterObject: {
+        choosenPrivacy: [],
+        minPrice: 0,
+        maxPrice: 100000000,
+        bedCount: 0,
+        bedRoomCount: 0,
+        bathRoomCount: 0,
+        selectedAmentities: [],
+        bookingDates: [],
+    },
 };
 
 const roomSlice = createSlice({
@@ -138,8 +160,22 @@ const roomSlice = createSlice({
     initialState,
     reducers: {
         setMockingRoomLoading: (state, { payload }) => {
-            console.log(payload);
             state.mockingRoomLoading = payload;
+        },
+        setCurrentFilterObject: (state, { payload }) => {
+            state.filterObject = payload;
+        },
+        resetCurretnFilterObject: state => {
+            state.filterObject = {
+                choosenPrivacy: [],
+                minPrice: 0,
+                maxPrice: 100000000,
+                bedCount: 0,
+                bedRoomCount: 0,
+                bathRoomCount: 0,
+                selectedAmentities: [],
+                bookingDates: [],
+            };
         },
     },
     extraReducers: builder => {
@@ -185,6 +221,6 @@ const roomSlice = createSlice({
     },
 });
 export const {
-    actions: { setMockingRoomLoading },
+    actions: { setMockingRoomLoading, setCurrentFilterObject, resetCurretnFilterObject },
 } = roomSlice;
 export default roomSlice.reducer;

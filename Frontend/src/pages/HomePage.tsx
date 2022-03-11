@@ -34,7 +34,7 @@ const HomePage: FC<HomeProps> = () => {
     const dispatch = useDispatch();
     const categoryidString = new URLSearchParams(window.location.search).get('categoryid') || '1';
     const categoryid = parseInt(categoryidString);
-    let { rooms, mockingRoomLoading } = useSelector((state: RootState) => state.room);
+    let { rooms, mockingRoomLoading, loading } = useSelector((state: RootState) => state.room);
 
     useEffect(() => {
         dispatch(fetchRoomsByCategoryAndConditions({ categoryid }));
@@ -64,9 +64,11 @@ const HomePage: FC<HomeProps> = () => {
                     <HomeCategories />
 
                     {!mockingRoomLoading ? (
-                        <div>
-                            <FadeIn delayTime={333} children={<Rooms rooms={rooms} />} />
-                        </div>
+                        !loading && (
+                            <div>
+                                <FadeIn delayTime={333} children={<Rooms rooms={rooms} />} />
+                            </div>
+                        )
                     ) : (
                         <div id='test'>
                             {Array.from({ length: 20 }).map((_, index) => (

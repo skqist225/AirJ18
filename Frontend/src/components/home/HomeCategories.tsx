@@ -48,7 +48,6 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
         const self = $(event.currentTarget!);
         $('#getMoreCategoryBtn').text(self.text());
 
-        dispatch(setMockingRoomLoading(true));
         dispatch(fetchRoomsByCategoryAndConditions({ categoryid: self.data('category-id') }));
         const addMoreIcon = $('#addMoreIcon');
         addMoreIcon.addClass('active');
@@ -156,7 +155,11 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
                                 </span>
                             </button>
 
-                            <FilterTimeBox />
+                            <FilterTimeBox
+                                categoryid={$('.cat__container')
+                                    .filter('.active')
+                                    .data('category-id')}
+                            />
                         </div>
                         <div>
                             <button className='filterButton' onClick={displayEditThumbnailBox}>

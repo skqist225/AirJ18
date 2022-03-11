@@ -1,6 +1,11 @@
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import {
+    fetchRoomsByCategoryAndConditions,
+    resetCurretnFilterObject,
+    setCurrentFilterObject,
+} from '../features/room/roomSlice';
 import { logout } from '../features/user/userSlice';
 import { getImage } from '../helpers/getImage';
 import { RootState } from '../store';
@@ -39,18 +44,28 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
         dispatch(logout());
     };
 
+    function refreshPage() {
+        dispatch(resetCurretnFilterObject());
+        dispatch(fetchRoomsByCategoryAndConditions({ categoryid: 1 }));
+
+        window.location.href = '/';
+    }
+
     return (
         <header className='header'>
             <div className='header__container'>
                 <div className='header__right'>
-                    <Link to='/'>
+                    <button
+                        style={{ outline: 'none', border: 'none', backgroundColor: 'none' }}
+                        onClick={refreshPage}
+                    >
                         <img
                             src={getImage('/images/airtntlogo.png')}
                             id='airj18-logo'
                             alt='application-logo'
                             className='image'
                         />
-                    </Link>
+                    </button>
                 </div>
                 {includeMiddle && (
                     <div className='header__middle'>

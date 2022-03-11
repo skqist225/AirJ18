@@ -5,12 +5,22 @@ import Calendar from '../utils/Calendar';
 import $ from 'jquery';
 import './css/filter_time.css';
 import axios from '../../axios';
+import {
+    fetchRoomsByCategoryAndConditions,
+    setCurrentFilterObject,
+} from '../../features/room/roomSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
-interface IFilterTimeBoxProps {}
+interface IFilterTimeBoxProps {
+    categoryid: string;
+}
 
-const FilterTimeBox: FC<IFilterTimeBoxProps> = ({}) => {
+const FilterTimeBox: FC<IFilterTimeBoxProps> = ({ categoryid }) => {
+    const dispatch = useDispatch();
     const [calendarActivated, setCalendarActivated] = useState(false);
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
+    const { filterObject } = useSelector((state: RootState) => state.room);
 
     const loopLength = 13 - currentMonth;
     const currentYear = new Date().getFullYear();
@@ -103,11 +113,25 @@ const FilterTimeBox: FC<IFilterTimeBoxProps> = ({}) => {
                     selectedMonth.push(parseInt(month));
                 }
             });
-            console.log(stayTime);
+            console.log(categoryid);
             switch (stayTime) {
                 case 'weekend': {
-                    const abc = await f(selectedMonth);
-                    console.log(abc.join(','));
+                    const bookingDates = await f(selectedMonth);
+
+                    dispatch(
+                        fetchRoomsByCategoryAndConditions({
+                            categoryid: parseInt(categoryid),
+                            ...filterObject,
+                            bookingDates,
+                        })
+                    );
+
+                    dispatch(
+                        setCurrentFilterObject({
+                            ...filterObject,
+                            bookingDates,
+                        })
+                    );
 
                     break;
                 }

@@ -8,10 +8,8 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
         const roomId = $(this).data('room-id') as string;
         const children = $(this).children('svg');
 
-        if (wishlistsArr.length && wishlistsArr.includes(parseInt(roomId))) {
-            console.log('true');
+        if (wishlistsArr.length && wishlistsArr.includes(parseInt(roomId)))
             children.addClass('like');
-        }
 
         $(this)
             .off('click')

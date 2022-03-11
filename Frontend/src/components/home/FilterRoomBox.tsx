@@ -12,6 +12,7 @@ import { seperateNumber } from '../../helpers/seperateNumber';
 import { MyNumberForMat } from '../utils';
 import {
     fetchRoomsByCategoryAndConditions,
+    setCurrentFilterObject,
     setMockingRoomLoading,
 } from '../../features/room/roomSlice';
 
@@ -24,6 +25,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
         (state: RootState) => state.room
     );
     const { amenities } = useSelector((state: RootState) => state.amenity);
+    const { filterObject } = useSelector((state: RootState) => state.room);
 
     function hideEditThumbnailBox() {
         // $('.radioThumbnail').each(function () {
@@ -71,17 +73,30 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                 selectedAmentities.push(parseInt($(this).val() as string));
             });
 
-            dispatch(setMockingRoomLoading(true));
             dispatch(
                 fetchRoomsByCategoryAndConditions({
                     categoryid: categoryId,
                     privacies: choosenPrivacy,
-                    minPrice,
-                    maxPrice,
+                    minPrice: parseInt(minPrice),
+                    maxPrice: parseInt(maxPrice),
                     bedRoomCount,
                     bedCount,
                     bathRoomCount,
                     selectedAmentities,
+                    bookingDates: filterObject.bookingDates,
+                })
+            );
+
+            dispatch(
+                setCurrentFilterObject({
+                    choosenPrivacy,
+                    minPrice: parseInt(minPrice),
+                    maxPrice: parseInt(maxPrice),
+                    bedCount,
+                    bedRoomCount,
+                    bathRoomCount,
+                    selectedAmentities,
+                    bookingDates: [],
                 })
             );
         });

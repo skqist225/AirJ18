@@ -220,6 +220,7 @@ public class RoomService {
 						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, amentitiesID, bookingDates,
 						pageable);
 			} else {
+				System.out.println("Here");
 				return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
 						minPrice,
 						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, bookingDates, pageable);
