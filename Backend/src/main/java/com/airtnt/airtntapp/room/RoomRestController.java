@@ -105,8 +105,9 @@ public class RoomRestController {
             @RequestParam(value = "bedRoom", required = false, defaultValue = "0") String bedRoom,
             @RequestParam(value = "bed", required = false, defaultValue = "0") String bed,
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
-            @RequestParam(value = "amentities", required = false, defaultValue = "") String amentitiesFilter,
-            @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates) {
+            @RequestParam(value = "amentities", required = false, defaultValue = "") String amenitiesFilter,
+            @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates)
+            throws ParseException {
         Map<String, String> filters = new HashMap<>();
         filters.put("privacies", privacies);
         filters.put("minPrice", minPrice);
@@ -114,10 +115,14 @@ public class RoomRestController {
         filters.put("bedRoom", bedRoom);
         filters.put("bed", bed);
         filters.put("bathRoom", bathRoom);
-        filters.put("amentities", amentitiesFilter);
+        filters.put("amenities", amenitiesFilter);
         filters.put("bookingDates", bookingDates);
 
         List<Room> rooms = roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getContent();
+        System.out.println("Number of elements");
+        System.out.println(roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getTotalElements());
+        System.out.println("-------------------");
+
         List<RoomHomePageDTO> roomHomePageDTOs = new ArrayList<>();
         for (Room room : rooms) {
             List<Integer> likedByUsers = roomService.getLikedUsers(room.getId());

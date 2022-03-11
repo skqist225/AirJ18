@@ -1,6 +1,7 @@
 package com.airtnt.airtntapp.room;
 
-import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -26,7 +27,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.FileUploadUtil;
+import com.airtnt.airtntapp.amentity.AmentityRepository;
 import com.airtnt.airtntapp.city.CityRepository;
+import com.airtnt.airtntapp.privacy.PrivacyTypeRepository;
 import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
 import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
 import com.airtnt.airtntapp.state.StateRepository;
@@ -45,12 +48,15 @@ import com.airtnt.entity.exception.RoomNotFoundException;
 @Service
 @Transactional
 public class RoomService {
-	public static final int MAX_ROOM_PER_FETCH = 40;
+	public static final int MAX_ROOM_PER_FETCH = 20;
 	public static final int MAX_ROOM_PER_FETCH_BY_HOST = 9;
 	public static final int ROOMS_PER_PAGE = 10;
 
 	@Autowired
 	private RoomRepository roomRepository;
+
+	@Autowired
+	private PrivacyTypeRepository privacyTypeRepository;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -169,88 +175,60 @@ public class RoomService {
 	}
 
 	public Page<Room> getRoomsByCategoryId(Integer categoryId, boolean status, int pageNumber,
-			Map<String, String> filters) {
+			Map<String, String> filters) throws ParseException {
 		float minPrice = Float.parseFloat(filters.get("minPrice"));
 		float maxPrice = Float.parseFloat(filters.get("maxPrice"));
 		int bedroomCount = Integer.parseInt(filters.get("bedRoom"));
 		int bedCount = Integer.parseInt(filters.get("bed"));
 		int bathroomCount = Integer.parseInt(filters.get("bathRoom"));
 
+		// default case for amenities and privacies
 		List<Integer> amentitiesID = new ArrayList<>();
-		List<Integer> privaciesID = new ArrayList<>();
+		List<Integer> privaciesID = privacyTypeRepository.getPrivacyIDs();
 		List<Date> bookingDates = new ArrayList<>();
 
 		if (!filters.get("privacies").isEmpty()) {
+			privaciesID.removeAll(privaciesID);
 			String[] privacies = filters.get("privacies").split(" ");
 
-			for (int i = 0; i < privacies.length; i++) {
+			for (int i = 0; i < privacies.length; i++)
 				privaciesID.add(Integer.parseInt(privacies[i]));
-			}
 		}
-		if (!filters.get("amentities").isEmpty()) {
-			String[] amentities = filters.get("amentities").split(" ");
 
-			for (int i = 0; i < amentities.length; i++) {
+		if (!filters.get("amenities").isEmpty()) {
+			String[] amentities = filters.get("amenities").split(" ");
+
+			for (int i = 0; i < amentities.length; i++)
 				amentitiesID.add(Integer.parseInt(amentities[i]));
-			}
 		}
+
 		if (!filters.get("bookingDates").isEmpty()) {
-			String[] bDates = filters.get("bookingDates").split(",");
-			DateFormat date = new DateFormat();
+			String[] bDates = filters.get("bookingDates").split(" ");
+
 			for (int i = 0; i < bDates.length; i++) {
-				System.out.println(bDates[i]);
-				bookingDates.add(date.parse(bDates[i]));
+				Date date = new SimpleDateFormat("yyyy-MM-dd").parse(bDates[i]);
+				bookingDates.add(date);
 			}
 		}
 
 		Pageable pageable = PageRequest.of(pageNumber - 1, MAX_ROOM_PER_FETCH);
-		System.out.println("amenities length: " + amentitiesID.size());
-		if (amentitiesID.size() == 1) {
-			return roomRepository.findAll(new Specification<Room>() {
-				@Override
-				public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> query,
-						CriteriaBuilder criteriaBuilder) {
-					List<Predicate> predicates = new ArrayList<>();
-					predicates.add(
-							criteriaBuilder.and(criteriaBuilder.equal(root.get("category").get("id"), categoryId)));
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice)));
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice)));
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.greaterThanOrEqualTo(root.get("bedroomCount"),
-									bedroomCount)));
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.greaterThanOrEqualTo(root.get("bathroomCount"),
-									bathroomCount)));
-					predicates.add(
-							criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("bedCount"),
-									bedCount)));
 
-					if (privaciesID.size() > 0) {
-						Expression<Boolean> roomPrivacyId = root.get("privacyType").get("id");
-						Predicate predicate = roomPrivacyId.in(privaciesID);
-						predicates.add(predicate);
-					}
+		if (bookingDates.size() > 0) {
+			if (amentitiesID.size() > 0) {
+				return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
+						minPrice,
+						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, amentitiesID, bookingDates,
+						pageable);
+			} else {
+				return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
+						minPrice,
+						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, bookingDates, pageable);
+			}
 
-					// if (bookingDates.size() > 0) {
-					// Expression<Boolean> checkinDate = root.get("bookings").get("checkinDate");
-					// Expression<Boolean> checkoutDate = root.get("bookings").get("checkoutDate");
-
-					// Predicate predicate1 = checkinDate.isNotNull().not().in(bookingDates);
-					// Predicate predicate2 = checkoutDate.isNotNull().not().in(bookingDates);
-					// predicates.add(predicate1);
-					// predicates.add(predicate2);
-					// }
-
-					return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-				}
-			}, pageable);
-		}
-
-		return roomRepository.getByCategoryAndStatus(categoryId, status,
-				privaciesID, minPrice,
-				maxPrice, bedroomCount, bedCount, bathroomCount, amentitiesID, bookingDates, pageable);
+		} else
+			return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
+					minPrice,
+					maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, pageable);
 	}
 
 	public int updateRoomStatus(Integer roomId) {

@@ -47,13 +47,12 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
         setMaxPrice(value[1]);
     }
 
-    $('#index__filter-btn')
+    $('#filterRoomBoxApply')
         .off('click')
         .on('click', function () {
             const categoryId =
                 parseInt(new URLSearchParams(window.location.search).get('categoryid') as string) ||
                 1;
-            console.log(categoryId);
 
             let choosenPrivacy: number[] = [];
             $('input[name="privacyFilter"]:checked').each(function () {
@@ -123,6 +122,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                                     onChange={onChange}
                                                     value={privacy.id}
                                                     className='fs-18'
+                                                    name='privacyFilter'
                                                 >
                                                     {privacy.name}
                                                 </Checkbox>
@@ -273,7 +273,12 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                 </button>
                             </div>
                             <div>
-                                <button className='filter--footer__applyBtn'>Áp dụng</button>
+                                <button
+                                    className='filter--footer__applyBtn'
+                                    id='filterRoomBoxApply'
+                                >
+                                    Áp dụng
+                                </button>
                             </div>
                         </div>
                     </Div>

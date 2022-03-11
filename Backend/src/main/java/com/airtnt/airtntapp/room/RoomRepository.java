@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
@@ -27,11 +28,32 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
                         + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
                         + " AND ra.id IN (:amentitiesID) AND r.privacyType.id IN (:privacies)"
                         + " AND rb.checkinDate NOT IN (:bookingDates) AND rb.checkoutDate NOT IN (:bookingDates)")
-        public Page<Room> getByCategoryAndStatus(Integer categoryId, boolean status,
-                        @Param("privacies") List<Integer> privacies, float minPrice, float maxPrice, int bedroomCount,
+        public Page<Room> getRoomByCategoryAndConditions(Integer categoryId, boolean status,
+                        float minPrice, float maxPrice, int bedroomCount,
                         int bedCount,
-                        int bathroomCount, @Param("amentitiesID") List<Integer> amentitiesID,
-                        @Param("bookingDates") List<String> bookingDates, Pageable pageable);
+                        int bathroomCount,
+                        @Param("privacies") List<Integer> privacies, @Param("amentitiesID") List<Integer> amentitiesID,
+                        @Param("bookingDates") List<Date> bookingDates, Pageable pageable);
+
+        @Query("SELECT r FROM Room r WHERE r.category.id = :categoryId AND r.status = :status"
+                        + " AND r.price >= :minPrice AND r.price <= :maxPrice"
+                        + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
+                        + " AND r.privacyType.id IN (:privacies)")
+        public Page<Room> getRoomByCategoryAndConditions(Integer categoryId, boolean status, float minPrice,
+                        float maxPrice, int bedroomCount,
+                        int bedCount,
+                        int bathroomCount, @Param("privacies") List<Integer> privacies, Pageable pageable);
+
+        @Query("SELECT r FROM Room r JOIN r.bookings rb WHERE r.category.id = :categoryId AND r.status = :status"
+                        + " AND r.price >= :minPrice AND r.price <= :maxPrice"
+                        + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
+                        + " AND r.privacyType.id IN (:privacies)"
+                        + " AND rb.checkinDate NOT IN (:bookingDates) AND rb.checkoutDate NOT IN (:bookingDates)")
+        public Page<Room> getRoomByCategoryAndConditions(Integer categoryId, boolean status, float minPrice,
+                        float maxPrice, int bedroomCount,
+                        int bedCount,
+                        int bathroomCount, @Param("privacies") List<Integer> privacies,
+                        @Param("bookingDates") List<Date> bookingDates, Pageable pageable);
 
         @Query("SELECT r FROM Room r WHERE r.category.id = :categoryId AND r.status = :status")
         public Page<Room> getByCategoryAndStatus(Integer categoryId, boolean status,

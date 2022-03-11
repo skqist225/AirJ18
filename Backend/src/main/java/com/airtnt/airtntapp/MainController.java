@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class MainController {
             @RequestParam(value = "bed", required = false, defaultValue = "0") String bed,
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
             @RequestParam(value = "amentities", required = false, defaultValue = "") String amentitiesFilter,
-            Model model) {
+            Model model) throws ParseException {
         if (categoryId == null) {
             return "redirect:/?categoryId=1";
         }
