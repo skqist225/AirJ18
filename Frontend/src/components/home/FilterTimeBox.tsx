@@ -13,10 +13,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
 interface IFilterTimeBoxProps {
-    categoryid: string;
+    categoryid: number;
+    triggerButton: JQuery<HTMLElement>;
 }
 
-const FilterTimeBox: FC<IFilterTimeBoxProps> = ({ categoryid }) => {
+const FilterTimeBox: FC<IFilterTimeBoxProps> = ({ categoryid, triggerButton }) => {
     const dispatch = useDispatch();
     const [calendarActivated, setCalendarActivated] = useState(false);
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
@@ -117,10 +118,12 @@ const FilterTimeBox: FC<IFilterTimeBoxProps> = ({ categoryid }) => {
             switch (stayTime) {
                 case 'weekend': {
                     const bookingDates = await f(selectedMonth);
+                    const displayText = 'Tháng ' + selectedMonth.join(', ');
+                    triggerButton.text(displayText);
 
                     dispatch(
                         fetchRoomsByCategoryAndConditions({
-                            categoryid: parseInt(categoryid),
+                            categoryid,
                             ...filterObject,
                             bookingDates,
                         })
@@ -137,6 +140,59 @@ const FilterTimeBox: FC<IFilterTimeBoxProps> = ({ categoryid }) => {
                 }
             }
         } else {
+            let startDate = $('.dayInWeek.false.checked').first(),
+                endDate = $('.dayInWeek.false.checked').last();
+            let dates: string[] = [];
+
+            dates.push(`${startDate.data('year')}-${startDate.data('month')}-${startDate.text()}`);
+
+            $('.dayInWeek.false.between').each(function () {
+                dates.push(`${$(this).data('year')}-${$(this).data('month')}-${$(this).text()}`);
+            });
+
+            dates.push(`${endDate.data('year')}-${endDate.data('month')}-${endDate.text()}`);
+            console.log(dates);
+            const plusDay = $('.filterTime__flexibleDayBtn.selected').text().replace('ngày', '');
+            console.log(plusDay);
+            let newDateInNextMonth = 1;
+            Array.from({ length: parseInt(plusDay) }).forEach((_, index) => {
+                if (
+                    startDate.data('month') === currentMonth &&
+                    parseInt(startDate.text()) >= currentDate
+                )
+                    dates.push(
+                        `${startDate.data('year')}-${startDate.data('month')}-${
+                            parseInt(startDate.text()) + index - parseInt(plusDay)
+                        }`
+                    );
+
+                const nextEndDate = parseInt(endDate.text()) + index + 1;
+                const lastDateInMonth = new Date(2008, endDate.data('month'), 0).getDate();
+                console.log(lastDateInMonth);
+                if (nextEndDate <= lastDateInMonth)
+                    dates.push(`${endDate.data('year')}-${endDate.data('month')}-${nextEndDate}`);
+                else
+                    dates.push(
+                        `${endDate.data('year')}-${
+                            endDate.data('month') + 1
+                        }-${newDateInNextMonth++}`
+                    );
+            });
+
+            dispatch(
+                fetchRoomsByCategoryAndConditions({
+                    categoryid,
+                    ...filterObject,
+                    bookingDates: dates,
+                })
+            );
+
+            dispatch(
+                setCurrentFilterObject({
+                    ...filterObject,
+                    bookingDates: dates,
+                })
+            );
         }
     }
 

@@ -18,6 +18,7 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
     const dispatch = useDispatch();
     const [isMoreCategoryClicked, setIsMoreCategoryClicked] = useState(false);
     const [isTimeFilterClicked, setIsTimeFilterClicked] = useState(false);
+    const [currentCategory, setCurrentCategory] = useState(1);
     const { categories, loading: categoryLoading } = useSelector(
         (state: RootState) => state.category
     );
@@ -48,6 +49,7 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
         const self = $(event.currentTarget!);
         $('#getMoreCategoryBtn').text(self.text());
 
+        setCurrentCategory(self.data('category-id'));
         dispatch(fetchRoomsByCategoryAndConditions({ categoryid: self.data('category-id') }));
         const addMoreIcon = $('#addMoreIcon');
         addMoreIcon.addClass('active');
@@ -59,7 +61,8 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
         closeMoreCategoryBox();
     }
 
-    function displayTimeSelect() {
+    function displayTimeSelect(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        const self = $(event.currentTarget);
         if (!isTimeFilterClicked) {
             $('#filterTime__box').css('display', 'block');
             setIsTimeFilterClicked(true);
@@ -94,6 +97,7 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
                                         category={category}
                                         index={index}
                                         key={category.name + '-' + category.id}
+                                        setCurrentCategory={setCurrentCategory}
                                     />
                                 );
                             })}
@@ -148,7 +152,11 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
                         style={{ maxWidth: '20%', justifyContent: 'flex-end' }}
                     >
                         <div className='p-relative mr-10'>
-                            <button className='filterButton' onClick={displayTimeSelect}>
+                            <button
+                                className='filterButton'
+                                onClick={displayTimeSelect}
+                                id='selectFilterTimeBtn'
+                            >
                                 <span className='inline-block fs-14'>Bất cứ lúc nào</span>{' '}
                                 <span style={{ display: 'inline-flex', justifyContent: 'center' }}>
                                     <Image src={getImage('/svg/dropdown.svg')} size='12px' />
@@ -156,9 +164,8 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
                             </button>
 
                             <FilterTimeBox
-                                categoryid={$('.cat__container')
-                                    .filter('.active')
-                                    .data('category-id')}
+                                categoryid={currentCategory}
+                                triggerButton={$('#selectFilterTimeBtn')}
                             />
                         </div>
                         <div>

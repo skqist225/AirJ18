@@ -11,9 +11,10 @@ import { getImage } from '../../helpers/getImage';
 interface ICategoryProps {
     category: ICategory;
     index: number;
+    setCurrentCategory: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const Category: FC<ICategoryProps> = ({ category, index }) => {
+export const Category: FC<ICategoryProps> = ({ category, index, setCurrentCategory }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -32,7 +33,7 @@ export const Category: FC<ICategoryProps> = ({ category, index }) => {
             const insideLoopimage = $('.cat__image', this);
             insideLoopimage.removeClass('active');
         });
-
+        setCurrentCategory(tabNeedActive.data('category-id'));
         tabNeedActive.addClass('active');
         $('.cat__image', tabNeedActive).addClass('active');
     }
