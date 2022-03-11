@@ -22,15 +22,16 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
         @Query(value = "select user_id from users_favorite_rooms where room_id = :roomId", nativeQuery = true)
         public List<Integer> getLikedUsers(Integer roomId);
 
-        @Query("SELECT r FROM Room r JOIN r.amentities ra WHERE r.category.id = :categoryId AND r.status = :status" +
-                        " AND r.price >= :minPrice AND r.price <= :maxPrice" +
-                        " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
-                        +
-                        " AND ra.id IN (:amentitiesID) AND r.privacyType.id IN (:privacies)")
+        @Query("SELECT r FROM Room r JOIN r.amentities ra JOIN r.bookings rb WHERE r.category.id = :categoryId AND r.status = :status"
+                        + " AND r.price >= :minPrice AND r.price <= :maxPrice"
+                        + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
+                        + " AND ra.id IN (:amentitiesID) AND r.privacyType.id IN (:privacies)"
+                        + " AND rb.checkinDate NOT IN (:bookingDates) AND rb.checkoutDate NOT IN (:bookingDates)")
         public Page<Room> getByCategoryAndStatus(Integer categoryId, boolean status,
                         @Param("privacies") List<Integer> privacies, float minPrice, float maxPrice, int bedroomCount,
                         int bedCount,
-                        int bathroomCount, @Param("amentitiesID") List<Integer> amentitiesID, Pageable pageable);
+                        int bathroomCount, @Param("amentitiesID") List<Integer> amentitiesID,
+                        @Param("bookingDates") List<String> bookingDates, Pageable pageable);
 
         @Query("SELECT r FROM Room r WHERE r.category.id = :categoryId AND r.status = :status")
         public Page<Room> getByCategoryAndStatus(Integer categoryId, boolean status,

@@ -1,6 +1,8 @@
 package com.airtnt.airtntapp.room;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -176,6 +178,7 @@ public class RoomService {
 
 		List<Integer> amentitiesID = new ArrayList<>();
 		List<Integer> privaciesID = new ArrayList<>();
+		List<Date> bookingDates = new ArrayList<>();
 
 		if (!filters.get("privacies").isEmpty()) {
 			String[] privacies = filters.get("privacies").split(" ");
@@ -191,9 +194,18 @@ public class RoomService {
 				amentitiesID.add(Integer.parseInt(amentities[i]));
 			}
 		}
+		if (!filters.get("bookingDates").isEmpty()) {
+			String[] bDates = filters.get("bookingDates").split(",");
+			DateFormat date = new DateFormat();
+			for (int i = 0; i < bDates.length; i++) {
+				System.out.println(bDates[i]);
+				bookingDates.add(date.parse(bDates[i]));
+			}
+		}
 
 		Pageable pageable = PageRequest.of(pageNumber - 1, MAX_ROOM_PER_FETCH);
-		if (amentitiesID.size() == 0) {
+		System.out.println("amenities length: " + amentitiesID.size());
+		if (amentitiesID.size() == 1) {
 			return roomRepository.findAll(new Specification<Room>() {
 				@Override
 				public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> query,
@@ -221,6 +233,16 @@ public class RoomService {
 						predicates.add(predicate);
 					}
 
+					// if (bookingDates.size() > 0) {
+					// Expression<Boolean> checkinDate = root.get("bookings").get("checkinDate");
+					// Expression<Boolean> checkoutDate = root.get("bookings").get("checkoutDate");
+
+					// Predicate predicate1 = checkinDate.isNotNull().not().in(bookingDates);
+					// Predicate predicate2 = checkoutDate.isNotNull().not().in(bookingDates);
+					// predicates.add(predicate1);
+					// predicates.add(predicate2);
+					// }
+
 					return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 				}
 			}, pageable);
@@ -228,7 +250,7 @@ public class RoomService {
 
 		return roomRepository.getByCategoryAndStatus(categoryId, status,
 				privaciesID, minPrice,
-				maxPrice, bedroomCount, bedCount, bathroomCount, amentitiesID, pageable);
+				maxPrice, bedroomCount, bedCount, bathroomCount, amentitiesID, bookingDates, pageable);
 	}
 
 	public int updateRoomStatus(Integer roomId) {

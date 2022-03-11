@@ -4,12 +4,14 @@ import Month from './Month';
 import axios from '../../axios';
 import $ from 'jquery';
 import { toast, ToastContainer } from 'react-toastify';
+import { IBookedDate } from '../../type/room/type_RoomDetails';
 
 interface ICalendarProps {
     displayStartDateAndEndDate?: Function;
     setCheckInAndOutDate?: Function;
     displayNumberOfDays?: Function;
     lockBookedDatesInCalendar?: Function;
+    bookedDates?: IBookedDate[];
 }
 
 export function getElementsOfDate(date: string) {
@@ -25,6 +27,7 @@ const Calendar: FC<ICalendarProps> = ({
     setCheckInAndOutDate,
     displayNumberOfDays,
     lockBookedDatesInCalendar,
+    bookedDates,
 }) => {
     let firstMonthAndYear: JQuery<HTMLElement>;
     let secondMonthAndYear: JQuery<HTMLElement>;
@@ -329,9 +332,6 @@ const Calendar: FC<ICalendarProps> = ({
         let copyMonth;
         let copyYear;
 
-        console.log(firstMonthAndYear);
-        console.log(secondMonthAndYear);
-
         if (month === 11) {
             secondMonth = await fetchDaysInMonth(0, year + 1);
             firstMonthAndYear.html(`Tháng 12 năm ${year}`);
@@ -538,19 +538,21 @@ const Calendar: FC<ICalendarProps> = ({
                             (month.toString().length === 1 ? `0${month}` : month) +
                             '/' +
                             year;
-                        // room!.bookedDates.forEach(
-                        //     ({
-                        //         checkinDate,
-                        //         checkoutDate,
-                        //     }: {
-                        //         checkinDate: string;
-                        //         checkoutDate: string;
-                        //     }) => {
-                        //         if (checkinDate === dateThis || dateThis === checkoutDate) {
-                        //             isBlocked = true;
-                        //         }
-                        //     }
-                        // );
+
+                        if (bookedDates)
+                            bookedDates.forEach(
+                                ({
+                                    checkinDate,
+                                    checkoutDate,
+                                }: {
+                                    checkinDate: string;
+                                    checkoutDate: string;
+                                }) => {
+                                    if (checkinDate === dateThis || dateThis === checkoutDate) {
+                                        isBlocked = true;
+                                    }
+                                }
+                            );
                     }
 
                     const dayInHtml = `<td><div data-is-blocked="${false}" data-month="${month}" data-year="${year}" class="dayInWeek ${

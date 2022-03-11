@@ -12,6 +12,10 @@
     box-shadow: rgb(0 0 0 / 15%) 0px 10px 37px;
 }
 
+#filterTime__box.smaller {
+    height: 475px;
+}
+
 #filterTime__footer {
     padding: 0 24px;
     height: 59px;
@@ -93,12 +97,14 @@
 .filterTime__flexibleDayBtn.selected {
     border-color: #222;
     border: 2px solid;
+
+    animation: zoom 0.2s ease-in;
 }
 
 .filterTime__monthSelected {
     cursor: pointer;
     text-align: center;
-    border: 1px solid rgb(34, 34, 34);
+    border: 1px solid rgba(176, 176, 176, 0.5);
     outline: none;
     padding: 0px;
     margin: 0px;
@@ -111,8 +117,18 @@
     line-height: 16px;
     height: 100%;
     width: 100%;
-    background-color: rgb(247, 247, 247);
+    background-color: rgb(255, 255, 255);
     color: rgb(34, 34, 34);
+}
+
+.filterTime__monthSelected.active {
+    border-color: rgb(0, 0, 0);
+    border: 2px solid;
+}
+
+.filterTime__monthSelected:hover {
+    border-color: rgb(0, 0, 0);
+    border: 2px solid;
 }
 
 .filterTime__monthSelected div:nth-child(2) {
@@ -131,12 +147,56 @@
 }
 
 .filterTime__flexibleDay--title {
-    font-size: 18px !important;
-    line-height: 24px !important;
-    font-weight: 400 !important;
-    text-align: center !important;
-    color: rgb(113, 113, 113) !important;
-    padding-top: 8px !important;
-    padding-bottom: 16px !important;
-    margin: 0px !important;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 400;
+    text-align: center;
+    color: rgb(113, 113, 113);
+    padding-top: 8px;
+    padding-bottom: 16px;
+    margin: 0px;
+}
+
+.filterTime__nextFlexibleDayBtn {
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    appearance: none;
+    display: inline-flex;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    outline: none;
+    margin: 0px;
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+    touch-action: manipulation;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    background-clip: padding-box;
+    color: rgb(34, 34, 34);
+    box-shadow: transparent 0px 0px 0px 1px, transparent 0px 0px 0px 4px,
+        rgb(0 0 0 / 18%) 0px 2px 4px;
+    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
+        transform 0.25s ease 0s;
+    width: 32px;
+    height: 32px;
+}
+
+.filterTime__nextFlexibleDayBtn--wrapper {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+}
+
+@keyframes zoom {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

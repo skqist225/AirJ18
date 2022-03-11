@@ -105,8 +105,8 @@ public class RoomRestController {
             @RequestParam(value = "bedRoom", required = false, defaultValue = "0") String bedRoom,
             @RequestParam(value = "bed", required = false, defaultValue = "0") String bed,
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
-            @RequestParam(value = "amentities", required = false, defaultValue = "") String amentitiesFilter) {
-
+            @RequestParam(value = "amentities", required = false, defaultValue = "") String amentitiesFilter,
+            @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates) {
         Map<String, String> filters = new HashMap<>();
         filters.put("privacies", privacies);
         filters.put("minPrice", minPrice);
@@ -115,6 +115,7 @@ public class RoomRestController {
         filters.put("bed", bed);
         filters.put("bathRoom", bathRoom);
         filters.put("amentities", amentitiesFilter);
+        filters.put("bookingDates", bookingDates);
 
         List<Room> rooms = roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getContent();
         List<RoomHomePageDTO> roomHomePageDTOs = new ArrayList<>();

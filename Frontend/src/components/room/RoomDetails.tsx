@@ -377,6 +377,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             setCheckInAndOutDate={setCheckInAndOutDate}
                                             displayNumberOfDays={displayNumberOfDays}
                                             lockBookedDatesInCalendar={lockBookedDatesInCalendar}
+                                            bookedDates={room!.bookedDates}
                                         />
                                     </div>
                                 </article>

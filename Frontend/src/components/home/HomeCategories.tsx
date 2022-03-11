@@ -151,7 +151,7 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
                         <div className='p-relative mr-10'>
                             <button className='filterButton' onClick={displayTimeSelect}>
                                 <span className='inline-block fs-14'>Bất cứ lúc nào</span>{' '}
-                                <span>
+                                <span style={{ display: 'inline-flex', justifyContent: 'center' }}>
                                     <Image src={getImage('/svg/dropdown.svg')} size='12px' />
                                 </span>
                             </button>
