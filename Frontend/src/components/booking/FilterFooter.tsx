@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import './filter_footer.css';
+import './css/filter_footer.css';
 
 interface IFilterFooterProps {
     footerOf: string;

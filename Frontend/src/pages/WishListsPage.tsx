@@ -2,18 +2,16 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
-import { fetchWishlistsOfCurrentUser } from '../features/user/userSlice';
-import { getImage } from '../helpers/getImage';
-import { RootState } from '../store';
+import { fetchWishlistsOfCurrentUser, userState } from '../features/user/userSlice';
+import { getImage } from '../helpers';
+
 import './css/wishlists.css';
 
 interface WishListsPage {}
 
 const WishListsPage: FC<WishListsPage> = () => {
     const dispatch = useDispatch();
-    const { user, wishlists, wishlistsIDsFetching } = useSelector((state: RootState) => state.user);
-
-    console.log(wishlists);
+    const { user, wishlists, wishlistsIDsFetching } = useSelector(userState);
 
     useEffect(() => {
         if (user !== null) dispatch(fetchWishlistsOfCurrentUser());

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { Room } from './Room';
 import { fetchWishlistsIDsOfCurrentUser } from '../../features/user/userSlice';
-import { addClickEventForLoveButton } from '../../components/home/js/addToWishlists';
+import { addClickEventForLoveButton } from './script/add_to_wishlists';
 
 import { IRoom } from '../../type/room/type_Room';
 

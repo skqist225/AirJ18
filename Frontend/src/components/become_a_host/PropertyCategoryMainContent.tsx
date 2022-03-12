@@ -1,15 +1,16 @@
 import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
-import { RootState } from '../../store';
+import { getImage } from '../../helpers';
+import { categoryState } from '../../features/category/categorySlice';
 import $ from 'jquery';
+
 import './css/category_main_content.css';
 
 interface IPropertyCategoryMainContentProps {}
 
 const PropertyCategoryMainContent: FC<IPropertyCategoryMainContentProps> = () => {
-    const { categories } = useSelector((state: RootState) => state.category);
+    const { categories } = useSelector(categoryState);
 
     useEffect(() => {
         const categoryBox = $('.category__box');

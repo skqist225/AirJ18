@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
+import { RootState } from '../../store';
 import { IRoom, IRoomGroup, IRoomPrivacy } from '../../type/room/type_Room';
 import { IRoomDetails } from '../../type/room/type_RoomDetails';
 import { IRoomListings } from '../../type/room/type_RoomListings';
@@ -223,4 +224,6 @@ const roomSlice = createSlice({
 export const {
     actions: { setMockingRoomLoading, setCurrentFilterObject, resetCurretnFilterObject },
 } = roomSlice;
+
+export const roomState = (state: RootState) => state.room;
 export default roomSlice.reducer;

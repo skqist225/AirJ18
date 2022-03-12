@@ -1,7 +1,8 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { DivWithBackGround } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
+
 import './css/left_content.css';
 
 interface ILeftPageContentProps {

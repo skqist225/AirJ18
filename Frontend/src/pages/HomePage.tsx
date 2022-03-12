@@ -6,22 +6,20 @@ import {
     fetchRoomPrivacies,
     fetchRoomsByCategoryAndConditions,
     getAverageRoomPricePerNight,
+    roomState,
     setMockingRoomLoading,
 } from '../features/room/roomSlice';
 import { Rooms } from '../components/home/Rooms';
 import Header from '../components/Header';
-
-import '../components/home/css/home.css';
 import { Image } from '../globalStyle';
-import { getImage } from '../helpers/getImage';
+import { getImage } from '../helpers';
 import { ToastContainer } from 'react-toastify';
-
 import { fetchAmenities } from '../features/amenity/amenitySlice';
 import FilterRoomBox from '../components/home/FilterRoomBox';
-import { RootState } from '../store';
 import { animated, useSpring } from '@react-spring/web';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import { FilterTimeBox } from '../components/home';
+
+import '../components/home/css/home.css';
 
 export const FadeIn = ({ children, delayTime }: { children: any; delayTime: number }) => {
     const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 }, delay: delayTime });
@@ -34,7 +32,7 @@ const HomePage: FC<HomeProps> = () => {
     const dispatch = useDispatch();
     const categoryidString = new URLSearchParams(window.location.search).get('categoryid') || '1';
     const categoryid = parseInt(categoryidString);
-    let { rooms, mockingRoomLoading, loading } = useSelector((state: RootState) => state.room);
+    let { rooms, mockingRoomLoading, loading } = useSelector(roomState);
 
     useEffect(() => {
         dispatch(fetchRoomsByCategoryAndConditions({ categoryid }));

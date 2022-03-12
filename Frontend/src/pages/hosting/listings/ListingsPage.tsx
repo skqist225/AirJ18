@@ -2,15 +2,17 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header';
-import { AmenityRow } from '../../../components/hosting/listings/AmenityRow';
-import { FilterFooter } from '../../../components/hosting/listings/FilterFooter';
-import { IncAndDecBtn } from '../../../components/hosting/listings/IncAndDecBtn';
-import hostingListings from '../../../components/hosting/listings/js/listings';
-import { Pagination } from '../../../components/hosting/listings/Pagination';
-import { RoomDataRow } from '../../../components/hosting/listings/RoomDataRow';
+import {
+    AmenityRow,
+    FilterFooter,
+    Pagination,
+    RoomDataRow,
+} from '../../../components/hosting/listings';
+import { IncAndDecBtn } from '../../../components/utils/IncAndDecBtn';
+import hostingListings from '../../../components/hosting/listings/script/listings';
 import { fetchAmenities } from '../../../features/amenity/amenitySlice';
 import { fetchUserOwnedRoom } from '../../../features/room/roomSlice';
-import { getImage } from '../../../helpers/getImage';
+import { getImage } from '../../../helpers';
 import { RootState } from '../../../store';
 import './css/listings_page.css';
 

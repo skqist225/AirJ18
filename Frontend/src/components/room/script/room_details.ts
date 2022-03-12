@@ -1,6 +1,36 @@
 import $ from 'jquery';
 import { IUser } from '../../../type/user/type_User';
-import { addClickEventForLoveButton } from '../../home/js/addToWishlists';
+import { addClickEventForLoveButton } from '../../home/script/add_to_wishlists';
+
+export const leftReviewLines = [
+    {
+        title: 'Mức độ sạch sẽ',
+        id: 'cleanlinessRating',
+    },
+    {
+        title: 'Liên lạc',
+        id: 'contactRating',
+    },
+    {
+        title: 'Nhận phòng',
+        id: 'checkinRating',
+    },
+];
+
+export const rightReviewLines = [
+    {
+        title: 'Độ chính xác',
+        id: 'accuracyRating',
+    },
+    {
+        title: 'Vị trí',
+        id: 'locationRating',
+    },
+    {
+        title: 'Giá trị',
+        id: 'valueRating',
+    },
+];
 
 export default async function roomDetails(wishlistsIDs: number[], user: IUser) {
     const closeShowImgBtn = $('#closeShowImgBtn');
@@ -24,23 +54,6 @@ export default async function roomDetails(wishlistsIDs: number[], user: IUser) {
 
     addClickEventForLoveButton(wishlistsIDs, user);
     updateRatingUI();
-
-    // function processBooking() {
-    //     if (startDate === '' && endDate === '') {
-    //         alertify.warning('Vui lòng chọn ngày bắt đầu và kết thúc');
-    //         return;
-    //     }
-    //     if (user === null) {
-    //         alertify.error('Vui lòng đăng nhập để đặt phòng');
-    //         return;
-    //     }
-
-    //     const numberOfNights = $('#numberOfNight').text();
-    //     window.location.href = `${baseURL}booking/${roomId}?checkin=${startDate.replace(
-    //         /\//g,
-    //         '-'
-    //     )}&checkout=${endDate.replace(/\//g, '-')}&numberOfNights=${numberOfNights}`;
-    // }
 
     function toggleHiddenImages() {
         const hiddenSlider = $('.rdt_hidden').first();

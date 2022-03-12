@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import Month from './Month';
 import axios from '../../axios';
 import $ from 'jquery';

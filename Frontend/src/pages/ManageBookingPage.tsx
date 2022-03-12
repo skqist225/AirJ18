@@ -1,12 +1,12 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import BookingsTable from '../components/booking/BookingsTable';
-import FilterFooter from '../components/booking/FilterFooter';
+import { BookingsTable, FilterFooter } from '../components/booking';
 import Header from '../components/Header';
 import { fetchBookingListOfCurrentUserRooms } from '../features/booking/bookingSlice';
 import { Div, Image } from '../globalStyle';
-import { getImage } from '../helpers/getImage';
+import { getImage } from '../helpers';
 import { RootState } from '../store';
+
 import './css/manage_booking_page.css';
 
 interface IManageBookingPageProps {}

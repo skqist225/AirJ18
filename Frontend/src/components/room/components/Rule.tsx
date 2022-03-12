@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Image } from '../../../globalStyle';
-import { getImage } from '../../../helpers/getImage';
+import { getImage } from '../../../helpers';
 import { IRule } from '../../../type/room/type_RoomDetails';
 
 export interface IRuleProps {

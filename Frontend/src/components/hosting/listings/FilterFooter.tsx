@@ -4,7 +4,7 @@ interface IFilterFooterProps {
     footerOf: string;
 }
 
-export const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
+const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
     return (
         <>
             <div id='filter-footer__container'>
@@ -27,3 +27,5 @@ export const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
         </>
     );
 };
+
+export default FilterFooter;

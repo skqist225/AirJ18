@@ -1,11 +1,9 @@
 import { FC } from 'react';
-
 import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import { IBooking } from '../../type/booking/type_Booking';
 import { MyNumberForMat } from '../utils';
 import $ from 'jquery';
-import { Map } from 'typescript';
 
 interface IBookingDataRowProps {
     bookingRowData: IBooking;
@@ -356,7 +354,8 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                             }
                             isPrefix
                             currency={bookingRowData.roomCurrency}
-                            fontSize='20px'
+                            priceFontSize='20px'
+                            stayTypeFontSize='20px'
                             color='rgb(255, 56, 92)'
                         />
                     </div>
@@ -366,7 +365,8 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                         price={bookingRowData.refundPaid}
                         isPrefix
                         currency={bookingRowData.roomCurrency}
-                        fontSize='20px'
+                        priceFontSize='20px'
+                        stayTypeFontSize='20px'
                     />
                 </td>
                 <td>

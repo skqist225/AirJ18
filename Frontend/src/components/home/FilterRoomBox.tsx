@@ -1,31 +1,25 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
-import { RootState } from '../../store';
-import { IncAndDecBtn } from '../hosting/listings/IncAndDecBtn';
-import { Switch } from 'antd';
-import { Checkbox } from 'antd';
-import { Slider } from 'antd';
-import $ from 'jquery';
-import { seperateNumber } from '../../helpers/seperateNumber';
+import { getImage, seperateNumber } from '../../helpers';
+import { IncAndDecBtn } from '../utils/IncAndDecBtn';
+import { Switch, Checkbox, Slider } from 'antd';
 import { MyNumberForMat } from '../utils';
 import {
     fetchRoomsByCategoryAndConditions,
+    roomState,
     setCurrentFilterObject,
-    setMockingRoomLoading,
 } from '../../features/room/roomSlice';
+import { amenityState } from '../../features/amenity/amenitySlice';
+
+import $ from 'jquery';
 
 interface IFilterRoomBoxProps {}
 
 const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
     const dispatch = useDispatch();
-
-    const { roomPrivacies, averageRoomPricePerNight } = useSelector(
-        (state: RootState) => state.room
-    );
-    const { amenities } = useSelector((state: RootState) => state.amenity);
-    const { filterObject } = useSelector((state: RootState) => state.room);
+    const { roomPrivacies, averageRoomPricePerNight, filterObject } = useSelector(roomState);
+    const { amenities } = useSelector(amenityState);
 
     function hideEditThumbnailBox() {
         // $('.radioThumbnail').each(function () {

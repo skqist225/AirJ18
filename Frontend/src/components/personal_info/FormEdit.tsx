@@ -1,7 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
 import {
     FirstNameAndLastNameEdit,
     SexEdit,
@@ -18,11 +17,10 @@ import {
     checkFirstNameAndLastNameConstraint,
     checkPasswordConstraint,
     checkPhoneNumberConstraint,
-} from './js/check_constraints';
-import $ from 'jquery';
-import { updateUserInfo } from '../../features/user/userSlice';
+} from './script/check_constraints';
+
+import { updateUserInfo, userState } from '../../features/user/userSlice';
 import { toast } from 'react-toastify';
-import Toast from '../notify/Toast';
 import { IUserUpdate } from '../../type/user/type_User';
 
 interface IFormEditProps {
@@ -36,7 +34,7 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
     const {
         user,
         update: { loading, successMessage, errorMessage },
-    } = useSelector((state: RootState) => state.user);
+    } = useSelector(userState);
 
     useEffect(() => {
         if (errorMessage === 'UPDATE_USER_FAILURE')
@@ -172,7 +170,6 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                             register={register}
                         />
                     )}
-
                     {dataEdit === 'sex' && <SexEdit register={register} defaultValue={user.sex} />}
                     {dataEdit === 'birthday' && (
                         <BirthdayEdit birthday={user.birthday} register={register} />
@@ -194,7 +191,6 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                         />
                     )}
                     {dataEdit === 'avatar' && <AvatarEdit register={register} />}
-
                     <button type='submit' className='saveEditBtn' data-edit={dataEdit}>
                         <span>Lưu</span>
                     </button>

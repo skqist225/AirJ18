@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 
 import './css/description_main_content.css';
 

@@ -1,33 +1,29 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-import { fetchRoomById } from '../../features/room/roomSlice';
-import { getImage } from '../../helpers/getImage';
-import { RootState } from '../../store';
-import { IRoomDetails } from '../../type/room/type_RoomDetails';
+import { fetchRoomById, roomState } from '../../features/room/roomSlice';
+import { getImage, seperateNumber } from '../../helpers';
 import { getRoomlocation } from '../../utils/getLocation';
 import Header from '../Header';
-import { MyNumberForMat } from '../../components/utils';
-import { ReviewLine, Amenity, ReviewValue, Rule } from './components';
-import roomDetails from './script/room_details';
-import $ from 'jquery';
-import { Div } from '../../globalStyle';
-import './css/room_details.css';
+import { ReviewLine, Amenity, ReviewValue, Rule, ReserveRoom } from './components';
+import roomDetails, { leftReviewLines, rightReviewLines } from './script/room_details';
+
+import { Div, Image } from '../../globalStyle';
 import Calendar, { getElementsOfDate } from '../utils/Calendar';
-import { seperateNumber } from '../../helpers/seperateNumber';
+import { userState } from '../../features/user/userSlice';
+
+import $ from 'jquery';
+import './css/room_details.css';
 
 interface IRoomDetailsProps {}
 
 const RoomDetails: FC<IRoomDetailsProps> = () => {
     const dispatch = useDispatch();
     const { pathname } = useLocation();
+    const { room, loading } = useSelector(roomState);
+    const { user, wishlistsIDs } = useSelector(userState);
 
-    const { room, loading }: { room: IRoomDetails; loading: boolean } = useSelector(
-        (state: RootState) => state.room
-    );
-    const { user, wishlistsIDs } = useSelector((state: RootState) => state.user);
-
-    const jQuerycode = () => {
+    const initComp = () => {
         $('html,body').scrollTop(0);
         roomDetails(wishlistsIDs, user!);
     };
@@ -117,39 +113,9 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
     }
 
     function displayPreviewLine() {
-        $('.previewPrice-line').css('display', 'block');
+        $('.previewPrice-line').addClass('active');
         $('.previewPrice-line').last().css('border-bottom', '1px solid rgb(211,211,211)');
     }
-
-    const leftReviewLines = [
-        {
-            title: 'Mức độ sạch sẽ',
-            id: 'cleanlinessRating',
-        },
-        {
-            title: 'Liên lạc',
-            id: 'contactRating',
-        },
-        {
-            title: 'Nhận phòng',
-            id: 'checkinRating',
-        },
-    ];
-
-    const rightReviewLines = [
-        {
-            title: 'Độ chính xác',
-            id: 'accuracyRating',
-        },
-        {
-            title: 'Vị trí',
-            id: 'locationRating',
-        },
-        {
-            title: 'Giá trị',
-            id: 'valueRating',
-        },
-    ];
 
     useEffect(() => {
         dispatch(fetchRoomById({ roomid: pathname.split('/')[2] }));
@@ -165,7 +131,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                 room.host.name
             );
 
-            jQuerycode();
+            initComp();
         }
     }, [room]);
 
@@ -306,24 +272,24 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                     marginBottom: '16px',
                                                 }}
                                             >
-                                                {/* {Array.from({ length: room.bed }).map(_ => (
-                                                <span>
-                                                    <svg
-                                                        viewBox='0 0 32 32'
-                                                        xmlns='http://www.w3.org/2000/svg'
-                                                        aria-hidden='true'
-                                                        role='presentation'
-                                                        focusable='false'
-                                                        style={{
-                                                            display: 'block',
-                                                            height: '24px',
-                                                            width: '24px',
-                                                        }}
-                                                    >
-                                                        <path d='M24 4a2 2 0 0 1 1.995 1.85L26 6v7.839l1.846 5.537a3 3 0 0 1 .115.468l.03.24.009.24V30h-2v-2H6v2H4v-9.675a3 3 0 0 1 .087-.717l.067-.232L6 13.836V6a2 2 0 0 1 1.697-1.977l.154-.018L8 4zm2 18H6v4h20zm-1.388-6H7.387l-1.333 4h19.891zM24 6H8v8h3v-4a2 2 0 0 1 1.85-1.995L13 8h6a2 2 0 0 1 1.995 1.85L21 10v4h3zm-5 4h-6v4h6z'></path>
-                                                    </svg>{' '}
-                                                </span>
-                                            ))} */}
+                                                {Array.from({ length: room.bed }).map(_ => (
+                                                    <span>
+                                                        <svg
+                                                            viewBox='0 0 32 32'
+                                                            xmlns='http://www.w3.org/2000/svg'
+                                                            aria-hidden='true'
+                                                            role='presentation'
+                                                            focusable='false'
+                                                            style={{
+                                                                display: 'block',
+                                                                height: '24px',
+                                                                width: '24px',
+                                                            }}
+                                                        >
+                                                            <path d='M24 4a2 2 0 0 1 1.995 1.85L26 6v7.839l1.846 5.537a3 3 0 0 1 .115.468l.03.24.009.24V30h-2v-2H6v2H4v-9.675a3 3 0 0 1 .087-.717l.067-.232L6 13.836V6a2 2 0 0 1 1.697-1.977l.154-.018L8 4zm2 18H6v4h20zm-1.388-6H7.387l-1.333 4h19.891zM24 6H8v8h3v-4a2 2 0 0 1 1.85-1.995L13 8h6a2 2 0 0 1 1.995 1.85L21 10v4h3zm-5 4h-6v4h6z'></path>
+                                                        </svg>{' '}
+                                                    </span>
+                                                ))}
                                             </div>
                                             <Div margin='0 0 8px 0' className='fs-16'>
                                                 Phòng ngủ
@@ -382,119 +348,12 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                     </div>
                                 </article>
 
-                                <article className='rdt__booking'>
-                                    <div className='rdt__booking--container'>
-                                        <Div margin='0 0 24px 0'>
-                                            <MyNumberForMat
-                                                price={room.price}
-                                                currency={room.currency}
-                                                stayType={room.stayType}
-                                            />
-                                        </Div>
-                                        <div className='rdt__booking--receiveRoom'>
-                                            <div className='flex'>
-                                                <Div padding='10px 12px 10px' width='50%'>
-                                                    <div className='fw-600'>Nhận phòng</div>
-                                                    <div id='checkinDate'>Thêm ngày</div>
-                                                </Div>
-                                                <div
-                                                    style={{
-                                                        padding: '10px 12px 10px',
-                                                        width: '50%',
-                                                        borderLeft:
-                                                            '0.5px solid rgb(211, 211, 211)',
-                                                    }}
-                                                >
-                                                    <div className='fw-600'>Trả phòng</div>
-                                                    <div id='checkoutDate'>Thêm ngày</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button
-                                                type='submit'
-                                                className='rdt_booking_button'
-                                                // onClick='processBooking();'
-                                            >
-                                                <span>
-                                                    <span
-                                                        style={{
-                                                            backgroundPosition:
-                                                                'calc((100 - 96.4371) * 1%) calc((100 - 50) * 1%)',
-                                                        }}
-                                                    ></span>
-                                                </span>
-                                                <span>Đặt phòng</span>
-                                            </button>
-                                        </div>
-                                        <div
-                                            className='previewPrice-line'
-                                            style={{ marginTop: '20px' }}
-                                        >
-                                            <div className='flex-space'>
-                                                <div>
-                                                    <button className='rdt_transparent__btn'>
-                                                        <div
-                                                            style={{
-                                                                color: 'rgb(32, 32, 32)',
-                                                                fontSize: '14px',
-                                                            }}
-                                                        >
-                                                            <MyNumberForMat
-                                                                price={room.price}
-                                                                currency={room.currency}
-                                                                stayType={room.stayType}
-                                                            />{' '}
-                                                            x<span id='numberOfNight'>7</span>
-                                                            &nbsp;đêm&nbsp;
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div style={{ fontSize: '14px' }}>
-                                                    {room.currency}
-                                                    <span id='totalPrice'></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className='previewPrice-line'>
-                                            <div className='flex-space'>
-                                                <div>
-                                                    <button className='rdt_transparent__btn'>
-                                                        <div
-                                                            style={{
-                                                                color: 'rgb(32, 32, 32)',
-                                                                fontSize: '14px',
-                                                                textDecoration: 'underline',
-                                                            }}
-                                                        >
-                                                            Phí dịch vụ
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div style={{ fontSize: '14px' }}>
-                                                    {room.currency}
-                                                    <span id='siteFee'></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className='flex' style={{ paddingTop: '16px' }}>
-                                            <div className='totalPriceTitle'>Tổng</div>
-                                            <div className='totalPriceTitle'>
-                                                {room.currency}
-                                                <span id='finalTotalPrice'></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
+                                <ReserveRoom room={room} />
                             </div>
                             <div id='rdt__review'>
                                 <div>
                                     <div className='normal-flex'>
-                                        <img
-                                            src={getImage('/svg/star.svg')}
-                                            width='16px'
-                                            height='16px'
-                                        />
+                                        <Image src={getImage('/svg/star.svg')} size='16px' />
                                         <span
                                             style={{
                                                 fontWeight: '600',
@@ -511,7 +370,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                         </span>
                                     </div>
                                     <div className='normal-flex' style={{ marginBottom: '42px' }}>
-                                        <div style={{ flex: '1', maxWidth: '50%' }}>
+                                        <div className='flex-1'>
                                             {leftReviewLines.map(({ title, id }) => (
                                                 <ReviewLine title={title} id={id} key={title} />
                                             ))}

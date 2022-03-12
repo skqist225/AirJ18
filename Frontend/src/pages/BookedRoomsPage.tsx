@@ -1,19 +1,23 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import BookedRoom from '../components/booked_rooms/BookedRoom';
+import BookedRoom from '../components/booked_rooms/BookedRooms';
 import Header from '../components/Header';
-import { fetchBookedRooms, fetchWishlistsIDsOfCurrentUser } from '../features/user/userSlice';
+import {
+    fetchBookedRooms,
+    fetchWishlistsIDsOfCurrentUser,
+    userState,
+} from '../features/user/userSlice';
 import { Image } from '../globalStyle';
-import { getImage } from '../helpers/getImage';
-import { RootState } from '../store';
+import { getImage } from '../helpers';
+
 import './css/booked_rooms.css';
 
 interface IBookedRoomsPageProps {}
 
 const BookedRoomsPage: FC<IBookedRoomsPageProps> = () => {
     const dispatch = useDispatch();
-    const { bookedRooms, ratingLabels } = useSelector((state: RootState) => state.user);
+    const { bookedRooms, ratingLabels } = useSelector(userState);
 
     useEffect(() => {
         dispatch(fetchBookedRooms({ query: '' }));

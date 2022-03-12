@@ -5,7 +5,7 @@ interface IAmenityRowProps {
     amenity: IAmenity;
 }
 
-export const AmenityRow: FC<IAmenityRowProps> = ({ amenity }) => {
+const AmenityRow: FC<IAmenityRowProps> = ({ amenity }) => {
     return (
         <div className='listings__filter-amentities-row normal-flex'>
             <div className='flex-2'>
@@ -21,3 +21,5 @@ export const AmenityRow: FC<IAmenityRowProps> = ({ amenity }) => {
         </div>
     );
 };
+
+export default AmenityRow;

@@ -2,16 +2,13 @@ import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { RightPageContent } from '../../components/become_a_host';
 import { Div } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
+
 import './css/index.css';
 
 interface IBecomeAHostIndexPageProps {}
 
 const BecomeAHostIndexPage: FC<IBecomeAHostIndexPageProps> = () => {
-    function start() {
-        window.location.href = window.location.origin + '/become-a-host/property-type-group';
-    }
-
     return (
         <Div height='100vh'>
             <Div className='flex'>

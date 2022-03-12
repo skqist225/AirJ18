@@ -394,14 +394,6 @@ main {
     font-size: 16px;
 }
 
-.rdt_transparent__btn {
-    cursor: pointer;
-    text-decoration: underline;
-    background: none;
-    outline: none;
-    border: none;
-}
-
 .rdt__price {
     color: #222;
     font-size: 22px;
@@ -668,11 +660,6 @@ tbody.calendar tr {
     font-size: 16px;
 }
 
-.previewPrice-line {
-    padding-bottom: 12px;
-    display: none;
-}
-
 .rdt__amenity--name {
     padding-left: 16px;
     font-size: 16px;
@@ -681,6 +668,10 @@ tbody.calendar tr {
 .rdt__amenity--icon {
     width: 32px;
     height: 32px;
+}
+
+.previewPrice-line:last-of-type {
+    border-bottom: 1px solid rgb(221, 221, 221);
 }
 
 .rdt__amenity--wrapper {

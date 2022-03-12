@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import $ from 'jquery';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';

@@ -1,14 +1,16 @@
 import { FC, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { callToast, getImage } from '../../helpers';
 import { IBookedRoom, IRatingLabel } from '../../type/user/type_User';
 import { MyNumberForMat } from '../utils';
+import { addClickEventForLoveButton } from '../home/script/add_to_wishlists';
+import { userState } from '../../features/user/userSlice';
+import initComp from './script';
+import Toast from '../notify/Toast';
+
 import $ from 'jquery';
-import { addClickEventForLoveButton } from '../home/js/addToWishlists';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { toast, ToastContainer } from 'react-toastify';
 
 interface IBookedRoomProps {
     booking: IBookedRoom;
@@ -16,197 +18,31 @@ interface IBookedRoomProps {
 }
 
 const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
-    const { wishlistsIDs, user, wishlistsIDsFetching } = useSelector(
-        (state: RootState) => state.user
-    );
+    const { wishlistsIDs, user, wishlistsIDsFetching } = useSelector(userState);
     const [ratingComment, setRatingComment] = useState(booking.bookingReview);
+    const [cleanlinessRating, setCleanlinessRating] = useState(0);
+    const [accuracyRating, setAccuracyRating] = useState(0);
+    const [contactRating, setContactRating] = useState(0);
+    const [locationRating, setLocationRating] = useState(0);
+    const [checkinRating, setCheckinRating] = useState(0);
+    const [valueRating, setValueRating] = useState(0);
 
-    let cleanlinessRating = 0;
-    let accuracyRating = 0;
-    let contactRating = 0;
-    let locationRating = 0;
-    let checkinRating = 0;
-    let valueRating = 0;
-
-    const jQueryCode = () => {
-        $('.bookingDate').each(function () {
-            //customer can cancel booking if
-            //1. less than 24h
-            const bookingDate = new Date($(this).val()! as number).getTime();
-            const nextDateOfBookingDate = bookingDate + 86_400_000;
-            const currentTime = new Date().getTime();
-
-            //2. is-cancel = false
-            const isCancel = $(this).data('is-cancel');
-
-            //3.if complete refund totalfee - sitefee else refund 100%
-            const isComplete = $(this).data('is-complete');
-
-            if (currentTime <= nextDateOfBookingDate && currentTime >= bookingDate && !isCancel)
-                $(this).siblings('.cancelBookingBtn').css('display', 'block');
-            else $(this).siblings('.cancelBookingBtn').css('display', 'none');
-        });
-
-        $(document).on('keypress', function (event) {
-            if (event.key === 'Enter') {
-                filterBookings();
-            }
-        });
-
-        $('input[name="ratingComment"]').on('change', function () {
-            console.log($(this).val());
-            setRatingComment($(this).val()! as string);
-        });
-
-        (function () {
-            $('.ratingStar').each(function () {
-                if (ratingComment !== null) {
-                    $('.ratingStar').off('click');
-                } else
-                    $(this).on('click', function () {
-                        const starValue = parseInt($(this).data('star-value'));
-                        const ratingName = $(this).parent().parent().parent().data('rating-name');
-                        let isHavingGreaterRating = false;
-
-                        if ($(this).hasClass('selected')) {
-                            $(this)
-                                .parent()
-                                .siblings()
-                                .each(function () {
-                                    if (
-                                        $(this).children('.ratingStar').data('star-value') * 1 >
-                                            starValue &&
-                                        $(this).children('.ratingStar').hasClass('selected')
-                                    ) {
-                                        $(this).children('.ratingStar').removeClass('selected');
-                                        isHavingGreaterRating = true;
-                                    }
-                                });
-
-                            if (!isHavingGreaterRating) {
-                                $(this)
-                                    .parent()
-                                    .siblings()
-                                    .each(function () {
-                                        if (
-                                            $(this).children('.ratingStar').data('star-value') * 1 <
-                                            starValue
-                                        ) {
-                                            $(this).children('.ratingStar').removeClass('selected');
-                                        }
-                                    });
-
-                                $(this).removeClass('selected');
-                            } else {
-                                switch (ratingName) {
-                                    case 'Mức độ sạch sẽ': {
-                                        cleanlinessRating = starValue;
-                                        break;
-                                    }
-                                    case 'Độ chính xác': {
-                                        accuracyRating = starValue;
-                                        break;
-                                    }
-                                    case 'Liên lạc': {
-                                        contactRating = starValue;
-                                        break;
-                                    }
-                                    case 'Vị trí': {
-                                        locationRating = starValue;
-                                        break;
-                                    }
-                                    case 'Nhận phòng': {
-                                        checkinRating = starValue;
-                                        break;
-                                    }
-                                    case 'Giá trị': {
-                                        valueRating = starValue;
-                                        break;
-                                    }
-                                }
-                            }
-                        } else {
-                            $(this)
-                                .parent()
-                                .siblings()
-                                .each(function () {
-                                    if (
-                                        $(this).children('.ratingStar').data('star-value') * 1 <=
-                                        starValue
-                                    )
-                                        $(this).children('.ratingStar').addClass('selected');
-                                });
-                            $(this).addClass('selected');
-
-                            switch (ratingName) {
-                                case 'Mức độ sạch sẽ': {
-                                    cleanlinessRating = starValue;
-                                    break;
-                                }
-                                case 'Độ chính xác': {
-                                    accuracyRating = starValue;
-                                    break;
-                                }
-                                case 'Liên lạc': {
-                                    contactRating = starValue;
-                                    break;
-                                }
-                                case 'Vị trí': {
-                                    locationRating = starValue;
-                                    break;
-                                }
-                                case 'Nhận phòng': {
-                                    checkinRating = starValue;
-                                    break;
-                                }
-                                case 'Giá trị': {
-                                    valueRating = starValue;
-                                    break;
-                                }
-                            }
-                        }
-                    });
-            });
-        })();
-
-        function filterBookings() {
-            const searchValue = $('#user-bookings__search-input').val();
-
-            // const filterOption =
-            //     (window.location.href = `${baseURL}user/bookings?query=${searchValue}`);
-        }
-    };
+    // let cleanlinessRating = 0;
+    // let accuracyRating = 0;
+    // let contactRating = 0;
+    // let locationRating = 0;
+    // let checkinRating = 0;
+    // let valueRating = 0;
 
     function reviewSubmit(self: JQuery<HTMLElement>) {
         if (!ratingComment) {
-            toast.warn('🦄 Vui lòng để lại bình luận!', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            callToast('warning', 'Vui lòng để lại bình luận!');
             return;
         }
 
         window.location.href = `${window.location.origin}/user/rating/${self.data(
             'booking-id'
         )}?cleanlinessRating=${cleanlinessRating}&contactRating=${contactRating}&checkinRating=${checkinRating}&accuracyRating=${accuracyRating}&locationRating=${locationRating}&valueRating=${valueRating}&comment=${ratingComment}`;
-    }
-
-    useEffect(() => {
-        jQueryCode();
-    }, []);
-
-    useEffect(() => {
-        if (!wishlistsIDsFetching) addClickEventForLoveButton(wishlistsIDs, user);
-    }, [wishlistsIDsFetching, user]);
-
-    function hideEditThumbnailBox() {
-        $('.chooseRoomThumbnail').removeClass('active');
-        $('#user-bookings__mainContainer').removeClass('unactive');
     }
 
     function displayEditThumbnailBox(self: JQuery<HTMLElement>) {
@@ -226,12 +62,12 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
             const location = parseInt($(this).data('rating-location'));
             const value = parseInt($(this).data('rating-value'));
 
-            cleanlinessRating = cleanliness;
-            contactRating = contact;
-            checkinRating = checkin;
-            accuracyRating = accuracy;
-            locationRating = location;
-            valueRating = value;
+            setCleanlinessRating(cleanliness);
+            setContactRating(contact);
+            setCheckinRating(checkin);
+            setAccuracyRating(accuracy);
+            setLocationRating(location);
+            setValueRating(value);
 
             $('.ratingStarContainer').each(function () {
                 const children = $(this).children();
@@ -308,6 +144,29 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
             });
         });
     }
+
+    useEffect(() => {
+        initComp(
+            setCleanlinessRating,
+            setAccuracyRating,
+            setContactRating,
+            setLocationRating,
+            setCheckinRating,
+            setValueRating,
+            setRatingComment,
+            ratingComment
+        );
+    }, []);
+
+    useEffect(() => {
+        if (!wishlistsIDsFetching) addClickEventForLoveButton(wishlistsIDs, user);
+    }, [wishlistsIDsFetching, user]);
+
+    function hideEditThumbnailBox() {
+        $('.chooseRoomThumbnail').removeClass('active');
+        $('#user-bookings__mainContainer').removeClass('unactive');
+    }
+
     return (
         <>
             <div className='user-bookings__booking-box'>
@@ -508,7 +367,8 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                 <MyNumberForMat
                                                     currency={booking.currency}
                                                     price={booking.pricePerDay}
-                                                    fontSize='16px'
+                                                    priceFontSize='16px'
+                                                    stayTypeFontSize='16px'
                                                 />
                                             </span>
                                         </span>
@@ -559,7 +419,8 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         booking.pricePerDay * booking.numberOfDays + booking.siteFee
                                     }
                                     currency={booking.currency}
-                                    fontSize='20px'
+                                    priceFontSize='20px'
+                                    stayTypeFontSize='20px'
                                     isSuffix
                                 />
                             </span>
@@ -794,19 +655,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                     </div>
                 </div>
             </div>
-            <ToastContainer
-                position='top-right'
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
-            {/* Same as */}
-            <ToastContainer />
+            <Toast />
         </>
     );
 };

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import $ from 'jquery';
 import './css/price_main_content.css';
 

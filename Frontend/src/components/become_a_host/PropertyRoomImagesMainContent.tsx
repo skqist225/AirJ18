@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import axios from '../../axios';
 import $ from 'jquery';
 import './css/room_images_main_content.css';

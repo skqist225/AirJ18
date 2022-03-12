@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
+import { RootState } from '../../store';
 import {
     IAddUser,
     ILoginInfo,
@@ -231,4 +232,5 @@ const userSlice = createSlice({
     },
 });
 
+export const userState = (state: RootState) => state.user;
 export default userSlice.reducer;

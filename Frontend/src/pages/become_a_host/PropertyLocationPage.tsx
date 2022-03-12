@@ -1,15 +1,15 @@
 import { FC, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { LeftPageContent, RightPageContent } from '../../components/become_a_host';
 import PropertyLocationMainContent from '../../components/become_a_host/PropertyLocationMainContent';
-import { fetchRoomPrivacies } from '../../features/room/roomSlice';
 import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import $ from 'jquery';
 import axios from 'axios';
-import { RootState } from '../../store';
+
 import './css/location.css';
+import { userState } from '../../features/user/userSlice';
 
 interface IPropertyLocationPageProps {}
 
@@ -24,7 +24,7 @@ const PropertyLocationPage: FC<IPropertyLocationPageProps> = () => {
     const [isAprtNoAndStreetFilledUp, setIsAprtNoAndStreetFilledUp] = useState(false);
     const [isCityFilledUp, setIsCityFilledUp] = useState(false);
 
-    const { user } = useSelector((state: RootState) => state.user);
+    const { user } = useSelector(userState);
     const userName = user?.firstName + ' ' + user?.lastName;
     const userAvatar = user!.avatarPath;
 

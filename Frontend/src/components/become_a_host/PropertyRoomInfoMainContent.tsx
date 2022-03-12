@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { IncAndDecBtn } from '../hosting/listings/IncAndDecBtn';
+import { IncAndDecBtn } from '../utils/IncAndDecBtn';
 import $ from 'jquery';
 import './css/room_info_main_content.css';
 

@@ -6,7 +6,7 @@ import {
     setMockingRoomLoading,
 } from '../../features/room/roomSlice';
 import { ICategory } from '../../features/category/categorySlice';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 
 interface ICategoryProps {
     category: ICategory;
@@ -41,7 +41,7 @@ export const Category: FC<ICategoryProps> = ({ category, index, setCurrentCatego
     function fetchNewRoomsByCategory(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         const catContainers = $('.cat__container');
         const self = $(event.currentTarget);
-        dispatch(setMockingRoomLoading(true));
+
         dispatch(fetchRoomsByCategoryAndConditions({ categoryid: self.data('category-id') }));
         setActiveTab(catContainers, self.parent('.cat__container'));
     }

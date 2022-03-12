@@ -3,14 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { UserInfo } from '../components/personal_info/UserInfo';
-import formatDate from '../helpers/formatDate';
-import { getImage } from '../helpers/getImage';
-import getUserSex from '../helpers/getUserSex';
+import { getImage, formatDate, getUserSex, callToast } from '../helpers';
 import { RootState } from '../store';
-import './css/personal_info.css';
-import { jqueryCode } from '../components/personal_info/js/personalInfo';
+
+import { jqueryCode } from '../components/personal_info/script/personal_info';
 import Toast from '../components/notify/Toast';
-import { toast } from 'react-toastify';
+
+import './css/personal_info.css';
 
 type IPersonalInfoPageProps = {};
 
@@ -29,15 +28,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
 
     useEffect(() => {
         if (successMessage === 'UPDATE_USER_SUCCESSFULLY')
-            toast.success('🦄' + `Cập nhật thành công`, {
-                position: 'bottom-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            callToast('success', 'Cập nhật thành công');
     }, [successMessage]);
 
     return (

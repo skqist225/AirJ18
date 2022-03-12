@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
+import { RootState } from '../../store';
 import IAmenity from '../../type/type_Amenity';
 
 export const fetchAmenities = createAsyncThunk(
@@ -41,4 +42,5 @@ const amenitySlice = createSlice({
     },
 });
 
+export const amenityState = (state: RootState) => state.amenity;
 export default amenitySlice.reducer;

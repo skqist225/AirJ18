@@ -6,6 +6,7 @@ import { RootState } from '../../store';
 import IAmenity from '../../type/type_Amenity';
 import AmenitiyPartial from './AmenitiyPartial';
 import $ from 'jquery';
+
 import './css/amenities_main_content.css';
 
 interface IPropertyAmenitiesMainContentProps {}

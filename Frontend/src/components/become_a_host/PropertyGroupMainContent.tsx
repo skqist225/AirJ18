@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import { RootState } from '../../store';
 import $ from 'jquery';
 import './css/group_main_content.css';

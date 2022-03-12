@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
+import { RootState } from '../../store';
 
 export const fetchCategories = createAsyncThunk(
     'category/fetchCategories',
@@ -46,4 +47,5 @@ const roomSlice = createSlice({
     },
 });
 
+export const categoryState = (state: RootState) => state.category;
 export default roomSlice.reducer;

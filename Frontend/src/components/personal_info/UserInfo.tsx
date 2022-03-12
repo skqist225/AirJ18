@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import { FormEdit } from './FormEdit';
 import $ from 'jquery';
-import turnOffEditMode from './js/turnOffEditMode';
+import turnOffEditMode from './script/turn_off_edit_mode';
 
 interface IUserInfoProps {
     title: string;

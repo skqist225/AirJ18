@@ -6,7 +6,7 @@ import { RootState } from '../../../store';
 
 interface IPaginationProps {}
 
-export const Pagination: FC<IPaginationProps> = () => {
+const Pagination: FC<IPaginationProps> = () => {
     const { pathname } = useLocation();
 
     const {
@@ -49,3 +49,5 @@ export const Pagination: FC<IPaginationProps> = () => {
         </div>
     );
 };
+
+export default Pagination;

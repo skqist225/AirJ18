@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import IAmenity from '../../type/type_Amenity';
 
 interface IAmenitiyPartialProps {

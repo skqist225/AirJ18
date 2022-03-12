@@ -6,8 +6,8 @@ import {
     resetCurretnFilterObject,
     setCurrentFilterObject,
 } from '../features/room/roomSlice';
-import { logout } from '../features/user/userSlice';
-import { getImage } from '../helpers/getImage';
+import { logout, userState } from '../features/user/userSlice';
+import { getImage } from '../helpers';
 import { RootState } from '../store';
 import './header.css';
 
@@ -18,7 +18,7 @@ interface IHeaderProps {
 
 const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigationHeader }) => {
     const dispatch = useDispatch();
-    const { user } = useSelector((state: RootState) => state.user);
+    const { user } = useSelector(userState);
 
     const jQuerycode = () => {
         const headerNavButton = document.getElementsByClassName('account__button')[0];

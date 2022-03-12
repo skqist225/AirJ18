@@ -1,16 +1,18 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import Calendar from '../utils/Calendar';
 import $ from 'jquery';
-import './css/filter_time.css';
+
 import axios from '../../axios';
 import {
     fetchRoomsByCategoryAndConditions,
+    roomState,
     setCurrentFilterObject,
 } from '../../features/room/roomSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
+
+import './css/filter_time.css';
 
 interface IFilterTimeBoxProps {
     categoryid: number;
@@ -21,7 +23,7 @@ const FilterTimeBox: FC<IFilterTimeBoxProps> = ({ categoryid, triggerButton }) =
     const dispatch = useDispatch();
     const [calendarActivated, setCalendarActivated] = useState(false);
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
-    const { filterObject } = useSelector((state: RootState) => state.room);
+    const { filterObject } = useSelector(roomState);
 
     const loopLength = 13 - currentMonth;
     const currentYear = new Date().getFullYear();

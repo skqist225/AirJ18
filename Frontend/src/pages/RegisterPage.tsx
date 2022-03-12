@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCountries } from '../features/country/countrySlice';
 import { RootState } from '../store';
 import FormError from '../components/register/FormError';
-import { getImage } from '../helpers/getImage';
+import { getImage } from '../helpers';
 import { addUser } from '../features/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import './css/register.css';

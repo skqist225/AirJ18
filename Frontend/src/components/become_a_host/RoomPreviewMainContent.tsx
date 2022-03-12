@@ -1,16 +1,16 @@
 import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { userState } from '../../features/user/userSlice';
 import { Image } from '../../globalStyle';
-import { getImage } from '../../helpers/getImage';
-import { RootState } from '../../store';
+import { getImage, seperateNumber } from '../../helpers';
+
 import $ from 'jquery';
 import './css/room_preview_main_content.css';
-import { seperateNumber } from '../../helpers/seperateNumber';
 
 interface IRoomPreviewMainContentProps {}
 
 const RoomPreviewMainContent: FC<IRoomPreviewMainContentProps> = () => {
-    const { user } = useSelector((state: RootState) => state.user);
+    const { user } = useSelector(userState);
 
     useEffect(() => {
         if (localStorage.getItem('room')) {

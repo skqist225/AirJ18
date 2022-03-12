@@ -1,10 +1,11 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Div, MainButton } from '../../globalStyle';
 import $ from 'jquery';
 import StepProcess from './StepProcess';
-import './css/right_content.css';
 import { toast, ToastContainer } from 'react-toastify';
+
+import './css/right_content.css';
 
 interface IRightPageContentProps {
     nextPage: string;

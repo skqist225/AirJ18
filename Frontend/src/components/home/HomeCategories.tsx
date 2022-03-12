@@ -1,14 +1,11 @@
 import React, { FC, useState } from 'react';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import { Category } from './Category';
 import { Image } from '../../globalStyle';
-import { ICategory } from '../../features/category/categorySlice';
+import { categoryState, ICategory } from '../../features/category/categorySlice';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    fetchRoomsByCategoryAndConditions,
-    setMockingRoomLoading,
-} from '../../features/room/roomSlice';
+import { fetchRoomsByCategoryAndConditions } from '../../features/room/roomSlice';
 import $ from 'jquery';
 import FilterTimeBox from './FilterTimeBox';
 
@@ -19,9 +16,7 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
     const [isMoreCategoryClicked, setIsMoreCategoryClicked] = useState(false);
     const [isTimeFilterClicked, setIsTimeFilterClicked] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(1);
-    const { categories, loading: categoryLoading } = useSelector(
-        (state: RootState) => state.category
-    );
+    const { categories, loading: categoryLoading } = useSelector(categoryState);
 
     function displayEditThumbnailBox() {
         $('#chooseRoomThumbnail').css('display', 'block');

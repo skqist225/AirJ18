@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import datediff, { parseDBDate } from '../../../helpers/datediff';
-import { getImage } from '../../../helpers/getImage';
+import { getImage } from '../../../helpers';
 import { IRoomListings } from '../../../type/room/type_RoomListings';
 import { MyNumberForMat } from '../../utils';
 
@@ -80,3 +80,5 @@ export const RoomDataRow: FC<IRoomDataRowProps> = ({ room, email }) => {
         </tr>
     );
 };
+
+export default RoomDataRow;

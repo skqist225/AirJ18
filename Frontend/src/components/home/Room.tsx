@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getImage } from '../../helpers/getImage';
+import { getImage } from '../../helpers';
 import NumberFormat from 'react-number-format';
 import { IRoom } from '../../type/room/type_Room';
 import $ from 'jquery';
