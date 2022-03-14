@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import datediff, { parseDBDate } from '../../../helpers/datediff';
 import { getImage } from '../../../helpers';
-import { IRoomListings } from '../../../type/room/type_RoomListings';
+import { IRoomListings } from '../../../types/room/type_RoomListings';
 import { MyNumberForMat } from '../../utils';
 
 interface IRoomDataRowProps {

@@ -1,6 +1,6 @@
 import axios from '../../../axios';
 import $ from 'jquery';
-import { IUser } from '../../../type/user/type_User';
+import { IUser } from '../../../types/user/type_User';
 import { toast } from 'react-toastify';
 import { callToast } from '../../../helpers';
 
@@ -19,16 +19,7 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
                 let successMessage = '';
                 let errorMessage = '';
 
-                if (user === null)
-                    toast.error(`🦄 Vui lòng đăng nhập để thêm yêu thích`, {
-                        position: 'bottom-right',
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
+                if (user === null) callToast('error', 'Vui lòng đăng nhập để thêm yêu thích');
 
                 if (children.hasClass('like')) {
                     successMessage = 'Gỡ bỏ khỏi danh sách yêu thích thành công';

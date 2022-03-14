@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { IUser } from '../../../type/user/type_User';
+import { IUser } from '../../../types/user/type_User';
 import { addClickEventForLoveButton } from '../../home/script/add_to_wishlists';
 
 export const leftReviewLines = [

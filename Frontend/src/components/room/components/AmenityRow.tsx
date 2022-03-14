@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { getImage } from '../../../helpers';
-import { IRDAmenity } from '../../../type/room/type_RoomDetails';
+import { IRDAmenity } from '../../../types/room/type_RoomDetails';
 
 export interface IAmenityProps {
     amenity: IRDAmenity;

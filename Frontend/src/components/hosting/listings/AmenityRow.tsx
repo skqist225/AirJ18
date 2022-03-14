@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import IAmenity from '../../../type/type_Amenity';
+import IAmenity from '../../../types/type_Amenity';
 
 interface IAmenityRowProps {
     amenity: IAmenity;

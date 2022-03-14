@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAmenities } from '../../features/amenity/amenitySlice';
 import { Div } from '../../globalStyle';
 import { RootState } from '../../store';
-import IAmenity from '../../type/type_Amenity';
+import IAmenity from '../../types/type_Amenity';
 import AmenitiyPartial from './AmenitiyPartial';
 import $ from 'jquery';
 

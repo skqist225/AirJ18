@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { IBooking } from '../../type/booking/type_Booking';
+import { IBooking } from '../../types/booking/type_Booking';
 import BookingDataRow from './BookingDataRow';
 import ColumnHeader from './ColumnHeader';
 

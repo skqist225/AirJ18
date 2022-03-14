@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
 import { RootState } from '../../store';
-import { IRoom, IRoomGroup, IRoomPrivacy } from '../../type/room/type_Room';
-import { IRoomDetails } from '../../type/room/type_RoomDetails';
-import { IRoomListings } from '../../type/room/type_RoomListings';
+import { IRoom, IRoomGroup, IRoomPrivacy } from '../../types/room/type_Room';
+import { IRoomDetails } from '../../types/room/type_RoomDetails';
+import { IRoomListings } from '../../types/room/type_RoomListings';
 
 interface IFetchRoomsByCategoryAndConditions {
     categoryid: number;

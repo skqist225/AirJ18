@@ -5,7 +5,7 @@ import { Room } from './Room';
 import { fetchWishlistsIDsOfCurrentUser } from '../../features/user/userSlice';
 import { addClickEventForLoveButton } from './script/add_to_wishlists';
 
-import { IRoom } from '../../type/room/type_Room';
+import { IRoom } from '../../types/room/type_Room';
 
 interface IRoomsProps {
     rooms: IRoom[];

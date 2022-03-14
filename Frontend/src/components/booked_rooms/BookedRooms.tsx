@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Div, Image } from '../../globalStyle';
 import { callToast, getImage } from '../../helpers';
-import { IBookedRoom, IRatingLabel } from '../../type/user/type_User';
+import { IBookedRoom, IRatingLabel } from '../../types/user/type_User';
 import { MyNumberForMat } from '../utils';
 import { addClickEventForLoveButton } from '../home/script/add_to_wishlists';
 import { userState } from '../../features/user/userSlice';
@@ -26,13 +26,6 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
     const [locationRating, setLocationRating] = useState(0);
     const [checkinRating, setCheckinRating] = useState(0);
     const [valueRating, setValueRating] = useState(0);
-
-    // let cleanlinessRating = 0;
-    // let accuracyRating = 0;
-    // let contactRating = 0;
-    // let locationRating = 0;
-    // let checkinRating = 0;
-    // let valueRating = 0;
 
     function reviewSubmit(self: JQuery<HTMLElement>) {
         if (!ratingComment) {

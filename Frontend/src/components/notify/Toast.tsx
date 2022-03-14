@@ -2,15 +2,12 @@ import { FC } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-interface IToastProps {
-    type?: string;
-    message?: string;
-}
+interface IToastProps {}
 
-const Toast: FC<IToastProps> = ({ type, message }) => {
+const Toast: FC<IToastProps> = () => {
     return (
         <ToastContainer
-            position='bottom-right'
+            position='top-center'
             autoClose={5000}
             hideProgressBar={false}
             newestOnTop={false}

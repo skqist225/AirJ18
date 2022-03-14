@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
-import { IBooking } from '../../type/booking/type_Booking';
+import { IBooking } from '../../types/booking/type_Booking';
 
 interface IFetchPayload {
     page: number;

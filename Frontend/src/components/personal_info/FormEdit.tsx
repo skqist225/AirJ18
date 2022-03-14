@@ -21,7 +21,7 @@ import {
 
 import { updateUserInfo, userState } from '../../features/user/userSlice';
 import { toast } from 'react-toastify';
-import { IUserUpdate } from '../../type/user/type_User';
+import { IUserUpdate } from '../../types/user/type_User';
 
 interface IFormEditProps {
     dataEdit: string;

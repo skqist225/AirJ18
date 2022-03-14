@@ -18,3 +18,4 @@ export { default as PropertyTitlePage } from './become_a_host/PropertyTitlePage'
 export { default as PropertyDescriptionPage } from './become_a_host/PropertyDescriptionPage';
 export { default as PropertyPricePage } from './become_a_host/PropertyPricePage';
 export { default as RoomPreviewPage } from './become_a_host/RoomPreviewPage';
+export { default as ProgressBookingPage } from './ProgressBookingPage';

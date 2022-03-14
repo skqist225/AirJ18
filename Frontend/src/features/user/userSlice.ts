@@ -9,7 +9,7 @@ import {
     IBookedRoom,
     RoomWishlists,
     IRatingLabel,
-} from '../../type/user/type_User';
+} from '../../types/user/type_User';
 
 function setUserToLocalStorage(user: IUser) {
     if (user) {

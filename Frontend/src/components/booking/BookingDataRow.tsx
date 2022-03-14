@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Div, Image } from '../../globalStyle';
 import { getImage } from '../../helpers';
-import { IBooking } from '../../type/booking/type_Booking';
+import { IBooking } from '../../types/booking/type_Booking';
 import { MyNumberForMat } from '../utils';
 import $ from 'jquery';
 

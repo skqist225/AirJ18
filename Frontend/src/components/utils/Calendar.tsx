@@ -4,7 +4,7 @@ import Month from './Month';
 import axios from '../../axios';
 import $ from 'jquery';
 import { toast, ToastContainer } from 'react-toastify';
-import { IBookedDate } from '../../type/room/type_RoomDetails';
+import { IBookedDate } from '../../types/room/type_RoomDetails';
 
 interface ICalendarProps {
     displayStartDateAndEndDate?: Function;

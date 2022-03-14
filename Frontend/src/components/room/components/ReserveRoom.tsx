@@ -1,11 +1,10 @@
-import { message } from 'antd';
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { userState } from '../../../features/user/userSlice';
 import { Div, Image } from '../../../globalStyle';
 import { getImage, callToast } from '../../../helpers';
-import { IRoomDetails } from '../../../type/room/type_RoomDetails';
+import { IRoomDetails } from '../../../types/room/type_RoomDetails';
 import Toast from '../../notify/Toast';
 import $ from 'jquery';
 import { MyNumberForMat } from '../../utils';
