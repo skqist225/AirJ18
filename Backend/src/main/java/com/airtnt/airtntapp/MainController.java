@@ -56,7 +56,7 @@ public class MainController {
             @RequestParam(value = "bedRoom", required = false, defaultValue = "0") String bedRoom,
             @RequestParam(value = "bed", required = false, defaultValue = "0") String bed,
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
-            @RequestParam(value = "amentities", required = false, defaultValue = "") String amentitiesFilter,
+            @RequestParam(value = "amenities", required = false, defaultValue = "") String amenities,
             Model model) throws ParseException {
         if (categoryId == null) {
             return "redirect:/?categoryId=1";
@@ -68,7 +68,7 @@ public class MainController {
         filters.put("bedRoom", bedRoom);
         filters.put("bed", bed);
         filters.put("bathRoom", bathRoom);
-        filters.put("amentities", amentitiesFilter);
+        filters.put("amenities", amenities);
 
         // Category
         List<Category> categories = categoryService.getAllCategory();

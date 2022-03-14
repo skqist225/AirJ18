@@ -142,3 +142,23 @@
     font-size: 22px;
     font-weight: 500;
 }
+
+.progress--booking__pm--select {
+    /* height: calc(76px + 114px); */
+    /* width: 430px; */
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 16px;
+}
+
+.progress--booking__pm--header {
+    border-bottom: 1px solid rgb(211, 211, 211);
+    padding: 16px;
+}
+
+.progress--booking__pm--description {
+    font-size: 16px !important;
+    line-height: 20px !important;
+    color: rgb(113, 113, 113) !important;
+    padding-top: 4px !important;
+    margin-right: 12px !important;
+}

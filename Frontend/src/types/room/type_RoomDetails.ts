@@ -36,6 +36,7 @@ export type IRoomDetails = {
     location: string;
     guest: number;
     currencySymbol: string;
+    currencyUnit: string;
     id: number;
     bathroom: number;
     host: IHost;

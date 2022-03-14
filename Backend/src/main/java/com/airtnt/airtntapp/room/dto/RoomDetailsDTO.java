@@ -39,6 +39,7 @@ public class RoomDetailsDTO {
     private String location;
     private int guest;
     private String currencySymbol;
+    private String currencyUnit;
     private Integer id;
     private int bathroom;
     private float longitude;

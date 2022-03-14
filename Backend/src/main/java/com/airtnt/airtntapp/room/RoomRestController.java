@@ -230,6 +230,7 @@ public class RoomRestController {
                 .bedroom(room.getBedroomCount())
                 .price(room.getPrice())
                 .currencySymbol(room.getCurrency().getSymbol())
+                .currencyUnit(room.getCurrency().getUnit())
                 .stayType(room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
                 .longitude(room.getLongitude())
                 .latitude(room.getLatitude())

@@ -7,11 +7,15 @@ import PaymentInfo from '../components/progress_booking/PaymentInfo';
 import PreviewBookingInfo from '../components/progress_booking/PreviewBookingInfo';
 import { fetchRoomById, roomState } from '../features/room/roomSlice';
 import { Div, Image } from '../globalStyle';
-import { getImage } from '../helpers';
+import { getImage, seperateNumber } from '../helpers';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { bookingState, getStripeClientSecret } from '../features/booking/bookingSlice';
+import { MyNumberForMat } from '../components/utils';
+import { Radio } from 'antd';
 
 import './css/progress_booking.css';
+import PaymentMethod from '../components/progress_booking/PaymentMethod';
 
 interface IProgressBookingPageProps {}
 
@@ -62,13 +66,12 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
     const dispatch = useDispatch();
     const { pathname, search } = useLocation();
     const roomid = pathname.split('/').pop()!;
+    const { clientSecret } = useSelector(bookingState);
 
-    // const clientSecret = stripePromise.client_secret;
-    // const options = {
-    //     // passing the client secret obtained from the server
-    //     clientSecret:
-    //         'sk_test_51I0IBMJc966wyBI6039Fz6Dj8JFQDWPt1H3cuWpLFpllfefWEnSb5eSfcdNH1L4bNhqyu5W3UEEjJWxdqchYWeQV00TROMqWL9',
-    // };
+    const options = {
+        // passing the client secret obtained from the server
+        clientSecret,
+    };
 
     const params: Map<string, string> = new Map();
     const urlSearchParams = search.split('?')[1].split('&');
@@ -81,11 +84,26 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
     const [numberOfNights, setNumberOfNights] = useState<number>(
         parseInt(params.get('numberOfNights')!)
     );
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [siteFee, setSiteFee] = useState<number>(0);
 
     useEffect(() => {
         dispatch(fetchRoomById({ roomid }));
     }, []);
     const { room } = useSelector(roomState);
+
+    useEffect(() => {
+        if (room) {
+            dispatch(
+                getStripeClientSecret({
+                    currency: room.currencyUnit.toLowerCase(),
+                    price: room.price,
+                })
+            );
+            setSiteFee((room.price * 5) / 100);
+            setTotalPrice(room.price * numberOfNights + siteFee);
+        }
+    }, [room]);
 
     function backToRoomDetails() {
         window.location.href = '/room/' + roomid;
@@ -117,22 +135,52 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                                     />
                                     <PreviewBookingInfo title='Khách' info={`${1} khách`} />
                                 </section>
-                                <section className='progress--booking__infoSection'>
-                                    <div>Chọn cách thanh toán</div>
-                                </section>
+                                <PaymentMethod
+                                    siteFee={siteFee}
+                                    totalPrice={totalPrice}
+                                    room={room}
+                                />
                                 <section className='progress--booking__infoSection'>
                                     <div>Thanh toán bằng</div>
                                     <div>
-                                        <Elements stripe={stripePromise} options={options}>
-                                            <PaymentInfo
-                                                roomPrice={room.price}
-                                                numberOfNights={numberOfNights}
-                                            />
-                                        </Elements>
+                                        {/* {clientSecret && (
+                                            <Elements stripe={stripePromise} options={options}>
+                                                <PaymentInfo
+                                                    roomPrice={room.price}
+                                                    numberOfNights={numberOfNights}
+                                                />
+                                            </Elements>
+                                        )} */}
                                     </div>
                                 </section>
                                 <section className='progress--booking__infoSection'>
                                     <div>Bắt buộc cho chuyến đi của bạn</div>
+
+                                    <div>
+                                        <div>
+                                            <div>Nhắn tin cho chủ nhà</div>
+                                            <div>
+                                                Cho chủ nhà biết lý do bạn đi du lịch và thời điểm
+                                                nhận phòng.
+                                            </div>
+                                        </div>
+
+                                        <div className='normal-flex'>
+                                            <div>
+                                                <Image
+                                                    src={getImage(room.host.avatar)}
+                                                    size='50px'
+                                                    className='rounded-border'
+                                                />
+                                            </div>
+                                            <div>
+                                                <div>{room.host.name}</div>
+                                                <div>{room.host.createdDate}</div>
+                                            </div>
+                                        </div>
+
+                                        <div></div>
+                                    </div>
                                 </section>
                                 <section className='progress--booking__infoSection'>
                                     <div>Chính sách hủy</div>

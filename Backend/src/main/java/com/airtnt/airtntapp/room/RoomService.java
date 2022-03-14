@@ -27,7 +27,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.FileUploadUtil;
-import com.airtnt.airtntapp.amentity.AmentityRepository;
 import com.airtnt.airtntapp.city.CityRepository;
 import com.airtnt.airtntapp.privacy.PrivacyTypeRepository;
 import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
