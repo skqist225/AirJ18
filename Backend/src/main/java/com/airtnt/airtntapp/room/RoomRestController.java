@@ -238,6 +238,7 @@ public class RoomRestController {
                 .bookedDates(
                         bookedDates)
                 .cityName(room.getCity().getName())
+                .category(room.getCategory().getName())
                 .build();
 
         return roomDetailsDTO;

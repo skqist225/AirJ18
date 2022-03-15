@@ -97,8 +97,6 @@ const HomePage: FC<HomeProps> = () => {
 
             <FilterRoomBox />
 
-            {/*748 474 583*/}
-
             <ToastContainer
                 position='bottom-right'
                 autoClose={5000}

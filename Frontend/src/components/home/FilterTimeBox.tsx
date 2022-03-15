@@ -169,7 +169,7 @@ const FilterTimeBox: FC<IFilterTimeBoxProps> = ({ categoryid, triggerButton }) =
                     );
 
                 const nextEndDate = parseInt(endDate.text()) + index + 1;
-                const lastDateInMonth = new Date(2008, endDate.data('month'), 0).getDate();
+                const lastDateInMonth = new Date(currentYear, endDate.data('month'), 0).getDate();
                 console.log(lastDateInMonth);
                 if (nextEndDate <= lastDateInMonth)
                     dates.push(`${endDate.data('year')}-${endDate.data('month')}-${nextEndDate}`);

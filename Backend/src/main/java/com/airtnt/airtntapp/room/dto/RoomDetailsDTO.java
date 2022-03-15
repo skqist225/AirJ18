@@ -44,4 +44,5 @@ public class RoomDetailsDTO {
     private int bathroom;
     private float longitude;
     private String cityName;
+    private String category;
 }

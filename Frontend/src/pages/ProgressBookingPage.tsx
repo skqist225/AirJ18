@@ -3,19 +3,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/Header';
-import PaymentInfo from '../components/progress_booking/PaymentInfo';
-import PreviewBookingInfo from '../components/progress_booking/PreviewBookingInfo';
+import {
+    CancelPolicy,
+    ContactHost,
+    PaymentError,
+    PaymentMethod,
+    PreviewBookingInfo,
+    RoomAndPricePreview,
+    AcceptPolicy,
+} from '../components/progress_booking';
 import { fetchRoomById, roomState } from '../features/room/roomSlice';
 import { Div, Image } from '../globalStyle';
-import { getImage, seperateNumber } from '../helpers';
-import { Elements } from '@stripe/react-stripe-js';
+import { getImage } from '../helpers';
 import { loadStripe } from '@stripe/stripe-js';
 import { bookingState, getStripeClientSecret } from '../features/booking/bookingSlice';
-import { MyNumberForMat } from '../components/utils';
-import { Radio } from 'antd';
+import { Input } from 'antd';
 
 import './css/progress_booking.css';
-import PaymentMethod from '../components/progress_booking/PaymentMethod';
 
 interface IProgressBookingPageProps {}
 
@@ -50,17 +54,10 @@ const PBRoomInfo = styled(Div).attrs(props => ({
     className: 'start-flex',
 }))``;
 
-const PBRoomThumbnail = styled.img`
-    width: 124px;
-    height: 106px;
-    object-fit: cover;
-    vertical-align: bottom;
-    border-radius: 10px;
-`;
-
 const stripePromise = loadStripe(
     'pk_test_51I0IBMJc966wyBI6MIJecSCfMv7UPan6N0DVxro4nTDYIAQKJOiANIUQotSTu0NP99C5tuKPHdaWCrei9iR2ASsH00gRiN3lVe'
 );
+const { TextArea } = Input;
 
 const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
     const dispatch = useDispatch();
@@ -86,6 +83,7 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
     );
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [siteFee, setSiteFee] = useState<number>(0);
+    const [cleanFee, setCleanFee] = useState<number>(0);
 
     useEffect(() => {
         dispatch(fetchRoomById({ roomid }));
@@ -100,8 +98,9 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                     price: room.price,
                 })
             );
-            setSiteFee((room.price * 5) / 100);
-            setTotalPrice(room.price * numberOfNights + siteFee);
+            setSiteFee((room.price * 10) / 100);
+            setCleanFee((room.price * 5) / 100);
+            setTotalPrice(room.price * numberOfNights + siteFee + cleanFee);
         }
     }, [room]);
 
@@ -109,8 +108,35 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
         window.location.href = '/room/' + roomid;
     }
 
+    let fromDateToDate = '';
+    const [ciDate, ciMonth, ciYear] = checkinDate.split('-');
+    const [coDate, coMonth, coYear] = checkoutDate.split('-');
+    if (ciMonth === coMonth && ciYear === coYear)
+        fromDateToDate = `Ngày ${ciDate} - Ngày ${coDate} thg ${ciMonth}`;
+    else if (ciMonth !== coMonth && ciYear === coYear)
+        fromDateToDate = `Ngày ${ciDate} thg ${ciMonth} - Ngày ${coDate} thg ${coMonth}`;
+    else
+        fromDateToDate = `Ngày ${ciDate} thg ${ciMonth} năm ${ciMonth} - Ngày ${coDate} thg ${coMonth} năm ${coMonth}`;
+
+    let ciDateNumber = parseInt(ciDate);
+    let beforeCheckinDate7Days = 0;
+    let beforeCheckinDateMonth = 0;
+    let i = 7;
+
+    const lastDateOfPrevMonth = new Date(parseInt(ciYear), parseInt(ciMonth) - 1, 0).getDate();
+    if (ciDateNumber - 7 < 0) {
+        while (ciDateNumber-- >= 0) {
+            i--;
+        }
+        beforeCheckinDate7Days = lastDateOfPrevMonth - i;
+        beforeCheckinDateMonth = parseInt(ciMonth) - 1;
+    } else {
+        beforeCheckinDate7Days = ciDateNumber - 7;
+        beforeCheckinDateMonth = parseInt(ciMonth);
+    }
+
     return (
-        <div className='p-relative'>
+        <div className='p-relative' id='progress--booking'>
             <Header includeMiddle={false} excludeBecomeHostAndNavigationHeader={true} />
 
             {room && (
@@ -119,7 +145,7 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                         <PBTitleSection>
                             <button
                                 onClick={backToRoomDetails}
-                                className='booking__transparent-btn'
+                                className='progress--booking__transparentBtn'
                             >
                                 <Image src={getImage('/svg/close3.svg')} size='16px' />
                             </button>
@@ -127,16 +153,25 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                         </PBTitleSection>
                         <PBRoomInfo>
                             <div className='f1' style={{ maxWidth: '45%' }}>
+                                <PaymentError />
                                 <section className='progress--booking__infoSection'>
                                     <div>Chuyến đi của bạn</div>
                                     <PreviewBookingInfo
                                         title='Ngày'
-                                        info={`${checkinDate} - ${checkoutDate}`}
+                                        text={fromDateToDate}
+                                        componentName='calendar'
+                                        room={room}
                                     />
-                                    <PreviewBookingInfo title='Khách' info={`${1} khách`} />
+                                    <PreviewBookingInfo
+                                        title='Khách'
+                                        text={`${1} khách`}
+                                        componentName='guest'
+                                        room={room}
+                                    />
                                 </section>
                                 <PaymentMethod
                                     siteFee={siteFee}
+                                    cleanFee={cleanFee}
                                     totalPrice={totalPrice}
                                     room={room}
                                 />
@@ -153,38 +188,12 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                                         )} */}
                                     </div>
                                 </section>
-                                <section className='progress--booking__infoSection'>
-                                    <div>Bắt buộc cho chuyến đi của bạn</div>
-
-                                    <div>
-                                        <div>
-                                            <div>Nhắn tin cho chủ nhà</div>
-                                            <div>
-                                                Cho chủ nhà biết lý do bạn đi du lịch và thời điểm
-                                                nhận phòng.
-                                            </div>
-                                        </div>
-
-                                        <div className='normal-flex'>
-                                            <div>
-                                                <Image
-                                                    src={getImage(room.host.avatar)}
-                                                    size='50px'
-                                                    className='rounded-border'
-                                                />
-                                            </div>
-                                            <div>
-                                                <div>{room.host.name}</div>
-                                                <div>{room.host.createdDate}</div>
-                                            </div>
-                                        </div>
-
-                                        <div></div>
-                                    </div>
-                                </section>
-                                <section className='progress--booking__infoSection'>
-                                    <div>Chính sách hủy</div>
-                                </section>
+                                <ContactHost room={room} />
+                                <CancelPolicy
+                                    date={beforeCheckinDate7Days}
+                                    month={beforeCheckinDateMonth}
+                                />
+                                <AcceptPolicy />
 
                                 <Div>
                                     <button
@@ -203,79 +212,12 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                                 </Div>
                             </div>
                             <div className='f1' style={{ maxWidth: '5%' }}></div>
-                            <div className='flex-1'>
-                                <div id='boxPreview'>
-                                    <div id='boxPreview-header'>
-                                        <div>
-                                            <PBRoomThumbnail src={getImage(room!.thumbnail)} />
-                                        </div>
-                                        <div>
-                                            <div className='fs-14'>
-                                                {room!.privacy} tại
-                                                {/* {room.ca} */}
-                                            </div>
-                                            <div>{room!.name}</div>
-                                        </div>
-                                    </div>
-                                    <div id='boxPreview-body' style={{ paddingTop: '24px' }}>
-                                        <div className='booking__price-details-title'>
-                                            Chi tiết giá
-                                        </div>
-                                        <div className='previewPrice-line'>
-                                            <div className='flex-space'>
-                                                <div>
-                                                    <div
-                                                        style={{ color: 'rgb(32, 32, 32)' }}
-                                                        className='fs-16 fw-400'
-                                                    >
-                                                        {room!.currencySymbol}x
-                                                        <span id='numberOfNight'>
-                                                            ${numberOfNights}
-                                                        </span>
-                                                        &nbsp;đêm&nbsp;
-                                                    </div>
-                                                </div>
-                                                <div className='fs-16 fw-400'>
-                                                    {room!.currencySymbol}
-                                                    <span id='totalRoomPrice'></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className='previewPrice-line'>
-                                            <div className='flex-space'>
-                                                <div>
-                                                    <div
-                                                        style={{
-                                                            color: 'rgb(32, 32, 32)',
-                                                            textDecoration: 'underline',
-                                                        }}
-                                                        className='fs-16 fw-400'
-                                                    >
-                                                        Phí dịch vụ
-                                                    </div>
-                                                </div>
-                                                <div className='fs-16 fw-400'>
-                                                    {room!.currencySymbol}
-                                                    <span id='siteFee'></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id='boxPreview-footer' className='flex-space'>
-                                        <div className='fs-16 fw-600'>
-                                            Tổng(
-                                            <span style={{ textDecoration: 'underline' }}>
-                                                {/* {room.currency.unit} */}
-                                            </span>
-                                            )
-                                        </div>
-                                        <div className='fs-16 fw-600'>
-                                            {room!.currencySymbol}
-                                            <span id='totalPrice'></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <RoomAndPricePreview
+                                room={room}
+                                numberOfNights={numberOfNights}
+                                totalPrice={totalPrice}
+                                cleanFee={cleanFee}
+                            />
                         </PBRoomInfo>
                     </ProgressBookingContainer>
                 </div>

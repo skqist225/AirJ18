@@ -40,14 +40,43 @@ const Calendar: FC<ICalendarProps> = ({
     const month = date.getMonth();
     const year = date.getFullYear();
 
-    async function sadf() {
+    async function sadf(
+        firstMonthAndYear: JQuery<HTMLElement>,
+        secondMonthAndYear: JQuery<HTMLElement>
+    ) {
         await fetchTheNextCoupleOfMonth(firstMonthAndYear, secondMonthAndYear, month, year);
     }
 
     useEffect(() => {
         firstMonthAndYear = $('.firstMonthAndYear').first();
         secondMonthAndYear = $('.secondMonthAndYear').first();
-        sadf();
+        sadf(firstMonthAndYear, secondMonthAndYear);
+
+        if (firstMonthAndYear && secondMonthAndYear) {
+            $('.getTheNextTwoMonth').on('click', async function () {
+                const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
+                const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
+
+                await fetchTheNextCoupleOfMonth(
+                    firstMonthAndYear,
+                    secondMonthAndYear,
+                    parseInt(currentFirstMonthInCalendar),
+                    parseInt(currentYearInCalendar)
+                );
+            });
+
+            $('.getThePrevTwoMonth').on('click', async function () {
+                const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
+                const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
+
+                await fetchThePrevCoupleOfMonth(
+                    firstMonthAndYear,
+                    secondMonthAndYear,
+                    parseInt(currentFirstMonthInCalendar),
+                    parseInt(currentYearInCalendar)
+                );
+            });
+        }
     }, []);
 
     const fetchDaysInMonth = async (month: number, year: number) => {
@@ -56,32 +85,6 @@ const Calendar: FC<ICalendarProps> = ({
         } = await axios.get(`/calendar/${month + 1}/${year}`);
         return Promise.resolve({ daysInMonth, startInWeek });
     };
-
-    useEffect(() => {
-        $('.getTheNextTwoMonth').on('click', async function () {
-            const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
-            const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
-
-            await fetchTheNextCoupleOfMonth(
-                firstMonthAndYear,
-                secondMonthAndYear,
-                parseInt(currentFirstMonthInCalendar),
-                parseInt(currentYearInCalendar)
-            );
-        });
-
-        $('.getThePrevTwoMonth').on('click', async function () {
-            const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
-            const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
-
-            await fetchThePrevCoupleOfMonth(
-                firstMonthAndYear,
-                secondMonthAndYear,
-                parseInt(currentFirstMonthInCalendar),
-                parseInt(currentYearInCalendar)
-            );
-        });
-    }, []);
 
     async function fetchThePrevCoupleOfMonth(
         firstMonthAndYear: JQuery<HTMLElement>,
@@ -454,7 +457,7 @@ const Calendar: FC<ICalendarProps> = ({
 
         if (displayStartDateAndEndDate) displayStartDateAndEndDate(startDate, endDate);
         if (setCheckInAndOutDate) setCheckInAndOutDate(startDate, endDate);
-        if (displayNumberOfDays) displayNumberOfDays(howManyDays);
+        if (displayNumberOfDays) displayNumberOfDays(howManyDays, startDate, endDate);
     }
 
     function setStartDate(
@@ -570,7 +573,7 @@ const Calendar: FC<ICalendarProps> = ({
     }
 
     return (
-        <div className='rdt_calender__header'>
+        <div className='rdt_calender__header' style={{ minHeight: '375px' }}>
             <div className='flex' style={{ alignItems: 'flex-start' }}>
                 <Month
                     imageSrc={getImage('/svg/close3.svg')}

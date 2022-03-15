@@ -45,6 +45,9 @@ public class Booking extends BaseEntity {
 	@Column(columnDefinition = "Decimal(20,2)", nullable = false)
 	private float siteFee;
 
+	@Column(columnDefinition = "Decimal(20,2)", nullable = false)
+	private float cleanFee;
+
 	@Column(columnDefinition = "Decimal(20,2) default '0.00'")
 	private float totalFee;
 

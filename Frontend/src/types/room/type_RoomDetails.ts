@@ -43,4 +43,5 @@ export type IRoomDetails = {
     longitude: number;
     image_prefix: string;
     cityName: string;
+    category: string;
 } | null;

@@ -8,10 +8,11 @@ import PaymentMethodOption from './components/PaymentMethodOption';
 interface IPaymentMethodProps {
     totalPrice: number;
     siteFee: number;
+    cleanFee: number;
     room: IRoomDetails;
 }
 
-const PaymentMethod: FC<IPaymentMethodProps> = ({ totalPrice, siteFee, room }) => {
+const PaymentMethod: FC<IPaymentMethodProps> = ({ totalPrice, siteFee, room, cleanFee }) => {
     return (
         <section className='progress--booking__infoSection'>
             <div>Chọn cách thanh toán</div>
@@ -24,12 +25,13 @@ const PaymentMethod: FC<IPaymentMethodProps> = ({ totalPrice, siteFee, room }) =
                 />
                 <PaymentMethodOption
                     paymentMethodTitle='Trả ngay một phần, phần còn lại trả sau'
-                    price={(totalPrice - siteFee) / 2 + siteFee}
+                    price={(totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee}
                     currencySymbol={room!.currencySymbol}
-                    description={`Thanh toán ngay ${room!.currencySymbol}
-                        ${seperateNumber((totalPrice - siteFee) / 2 + siteFee)} và phần còn lại (
-                        ${room!.currencySymbol}
-                        ${seperateNumber(totalPrice - (totalPrice - siteFee) / 2 + siteFee)}) sẽ tự
+                    description={`Thanh toán ngay ${room!.currencySymbol}${seperateNumber(
+                        (totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee
+                    )} và phần còn lại (${room!.currencySymbol}${seperateNumber(
+                        totalPrice - ((totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee)
+                    )}) sẽ tự
                         động được trừ vào cùng phương thức thanh toán này vào 27 thg 5, 2022. Không
                         phát sinh phụ phí.`}
                 />

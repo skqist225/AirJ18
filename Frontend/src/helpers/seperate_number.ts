@@ -11,12 +11,12 @@ export default function seperateNumber(number: number) {
         }
     };
 
-    countDotNum(number);
+    countDotNum(Math.floor(number));
 
     let finalString = [];
     let numString = String(number);
     for (let i = 0; i < dotNum; i++) {
-        const subString = '.' + numString.substr(-3);
+        const subString = ',' + numString.substr(-3);
         numString = numString.substring(0, numString.length - 3);
         finalString.unshift(subString);
     }

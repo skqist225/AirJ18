@@ -5,13 +5,7 @@
     right: 0;
 }
 
-.checkinAndCheckoutTitle {
-    font-size: 16px;
-    color: #222;
-    margin-top: 8px;
-}
-
-.booking__transparent-btn {
+.progress--booking__transparentBtn {
     appearance: none;
     background: transparent;
     border: 0px;
@@ -56,7 +50,7 @@
 
 #boxPreview-body {
     flex: 1;
-    border-bottom: 1px solid rgb(221, 221, 221);
+    /* border-bottom: 1px solid rgb(221, 221, 221); */
 }
 
 #boxPreview {
@@ -156,9 +150,201 @@
 }
 
 .progress--booking__pm--description {
-    font-size: 16px !important;
-    line-height: 20px !important;
-    color: rgb(113, 113, 113) !important;
-    padding-top: 4px !important;
-    margin-right: 12px !important;
+    font-size: 16px;
+    line-height: 20px;
+    color: rgb(113, 113, 113);
+    padding-top: 4px;
+    margin-right: 12px;
+}
+
+.progress--booking__error--wrapper {
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(255, 255, 255);
+    background-color: rgb(193, 53, 21);
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.progress--booking__payment--error {
+    display: none;
+    contain: layout;
+    border: 1px solid rgb(221, 221, 221);
+    background-color: rgb(255, 255, 255);
+    border-radius: 12px;
+    padding: 16px;
+    max-width: 375px;
+    box-shadow: rgb(0 0 0 / 20%) 0px 6px 20px;
+}
+
+.progress--booking__payment--error.show {
+    display: inline-flex;
+}
+
+.progress--booking__payment--error > div {
+    align-items: flex-start;
+}
+
+#progress--booking__changeBookingDate--box {
+    position: absolute;
+    top: -80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#progress--booking__changeBookingDate--box > div:first-child {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    padding: 64px 32px 16px;
+    width: 700px;
+    z-index: 1;
+    min-height: 460px;
+}
+
+.remove-scroll {
+    height: 100vh;
+    overflow-y: hidden;
+}
+
+.inputContainer {
+    position: relative;
+    cursor: text;
+    display: flex;
+    max-height: 56px;
+    width: 143px;
+    margin: 0px;
+    border: none transparent;
+    color: rgb(34, 34, 34);
+    border-radius: 8px;
+    flex: 1 1 0%;
+    outline: none;
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+    /* border: 1px solid rgb(176, 176, 176); */
+}
+
+/* .inputContainer:first-child {
+    border-right: none;
+}
+
+.inputContainer:first-child {
+    border-left: none;
+} */
+
+.inputContainer.active {
+    box-shadow: rgb(34 34 34) 0px 0px 0px 2px inset;
+}
+
+.inputContainer > div:first-child {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+}
+
+.inputContainer > div:first-child span {
+    line-height: normal;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.inputWrapper {
+    display: flex;
+    opacity: 1;
+    font-size: 14px;
+    line-height: 18px;
+    color: rgb(34, 34, 34);
+}
+
+.inputWrapper.disabled {
+    color: rgb(176, 176, 176) !important;
+}
+
+.inputWrapper input {
+    width: 100%;
+    max-width: 83.25px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    margin: 26px 12px 10px;
+    min-height: 1px;
+    color: inherit;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    appearance: none;
+}
+
+.delete--date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete--date:hover::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgb(247, 247, 247);
+}
+
+.delete--date:hover {
+    color: rgb(0, 0, 0);
+}
+
+.delete--date span {
+    position: relative;
+}
+
+.progress--booking__close--box__btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+}
+
+.progress--booking__saveDateBtn {
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+    touch-action: manipulation;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    outline: none;
+    padding: 8px 16px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    margin-left: 16px;
+}
+
+.progress--booking__saveDateBtn:disabled {
+    cursor: not-allowed;
+    opacity: 1;
+    border: none;
+    background: rgb(221, 221, 221);
+    color: rgb(255, 255, 255);
 }
