@@ -12,6 +12,11 @@ interface ICalendarProps {
     displayNumberOfDays?: Function;
     lockBookedDatesInCalendar?: Function;
     bookedDates?: IBookedDate[];
+    cleanCalendar?: boolean;
+    setCleanCalendar?: React.Dispatch<React.SetStateAction<boolean>>;
+    resetCheckoutDate?: boolean;
+    setResetCheckoutDate?: React.Dispatch<React.SetStateAction<boolean>>;
+    resetChangeBookingDateBox?: Function;
 }
 
 export function getElementsOfDate(date: string) {
@@ -28,6 +33,11 @@ const Calendar: FC<ICalendarProps> = ({
     displayNumberOfDays,
     lockBookedDatesInCalendar,
     bookedDates,
+    cleanCalendar = false,
+    setCleanCalendar,
+    resetCheckoutDate = false,
+    setResetCheckoutDate,
+    resetChangeBookingDateBox,
 }) => {
     let firstMonthAndYear: JQuery<HTMLElement>;
     let secondMonthAndYear: JQuery<HTMLElement>;
@@ -48,36 +58,57 @@ const Calendar: FC<ICalendarProps> = ({
     }
 
     useEffect(() => {
+        console.log('called');
+
         firstMonthAndYear = $('.firstMonthAndYear').first();
         secondMonthAndYear = $('.secondMonthAndYear').first();
         sadf(firstMonthAndYear, secondMonthAndYear);
 
         if (firstMonthAndYear && secondMonthAndYear) {
-            $('.getTheNextTwoMonth').on('click', async function () {
-                const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
-                const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
+            $('.getTheNextTwoMonth')
+                .off('click')
+                .on('click', async function () {
+                    const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
+                    const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
 
-                await fetchTheNextCoupleOfMonth(
-                    firstMonthAndYear,
-                    secondMonthAndYear,
-                    parseInt(currentFirstMonthInCalendar),
-                    parseInt(currentYearInCalendar)
-                );
-            });
+                    await fetchTheNextCoupleOfMonth(
+                        firstMonthAndYear,
+                        secondMonthAndYear,
+                        parseInt(currentFirstMonthInCalendar),
+                        parseInt(currentYearInCalendar)
+                    );
+                });
 
-            $('.getThePrevTwoMonth').on('click', async function () {
-                const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
-                const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
+            $('.getThePrevTwoMonth')
+                .off('click')
+                .on('click', async function () {
+                    const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
+                    const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
 
-                await fetchThePrevCoupleOfMonth(
-                    firstMonthAndYear,
-                    secondMonthAndYear,
-                    parseInt(currentFirstMonthInCalendar),
-                    parseInt(currentYearInCalendar)
-                );
-            });
+                    await fetchThePrevCoupleOfMonth(
+                        firstMonthAndYear,
+                        secondMonthAndYear,
+                        parseInt(currentFirstMonthInCalendar),
+                        parseInt(currentYearInCalendar)
+                    );
+                });
         }
     }, []);
+
+    useEffect(() => {
+        if (cleanCalendar) {
+            $('.dayInWeek.false').filter('.checked').last().trigger('click');
+            $('.dayInWeek.false').filter('.checked').first().trigger('click');
+            if (setCleanCalendar) setCleanCalendar(false);
+        }
+    }, [cleanCalendar]);
+
+    useEffect(() => {
+        if (resetCheckoutDate) {
+            $('.dayInWeek.false').filter('.checked').last().trigger('click');
+            if (setResetCheckoutDate) setResetCheckoutDate(false);
+        }
+    }, [resetCheckoutDate]);
 
     const fetchDaysInMonth = async (month: number, year: number) => {
         const {
@@ -155,77 +186,92 @@ const Calendar: FC<ICalendarProps> = ({
 
     function addClickEventForDay() {
         $('.dayInWeek.false').each(function () {
-            $(this).on('click', function () {
-                $('.dayInWeek.false').each(function () {
-                    if ($(this).hasClass('checked')) {
+            $(this)
+                .off('click')
+                .on('click', function () {
+                    console.log('------------------------');
+                    console.log('start date:', startDate);
+                    console.log('have sd: ', haveStartDate);
+                    console.log('have ed: ', haveEndDate);
+
+                    if (!haveStartDate && !haveEndDate) {
+                        $(this).addClass('checked');
+                        startDate +=
+                            $(this).text() +
+                            '/' +
+                            $(this).data('month') +
+                            '/' +
+                            $(this).data('year');
                         haveStartDate = true;
-                        return false;
-                    }
-                });
+                    } else if (haveStartDate && !haveEndDate && $(this).hasClass('checked')) {
+                        $(this).removeClass('checked');
+                        startDate = '';
+                        haveStartDate = false;
+                        removeBetweenClass();
+                        if (resetChangeBookingDateBox) resetChangeBookingDateBox();
+                    } else if (!haveStartDate && haveEndDate && $(this).hasClass('checked')) {
+                        $(this).removeClass('checked');
+                        endDate = '';
+                        haveEndDate = false;
+                        removeBetweenClass();
+                        if (resetChangeBookingDateBox) resetChangeBookingDateBox();
+                    } else if (haveStartDate && haveEndDate && $(this).hasClass('checked')) {
+                        let mills1 = 0,
+                            mills2 = 0,
+                            mills3 = 0;
+                        const firstCheckedDate = $('.dayInWeek.false').filter('.checked').first();
+                        const lastCheckedDate = $('.dayInWeek.false').filter('.checked').last();
 
-                if (!haveStartDate && !haveEndDate) {
-                    $(this).addClass('checked');
-                    startDate +=
-                        $(this).text() + '/' + $(this).data('month') + '/' + $(this).data('year');
-                } else if (haveStartDate && !haveEndDate && $(this).hasClass('checked')) {
-                    $(this).removeClass('checked');
-                    startDate = '';
-                    haveStartDate = false;
+                        mills1 = new Date(
+                            parseInt(firstCheckedDate.data('year')),
+                            parseInt(firstCheckedDate.data('month')) - 1,
+                            parseInt(firstCheckedDate.text())
+                        ).getTime();
 
-                    removeBetweenClass();
-                } else if (haveStartDate && haveEndDate && $(this).hasClass('checked')) {
-                    $(this).removeClass('checked');
-                    endDate = '';
-                    haveEndDate = false;
-                } else if (haveStartDate && haveEndDate) {
-                    const [currDate, currMonth, currYear] = getElementsOfDate(
-                        $(this).text() + '/' + $(this).data('month') + '/' + $(this).data('year')
-                    );
+                        mills2 = new Date(
+                            lastCheckedDate.data('year'),
+                            lastCheckedDate.data('month') - 1,
+                            parseInt(lastCheckedDate.text())
+                        ).getTime();
 
-                    const [startDateDate, startDateMonth, startDateYear] =
-                        getElementsOfDate(startDate);
-                    const [endDateDate, endDateMonth, endDateYear] = getElementsOfDate(endDate);
+                        mills3 = new Date(
+                            $(this).data('year'),
+                            $(this).data('month') - 1,
+                            parseInt($(this).text())
+                        ).getTime();
 
-                    //if two month equal compare date
-                    //CASE 1:
-                    if (
-                        currMonth === startDateMonth &&
-                        currYear === startDateYear &&
-                        currDate < startDateDate
-                    ) {
-                        setStartDate(
-                            $(this),
-                            startDateDate,
-                            startDateMonth,
-                            startDateYear,
-                            currDate,
-                            currMonth,
-                            currYear
+                        if (mills1 === mills3) {
+                            console.log('true');
+                            startDate = '';
+                            haveStartDate = false;
+                        }
+
+                        if (mills2 === mills3) {
+                            endDate = '';
+                            haveEndDate = false;
+                        }
+
+                        $(this).removeClass('checked');
+                    } else if (haveStartDate && haveEndDate) {
+                        console.log('go continue');
+                        const [currDate, currMonth, currYear] = getElementsOfDate(
+                            $(this).text() +
+                                '/' +
+                                $(this).data('month') +
+                                '/' +
+                                $(this).data('year')
                         );
-                        return;
-                    }
-                    if (currYear < startDateYear || currMonth < startDateMonth) {
-                        setStartDate(
-                            $(this),
-                            startDateDate,
-                            startDateMonth,
-                            startDateYear,
-                            currDate,
-                            currMonth,
-                            currYear
-                        );
-                        return;
-                    }
 
-                    //CASE 2:
-                    if (currMonth === startDateMonth && currMonth === endDateMonth) {
+                        const [startDateDate, startDateMonth, startDateYear] =
+                            getElementsOfDate(startDate);
+                        const [endDateDate, endDateMonth, endDateYear] = getElementsOfDate(endDate);
+
+                        //if two month equal compare date
+                        //CASE 1:
                         if (
-                            currDate > startDateDate &&
-                            currDate < endDateDate &&
-                            currMonth >= startDateMonth &&
-                            currMonth <= endDateMonth &&
-                            currYear >= startDateYear &&
-                            currYear <= endDateYear
+                            currMonth === startDateMonth &&
+                            currYear === startDateYear &&
+                            currDate < startDateDate
                         ) {
                             setStartDate(
                                 $(this),
@@ -238,9 +284,7 @@ const Calendar: FC<ICalendarProps> = ({
                             );
                             return;
                         }
-                    }
-                    if (startDateMonth !== endDateMonth) {
-                        if (currMonth === startDateMonth && currDate > startDateDate) {
+                        if (currYear < startDateYear || currMonth < startDateMonth) {
                             setStartDate(
                                 $(this),
                                 startDateDate,
@@ -251,19 +295,18 @@ const Calendar: FC<ICalendarProps> = ({
                                 currYear
                             );
                             return;
-                        } else if (currMonth === endDateMonth && currDate < endDateDate) {
-                            setStartDate(
-                                $(this),
-                                startDateDate,
-                                startDateMonth,
-                                startDateYear,
-                                currDate,
-                                currMonth,
-                                currYear
-                            );
-                            return;
-                        } else {
-                            if (currMonth > startDateMonth && currMonth < endDateMonth) {
+                        }
+
+                        //CASE 2:
+                        if (currMonth === startDateMonth && currMonth === endDateMonth) {
+                            if (
+                                currDate > startDateDate &&
+                                currDate < endDateDate &&
+                                currMonth >= startDateMonth &&
+                                currMonth <= endDateMonth &&
+                                currYear >= startDateYear &&
+                                currYear <= endDateYear
+                            ) {
                                 setStartDate(
                                     $(this),
                                     startDateDate,
@@ -276,52 +319,97 @@ const Calendar: FC<ICalendarProps> = ({
                                 return;
                             }
                         }
+                        if (startDateMonth !== endDateMonth) {
+                            if (currMonth === startDateMonth && currDate > startDateDate) {
+                                setStartDate(
+                                    $(this),
+                                    startDateDate,
+                                    startDateMonth,
+                                    startDateYear,
+                                    currDate,
+                                    currMonth,
+                                    currYear
+                                );
+                                return;
+                            } else if (currMonth === endDateMonth && currDate < endDateDate) {
+                                setStartDate(
+                                    $(this),
+                                    startDateDate,
+                                    startDateMonth,
+                                    startDateYear,
+                                    currDate,
+                                    currMonth,
+                                    currYear
+                                );
+                                return;
+                            } else {
+                                if (currMonth > startDateMonth && currMonth < endDateMonth) {
+                                    setStartDate(
+                                        $(this),
+                                        startDateDate,
+                                        startDateMonth,
+                                        startDateYear,
+                                        currDate,
+                                        currMonth,
+                                        currYear
+                                    );
+                                    return;
+                                }
+                            }
+                        }
+
+                        setEndDate(
+                            $(this),
+                            endDateDate,
+                            endDateMonth,
+                            endDateYear,
+                            currDate,
+                            currMonth,
+                            currYear
+                        );
+                    } else {
+                        //end date
+                        const [date2, month2, year2] = getElementsOfDate(
+                            $(this).text() +
+                                '/' +
+                                $(this).data('month') +
+                                '/' +
+                                $(this).data('year')
+                        );
+
+                        const [startDateDate, startDateMonth, startDateYear] =
+                            getElementsOfDate(startDate);
+                        if (
+                            (month2 < startDateMonth && startDateYear > year2) ||
+                            (month2 === startDateMonth && date2 < startDateDate)
+                        ) {
+                            toast.error('🦄 Không thể chọn ngày bé hơn ngày bắt đầu!', {
+                                position: 'top-center',
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                            return false;
+                        }
+
+                        $(this).addClass('checked');
+                        endDate = '';
+                        endDate +=
+                            $(this).text() +
+                            '/' +
+                            $(this).data('month') +
+                            '/' +
+                            $(this).data('year');
+                        haveEndDate = true;
+
+                        hightlightBetween(startDate, endDate);
+                        if (displayStartDateAndEndDate)
+                            displayStartDateAndEndDate(startDate, endDate);
                     }
-
-                    setEndDate(
-                        $(this),
-                        endDateDate,
-                        endDateMonth,
-                        endDateYear,
-                        currDate,
-                        currMonth,
-                        currYear
-                    );
-                } else {
-                    //end date
-                    const [date2, month2, year2] = getElementsOfDate(
-                        $(this).text() + '/' + $(this).data('month') + '/' + $(this).data('year')
-                    );
-
-                    const [startDateDate, startDateMonth, startDateYear] =
-                        getElementsOfDate(startDate);
-                    if (
-                        (month2 < startDateMonth && startDateYear > year2) ||
-                        (month2 === startDateMonth && date2 < startDateDate)
-                    ) {
-                        toast.error('🦄 Không thể chọn ngày bé hơn ngày bắt đầu!', {
-                            position: 'top-center',
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
-                        return false;
-                    }
-
-                    $(this).addClass('checked');
-                    endDate = '';
-                    endDate +=
-                        $(this).text() + '/' + $(this).data('month') + '/' + $(this).data('year');
-                    haveEndDate = true;
-
-                    hightlightBetween(startDate, endDate);
-                    if (displayStartDateAndEndDate) displayStartDateAndEndDate(startDate, endDate);
-                    if (setCheckInAndOutDate) setCheckInAndOutDate(startDate, endDate);
-                }
-            });
+                });
         });
     }
 
@@ -456,7 +544,12 @@ const Calendar: FC<ICalendarProps> = ({
         });
 
         if (displayStartDateAndEndDate) displayStartDateAndEndDate(startDate, endDate);
-        if (setCheckInAndOutDate) setCheckInAndOutDate(startDate, endDate);
+        if (setCheckInAndOutDate)
+            setCheckInAndOutDate(
+                startDate.replaceAll('/', '-'),
+                endDate.replaceAll('/', '-'),
+                howManyDays
+            );
         if (displayNumberOfDays) displayNumberOfDays(howManyDays, startDate, endDate);
     }
 

@@ -28,9 +28,14 @@ const PaymentMethod: FC<IPaymentMethodProps> = ({ totalPrice, siteFee, room, cle
                     price={(totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee}
                     currencySymbol={room!.currencySymbol}
                     description={`Thanh toán ngay ${room!.currencySymbol}${seperateNumber(
-                        (totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee
+                        Math.floor((totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee)
                     )} và phần còn lại (${room!.currencySymbol}${seperateNumber(
-                        totalPrice - ((totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee)
+                        Math.floor(
+                            totalPrice -
+                                Math.floor(
+                                    (totalPrice - siteFee - cleanFee) / 2 + siteFee + cleanFee
+                                )
+                        )
                     )}) sẽ tự
                         động được trừ vào cùng phương thức thanh toán này vào 27 thg 5, 2022. Không
                         phát sinh phụ phí.`}

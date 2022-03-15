@@ -30,7 +30,7 @@ export default function MyNumberForMat({
             {' '}
             {isPrefix ? (
                 <NumberFormat
-                    value={price}
+                    value={Math.floor(price)}
                     prefix={currency}
                     thousandSeparator={true}
                     displayType={'text'}

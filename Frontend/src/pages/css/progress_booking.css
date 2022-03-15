@@ -339,6 +339,10 @@
         transform 0.1s ease 0s;
     -webkit-tap-highlight-color: transparent;
     margin-left: 16px;
+    background-color: #222;
+    outline: none;
+    border: none;
+    color: #fff;
 }
 
 .progress--booking__saveDateBtn:disabled {

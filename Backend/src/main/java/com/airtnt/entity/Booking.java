@@ -64,6 +64,8 @@ public class Booking extends BaseEntity {
 	@OneToOne(mappedBy = "booking")
 	private Review review;
 
+	private String clientMessage;
+
 	@Transient
 	long lastUpdated;
 

@@ -480,27 +480,64 @@ function removeBetweenClass() {
 function addClickEventForDay() {
     $('.dayInWeek.false').each(function () {
         $(this).click(function () {
-            $('.dayInWeek.false').each(function () {
-                if ($(this).hasClass('checked')) {
-                    haveStartDate = true;
-                    return false;
-                }
-            });
+            // $('.dayInWeek.false').each(function () {
+            //     if ($(this).hasClass('checked')) {
+            //         haveStartDate = true;
+            //         return false;
+            //     }
+            // });
 
             if (!haveStartDate && !haveEndDate) {
                 $(this).addClass('checked');
                 startDate +=
                     $(this).text() + '/' + $(this).data('month') + '/' + $(this).data('year');
+                haveStartDate = true;
             } else if (haveStartDate && !haveEndDate && $(this).hasClass('checked')) {
                 $(this).removeClass('checked');
                 startDate = '';
                 haveStartDate = false;
-
                 removeBetweenClass();
-            } else if (haveStartDate && haveEndDate && $(this).hasClass('checked')) {
+            } else if (!haveStartDate && haveEndDate && $(this).hasClass('checked')) {
                 $(this).removeClass('checked');
                 endDate = '';
                 haveEndDate = false;
+                removeBetweenClass();
+            } else if (haveStartDate && haveEndDate && $(this).hasClass('checked')) {
+                $(this).removeClass('checked');
+                let mills1 = 0,
+                    mills2 = 0,
+                    mills3 = 0;
+                const firstCheckedDate = $('.dayInWeek.false').filter('.checked').first();
+                const lastCheckedDate = $('.dayInWeek.false').filter('.checked').last();
+
+                mills1 = new Date(
+                    parseInt(firstCheckedDate.data('year')),
+                    parseInt(firstCheckedDate.data('month')) - 1,
+                    parseInt(firstCheckedDate.text())
+                ).getTime();
+
+                mills2 = new Date(
+                    lastCheckedDate.data('year'),
+                    lastCheckedDate.data('month') - 1,
+                    parseInt(lastCheckedDate.text())
+                ).getTime();
+
+                mills3 = new Date(
+                    $(this).data('year'),
+                    $(this).data('month') - 1,
+                    parseInt($(this).text())
+                ).getTime();
+
+                if (mills1 === mills3) {
+                    startDate = '';
+                    haveStartDate = false;
+                }
+                if (mills2 === mills3) {
+                    endDate = '';
+                    haveEndDate = false;
+                }
+
+                $(this).removeClass('checked');
             } else if (haveStartDate && haveEndDate) {
                 const [currDate, currMonth, currYear] = getElementsOfDate(
                     $(this).text() + '/' + $(this).data('month') + '/' + $(this).data('year')

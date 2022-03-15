@@ -17,7 +17,6 @@ import com.airtnt.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,17 +42,17 @@ public class BookingRestController {
     @Autowired
     private CookieProcess cookiePorcess;
 
-    @GetMapping(value = "/booking/{roomId}/create")
+    @GetMapping(value = "/api/booking/{roomId}/create")
     public BookingDTO createBooking(@AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("roomId") Integer roomId,
-            @Param("checkin") String checkin,
-            @Param("checkout") String checkout,
-            @Param("numberOfDays") Integer numberOfDays,
-            @Param("siteFee") Float siteFee) throws ParseException {
+            @RequestParam("checkin") String checkin,
+            @RequestParam("checkout") String checkout,
+            @RequestParam("numberOfDays") Integer numberOfDays,
+            @RequestParam(value = "clientMessage", defaultValue = "") String clientMessage) throws ParseException {
         Room room = roomService.getRoomById(roomId);
         User customer = userService.getByEmail(userDetails.getUsername());
         Booking booking = bookingService.createBooking(checkin, checkout, room,
-                numberOfDays, siteFee, customer);
+                numberOfDays, clientMessage, customer);
         BookingDTO bDTO = new BookingDTO();
         if (booking != null)
             bDTO = new BookingDTO(booking.getId(), booking.getBookingDate(),

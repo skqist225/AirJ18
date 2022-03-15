@@ -2,8 +2,9 @@ import { FC, useState } from 'react';
 import Calendar from '../utils/Calendar';
 import $ from 'jquery';
 import { getImage } from '../../helpers';
-import { Div, Image } from '../../globalStyle';
+import { Image } from '../../globalStyle';
 import { IRoomDetails } from '../../types/room/type_RoomDetails';
+import { number } from 'yup/lib/locale';
 
 interface IPreviewBookingInfoProps {
     title: string;
@@ -14,11 +15,13 @@ interface IPreviewBookingInfoProps {
 
 const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, componentName, room }) => {
     const [show, setShow] = useState(false);
+    const [cleanCalendar, setCleanCalendar] = useState(false);
+    const [resetCheckoutDate, setResetCheckoutDate] = useState(false);
 
     function showTriggeredComponent() {
         setShow(true);
         if (componentName === 'calendar')
-            $('.rdt_calender__header').css('display', 'block !important');
+            $('#progress--booking__changeBookingDate--box').css('display', 'block !important');
         else $('#guest').css('display', 'block');
 
         $('#progress--booking').addClass('remove-scroll');
@@ -27,9 +30,11 @@ const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, compone
     function closeBox() {
         setShow(false);
         if (componentName === 'calendar')
-            $('.rdt_calender__header').css('display', 'none !important');
+            $('#progress--booking__changeBookingDate--box').css('display', 'none !important');
         else $('#guest').css('display', 'none');
         $('#progress--booking').removeClass('remove-scroll');
+
+        setCleanCalendar(false);
     }
 
     function displayNumberOfDays(
@@ -43,6 +48,41 @@ const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, compone
         $('#checkOut-book_it').val(newCheckoutDate);
         // displayPreviewLine();
         // setTotalPrice(manyDays + 2, room!.price);
+    }
+
+    function resetChangeBookingDateBox() {
+        $('#numberOfNight').text('Chọn ngày');
+        $('#roomBedAndBathroom').text('Thêm ngày đi để biết giá chính xác');
+        $('#checkIn-book_it').val('');
+        $('#checkOut-book_it').val('');
+    }
+
+    function resetBookingDate() {
+        resetChangeBookingDateBox();
+
+        setCleanCalendar(true);
+    }
+
+    let newStartDate = '';
+    let newEndDate = '';
+    let newNumberOfNights = 0;
+
+    function setCheckInAndOutDate(
+        startDateArgs: string,
+        endDateArgs: string,
+        numberOfNights: number
+    ) {
+        $('.progress--booking__saveDateBtn').removeAttr('disabled');
+        $('.progress--booking__saveDateBtn').on('click', function () {
+            window.location.href = `${window.location.origin}/booking/${room?.id}?checkin=${newStartDate}&checkout=${newEndDate}&numberOfNights=${newNumberOfNights}`;
+        });
+        newStartDate = startDateArgs;
+        newEndDate = endDateArgs;
+        newNumberOfNights = numberOfNights;
+    }
+
+    function resetNewCheckoutDate() {
+        setResetCheckoutDate(true);
     }
 
     return (
@@ -112,7 +152,10 @@ const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, compone
                                                 id='checkIn-book_it'
                                             />
                                         </div>
-                                        <button className='progress--booking__transparentBtn p-relative delete--date'>
+                                        <button
+                                            className='progress--booking__transparentBtn p-relative delete--date'
+                                            onClick={resetBookingDate}
+                                        >
                                             <span>
                                                 <Image
                                                     src={getImage('/svg/close2.svg')}
@@ -134,7 +177,10 @@ const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, compone
                                                 id='checkOut-book_it'
                                             />
                                         </div>
-                                        <button className='progress--booking__transparentBtn p-relative delete--date'>
+                                        <button
+                                            className='progress--booking__transparentBtn p-relative delete--date'
+                                            onClick={resetNewCheckoutDate}
+                                        >
                                             <span>
                                                 <Image
                                                     src={getImage('/svg/close2.svg')}
@@ -147,10 +193,21 @@ const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, compone
                             </div>
                         </div>
 
-                        <Calendar displayNumberOfDays={displayNumberOfDays} />
+                        <Calendar
+                            displayNumberOfDays={displayNumberOfDays}
+                            cleanCalendar={cleanCalendar}
+                            setCleanCalendar={setCleanCalendar}
+                            setCheckInAndOutDate={setCheckInAndOutDate}
+                            resetCheckoutDate={resetCheckoutDate}
+                            setResetCheckoutDate={setResetCheckoutDate}
+                            resetChangeBookingDateBox={resetChangeBookingDateBox}
+                        />
                         <div className='normal-flex' style={{ justifyContent: 'flex-end' }}>
                             <div>
-                                <button className='progress--booking__transparentBtn'>
+                                <button
+                                    className='progress--booking__transparentBtn'
+                                    onClick={resetBookingDate}
+                                >
                                     Xóa ngày
                                 </button>
                             </div>

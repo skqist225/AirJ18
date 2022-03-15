@@ -230,7 +230,7 @@
                     setLoading(true);
 
                     const { data } = await axios.get(
-                        `${baseURL}booking/${roomId}/create?checkin=${checkinPlain}&checkout=${checkoutPlain}&numberOfDays=${numberOfNights}&siteFee=${siteFee}`
+                        `${baseURL}api/booking/${roomId}/create?checkin=${checkinPlain}&checkout=${checkoutPlain}&numberOfDays=${numberOfNights}`
                     );
 
                     if (data !== null) {

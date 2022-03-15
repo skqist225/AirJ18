@@ -51,7 +51,7 @@ public class BookingService {
         return false;
     }
 
-    public Booking createBooking(String checkin, String checkout, Room room, int numberOfDays, float siteFee,
+    public Booking createBooking(String checkin, String checkout, Room room, int numberOfDays, String clientMessage,
             User customer) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Date checkinDate = sdf.parse(checkin);
@@ -60,9 +60,16 @@ public class BookingService {
         if (isBooked(checkinDate, checkoutDate))
             return null;
 
+        Float cleanFee = room.getPrice() * 5 / 100;
+        Float siteFee = room.getPrice() * 10 / 100;
+
         Booking booking = Booking.builder().checkinDate(checkinDate).checkoutDate(checkoutDate)
                 .pricePerDay(room.getPrice()).numberOfDays(numberOfDays).siteFee(siteFee).room(room).customer(customer)
-                .bookingDate(LocalDateTime.now()).totalFee(numberOfDays * room.getPrice()).isComplete(false).build();
+                .bookingDate(LocalDateTime.now()).cleanFee(cleanFee)
+                .totalFee(room.getPrice() * numberOfDays + siteFee + cleanFee)
+                .clientMessage(
+                        clientMessage)
+                .isComplete(false).build();
 
         Booking savedBooking = bookingRepository.save(booking);
 

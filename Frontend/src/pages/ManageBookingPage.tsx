@@ -2,7 +2,7 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BookingsTable, FilterFooter } from '../components/booking';
 import Header from '../components/Header';
-import { fetchBookingListOfCurrentUserRooms } from '../features/booking/bookingSlice';
+import { fetchUserBookings } from '../features/booking/bookingSlice';
 import { Div, Image } from '../globalStyle';
 import { getImage } from '../helpers';
 import { RootState } from '../store';
@@ -18,7 +18,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
         : window.location.href.split('/').pop()!;
 
     useEffect(() => {
-        dispatch(fetchBookingListOfCurrentUserRooms({ page: parseInt(page) }));
+        dispatch(fetchUserBookings({ page: parseInt(page) }));
     }, []);
 
     const { bookingsOfCurrentUserRooms, totalElements } = useSelector(
