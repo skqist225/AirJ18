@@ -19,12 +19,12 @@ function setUserToLocalStorage(user: IUser) {
 }
 
 export const addUser = createAsyncThunk(
-    'user/addUser',
+    'user/register',
     async (postUser: IAddUser, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
                 data: { user, successMessage },
-            } = await api.post(`/user/add`, postUser, {
+            } = await api.post(`/user/register`, postUser, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

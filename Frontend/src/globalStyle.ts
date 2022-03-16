@@ -192,7 +192,7 @@ interface DivProps {
 }
 
 interface ImageProps {
-    size: string;
+    size?: string;
 }
 
 export const Div = styled.div`
@@ -206,8 +206,8 @@ export const Div = styled.div`
 export const Image = styled.img.attrs(props => ({
     alt: props.src,
 }))`
-    width: ${(props: ImageProps) => props.size};
-    height: ${(props: ImageProps) => props.size};
+    ${(props: ImageProps) => props.size && 'width: ' + props.size};
+    ${(props: ImageProps) => props.size && 'height: ' + props.size};
 `;
 
 interface IDivWithBackGroundProps {

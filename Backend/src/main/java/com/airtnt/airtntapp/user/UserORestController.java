@@ -15,7 +15,7 @@ import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
-import com.airtnt.airtntapp.user.dto.PostAddUserDTO;
+import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.WishlistsDTO;
@@ -48,8 +48,8 @@ import org.springframework.util.StringUtils;
 @RequestMapping("/api/user")
 public class UserORestController {
 
-        public final String ADD_USER_SUCCESS = "ADD_USER_SUCCESSFULLY";
-        public final String ADD_USER_FAILURE = "ADD_USER_FAILURE";
+        public final String REGISTER_USER_SUCCESS = "REGISTER_USER_SUCCESSFULLY";
+        public final String REGISTER_USER_FAILURE = "REGISTER_USER_FAILURE";
 
         public final String LOGIN_SUCCESS = "LOGIN_SUCCESSFULLY";
         public final String LOGOUT_SUCCESS = "LOGOUT_SUCCESSFULLY";
@@ -75,8 +75,8 @@ public class UserORestController {
         @Autowired
         private CityService cityService;
 
-        @PostMapping("/add")
-        public ResponseEntity<UserResponseEntity> addUser(@RequestBody PostAddUserDTO postUser,
+        @PostMapping("/register")
+        public ResponseEntity<UserResponseEntity> registerUser(@RequestBody PostRegisterUserDTO postUser,
                         HttpServletResponse res) {
                 UserResponseEntity userResponseEntity = new UserResponseEntity();
                 // check email exist
@@ -102,7 +102,7 @@ public class UserORestController {
                 User savedUser = userService.save(user);
 
                 // response object
-                userResponseEntity.setSuccessMessage(ADD_USER_SUCCESS);
+                userResponseEntity.setSuccessMessage(REGISTER_USER_SUCCESS);
                 userResponseEntity.setUser(savedUser);
 
                 return new ResponseEntity<UserResponseEntity>(

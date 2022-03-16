@@ -45,4 +45,5 @@ public class RoomDetailsDTO {
     private float longitude;
     private String cityName;
     private String category;
+    private boolean isLikedByCurrentUser;
 }

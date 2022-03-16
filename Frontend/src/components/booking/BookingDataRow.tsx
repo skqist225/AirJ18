@@ -245,7 +245,12 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                             ></path>
                                         </svg>
                                     </span>
-                                    <span className='booking-status fs-14'>Hoàn tất</span>
+                                    <span
+                                        className='booking-status fs-14 inline-block'
+                                        style={{ paddingLeft: '4px' }}
+                                    >
+                                        Hoàn tất
+                                    </span>
                                 </div>
                             )}
                             {bookingRowData.complete === false && bookingRowData.refund === false && (
@@ -277,7 +282,12 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                             ></path>
                                         </svg>
                                     </span>
-                                    <span className='booking-status fs-14'>Phê duyệt</span>
+                                    <span
+                                        className='booking-status fs-14 inline-block'
+                                        style={{ paddingLeft: '4px' }}
+                                    >
+                                        Phê duyệt
+                                    </span>
                                 </div>
                             )}
                             {bookingRowData.refund === true && (
@@ -316,7 +326,12 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                             ></path>
                                         </svg>
                                     </span>
-                                    <span className='booking-status fs-14'>Đã hủy</span>
+                                    <span
+                                        className='booking-status fs-14 inline-block'
+                                        style={{ paddingLeft: '4px' }}
+                                    >
+                                        Đã hủy
+                                    </span>
                                 </div>
                             )}
                         </div>

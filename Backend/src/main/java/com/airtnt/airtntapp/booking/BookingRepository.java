@@ -51,13 +51,16 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"
-                        + " FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND b.bookingDate <= :bookingDate AND b.bookingDate >= :bookingDate2 AND b.totalFee >= :totalFee AND b.isComplete IN (:isCompleteLst) AND b.isRefund IN (:isCancelledLst)")
+                        + " FROM Booking b"
+                        + " WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND b.bookingDate <= :bookingDate"
+                        + " AND b.bookingDate >= :bookingDate2 AND b.totalFee >= :totalFee AND b.isComplete IN (:isCompleteLst)"
+                        + " AND b.isRefund IN (:isCancelledLst) ORDER BY b.bookingDate DESC")
         public Page<BookingListDTO> getBookingListByRooms(Integer[] roomIds, String query, List<Boolean> isCompleteLst,
                         List<Boolean> isCancelledLst, LocalDateTime bookingDate, LocalDateTime bookingDate2,
                         Float totalFee,
                         Pageable pageable);
 
-        @Query("SELECT b FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND year(b.bookingDate)=:year AND month(b.bookingDate)=:month AND b.isComplete IN (:isCompleteLst) AND b.isRefund IN (:isCancelledLst)")
+        @Query("SELECT b FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND year(b.bookingDate)=:year AND month(b.bookingDate)=:month AND b.isComplete IN (:isCompleteLst) AND b.isRefund IN (:isCancelledLst) ORDER BY b.bookingDate ASC")
         public Page<Booking> getBookingsByRooms(Integer[] roomIds, String query, List<Boolean> isCompleteLst,
                         List<Boolean> isCancelledLst, Integer year, Integer month,
                         Pageable pageable);
@@ -69,7 +72,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"
-                        + " FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND year(b.bookingDate)=:year AND month(b.bookingDate)=:month AND b.isComplete IN (:isCompleteLst) AND b.isRefund IN (:isCancelledLst)")
+                        + " FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND year(b.bookingDate)=:year AND month(b.bookingDate)=:month AND b.isComplete IN (:isCompleteLst) AND b.isRefund IN (:isCancelledLst) ORDER BY b.bookingDate DESC")
         public Page<BookingListDTO> getBookingListByRooms(Integer[] roomIds, String query, List<Boolean> isCompleteLst,
                         List<Boolean> isCancelledLst, Integer year, Integer month,
                         Pageable pageable);
@@ -86,7 +89,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"
-                        + " FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND (b.isComplete = :isComplete OR b.isRefund = :isCancelled)")
+                        + " FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND (b.isComplete = :isComplete OR b.isRefund = :isCancelled) ORDER BY b.bookingDate DESC")
         public Page<BookingListDTO> getBookingListByRooms(Integer[] roomIds, String query, Boolean isComplete,
                         Boolean isCancelled,
                         Pageable pageable);
@@ -101,7 +104,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"
-                        + " FROM Booking b WHERE b.room.id IN (:roomIds) AND b.id = :bookingId")
+                        + " FROM Booking b WHERE b.room.id IN (:roomIds) AND b.id = :bookingId ORDER BY b.bookingDate DESC")
         public Page<BookingListDTO> getBookingListByRooms(Integer[] roomIds, Integer bookingId, Pageable pageable);
 
         // admin -----------------------------

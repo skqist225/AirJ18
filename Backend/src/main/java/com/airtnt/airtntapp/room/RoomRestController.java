@@ -239,6 +239,7 @@ public class RoomRestController {
                         bookedDates)
                 .cityName(room.getCity().getName())
                 .category(room.getCategory().getName())
+                .isLikedByCurrentUser(room.getHost().getFavRooms().contains(room))
                 .build();
 
         return roomDetailsDTO;

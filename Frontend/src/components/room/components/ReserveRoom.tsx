@@ -52,8 +52,8 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
     const { user } = useSelector(userState);
 
     function processBooking() {
-        const checkinDate = $('#checkinDate').text();
-        const checkoutDate = $('#checkoutDate').text();
+        const checkinDate = $('#checkinDate').text().replaceAll('/', '-');
+        const checkoutDate = $('#checkoutDate').text().replaceAll('/', '-');
 
         if (checkinDate === 'Thêm ngày' && checkoutDate === 'Thêm ngày') {
             callToast('warning', 'Vui lòng chọn ngày bắt đầu và kết thúc');

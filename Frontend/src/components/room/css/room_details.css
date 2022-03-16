@@ -179,8 +179,24 @@ main {
     padding: 8px;
 }
 
+.rdt_header__action {
+    width: 64px;
+    height: 34px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
 .rdt_header__action button {
     padding-bottom: 0;
+}
+
+.rdt_header__action:hover {
+    border: none !important;
+    background: rgb(247, 247, 247) !important;
+    color: rgb(0, 0, 0) !important;
 }
 
 .flex {
@@ -251,14 +267,6 @@ main {
 .rdt_room__count {
     padding-bottom: 24px;
     border-bottom: 1px solid #ddd;
-}
-
-.rdt_room__decor {
-    padding: 24px;
-    border: 1px solid rebeccapurple;
-    height: 143px;
-    width: 280px;
-    border-radius: 10px;
 }
 
 .rdt_body__common {

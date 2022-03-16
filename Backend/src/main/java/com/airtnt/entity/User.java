@@ -124,8 +124,8 @@ public class User extends BaseEntity {
 
 	@Transient
 	public String getFullPathAddress() {
-		return this.address.getAprtNoAndStreet() + ", " + this.address.getCity().getName() + ", "
-				+ this.address.getState().getName() + ", " + this.address.getCountry().getName();
+		return this.address != null ? this.address.getAprtNoAndStreet() + ", " + this.address.getCity().getName() + ", "
+				+ this.address.getState().getName() + ", " + this.address.getCountry().getName() : "";
 	}
 
 	@Transient
@@ -136,16 +136,18 @@ public class User extends BaseEntity {
 		ObjectNode stateNode = mapper.createObjectNode();
 		ObjectNode cityNode = mapper.createObjectNode();
 
-		Country c = this.address.getCountry();
-		State s = this.address.getState();
-		City city = this.address.getCity();
+		if (this.address != null) {
+			Country c = this.address.getCountry();
+			State s = this.address.getState();
+			City city = this.address.getCity();
 
-		objectNode.set("country",
-				countryNode.put("id", c.getId()).put("name", c.getName()));
-		objectNode.set("state",
-				stateNode.put("id", s.getId()).put("name", s.getName()));
-		objectNode.set("city", cityNode.put("id", city.getId()).put("name", city.getName()));
-		objectNode.put("aprtNoAndStreet", this.address.getAprtNoAndStreet());
+			objectNode.set("country",
+					countryNode.put("id", c.getId()).put("name", c.getName()));
+			objectNode.set("state",
+					stateNode.put("id", s.getId()).put("name", s.getName()));
+			objectNode.set("city", cityNode.put("id", city.getId()).put("name", city.getName()));
+			objectNode.put("aprtNoAndStreet", this.address.getAprtNoAndStreet());
+		}
 
 		return objectNode;
 	}

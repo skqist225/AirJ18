@@ -44,4 +44,5 @@ export type IRoomDetails = {
     image_prefix: string;
     cityName: string;
     category: string;
+    likedByCurrentUser: boolean;
 } | null;

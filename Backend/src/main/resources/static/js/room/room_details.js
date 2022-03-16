@@ -648,7 +648,8 @@ function addClickEventForDay() {
 
                 const [startDateDate, startDateMonth, startDateYear] = getElementsOfDate(startDate);
                 if (
-                    (month2 < startDateMonth && startDateYear > year2) ||
+                    (month2 < startDateMonth && year2 === startDateYear) ||
+                    year2 < startDateYear ||
                     (month2 === startDateMonth && date2 < startDateDate)
                 ) {
                     alertify.error('Không thể chọn ngày bé hơn ngày bắt đầu');

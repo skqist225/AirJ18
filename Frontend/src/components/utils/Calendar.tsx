@@ -1,9 +1,9 @@
 import { FC, useEffect } from 'react';
-import { getImage } from '../../helpers';
+import { getImage, callToast } from '../../helpers';
 import Month from './Month';
 import axios from '../../axios';
 import $ from 'jquery';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { IBookedDate } from '../../types/room/type_RoomDetails';
 
 interface ICalendarProps {
@@ -407,18 +407,12 @@ const Calendar: FC<ICalendarProps> = ({
                         const [startDateDate, startDateMonth, startDateYear] =
                             getElementsOfDate(startDate);
                         if (
-                            (month2 < startDateMonth && startDateYear > year2) ||
+                            (month2 < startDateMonth && year2 === startDateYear) ||
+                            year2 < startDateYear ||
                             (month2 === startDateMonth && date2 < startDateDate)
                         ) {
-                            toast.error('🦄 Không thể chọn ngày bé hơn ngày bắt đầu!', {
-                                position: 'top-center',
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                            });
+                            callToast('error', 'Không thể chọn ngày bé hơn ngày bắt đầu!');
+
                             return false;
                         }
 
@@ -569,12 +563,7 @@ const Calendar: FC<ICalendarProps> = ({
         });
 
         if (displayStartDateAndEndDate) displayStartDateAndEndDate(startDate, endDate);
-        if (setCheckInAndOutDate)
-            setCheckInAndOutDate(
-                startDate.replaceAll('/', '-'),
-                endDate.replaceAll('/', '-'),
-                howManyDays + 2
-            );
+        if (setCheckInAndOutDate) setCheckInAndOutDate(startDate, endDate, howManyDays + 2);
         if (displayNumberOfDays) displayNumberOfDays(howManyDays, startDate, endDate);
     }
 
