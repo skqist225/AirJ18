@@ -1,8 +1,10 @@
 export interface IBooking {
     bookingId: number;
+    roomId: number;
     roomName: string;
     roomThumbnail: string;
     bookingDate: string;
+    cancelDate: string;
     checkinDate: string;
     checkoutDate: string;
     pricePerDay: number;

@@ -44,10 +44,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         Float totalFee,
                         Pageable pageable);
 
-        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.name,"
+        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.id, b.room.name,"
                         + " CONCAT('/room_images/', b.room.host.email, '/', b.room.id, '/', b.room.thumbnail), b.room.currency.symbol,"
                         + " b.isComplete, b.isRefund,"
-                        + " b.bookingDate, b.checkinDate, b.checkoutDate,"
+                        + " b.bookingDate, b.cancelDate, b.checkinDate, b.checkoutDate,"
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"
@@ -62,10 +62,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         List<Boolean> isCancelledLst, Integer year, Integer month,
                         Pageable pageable);
 
-        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.name,"
+        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.id, b.room.name,"
                         + " CONCAT('/room_images/', b.room.host.email, '/', b.room.id, '/', b.room.thumbnail), b.room.currency.symbol,"
                         + " b.isComplete, b.isRefund,"
-                        + " b.bookingDate, b.checkinDate, b.checkoutDate,"
+                        + " b.bookingDate, b.cancelDate, b.checkinDate, b.checkoutDate,"
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"
@@ -79,10 +79,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         Boolean isCancelled,
                         Pageable pageable);
 
-        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.name,"
+        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.id, b.room.name,"
                         + " CONCAT('/room_images/', b.room.host.email, '/', b.room.id, '/', b.room.thumbnail), b.room.currency.symbol,"
                         + " b.isComplete, b.isRefund,"
-                        + " b.bookingDate, b.checkinDate, b.checkoutDate,"
+                        + " b.bookingDate, b.cancelDate, b.checkinDate, b.checkoutDate,"
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"
@@ -94,10 +94,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
         @Query("SELECT b FROM Booking b WHERE b.room.id IN (:roomIds) AND b.id = :bookingId")
         public Page<Booking> getBookingsByRooms(Integer[] roomIds, Integer bookingId, Pageable pageable);
 
-        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.name,"
+        @Query("SELECT new com.airtnt.airtntapp.booking.dto.BookingListDTO(b.id, b.room.id, b.room.name,"
                         + " CONCAT('/room_images/', b.room.host.email, '/', b.room.id, '/', b.room.thumbnail), b.room.currency.symbol,"
                         + " b.isComplete, b.isRefund,"
-                        + " b.bookingDate, b.checkinDate, b.checkoutDate,"
+                        + " b.bookingDate, b.cancelDate, b.checkinDate, b.checkoutDate,"
                         + " b.pricePerDay, b.numberOfDays, b.siteFee, b.refundPaid,"
                         + " CONCAT(b.customer.firstName, ' ', b.customer.lastName),"
                         + " CONCAT('/user_images/', b.customer.id, '/', b.customer.avatar))"

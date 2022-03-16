@@ -8,26 +8,28 @@ import java.util.Map;
 import com.airtnt.airtntapp.booking.dto.BookingDTO;
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
 import com.airtnt.airtntapp.booking.response.BookingListsResponseEntity;
+import com.airtnt.airtntapp.booking.response.CancelBookingResponseEntity;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
+import com.airtnt.error.NotAuthenticatedError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/booking")
 public class BookingRestController {
 
     @Autowired
@@ -42,15 +44,17 @@ public class BookingRestController {
     @Autowired
     private CookieProcess cookiePorcess;
 
-    @GetMapping(value = "/api/booking/{roomId}/create")
-    public BookingDTO createBooking(@AuthenticationPrincipal UserDetails userDetails,
+    @GetMapping(value = "/{roomId}/create")
+    public BookingDTO createBooking(
+            @CookieValue("user") String cookie,
             @PathVariable("roomId") Integer roomId,
             @RequestParam("checkin") String checkin,
             @RequestParam("checkout") String checkout,
             @RequestParam("numberOfDays") Integer numberOfDays,
-            @RequestParam(value = "clientMessage", defaultValue = "") String clientMessage) throws ParseException {
+            @RequestParam("clientMessage") String clientMessage) throws ParseException {
+        String userEmail = cookiePorcess.readCookie(cookie);
         Room room = roomService.getRoomById(roomId);
-        User customer = userService.getByEmail(userDetails.getUsername());
+        User customer = userService.getByEmail(userEmail);
         Booking booking = bookingService.createBooking(checkin, checkout, room,
                 numberOfDays, clientMessage, customer);
         BookingDTO bDTO = new BookingDTO();
@@ -60,7 +64,7 @@ public class BookingRestController {
         return bDTO;
     }
 
-    @GetMapping(value = "/api/booking/listings/{pageNumber}")
+    @GetMapping(value = "/listings/{pageNumber}")
     public ResponseEntity<BookingListsResponseEntity> listings(
             @CookieValue("user") String cookie,
             @PathVariable("pageNumber") Integer pageNumber,
@@ -97,5 +101,44 @@ public class BookingRestController {
         bookingListsResponseEntity.setBookings(bookings);
 
         return new ResponseEntity<BookingListsResponseEntity>(bookingListsResponseEntity, null, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{bookingId}/canceled")
+    public ResponseEntity<CancelBookingResponseEntity> cancelBooking(@PathVariable("bookingId") Integer bookingId,
+            @CookieValue("user") String cookie) {
+        CancelBookingResponseEntity cancelBookingResponseEntity = new CancelBookingResponseEntity();
+        try {
+            String userEmail = cookiePorcess.readCookie(cookie);
+            User currentUser = userService.getByEmail(userEmail);
+            Booking booking = bookingService.cancelBooking(bookingId, currentUser);
+
+            cancelBookingResponseEntity.setStatus(booking != null ? "success" : "failure");
+            return new ResponseEntity<CancelBookingResponseEntity>(cancelBookingResponseEntity, null, 201);
+
+        } catch (NotAuthenticatedError e) {
+            NotAuthenticatedError notAuthenticatedError = new NotAuthenticatedError();
+            cancelBookingResponseEntity.setStatus(e.getMessage());
+            return new ResponseEntity<CancelBookingResponseEntity>(cancelBookingResponseEntity, null,
+                    notAuthenticatedError.getStatusCode());
+        }
+    }
+
+    @GetMapping(value = "/{bookingId}/approved")
+    public ResponseEntity<CancelBookingResponseEntity> approveBooking(@PathVariable("bookingId") Integer bookingId,
+            @CookieValue("user") String cookie) {
+        CancelBookingResponseEntity cancelBookingResponseEntity = new CancelBookingResponseEntity();
+        try {
+            String userEmail = cookiePorcess.readCookie(cookie);
+            User currentUser = userService.getByEmail(userEmail);
+            Booking booking = bookingService.approveBooking(bookingId, currentUser);
+
+            cancelBookingResponseEntity.setStatus(booking != null ? "success" : "failure");
+            return new ResponseEntity<CancelBookingResponseEntity>(cancelBookingResponseEntity, null, 201);
+        } catch (Exception e) {
+            NotAuthenticatedError notAuthenticatedError = new NotAuthenticatedError();
+            cancelBookingResponseEntity.setStatus(e.getMessage());
+            return new ResponseEntity<CancelBookingResponseEntity>(cancelBookingResponseEntity, null,
+                    notAuthenticatedError.getStatusCode());
+        }
     }
 }

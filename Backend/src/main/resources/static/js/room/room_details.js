@@ -480,13 +480,6 @@ function removeBetweenClass() {
 function addClickEventForDay() {
     $('.dayInWeek.false').each(function () {
         $(this).click(function () {
-            // $('.dayInWeek.false').each(function () {
-            //     if ($(this).hasClass('checked')) {
-            //         haveStartDate = true;
-            //         return false;
-            //     }
-            // });
-
             if (!haveStartDate && !haveEndDate) {
                 $(this).addClass('checked');
                 startDate +=

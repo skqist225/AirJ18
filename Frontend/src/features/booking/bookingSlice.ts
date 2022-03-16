@@ -15,7 +15,7 @@ export const fetchUserBookings = createAsyncThunk(
                 data: {
                     bookings: { content, totalElements },
                 },
-            } = await api.post(`/booking/listings/${page}`);
+            } = await api.get(`/booking/listings/${page}`);
             return { content, totalElements };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
@@ -28,17 +28,18 @@ interface ICreateBooking {
     checkinDate: string;
     checkoutDate: string;
     numberOfDays: number;
+    clientMessage: string;
 }
 
 export const createBooking = createAsyncThunk(
     'booking/createBooking',
     async (
-        { roomid, checkinDate, checkoutDate, numberOfDays }: ICreateBooking,
+        { roomid, checkinDate, checkoutDate, numberOfDays, clientMessage }: ICreateBooking,
         { dispatch, getState, rejectWithValue }
     ) => {
         try {
             const { data } = await api.get(
-                `/booking/${roomid}/create?checkin=${checkinDate}&checkout=${checkoutDate}&numberOfDays=${numberOfDays}`
+                `/booking/${roomid}/create?checkin=${checkinDate}&checkout=${checkoutDate}&numberOfDays=${numberOfDays}&clientMessage=${clientMessage}`
             );
 
             return { data };
@@ -71,12 +72,41 @@ export const getStripeClientSecret = createAsyncThunk(
     }
 );
 
+export const cancelBooking = createAsyncThunk(
+    'booking/cancelBooking',
+    async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const {
+                data: { status },
+            } = await api.get(`/booking/${bookingid}/canceled`);
+            return { status };
+        } catch ({ data: { errorMessage } }) {
+            rejectWithValue(errorMessage);
+        }
+    }
+);
+
+export const approveBooking = createAsyncThunk(
+    'booking/approveBooking',
+    async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const {
+                data: { status },
+            } = await api.get(`/booking/${bookingid}/approved`);
+            return { status };
+        } catch ({ data: { errorMessage } }) {
+            rejectWithValue(errorMessage);
+        }
+    }
+);
+
 type BookingState = {
     bookingsOfCurrentUserRooms: IBooking[];
     totalElements: number;
     loading: boolean;
     clientSecret: string;
     newlyCreatedBooking: any;
+    cancelMessage: string;
 };
 
 const initialState: BookingState = {
@@ -85,6 +115,7 @@ const initialState: BookingState = {
     loading: true,
     clientSecret: '',
     newlyCreatedBooking: {},
+    cancelMessage: '',
 };
 
 const bookingSlice = createSlice({
@@ -105,6 +136,12 @@ const bookingSlice = createSlice({
             .addCase(createBooking.fulfilled, (state, { payload }) => {
                 state.loading = false;
                 state.newlyCreatedBooking = payload;
+            })
+            .addCase(cancelBooking.fulfilled, (state, { payload }) => {
+                state.cancelMessage = payload?.status;
+            })
+            .addCase(approveBooking.fulfilled, (state, { payload }) => {
+                state.cancelMessage = payload?.status;
             })
             .addMatcher(isAnyOf(fetchUserBookings.pending), state => {
                 state.loading = true;

@@ -1,9 +1,12 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { Div, Image } from '../../globalStyle';
 import { getImage } from '../../helpers';
 import { IBooking } from '../../types/booking/type_Booking';
 import { MyNumberForMat } from '../utils';
 import $ from 'jquery';
+import { useDispatch } from 'react-redux';
+import { approveBooking, cancelBooking } from '../../features/booking/bookingSlice';
+import { Link } from 'react-router-dom';
 
 interface IBookingDataRowProps {
     bookingRowData: IBooking;
@@ -160,19 +163,23 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
 
         return len;
     }
-    function approveBooking(self: JQuery<HTMLElement>) {
-        window.location.href = `${window.location.origin}/booking/${self.data(
-            'booking-id'
-        )}/approved`;
+
+    const dispatch = useDispatch();
+    function apprvBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        dispatch(approveBooking({ bookingid: $(event.currentTarget).data('booking-id') }));
     }
 
-    function viewBooking(self: JQuery<HTMLElement>) {
+    function viewBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        const self = $(event.currentTarget);
         window.location.href = `${window.location.origin}/booking/${self.data('booking-id')}/view`;
+    }
+
+    function dropoutBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        dispatch(cancelBooking({ bookingid: $(event.currentTarget).data('booking-id') }));
     }
 
     return (
         <>
-            {' '}
             <tr data-room-id={bookingRowData.bookingId}>
                 <td style={{ width: '7%' }}>
                     <div style={{ paddingLeft: '8px', textAlign: 'center', paddingRight: '8px' }}>
@@ -181,23 +188,29 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                 </td>
                 <td style={{ width: '10%' }}>
                     <div className='normal-flex'>
-                        <Div width='56px' height='40px'>
-                            <img
-                                src={getImage(bookingRowData.roomThumbnail)}
-                                alt="Room's thumbnail"
-                                className='listings__room-thumbnail'
-                            />
-                        </Div>
-                        <div
-                            className='listings__room-name'
-                            style={{
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                maxWidth: '80%',
-                            }}
+                        <Link
+                            to={`/room/${bookingRowData.roomId}`}
+                            className='normal-flex'
+                            style={{ color: '#222' }}
                         >
-                            {bookingRowData.roomName}
-                        </div>
+                            <Div width='56px' height='40px'>
+                                <img
+                                    src={getImage(bookingRowData.roomThumbnail)}
+                                    alt="Room's thumbnail"
+                                    className='listings__room-thumbnail'
+                                />
+                            </Div>
+                            <div
+                                className='listings__room-name'
+                                style={{
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden',
+                                    maxWidth: '80%',
+                                }}
+                            >
+                                {bookingRowData.roomName}
+                            </div>
+                        </Link>
                     </div>
                 </td>
                 <td>
@@ -331,6 +344,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                         <MyNumberForMat
                             price={bookingRowData.siteFee}
                             isPrefix
+                            removeStayType
                             currency={bookingRowData.roomCurrency}
                         />
                     </div>
@@ -340,6 +354,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                         <MyNumberForMat
                             price={bookingRowData.pricePerDay}
                             isPrefix
+                            removeStayType
                             currency={bookingRowData.roomCurrency}
                         />
                     </div>
@@ -353,6 +368,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                 bookingRowData.siteFee
                             }
                             isPrefix
+                            removeStayType
                             currency={bookingRowData.roomCurrency}
                             priceFontSize='20px'
                             stayTypeFontSize='20px'
@@ -364,17 +380,29 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                     <MyNumberForMat
                         price={bookingRowData.refundPaid}
                         isPrefix
+                        removeStayType
                         currency={bookingRowData.roomCurrency}
                         priceFontSize='20px'
                         stayTypeFontSize='20px'
                     />
                 </td>
                 <td>
+                    {bookingRowData.complete === false &&
+                        bookingRowData.refund === false &&
+                        !bookingRowData.cancelDate && (
+                            <button
+                                className='listings__complete-room-making listings__td-text'
+                                data-booking-id={bookingRowData.bookingId}
+                                onClick={dropoutBooking}
+                            >
+                                Hủy bỏ
+                            </button>
+                        )}
                     {bookingRowData.complete === false && bookingRowData.refund === false && (
                         <button
                             className='listings__complete-room-making listings__td-text'
                             data-booking-id={bookingRowData.bookingId}
-                            onClick={e => approveBooking($(e.currentTarget))}
+                            onClick={apprvBooking}
                         >
                             Phê duyệt
                         </button>
@@ -383,7 +411,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                         <button
                             className='listings__complete-room-making listings__td-text'
                             data-booking-id={bookingRowData.bookingId}
-                            onClick={e => viewBooking($(e.currentTarget))}
+                            onClick={viewBooking}
                         >
                             Xem đơn đặt phòng
                         </button>

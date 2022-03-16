@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default function initComp(
     setCleanlinessRating: React.Dispatch<React.SetStateAction<number>>,
     setAccuracyRating: React.Dispatch<React.SetStateAction<number>>,

@@ -13,7 +13,7 @@ const Month: FC<IMonthProps> = ({ buttonClassName, imageSrc, titleClassName, tab
     return (
         <div className='flex-1 month__container'>
             <div className='normal-flex'>
-                {buttonClassName === 'getThePrevTwoMonth' && (
+                {buttonClassName === 'getThePreviousTwoMonths' && (
                     <div>
                         <button type='button' className={buttonClassName + ' month__getMonthBtn'}>
                             <span>
@@ -24,7 +24,7 @@ const Month: FC<IMonthProps> = ({ buttonClassName, imageSrc, titleClassName, tab
                 )}
 
                 <div className={'month__title ' + titleClassName}>Tháng MM năm YYY</div>
-                {buttonClassName === 'getTheNextTwoMonth' && (
+                {buttonClassName === 'getTheNextTwoMonths' && (
                     <div>
                         <button
                             type='button'
@@ -47,7 +47,7 @@ const Month: FC<IMonthProps> = ({ buttonClassName, imageSrc, titleClassName, tab
                     <div className='date'>T6</div>
                     <div className='date'>T7</div>
                 </Div>
-                <table className={tableClassName}></table>
+                <table id={tableClassName}></table>
             </div>
         </div>
     );

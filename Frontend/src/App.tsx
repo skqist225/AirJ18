@@ -5,7 +5,7 @@ import {
     HomePage,
     ListingsPage,
     LoginPage,
-    ManageBookingPage,
+    ManageBookingsPage,
     ProgressBookingPage,
     PropertyAmenitiesPage,
     PropertyCategoryPage,
@@ -42,7 +42,7 @@ function App() {
                     <Route path='/wishlists' element={<WishListsPage />}></Route>
                     <Route path='/user/booked-rooms' element={<BookedRoomsPage />}></Route>
                     <Route path='/booking/listings'>
-                        <Route path=':page' element={<ManageBookingPage />} />
+                        <Route path=':page' element={<ManageBookingsPage />} />
                     </Route>
                     <Route path='become-a-host'>
                         <Route path='intro' element={<BecomeAHostIndexPage />}></Route>

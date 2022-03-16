@@ -209,7 +209,9 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                         </div>
                     </div>
                     <div className='f1'>
-                        <BookingsTable bookings={bookingsOfCurrentUserRooms} />
+                        {bookingsOfCurrentUserRooms && (
+                            <BookingsTable bookings={bookingsOfCurrentUserRooms} />
+                        )}
                     </div>
                     <div className='pagination'>
                         <a data-page='prev'>&laquo;</a>

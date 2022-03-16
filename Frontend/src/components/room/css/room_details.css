@@ -47,15 +47,6 @@ main {
     grid-template-columns: repeat(2, 1fr);
 }
 
-*,
-*::before,
-*::after {
-    font-family: 'Roboto', sans-serif;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 .rdt_container {
     width: 1200px;
     max-width: 95%;

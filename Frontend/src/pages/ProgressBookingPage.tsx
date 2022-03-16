@@ -30,6 +30,7 @@ import {
     getFormattedCheckinAndCheckoutDate,
 } from './script/progress_booking';
 
+import $ from 'jquery';
 import './css/progress_booking.css';
 
 interface IProgressBookingPageProps {}
@@ -82,6 +83,7 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                 checkinDate,
                 checkoutDate,
                 numberOfDays: numberOfNights,
+                clientMessage: $('#clientMessage').text()!,
             })
         );
     }

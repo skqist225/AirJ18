@@ -54,7 +54,7 @@ const Calendar: FC<ICalendarProps> = ({
         firstMonthAndYear: JQuery<HTMLElement>,
         secondMonthAndYear: JQuery<HTMLElement>
     ) {
-        await fetchTheNextCoupleOfMonth(firstMonthAndYear, secondMonthAndYear, month, year);
+        await fetchTheNextTwoMonths(firstMonthAndYear, secondMonthAndYear, month, year);
     }
 
     useEffect(() => {
@@ -65,13 +65,13 @@ const Calendar: FC<ICalendarProps> = ({
         sadf(firstMonthAndYear, secondMonthAndYear);
 
         if (firstMonthAndYear && secondMonthAndYear) {
-            $('.getTheNextTwoMonth')
+            $('.getTheNextTwoMonths')
                 .off('click')
                 .on('click', async function () {
                     const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
                     const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
 
-                    await fetchTheNextCoupleOfMonth(
+                    await fetchTheNextTwoMonths(
                         firstMonthAndYear,
                         secondMonthAndYear,
                         parseInt(currentFirstMonthInCalendar),
@@ -79,13 +79,13 @@ const Calendar: FC<ICalendarProps> = ({
                     );
                 });
 
-            $('.getThePrevTwoMonth')
+            $('.getThePreviousTwoMonths')
                 .off('click')
                 .on('click', async function () {
                     const currentFirstMonthInCalendar = secondMonthAndYear.text().split(' ')[1];
                     const currentYearInCalendar = secondMonthAndYear.text().split(' ')[3];
 
-                    await fetchThePrevCoupleOfMonth(
+                    await fetchThePreviousTwoMonths(
                         firstMonthAndYear,
                         secondMonthAndYear,
                         parseInt(currentFirstMonthInCalendar),
@@ -110,78 +110,105 @@ const Calendar: FC<ICalendarProps> = ({
         }
     }, [resetCheckoutDate]);
 
-    const fetchDaysInMonth = async (month: number, year: number) => {
+    const fetchDatesInMonth = async (month: number, year: number) => {
         const {
             data: { daysInMonth, startInWeek },
         } = await axios.get(`/calendar/${month + 1}/${year}`);
         return Promise.resolve({ daysInMonth, startInWeek });
     };
 
-    async function fetchThePrevCoupleOfMonth(
+    async function fetchThePreviousTwoMonths(
         firstMonthAndYear: JQuery<HTMLElement>,
         secondMonthAndYear: JQuery<HTMLElement>,
-        month: number,
-        year: number
+        monthOfSecondMonth: number,
+        yearOfSecondYear: number
     ) {
         let secondMonth;
-        let copyMonth;
-        let copyYear;
+        let monthOfFirstMonth;
+        let yearOfFirstMonth;
 
-        if (month === 1) {
-            secondMonth = await fetchDaysInMonth(10, year - 1);
-            firstMonthAndYear.text(`Tháng 10 năm ${year - 1}`);
-            secondMonthAndYear.text(`Tháng 11 năm ${year - 1}`);
+        if (monthOfSecondMonth === 1) {
+            secondMonth = await fetchDatesInMonth(10, yearOfSecondYear - 1);
+            firstMonthAndYear.text(`Tháng 10 năm ${yearOfSecondYear - 1}`);
+            secondMonthAndYear.text(`Tháng 11 năm ${yearOfSecondYear - 1}`);
 
-            copyMonth = 10;
-            copyYear = year - 1;
-        } else if (month === 2) {
-            secondMonth = await fetchDaysInMonth(11, year - 1);
-            firstMonthAndYear.text(`Tháng 11 năm ${year - 1}`);
-            secondMonthAndYear.text(`Tháng 12 năm ${year - 1}`);
+            monthOfFirstMonth = 10;
+            yearOfFirstMonth = yearOfSecondYear - 1;
+        } else if (monthOfSecondMonth === 2) {
+            secondMonth = await fetchDatesInMonth(11, yearOfSecondYear - 1);
+            firstMonthAndYear.text(`Tháng 11 năm ${yearOfSecondYear - 1}`);
+            secondMonthAndYear.text(`Tháng 12 năm ${yearOfSecondYear - 1}`);
 
-            copyMonth = 11;
-            copyYear = year - 1;
-        } else if (month === 3) {
-            secondMonth = await fetchDaysInMonth(1, year);
-            firstMonthAndYear.text(`Tháng 12 năm ${year - 1}`);
-            secondMonthAndYear.text(`Tháng 1 năm ${year}`);
+            monthOfFirstMonth = 11;
+            yearOfFirstMonth = yearOfSecondYear - 1;
+        } else if (monthOfSecondMonth === 3) {
+            secondMonth = await fetchDatesInMonth(1, yearOfSecondYear);
+            firstMonthAndYear.text(`Tháng 12 năm ${yearOfSecondYear - 1}`);
+            secondMonthAndYear.text(`Tháng 1 năm ${yearOfSecondYear}`);
 
-            copyMonth = 12;
-            copyYear = year - 1;
+            monthOfFirstMonth = 12;
+            yearOfFirstMonth = yearOfSecondYear - 1;
         } else {
-            secondMonth = await fetchDaysInMonth(month - 3, year);
-            firstMonthAndYear.html(`Tháng ${month * 1 - 3} năm ${year}`);
-            secondMonthAndYear.html(`Tháng ${month * 1 - 2} năm ${year}`);
+            secondMonth = await fetchDatesInMonth(monthOfSecondMonth - 3, yearOfSecondYear);
+            firstMonthAndYear.text(`Tháng ${monthOfSecondMonth - 3} năm ${yearOfSecondYear}`);
+            secondMonthAndYear.text(`Tháng ${monthOfSecondMonth - 2} năm ${yearOfSecondYear}`);
 
-            copyMonth = month * 1 - 3;
-            copyYear = year;
+            monthOfFirstMonth = monthOfSecondMonth - 3;
+            yearOfFirstMonth = yearOfSecondYear;
         }
 
-        const firstMonth = await fetchDaysInMonth(copyMonth, copyYear);
+        const firstMonth = await fetchDatesInMonth(monthOfFirstMonth - 1, yearOfFirstMonth);
+        t(monthOfFirstMonth, yearOfFirstMonth, firstMonth, secondMonth);
+    }
 
-        const rdt_calender__days = $('.rdt_calender__days').first();
-        const rdt_calender__days_plus__1 = $('.rdt_calender__days_plus-1').first();
+    function t(
+        monthOfFirstMonth: number,
+        yearOfFirstMonth: number,
+        firstMonth: {
+            daysInMonth: any;
+            startInWeek: any;
+        },
+        secondMonth: {
+            daysInMonth: any;
+            startInWeek: any;
+        }
+    ) {
+        const monthDates = $('#month__dates').first();
+        const monthDatesNext = $('#month__dates--next').first();
 
-        const daysInMonthJs1 = getDaysInMonth(firstMonth.daysInMonth, copyMonth, copyYear);
         let decidedMonth = 0;
-        if (copyMonth === 12) decidedMonth = 1;
-        else if (copyMonth === 1) decidedMonth = 2;
-        else decidedMonth = copyMonth + 1;
+        if (monthOfFirstMonth === 12) decidedMonth = 1;
+        else if (monthOfFirstMonth === 1) decidedMonth = 2;
+        else decidedMonth = monthOfFirstMonth + 1;
 
-        const daysInMonthJs2 = getDaysInMonth(secondMonth.daysInMonth, decidedMonth, copyYear);
+        const daysInMonthJs1 = getDatesInMonth(
+            firstMonth.daysInMonth,
+            monthOfFirstMonth,
+            yearOfFirstMonth
+        );
+        const daysInMonthJs2 = getDatesInMonth(
+            secondMonth.daysInMonth,
+            decidedMonth,
+            yearOfFirstMonth
+        );
 
-        rdt_calender__days.empty();
-        rdt_calender__days_plus__1.empty();
+        monthDates.empty();
+        monthDatesNext.empty();
 
         daysInMonthJs1.forEach(day => {
-            rdt_calender__days.append(day);
+            monthDates.append(day);
         });
         daysInMonthJs2.forEach(day => {
-            rdt_calender__days_plus__1.append(day);
+            monthDatesNext.append(day);
         });
 
         addClickEventForDay();
         if (lockBookedDatesInCalendar) lockBookedDatesInCalendar();
+
+        startDate = '';
+        endDate = '';
+        haveStartDate = false;
+        haveEndDate = false;
     }
 
     function addClickEventForDay() {
@@ -413,69 +440,67 @@ const Calendar: FC<ICalendarProps> = ({
         });
     }
 
-    async function fetchTheNextCoupleOfMonth(
+    function setMonthTitle(
         firstMonthAndYear: JQuery<HTMLElement>,
         secondMonthAndYear: JQuery<HTMLElement>,
-        month: number,
-        year: number
+        firstMonthTitle: string,
+        secondMonthTitle: string
+    ) {
+        firstMonthAndYear.text(firstMonthTitle);
+        secondMonthAndYear.text(secondMonthTitle);
+    }
+
+    async function fetchTheNextTwoMonths(
+        firstMonthAndYear: JQuery<HTMLElement>,
+        secondMonthAndYear: JQuery<HTMLElement>,
+        monthOfSecondMonth: number,
+        yearOfSecondYear: number
     ) {
         let secondMonth;
-        let copyMonth;
-        let copyYear;
+        let monthOfFirstMonth;
+        let yearOfFirstMonth;
 
-        if (month === 11) {
-            secondMonth = await fetchDaysInMonth(0, year + 1);
-            firstMonthAndYear.html(`Tháng 12 năm ${year}`);
-            secondMonthAndYear.html(`Tháng 1 năm ${year + 1}`);
+        if (monthOfSecondMonth === 11) {
+            //if second month is Nov, next first month is Dec of current year and next second month is Jan of the next year
+            secondMonth = await fetchDatesInMonth(0, yearOfSecondYear + 1);
+            setMonthTitle(
+                firstMonthAndYear,
+                secondMonthAndYear,
+                `Tháng 12 năm ${yearOfSecondYear}`,
+                `Tháng 1 năm ${yearOfSecondYear + 1}`
+            );
 
-            copyMonth = 12;
-            copyYear = year;
-        } else if (month === 12) {
-            secondMonth = await fetchDaysInMonth(1, year + 1);
-            firstMonthAndYear.html(`Tháng 1 năm ${year + 1}`);
-            secondMonthAndYear.html(`Tháng 2 năm ${year + 1}`);
+            monthOfFirstMonth = 12;
+            yearOfFirstMonth = yearOfSecondYear;
+        } else if (monthOfSecondMonth === 12) {
+            //if second month is Dec
+            //next first month is Jan of the next year, and second woule be Feb of the next year.
+            secondMonth = await fetchDatesInMonth(1, yearOfSecondYear + 1);
+            setMonthTitle(
+                firstMonthAndYear,
+                secondMonthAndYear,
+                `Tháng 1 năm ${yearOfSecondYear + 1}`,
+                `Tháng 2 năm ${yearOfSecondYear + 1}`
+            );
 
-            copyMonth = 1;
-            copyYear = year + 1;
+            monthOfFirstMonth = 1;
+            yearOfFirstMonth = yearOfSecondYear + 1;
         } else {
-            secondMonth = await fetchDaysInMonth(month + 1, year);
-            firstMonthAndYear.html(`Tháng ${month * 1 + 1} năm ${year}`);
-            secondMonthAndYear.html(`Tháng ${month * 1 + 2} năm ${year}`);
+            secondMonth = await fetchDatesInMonth(monthOfSecondMonth + 1, yearOfSecondYear);
 
-            copyMonth = month * 1 + 1;
-            copyYear = year;
+            setMonthTitle(
+                firstMonthAndYear,
+                secondMonthAndYear,
+                `Tháng ${monthOfSecondMonth + 1} năm ${yearOfSecondYear}`,
+                `Tháng ${monthOfSecondMonth + 2} năm ${yearOfSecondYear}`
+            );
+
+            monthOfFirstMonth = monthOfSecondMonth + 1;
+            yearOfFirstMonth = yearOfSecondYear;
         }
 
-        let decidedMonth = 0;
-        let dicidedYear = 0;
-        if (copyMonth === 12) {
-            decidedMonth = 1;
-            dicidedYear = copyYear + 1;
-        } else if (copyMonth === 1) decidedMonth = 2;
-        else decidedMonth = copyMonth + 1;
-
-        const firstMonth = await fetchDaysInMonth(month, year);
-
-        const rdt_calender__days = $('.rdt_calender__days').first();
-        const rdt_calender__days_plus__1 = $('.rdt_calender__days_plus-1').first();
-        let daysInMonthJs2;
-        const daysInMonthJs1 = getDaysInMonth(firstMonth.daysInMonth, copyMonth, copyYear);
-        if (copyMonth === 12) {
-            daysInMonthJs2 = getDaysInMonth(secondMonth.daysInMonth, decidedMonth, copyYear + 1);
-        } else daysInMonthJs2 = getDaysInMonth(secondMonth.daysInMonth, decidedMonth, copyYear);
-
-        rdt_calender__days.empty();
-        rdt_calender__days_plus__1.empty();
-
-        daysInMonthJs1.forEach(day => {
-            rdt_calender__days.append(day);
-        });
-        daysInMonthJs2.forEach(day => {
-            rdt_calender__days_plus__1.append(day);
-        });
-
-        addClickEventForDay();
-        if (lockBookedDatesInCalendar) lockBookedDatesInCalendar();
+        const firstMonth = await fetchDatesInMonth(monthOfSecondMonth, yearOfSecondYear);
+        t(monthOfFirstMonth, yearOfFirstMonth, firstMonth, secondMonth);
     }
 
     function removeBetweenClass() {
@@ -548,7 +573,7 @@ const Calendar: FC<ICalendarProps> = ({
             setCheckInAndOutDate(
                 startDate.replaceAll('/', '-'),
                 endDate.replaceAll('/', '-'),
-                howManyDays
+                howManyDays + 2
             );
         if (displayNumberOfDays) displayNumberOfDays(howManyDays, startDate, endDate);
     }
@@ -611,7 +636,7 @@ const Calendar: FC<ICalendarProps> = ({
         hightlightBetween(startDate, endDate);
     }
 
-    function getDaysInMonth(daysInMonth: string, month: number, year: number) {
+    function getDatesInMonth(daysInMonth: string, month: number, year: number) {
         const date = new Date();
         let daysInMonthJs: string[] = [];
         let weeks = daysInMonth.split('*');
@@ -623,8 +648,9 @@ const Calendar: FC<ICalendarProps> = ({
                 if (dayInWeek === '') {
                 } else if (dayInWeek.trim() !== '_') {
                     let isBlocked = false;
-
-                    if (month < date.getMonth() + 1 && year <= date.getFullYear()) isBlocked = true;
+                    if (year < date.getFullYear()) isBlocked = true;
+                    else if (month < date.getMonth() + 1 && year === date.getFullYear())
+                        isBlocked = true;
                     else if (month === date.getMonth() + 1 && parseInt(dayInWeek) < date.getDate())
                         isBlocked = true;
                     else {
@@ -636,29 +662,18 @@ const Calendar: FC<ICalendarProps> = ({
                             year;
 
                         if (bookedDates)
-                            bookedDates.forEach(
-                                ({
-                                    checkinDate,
-                                    checkoutDate,
-                                }: {
-                                    checkinDate: string;
-                                    checkoutDate: string;
-                                }) => {
-                                    if (checkinDate === dateThis || dateThis === checkoutDate) {
-                                        isBlocked = true;
-                                    }
+                            bookedDates.forEach(({ checkinDate, checkoutDate }: IBookedDate) => {
+                                if (checkinDate === dateThis || dateThis === checkoutDate) {
+                                    isBlocked = true;
                                 }
-                            );
+                            });
                     }
 
                     const dayInHtml = `<td><div data-is-blocked="${false}" data-month="${month}" data-year="${year}" class="dayInWeek ${
                         isBlocked && 'block__date'
                     }">${dayInWeek.trim()}</div></td>`;
                     daysInMonthJs.push(dayInHtml);
-                } else if (dayInWeek.trim() === '_') {
-                    const dayInHtml = `<td></td>`;
-                    daysInMonthJs.push(dayInHtml);
-                }
+                } else if (dayInWeek.trim() === '_') daysInMonthJs.push('<td></td>');
             });
             daysInMonthJs.push('</tr></tbody>');
         });
@@ -670,15 +685,15 @@ const Calendar: FC<ICalendarProps> = ({
             <div className='flex' style={{ alignItems: 'flex-start' }}>
                 <Month
                     imageSrc={getImage('/svg/close3.svg')}
-                    buttonClassName='getThePrevTwoMonth'
+                    buttonClassName='getThePreviousTwoMonths'
                     titleClassName='firstMonthAndYear'
-                    tableClassName='rdt_calender__days'
+                    tableClassName='month__dates'
                 />
                 <Month
                     imageSrc={getImage('/svg/nextMonth.svg')}
-                    buttonClassName='getTheNextTwoMonth'
+                    buttonClassName='getTheNextTwoMonths'
                     titleClassName='secondMonthAndYear'
-                    tableClassName='rdt_calender__days_plus-1'
+                    tableClassName='month__dates--next'
                 />
                 <ToastContainer
                     position='top-center'

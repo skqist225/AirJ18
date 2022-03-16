@@ -14,6 +14,7 @@ import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
+import com.airtnt.error.NotAuthenticatedError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -154,10 +155,11 @@ public class BookingController {
     }
 
     @GetMapping(value = "/{bookingId}/cancel")
-    public String getMethodName(@PathVariable("bookingId") Integer bookingId,
-            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
-
-        Booking booking = bookingService.cancelBooking(bookingId);
+    public String cancelBooking(@PathVariable("bookingId") Integer bookingId,
+            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes)
+            throws NotAuthenticatedError {
+        User currentUser = userService.getByEmail(userDetails.getUsername());
+        Booking booking = bookingService.cancelBooking(bookingId, currentUser);
         if (booking != null)
             redirectAttributes.addFlashAttribute("cancelMessage", "Hủy đặt phòng thành công");
         else
@@ -168,15 +170,11 @@ public class BookingController {
 
     @GetMapping(value = "/{bookingId}/approved")
     public String approveBooking(@PathVariable("bookingId") Integer bookingId,
-            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+            @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes)
+            throws NotAuthenticatedError {
         User requestedUser = userService.getByEmail(userDetails.getUsername());
-        Booking booking = bookingService.getBookingById(bookingId);
-        User host = booking.getRoom().getHost();
-        if (!host.getId().equals(requestedUser.getId())) {
-            return "redirect:/";
-        }
 
-        if (bookingService.approveBooking(booking) != null)
+        if (bookingService.approveBooking(bookingId, requestedUser) != null)
             redirectAttributes.addFlashAttribute("approveMessage", "Duyệt lịch đặt phòng thành công");
         else
             redirectAttributes.addAttribute("approveMessage", "Duyệt lịch đặt phòng thất bại");

@@ -428,7 +428,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div>
+                            <section>
                                 <div id='rdt__location'>
                                     <div className='rdt_amentity__header'>Nơi bạn sẽ đến</div>
                                     <div id='map'></div>
@@ -456,7 +456,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                         <Rule rule={rule} key={rule.title} />
                                     ))}
                                 </div>
-                            </div>
+                            </section>
                         </div>
                     </div>
                 </main>

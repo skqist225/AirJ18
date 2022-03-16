@@ -38,7 +38,11 @@ const ContactHost: FC<IContactHostProps> = ({ room }) => {
                 </Div>
 
                 <Div margin='0 0 24px'>
-                    <TextArea rows={4} style={{ borderRadius: '16px !important' }} />
+                    <TextArea
+                        rows={4}
+                        style={{ borderRadius: '16px !important' }}
+                        id='clientMessage'
+                    />
                 </Div>
             </div>
         </section>

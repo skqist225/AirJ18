@@ -16,6 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BookingListDTO {
     private Integer bookingId;
+    private Integer roomId;
     private String roomName;
     private String roomThumbnail;
     private String roomCurrency;
@@ -25,6 +26,9 @@ public class BookingListDTO {
 
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime bookingDate;
+
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDateTime cancelDate;
 
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date checkinDate;

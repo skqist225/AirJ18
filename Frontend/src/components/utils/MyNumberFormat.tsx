@@ -55,7 +55,7 @@ export default function MyNumberForMat({
                                 </>
                             ) : (
                                 <>
-                                    <span className='rdt__price'>{formattedValue} </span>
+                                    <span className='rdt__price'>{formattedValue}</span>
                                     {!removeStayType && <span className='fs-16'>{stayType}</span>}
                                 </>
                             )}

@@ -63,10 +63,6 @@ const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, compone
         setCleanCalendar(true);
     }
 
-    let newStartDate = '';
-    let newEndDate = '';
-    let newNumberOfNights = 0;
-
     function setCheckInAndOutDate(
         startDateArgs: string,
         endDateArgs: string,
@@ -74,11 +70,8 @@ const PreviewBookingInfo: FC<IPreviewBookingInfoProps> = ({ title, text, compone
     ) {
         $('.progress--booking__saveDateBtn').removeAttr('disabled');
         $('.progress--booking__saveDateBtn').on('click', function () {
-            window.location.href = `${window.location.origin}/booking/${room?.id}?checkin=${newStartDate}&checkout=${newEndDate}&numberOfNights=${newNumberOfNights}`;
+            window.location.href = `${window.location.origin}/booking/${room?.id}?checkin=${startDateArgs}&checkout=${endDateArgs}&numberOfNights=${numberOfNights}`;
         });
-        newStartDate = startDateArgs;
-        newEndDate = endDateArgs;
-        newNumberOfNights = numberOfNights;
     }
 
     function resetNewCheckoutDate() {

@@ -18,6 +18,7 @@ import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
 import com.airtnt.entity.exception.BookingNotFoundException;
+import com.airtnt.error.NotAuthenticatedError;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,14 +79,14 @@ public class BookingService {
 
     public List<BookedDateDTO> getBookedDate(Room room) throws ParseException {
         List<BookedDateDTO> bookedDates = new ArrayList<>();
-        List<Booking> bookingsList = new ArrayList<>();
-        Iterator<Booking> bookings = bookingRepository.findByRoom(room).iterator();
-        bookings.forEachRemaining(bookingsList::add);
+        List<Booking> bookings = new ArrayList<>();
+        Iterator<Booking> bookingsItr = bookingRepository.findByRoom(room).iterator();
+        bookingsItr.forEachRemaining(bookings::add);
 
-        for (int i = 0; i < bookingsList.size(); i++) {
-            Date checkinDate = bookingsList.get(i).getCheckinDate();
-            Date checkoutDate = bookingsList.get(i).getCheckoutDate();
-            LocalDateTime cancelDate = bookingsList.get(i).getCancelDate();
+        for (int i = 0; i < bookings.size(); i++) {
+            Date checkinDate = bookings.get(i).getCheckinDate();
+            Date checkoutDate = bookings.get(i).getCheckoutDate();
+            LocalDateTime cancelDate = bookings.get(i).getCancelDate();
 
             if (checkinDate != null & checkoutDate != null && cancelDate == null) {
                 String[] checkinDate2 = checkinDate.toString().split("T")[0].split(" ")[0].split("-");
@@ -309,27 +310,37 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking cancelBooking(Integer bookingId) {
+    public Booking cancelBooking(Integer bookingId, User user) throws NotAuthenticatedError {
+        Booking canceledBooking = getBookingById(bookingId);
         LocalDateTime cancelDate = LocalDateTime.now();
-        Booking cancelledBooking = getBookingById(bookingId);
 
-        cancelledBooking.setCancelDate(cancelDate);
-        cancelledBooking.setRefund(true);
-        cancelledBooking.setComplete(false);
-        if (cancelledBooking.isComplete())
-            cancelledBooking.setRefundPaid(cancelledBooking.getTotalFee() - cancelledBooking.getSiteFee());
+        if (!user.getId().equals(canceledBooking.getRoom().getHost().getId())) {
+            throw new NotAuthenticatedError(); // if user sent request is not host of the room
+        }
+
+        canceledBooking.setCancelDate(cancelDate);
+        canceledBooking.setRefund(true);
+        canceledBooking.setComplete(false);
+        if (canceledBooking.isComplete())
+            canceledBooking.setRefundPaid(canceledBooking.getTotalFee() - canceledBooking.getSiteFee());
         else
-            cancelledBooking.setRefundPaid(cancelledBooking.getTotalFee());
+            canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
 
-        Booking updatedRecord = bookingRepository.save(cancelledBooking);
+        Booking updatedRecord = bookingRepository.save(canceledBooking);
 
         return updatedRecord;
     }
 
     @Transactional
-    public Booking approveBooking(Booking booking) {
-        booking.setComplete(true);
-        return bookingRepository.save(booking);
+    public Booking approveBooking(Integer bookingId, User user) throws NotAuthenticatedError {
+        Booking approvedBooking = getBookingById(bookingId);
+
+        if (!user.getId().equals(approvedBooking.getRoom().getHost().getId())) {
+            throw new NotAuthenticatedError(); // if user sent request is not host of the room
+        }
+
+        approvedBooking.setComplete(true);
+        return bookingRepository.save(approvedBooking);
     }
 
     public Page<Booking> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
