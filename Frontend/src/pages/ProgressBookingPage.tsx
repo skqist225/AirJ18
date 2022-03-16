@@ -129,7 +129,9 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                                     room={room}
                                 />
                                 <section className='progress--booking__infoSection'>
-                                    <div>Thanh toán bằng</div>
+                                    <div style={{ paddingBottom: '0px !important' }}>
+                                        Thanh toán bằng
+                                    </div>
                                     <div>
                                         {clientSecret && (
                                             <Elements

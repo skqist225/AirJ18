@@ -55,7 +55,7 @@ const HomePage: FC<HomeProps> = () => {
 
     return (
         <div className='p-relative' id='home__mainContainer'>
-            <Header includeMiddle={false} excludeBecomeHostAndNavigationHeader={true} />
+            <Header includeMiddle={false} excludeBecomeHostAndNavigationHeader={false} />
 
             <div>
                 <div className='home__body'>

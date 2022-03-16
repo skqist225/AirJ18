@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
     LeftPageContent,
     PropertyDescriptionMainContent,
@@ -10,49 +10,50 @@ import { Div } from '../../globalStyle';
 interface IPropertyTitlePageProps {}
 
 const PropertyTitlePage: FC<IPropertyTitlePageProps> = () => {
-    let descriptions: string[] = [];
+    const [dscrpts, setDescriptions] = useState<string[]>([]);
     useEffect(() => {
         if (localStorage.getItem('room')) {
-            const { descriptions: lsDescriptions } = JSON.parse(localStorage.getItem('room')!);
-            if (lsDescriptions) {
-                descriptions = lsDescriptions;
+            const { descriptions } = JSON.parse(localStorage.getItem('room')!);
+            if (descriptions) setDescriptions(descriptions);
+        }
+    }, []);
 
-                if (descriptions.length === 2) {
-                    jQuery('.description__title-container').each(function () {
-                        if (descriptions.includes($(this).children().last().text())) {
-                            $(this).addClass('choosen');
-                        }
-                    });
+    useEffect(() => {
+        if (dscrpts.length === 2) {
+            $('.description__title-container').each(function () {
+                if (dscrpts.includes($(this).children().last().text())) {
+                    $(this).addClass('choosen');
                 }
-            }
+            });
         }
 
         $('.description__title-container').each(function () {
-            $(this).on('click', function () {
-                if ($(this).hasClass('choosen')) {
-                    $(this).removeClass('choosen');
-                    descriptions = descriptions.filter(
-                        description => description !== $(this).children().last().text()
-                    );
-                } else {
-                    if (descriptions.length === 2) {
-                        jQuery('.description__title-container').each(function () {
-                            if ($(this).children().last().text() === descriptions[0]) {
-                                $(this).removeClass('choosen');
-                            }
-                        });
+            $(this)
+                .off('click')
+                .on('click', function () {
+                    const desc = $(this).children().last().text();
 
-                        $(this).addClass('choosen');
-                        descriptions[0] = descriptions[1];
-                        descriptions[1] = $(this).children().last().text();
+                    if ($(this).hasClass('choosen')) {
+                        $(this).removeClass('choosen');
+                        setDescriptions(dscrpts.filter(description => description !== desc));
                     } else {
-                        $(this).addClass('choosen');
-                        descriptions.push($(this).children().last().text());
+                        if (dscrpts.length === 2) {
+                            $('.description__title-container').each(function () {
+                                if (desc === dscrpts[0]) {
+                                    $(this).removeClass('choosen');
+                                }
+                            });
+
+                            $(this).addClass('choosen');
+                            setDescriptions([dscrpts[1], desc]);
+                        } else {
+                            $(this).addClass('choosen');
+                            setDescriptions([...dscrpts, desc]);
+                        }
                     }
-                }
-            });
+                });
         });
-    }, []);
+    }, [dscrpts]);
 
     return (
         <Div height='100vh'>
@@ -78,7 +79,7 @@ const PropertyTitlePage: FC<IPropertyTitlePageProps> = () => {
                     prevPage='title'
                     MainContent={<PropertyDescriptionMainContent />}
                     stepNumber={9}
-                    descriptions={descriptions}
+                    descriptions={dscrpts}
                 />
             </Div>
         </Div>

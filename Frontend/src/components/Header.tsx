@@ -99,12 +99,11 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                     </div>
                 )}
                 <div className='header__left'>
-                    {/* isAuthenticated(); */}
                     {!excludeBecomeHostAndNavigationHeader && (
                         <div style={{ marginRight: '20px' }}>
-                            <a href='@{/become-a-host/}' className='header__become-host'>
+                            <Link to={'/become-a-host/intro'} className='header__become-host'>
                                 Trở thành chủ nhà
-                            </a>
+                            </Link>
                         </div>
                     )}
 

@@ -17,6 +17,7 @@ import {
     PropertyRoomImagesPage,
     PropertyRoomInfoPage,
     PropertyTitlePage,
+    PublishCelebrationPage,
     RegisterPage,
     RoomDetailsPage,
     RoomPreviewPage,
@@ -57,6 +58,10 @@ function App() {
                         <Route path='description' element={<PropertyDescriptionPage />} />
                         <Route path='price' element={<PropertyPricePage />} />
                         <Route path='preview' element={<RoomPreviewPage />} />
+                        <Route
+                            path='publish-celebration/:roomid'
+                            element={<PublishCelebrationPage />}
+                        ></Route>
                     </Route>
                     <Route path='/booking'>
                         <Route path=':roomid' element={<ProgressBookingPage />}></Route>

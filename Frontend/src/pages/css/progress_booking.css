@@ -129,6 +129,7 @@
 
 .progress--booking__infoSection {
     border-bottom: 1px solid rgb(221, 221, 221);
+    padding-bottom: 24px;
 }
 
 .progress--booking__infoSection > div:first-child {
@@ -145,7 +146,6 @@
 }
 
 .progress--booking__pm--header {
-    border-bottom: 1px solid rgb(211, 211, 211);
     padding: 16px;
 }
 

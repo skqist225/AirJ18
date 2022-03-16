@@ -281,7 +281,7 @@ public class RoomRestController {
             return "failure";
     }
 
-    @PostMapping("room/save")
+    @PostMapping("/api/room/save")
     public String saveRoom(@AuthenticationPrincipal UserDetails userDetails,
             @ModelAttribute PostAddRoomDTO payload) throws IOException, UserNotFoundException {
         Set<Rule> rules = new HashSet<>();

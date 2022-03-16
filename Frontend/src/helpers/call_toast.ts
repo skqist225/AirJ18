@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export default function callToast(status: string, message: string) {
+export default function callToast(status: 'warning' | 'error' | 'success', message: string) {
     switch (status) {
         case 'error': {
             toast.error('🦄' + message, {

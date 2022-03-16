@@ -1,9 +1,15 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Div, MainButton } from '../../globalStyle';
 import $ from 'jquery';
 import StepProcess from './StepProcess';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+
+import { callToast } from '../../helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { addRoom } from '../../features/room/roomSlice';
+import { IPostAddRoom, IRoomLocalStorage } from '../../types/room/type_Room';
+import { userState } from '../../features/user/userSlice';
 
 import './css/right_content.css';
 
@@ -32,35 +38,10 @@ const RightPageContent: FC<IRightPageContentProps> = ({
     placeName,
     descriptions,
 }) => {
+    const dispatch = useDispatch();
+    const { user } = useSelector(userState);
     function moveToNextPage() {
-        interface IPostAddRoom {
-            roomGroup?: number;
-            roomGroupText?: string;
-            category?: number;
-            privacyType?: number;
-            longitude?: number;
-            latitude?: number;
-            placeName?: string;
-            guestNumber?: number;
-            bedNumber?: number;
-            bedRoomNumber?: number;
-            bathRoomNumber?: number;
-            prominentAmentity?: number;
-            favoriteAmentity?: number;
-            safeAmentity?: number;
-            prominentAmentityImageName?: string;
-            favoriteAmentityImageName?: string;
-            safeAmentityImageName?: string;
-            prominentAmentityName?: string;
-            favoriteAmentityName?: string;
-            safeAmentityName?: string;
-            roomImages?: string[];
-            roomTitle?: string;
-            descriptions?: string[];
-            roomPricePerNight?: string;
-        }
-
-        let room: IPostAddRoom = {};
+        let room: IRoomLocalStorage = {};
         switch (stepNumber) {
             case 1: {
                 const choosenGroup = $('div.room-group__box').filter('.active');
@@ -214,16 +195,7 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                     .val()! as string;
 
                 if (isNaN(prominentAmentity) || isNaN(favoriteAmentity) || isNaN(safeAmentity)) {
-                    toast.error('🦄 Vui lòng chọn tiện ích trước khi tiếp tục!', {
-                        position: 'top-center',
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-
+                    callToast('error', 'Vui lòng chọn tiện ích trước khi tiếp tục!');
                     return;
                 }
 
@@ -260,15 +232,7 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                 if (localStorage.getItem('room')) {
                     room = JSON.parse(localStorage.getItem('room')!);
                     if (room['roomImages'] && room.roomImages.length < 5) {
-                        toast.warn('🦄 Vui lòng tải lên 5 ảnh', {
-                            position: 'top-right',
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
+                        callToast('warning', 'Vui lòng tải lên 5 ảnh');
                         return;
                     }
                 }
@@ -304,15 +268,7 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                         };
                     }
                 } else {
-                    toast.error('🦄 Vui lòng chọn 2 mô tả cho nhà/phòng của bạn', {
-                        position: 'top-center',
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
+                    callToast('error', 'Vui lòng chọn 2 mô tả cho nhà/phòng của bạn');
                     return;
                 }
                 break;
@@ -332,22 +288,64 @@ const RightPageContent: FC<IRightPageContentProps> = ({
                     };
                 }
                 if (parseInt(($('#room-price').val() as string).replace('₫', '')) > 1_000_000_000) {
-                    alert('Vui lòng nhập dưới 1.000.000.000đ');
+                    callToast('warning', 'Vui lòng nhập dưới 1.000.000.000đ');
                     return;
                 }
                 if (isNaN(parseInt(($('#room-price').val() as string).replace('₫', '')))) {
-                    toast.error('🦄 Số tiền không hợp lệ', {
-                        position: 'top-center',
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
+                    callToast('error', 'Số tiền không hợp lệ');
                     return;
                 }
+                break;
+            }
+            case 11: {
+                if (localStorage.getItem('room')) {
+                    room = JSON.parse(localStorage.getItem('room')!);
+                    const placeNameLength = room.placeName!.toString().split(',').length;
+                    let country =
+                        room.placeName!.toString().split(',')[placeNameLength - 1] || 'no-country';
+                    const state =
+                        room.placeName!.toString().split(',')[placeNameLength - 2] || 'no-state';
+                    const city =
+                        room.placeName!.toString().split(',')[placeNameLength - 3] || 'no-city';
+                    const street =
+                        room.placeName!.toString().split(',')[placeNameLength - 4] || 'no-street';
 
+                    const fd = new FormData();
+
+                    let amenities: number[] = [];
+                    amenities.push(room.prominentAmentity!);
+                    amenities.push(room.favoriteAmentity!);
+                    amenities.push(room.safeAmentity!);
+
+                    const roomEntity: IPostAddRoom = {
+                        name: room.roomTitle!,
+                        amentities: amenities!,
+                        images: room.roomImages!,
+                        country: 216,
+                        state,
+                        city,
+                        street,
+                        bedroomCount: room.bedRoomNumber!,
+                        bathroomCount: room.bathRoomNumber!,
+                        accomodatesCount: room.guestNumber!,
+                        bedCount: room.bedNumber!,
+                        currency: 2, // chose currency
+                        category: room.category!,
+                        roomGroup: room.roomGroup!,
+                        description: room.descriptions?.join(',')!,
+                        latitude: room.latitude!,
+                        longitude: room.longitude!,
+                        price: parseInt(room.roomPricePerNight!),
+                        priceType: 'PER_NIGHT',
+                        host: user?.id!,
+                        privacyType: room.privacyType!,
+                    };
+
+                    for (let key in roomEntity) {
+                        fd.append(key, (roomEntity as any)[key]);
+                    }
+                    dispatch(addRoom(fd));
+                }
                 break;
             }
         }

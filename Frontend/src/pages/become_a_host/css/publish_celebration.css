@@ -1,0 +1,15 @@
+.publish--celebration__mainContent > div:first-child {
+    color: white;
+    margin-bottom: 32px;
+    font-size: 48px;
+    line-height: 56px;
+    text-align: center;
+}
+
+.publish--celebration__mainContent > div:last-child {
+    color: white;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: center;
+}

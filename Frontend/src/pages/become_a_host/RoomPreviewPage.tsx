@@ -17,7 +17,7 @@ const RoomPreviewPage: FC<IRoomPreviewPageProps> = () => {
                     title='Hãy đặt tên cho chỗ ở của bạn'
                 />
                 <RightPageContent
-                    nextPage='description'
+                    nextPage='publish-celebration'
                     prevPage='price'
                     MainContent={<RoomPreviewMainContent />}
                     stepNumber={11}

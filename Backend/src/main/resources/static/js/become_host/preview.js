@@ -97,7 +97,7 @@ async function nextPage() {
             fd.append(key, roomEntity[key]);
         }
 
-        const { data } = await axios.post(`${baseURL}room/save`, fd, {
+        const { data } = await axios.post(`${baseURL}api/room/save`, fd, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

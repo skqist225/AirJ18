@@ -104,6 +104,23 @@ export const getAverageRoomPricePerNight = createAsyncThunk(
     }
 );
 
+export const addRoom = createAsyncThunk(
+    'room/addRoom',
+    async (fd: FormData, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.post(`/room/save`, fd, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (data) localStorage.removeItem('room');
+
+            return { data };
+        } catch (error) {}
+    }
+);
+
 type RoomState = {
     rooms: IRoom[];
     hosting: {
@@ -128,6 +145,7 @@ type RoomState = {
         selectedAmentities: number[];
         bookingDates: string[];
     };
+    newlyCreatedRoomId: number;
 };
 
 const initialState: RoomState = {
@@ -154,6 +172,7 @@ const initialState: RoomState = {
         selectedAmentities: [],
         bookingDates: [],
     },
+    newlyCreatedRoomId: 0,
 };
 
 const roomSlice = createSlice({
@@ -206,6 +225,9 @@ const roomSlice = createSlice({
             })
             .addCase(getAverageRoomPricePerNight.fulfilled, (state, { payload }) => {
                 state.averageRoomPricePerNight = payload?.data;
+            })
+            .addCase(addRoom.fulfilled, (state, { payload }) => {
+                state.newlyCreatedRoomId = parseInt(payload?.data as string);
             })
             .addMatcher(
                 isAnyOf(fetchRoomsByCategoryAndConditions.pending, fetchRoomById.pending),
