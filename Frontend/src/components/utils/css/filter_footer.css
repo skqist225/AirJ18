@@ -1,0 +1,40 @@
+.filter--footer__container {
+    padding: 16px 24px;
+    border-top: 1px solid rgb(235, 235, 235);
+}
+
+.filter--footer__transparentBtn {
+    outline: none;
+    border: none;
+    background-color: transparent !important;
+    text-decoration: underline;
+    color: #222;
+    font-size: 16;
+    font-weight: 500;
+}
+
+.filter--footer__transparentBtn:disabled {
+    color: #717171 !important;
+}
+
+.filter--footer__applyBtn {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    outline: none;
+    padding: 14px 24px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    border: none;
+    background: rgb(34, 34, 34);
+    color: rgb(255, 255, 255);
+    contain: paint;
+}

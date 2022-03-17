@@ -1,129 +1,140 @@
 import $ from 'jquery';
+import { Dispatch } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { fetchUserOwnedRoom } from '../../../../features/room/roomSlice';
+import { getPageNumber } from '../../../../helpers';
 
-export default function hostingListings() {
-    $('.listings__minus-btn').attr('disabled', 'true');
-
-    const allInputColumn = $('.columnDisplay');
-    const selectedColumns = $('input[class="columnDisplay"]:checked');
+export default function hostingListings(
+    setCommonnameCb: React.Dispatch<React.SetStateAction<boolean>>,
+    setBedCb: React.Dispatch<React.SetStateAction<boolean>>,
+    setBedroomCb: React.Dispatch<React.SetStateAction<boolean>>,
+    setBathroomCb: React.Dispatch<React.SetStateAction<boolean>>,
+    setLastModifiedCb: React.Dispatch<React.SetStateAction<boolean>>,
+    dispatch: Dispatch<any>,
+    pathname: string
+) {
+    const displayColumnCheckboxClassname = 'ant-checkbox-input';
+    const displayColumnCheckbox = $('.' + displayColumnCheckboxClassname);
+    const initialDisplayedColumns = $(
+        'input[class="' + displayColumnCheckboxClassname + '"]:checked'
+    );
     const allColumns = $('th');
     const allCells = $('td');
-    let columnDisplays: string[] = [];
+    let displayedColumns: string[] = [];
 
-    selectedColumns.each(function () {
-        columnDisplays.push($(this).val() as string);
+    $('.listings__minus-btn').attr('disabled', 'true');
+
+    initialDisplayedColumns.each(function () {
+        displayedColumns.push($(this).val() as string);
     });
 
     allColumns.each(function () {
         if ($(this).data('column'))
-            if (!columnDisplays.includes($(this).data('column'))) $(this).addClass('remove');
+            if (!displayedColumns.includes($(this).data('column'))) $(this).addClass('remove');
             else $(this).removeClass('remove');
     });
 
     allCells.each(function () {
         if ($(this).data('column'))
-            if (!columnDisplays.includes($(this).data('column'))) $(this).addClass('remove');
+            if (!displayedColumns.includes($(this).data('column'))) $(this).addClass('remove');
             else $(this).removeClass('remove');
     });
 
-    allInputColumn.each(function () {
-        $(this).on('change', function () {
-            if (!$(this).prop('checked'))
-                //remove unchecked checkbox from display array
-                columnDisplays = columnDisplays.filter(v => v.toString() !== $(this).val());
-            else {
-                // add checked checkbox to display array
-                const isHavingElement = columnDisplays.some(v => v.toString() === $(this).val());
-
-                if (isHavingElement) columnDisplays.push($(this).val() as string);
+    function manageCbState(val: string, state: boolean) {
+        switch (val) {
+            case 'COMMONNAME': {
+                setCommonnameCb(state);
+                break;
             }
-            allColumns.each(function () {
-                if ($(this).data('column'))
-                    if (!columnDisplays.includes($(this).data('column')))
-                        $(this).addClass('remove');
-                    else $(this).removeClass('remove');
-            });
-            allCells.each(function () {
-                if ($(this).data('column'))
-                    if (!columnDisplays.includes($(this).data('column')))
-                        $(this).addClass('remove');
-                    else $(this).removeClass('remove');
-            });
-        });
-    });
+            case 'BEDROOM': {
+                setBedroomCb(state);
+                break;
+            }
+            case 'BED': {
+                setBedCb(state);
+                break;
+            }
+            case 'BATHROOM': {
+                setBathroomCb(state);
+                break;
+            }
+            case 'LASTMODIFIED': {
+                setLastModifiedCb(state);
+                break;
+            }
+        }
+    }
 
-    $('.listings__filter-option').each(function () {
-        $(this).on('click', function () {
-            const self = $(this);
-            $('.listings__filter-option').each(function () {
-                if (!$(this).is(self)) $(this).siblings().filter('.active').removeClass('active');
-            });
+    displayColumnCheckbox.each(function () {
+        $(this)
+            .off('change')
+            .on('change', function () {
+                console.log($(this).prop('checked'));
 
-            const id = $(this).data('dropdown');
-            const filterBox = $('#' + id);
-            if (filterBox.hasClass('active')) filterBox.removeClass('active');
-            else filterBox.addClass('active');
-        });
-    });
-
-    $('.incAndDecBtn').each(function () {
-        $(this).on('click', function () {
-            const spanInfoTag = $(this).siblings(`#${$(this).data('edit')}`);
-            let spanValue = +spanInfoTag.text();
-            const dataFunction = $(this).data('function');
-            const deleteButton = $('.deleteBtn.' + $(this).data('trigger'));
-            const applyButton = $('.applyBtn.' + $(this).data('trigger'));
-            const self = $(this);
-
-            if (dataFunction === 'dec') {
-                if (spanValue > 0) {
-                    if (spanValue === 1) $(this).attr('disabled', 'true');
-                    spanInfoTag.text(--spanValue);
+                if (!$(this).prop('checked')) {
+                    manageCbState($(this).val() as string, true);
+                    displayedColumns.push($(this).val() as string);
+                } else {
+                    manageCbState($(this).val() as string, false);
+                    displayedColumns = displayedColumns.filter(v => v.toString() !== $(this).val());
                 }
-                let countZero = 0;
-                if (spanValue === 0)
-                    $('.listings__minus-btn').each(function () {
-                        if (!$(this).is(self)) {
-                            const spanValue = parseInt(
-                                $(this)
-                                    .siblings(`#${$(this).data('edit')}`)
-                                    .text()
-                            );
-                            if (spanValue === 0) countZero++;
-                        }
-                    });
+                allColumns.each(function () {
+                    if ($(this).data('column'))
+                        !displayedColumns.includes($(this).data('column'))
+                            ? $(this).addClass('remove')
+                            : $(this).removeClass('remove');
+                });
+                allCells.each(function () {
+                    if ($(this).data('column'))
+                        !displayedColumns.includes($(this).data('column'))
+                            ? $(this).addClass('remove')
+                            : $(this).removeClass('remove');
+                });
+            });
+    });
 
-                if (countZero === $('.listings__minus-btn').length - 1)
-                    deleteButton.attr('disabled', 'true');
-            }
+    //show filter box
+    $('.listings__filter--option').each(function () {
+        $(this)
+            .off('click')
+            .on('click', function () {
+                const self = $(this);
+                $('.listings__filter--option').each(function () {
+                    if (!$(this).is(self))
+                        $(this).siblings().filter('.active').removeClass('active');
+                });
 
-            if (dataFunction === 'inc') {
-                if (spanValue === 0)
-                    $(this).siblings(`.listings__minus-btn.incAndDecBtn`).removeAttr('disabled');
-                spanInfoTag.text(++spanValue);
+                const filterBox = $(`#${$(this).data('dropdown')}`);
 
-                if (spanValue > 0) deleteButton.removeAttr('disabled');
-            }
+                filterBox.hasClass('active')
+                    ? filterBox.removeClass('active')
+                    : filterBox.addClass('active');
 
-            // if()
-        });
+                if ($(this).data('dropdown') === 'clearFilter') {
+                    dispatch(fetchUserOwnedRoom({ pageNumber: getPageNumber(pathname) }));
+                }
+            });
     });
 
     $('.deleteBtn').each(function () {
-        $(this).click(function () {
-            const dataModify = $(this).data('modify');
+        $(this)
+            .off('click')
+            .on('click', function () {
+                const dataModify = $(this).data('modify');
 
-            switch (dataModify) {
-                case 'roomAndBedRoom': {
-                    $('.listings__minus-btn').each(function () {
+                switch (dataModify) {
+                    case 'roomAndBedRoom': {
+                        $('.listings__minus-btn').each(function () {
+                            $(this).attr('disabled', 'true');
+                            const spanInfoTag = $(this).siblings(`#${$(this).data('edit')}`);
+                            spanInfoTag.text(0);
+                        });
                         $(this).attr('disabled', 'true');
-                        const spanInfoTag = $(this).siblings(`#${$(this).data('edit')}`);
-                        spanInfoTag.text(0);
-                    });
-                    $(this).attr('disabled', 'true');
-                    break;
+                        break;
+                    }
                 }
-            }
-        });
+            });
     });
 
     // let url = `${baseURL}hosting/listings/${pageNumber}`;
@@ -151,8 +162,8 @@ export default function hostingListings() {
     //                 url += `?BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&query=${query}`;
     //                 break;
     //             }
-    //             case 'amentities': {
-    //                 const selectedAmentities = $('input[class="amentitySelected"]:checked');
+    //             case 'amenities': {
+    //                 const selectedAmentities = $('input[class="amenity"]:checked');
     //                 let amentitiesID = [];
     //                 selectedAmentities.each(function () {
     //                     amentitiesID.push($(this).val());

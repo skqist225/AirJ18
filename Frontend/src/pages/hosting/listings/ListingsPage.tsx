@@ -1,32 +1,37 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../../components/Header';
-import {
-    AmenityRow,
-    FilterFooter,
-    Pagination,
-    RoomDataRow,
-} from '../../../components/hosting/listings';
-import { IncAndDecBtn } from '../../../components/utils/IncAndDecBtn';
+import { TableContent } from '../../../components/hosting/listings';
 import hostingListings from '../../../components/hosting/listings/script/listings';
 import { fetchAmenities } from '../../../features/amenity/amenitySlice';
-import { fetchUserOwnedRoom } from '../../../features/room/roomSlice';
-import { getImage } from '../../../helpers';
-import { RootState } from '../../../store';
+import { fetchUserOwnedRoom, roomState } from '../../../features/room/roomSlice';
+import { getImage, getPageNumber } from '../../../helpers';
+import { Image } from '../../../globalStyle';
+
+import FilterByLine from '../../../components/hosting/listings/FilterByLine';
+import { userState } from '../../../features/user/userSlice';
+
 import './css/listings_page.css';
+import { Pagination } from '../../../components/utils';
 
 interface IListingsPageProps {}
 
 const ListingsPage: FC<IListingsPageProps> = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { user, loading } = useSelector((state: RootState) => state.user);
-    const { amenities, loading: amenityLoading } = useSelector((state: RootState) => state.amenity);
+    const { user, loading } = useSelector(userState);
+
     const {
-        hosting: { rooms, totalRecords },
-    } = useSelector((state: RootState) => state.room);
+        hosting: { rooms, totalRecords, totalPages },
+    } = useSelector(roomState);
     const { pathname } = useLocation();
+
+    const [commonNameCb, setCommonnameCb] = useState(false);
+    const [bedCb, setBedCb] = useState(true);
+    const [bedroomCb, setBedroomCb] = useState(true);
+    const [bathroomCb, setBathroomCb] = useState(true);
+    const [lastModifiedCb, setLastModifiedCb] = useState(true);
 
     useEffect(() => {
         if (user === null && !loading) {
@@ -39,17 +44,25 @@ const ListingsPage: FC<IListingsPageProps> = () => {
     }, []);
 
     useEffect(() => {
-        dispatch(fetchUserOwnedRoom({ pageNumber: parseInt(pathname.split('/').pop() as string) }));
+        dispatch(fetchUserOwnedRoom({ pageNumber: getPageNumber(pathname) }));
     }, [pathname]);
 
     useEffect(() => {
-        hostingListings();
+        hostingListings(
+            setCommonnameCb,
+            setBedCb,
+            setBedroomCb,
+            setBathroomCb,
+            setLastModifiedCb,
+            dispatch,
+            pathname
+        );
     }, [rooms]);
 
     return (
         <>
             <Header includeMiddle={true} excludeBecomeHostAndNavigationHeader={true} />
-            {rooms.length ? (
+            {rooms ? (
                 <div id='listings__main-conainer'>
                     <div className='listings__container'>
                         <div className='listings__header flex'>
@@ -57,15 +70,13 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                 {totalRecords} nhà/phòng cho thuê
                             </div>
                             <div>
-                                <Link to={'/'}>
+                                <Link to={'/'} style={{ color: '#222' }}>
                                     {' '}
                                     <button className='listings__create-new-room'>
                                         <span>
-                                            <img
+                                            <Image
                                                 src={getImage('/svg/plus.svg')}
-                                                alt=''
-                                                width='16px'
-                                                height='16px'
+                                                size='16px'
                                                 style={{ objectFit: 'cover' }}
                                             />
                                         </span>
@@ -74,412 +85,16 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                 </Link>
                             </div>
                         </div>
-                        <div className='listings__filter-container'>
-                            <div className='listings__search-room'>
-                                <div className='listings__search-icon-container'>
-                                    <img
-                                        src={getImage('/svg/search.svg')}
-                                        alt=''
-                                        width='12px'
-                                        height='12px'
-                                    />
-                                </div>
-                                <div className='f1'>
-                                    <input
-                                        type='text'
-                                        placeholder='Tìm kiếm nhà/phòng cho thuê'
-                                        id='listings__search-input'
-                                    />
-                                </div>
-                            </div>
-                            <div className='listings__filter'>
-                                <button
-                                    className='listings__filter-option'
-                                    data-dropdown='listings__filter-roomAndBedRoom'
-                                >
-                                    <span> Phòng và phòng ngủ</span>
-                                    <div className='listings__filter-img-container'>
-                                        <img
-                                            src={getImage('/svg/dropdown.svg')}
-                                            alt=''
-                                            width='12px'
-                                            height='12px'
-                                        />
-                                    </div>
-                                </button>
-                                <div id='listings__filter-roomAndBedRoom'>
-                                    <div className='listings__filter-wrapper'>
-                                        <div className='filter-box'>
-                                            <div className='flex listings__filter-roomAndBedRoom-row'>
-                                                <div>Phòng ngủ</div>
-                                                <IncAndDecBtn
-                                                    dataEdit='listings__bed-room-count'
-                                                    dataTrigger='roomAndBedRoom'
-                                                />
-                                            </div>
-                                            <div className='flex listings__filter-roomAndBedRoom-row'>
-                                                <div>Giường</div>
-                                                <IncAndDecBtn
-                                                    dataEdit='listings__bed-count'
-                                                    dataTrigger='roomAndBedRoom'
-                                                />
-                                            </div>
-                                            <div className='flex listings__filter-roomAndBedRoom-row'>
-                                                <div>Phòng tắm</div>
-                                                <IncAndDecBtn
-                                                    dataEdit='listings__bath-room-count'
-                                                    dataTrigger='roomAndBedRoom'
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <FilterFooter footerOf='roomAndBedRoom' />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='listings__filter'>
-                                <button
-                                    className='listings__filter-option'
-                                    data-dropdown='listings__filter-amentities'
-                                >
-                                    <span>Tiện nghi</span>
-                                    <div className='listings__filter-img-container'>
-                                        <img
-                                            src={getImage('/svg/dropdown.svg')}
-                                            alt=''
-                                            width='12px'
-                                            height='12px'
-                                        />
-                                    </div>
-                                </button>
-                                <div id='listings__filter-amentities'>
-                                    <div className='grid-2 filter-box h-80'>
-                                        {amenities.map(amenity => (
-                                            <AmenityRow amenity={amenity} key={amenity.id} />
-                                        ))}
-                                    </div>
-
-                                    <FilterFooter footerOf='amentities' />
-                                </div>
-                            </div>
-                            <div className='listings__filter'>
-                                <button
-                                    className='listings__filter-option'
-                                    data-dropdown='listings__filter-status'
-                                >
-                                    <span>Tình trạng nhà/phòng cho thuê</span>
-                                    <div className='listings__filter-img-container'>
-                                        <img
-                                            src={getImage('/svg/dropdown.svg')}
-                                            alt=''
-                                            width='12px'
-                                            height='12px'
-                                        />
-                                    </div>
-                                </button>
-                                <div id='listings__filter-status'>
-                                    <div className='listings__filter-wrapper'>
-                                        <div className='f1 p-24'>
-                                            <div className='normal-flex listings__filter-status-row'>
-                                                <input
-                                                    type='checkbox'
-                                                    className='statusSelected'
-                                                    value='ACTIVE'
-                                                />
-                                                <div>Đã đăng</div>
-                                            </div>
-                                            <div className='normal-flex listings__filter-status-row'>
-                                                <input
-                                                    type='checkbox'
-                                                    className='statusSelected'
-                                                    value='UNLISTED'
-                                                />
-                                                <div>Đã hủy đăng</div>
-                                            </div>
-                                        </div>
-
-                                        <FilterFooter footerOf='status' />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='listings__filter'>
-                                <button
-                                    className='listings__filter-option'
-                                    data-dropdown='listings__filter-others'
-                                >
-                                    <span>Các bộ lọc khác</span>
-                                    <div className='listings__filter-img-container'>
-                                        <img
-                                            src={getImage('/svg/dropdown.svg')}
-                                            alt=''
-                                            width='12px'
-                                            height='12px'
-                                        />
-                                    </div>
-                                </button>
-                                <div id='listings__filter-others'>
-                                    <div className='listings__filter-wrapper'>
-                                        <div className='filter-box overflow-hidden'>
-                                            <div className='normal-flex listings__filter-others-row'>
-                                                <input
-                                                    type='checkbox'
-                                                    id='listings__filter-others__first-option'
-                                                />
-                                                <div>Chế độ Đặt ngay đang tắt</div>
-                                            </div>
-                                            <div className='normal-flex listings__filter-others-row'>
-                                                <input
-                                                    type='checkbox'
-                                                    id='listings__filter-others__second-option'
-                                                />
-                                                <div>Yêu cầu cập nhật mục cho thuê</div>
-                                            </div>
-                                        </div>
-
-                                        <FilterFooter footerOf='others' />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='listings__filter'>
-                                <button
-                                    className='listings__filter-option deleteAllFilterOption'
-                                    data-dropdown='listings__filter-others'
-                                >
-                                    <span>Xóa toàn bộ bộ lọc</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div className='f1'>
-                            <table id='table'>
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='id'
-                                                >
-                                                    <div>MÃ PHÒNG</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='name'
-                                                >
-                                                    <div>NHÀ/PHÒNG CHO THUÊ</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='status'
-                                                >
-                                                    <div>TRẠNG THÁI</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='price'
-                                                >
-                                                    <div>GIÁ PHÒNG MỖI ĐÊM</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='category-name'
-                                                >
-                                                    <div>LOẠI PHÒNG</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th data-column='BEDROOM'>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='bedroomCount'
-                                                >
-                                                    <div>PHÒNG NGỦ</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th data-column='BED'>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='bedCount'
-                                                >
-                                                    <div>GIƯỜNG</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th data-column='BATHROOM'>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='bathroomCount'
-                                                >
-                                                    <div>PHÒNG TẮM</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th style={{ width: '400px' }}>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='location'
-                                                >
-                                                    <div>VỊ TRÍ</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th data-column='LASTMODIFIED'>
-                                            <div>
-                                                <button
-                                                    className='listings__table-header'
-                                                    data-sort-field='lastModified'
-                                                >
-                                                    <div>SỬA ĐỔI LẦN CUỐI</div>
-                                                    <div className='listings__fiter-icon-container'>
-                                                        <span className='upper'> </span>
-                                                        <span className='downer'></span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div className='p-relative'>
-                                                <div
-                                                    className='listings__filter-option'
-                                                    data-dropdown='listings__setting-column-display'
-                                                >
-                                                    <img
-                                                        src={getImage('/svg/setting.svg')}
-                                                        alt=''
-                                                        width='20px'
-                                                        height='20px'
-                                                    />
-                                                </div>
-                                                <div
-                                                    id='listings__setting-column-display'
-                                                    className='filter-box'
-                                                >
-                                                    <div className='listings__setting-column-display-header'>
-                                                        Tùy chỉnh cột
-                                                    </div>
-                                                    <div style={{ height: '80%' }} className='f1'>
-                                                        <div className='normal-flex listings__setting-column-display-row'>
-                                                            <input
-                                                                type='checkbox'
-                                                                className='columnDisplay'
-                                                                value='COMMONNAME'
-                                                            />
-                                                            <div className='fs-14'>
-                                                                TÊN THƯỜNG GỌI
-                                                            </div>
-                                                        </div>
-                                                        <div className='normal-flex listings__setting-column-display-row'>
-                                                            <input
-                                                                type='checkbox'
-                                                                checked={true}
-                                                                className='columnDisplay'
-                                                                value='BEDROOM'
-                                                            />
-                                                            <div className='fs-14'>PHÒNG NGỦ</div>
-                                                        </div>
-                                                        <div className='normal-flex listings__setting-column-display-row'>
-                                                            <input
-                                                                type='checkbox'
-                                                                checked={true}
-                                                                className='columnDisplay'
-                                                                value='BED'
-                                                            />
-                                                            <div className='fs-14'>GIƯỜNG</div>
-                                                        </div>
-                                                        <div className='normal-flex listings__setting-column-display-row'>
-                                                            <input
-                                                                type='checkbox'
-                                                                checked={true}
-                                                                className='columnDisplay'
-                                                                value='BATHROOM'
-                                                            />
-                                                            <div className='fs-14'>PHÒNG TẮM</div>
-                                                        </div>
-                                                        <div className='normal-flex listings__setting-column-display-row'>
-                                                            <input
-                                                                type='checkbox'
-                                                                checked={true}
-                                                                className='columnDisplay'
-                                                                value='LASTMODIFIED'
-                                                            />
-                                                            <div className='fs-14'>
-                                                                SỬA ĐỔI LẦN CUỐI
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rooms.map(room => (
-                                        <RoomDataRow
-                                            room={room}
-                                            key={room.id}
-                                            email={user!.email}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <Pagination />
+                        <FilterByLine />
+                        <TableContent
+                            commonNameCb={commonNameCb}
+                            bedCb={bedCb}
+                            bedroomCb={bedroomCb}
+                            bathroomCb={bathroomCb}
+                            lastModifiedCb={lastModifiedCb}
+                            rooms={rooms}
+                        />
+                        <Pagination totalPages={totalPages} />
                     </div>
                 </div>
             ) : (

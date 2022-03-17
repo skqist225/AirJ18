@@ -1,7 +1,8 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BookingsTable, FilterFooter } from '../components/booking';
+import { BookingsTable } from '../components/booking';
 import Header from '../components/Header';
+import { FilterFooter, Pagination } from '../components/utils';
 import { fetchUserBookings } from '../features/booking/bookingSlice';
 import { Div, Image } from '../globalStyle';
 import { getImage } from '../helpers';
@@ -213,28 +214,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                             <BookingsTable bookings={bookingsOfCurrentUserRooms} />
                         )}
                     </div>
-                    <div className='pagination'>
-                        <a data-page='prev'>&laquo;</a>
-                        <a data-page='1' className='active listings__link'>
-                            1
-                        </a>
-                        <a data-page='2' className='listings__link'>
-                            2
-                        </a>
-                        <a data-page='3' className='listings__link'>
-                            3
-                        </a>
-                        <a data-page='4' className='listings__link'>
-                            4
-                        </a>
-                        <a data-page='5' className='listings__link'>
-                            5
-                        </a>
-                        <a data-page='6' className='listings__link'>
-                            6
-                        </a>
-                        <a data-page='next'>&raquo;</a>
-                    </div>
+                    <Pagination totalPages={6} />
                 </div>
             </div>
         </>

@@ -72,6 +72,7 @@ import com.airtnt.entity.exception.RoomNotFoundException;
 public class RoomRestController {
 
     private final String FETCH_OWNED_ROOMS_SUCCESS = "FETCH_OWNED_ROOMS_SUCCESSFULLY";
+    private final String STATIC_PATH = "Backend/src/main/resources/static/room_images";
 
     @Autowired
     private RoomService roomService;
@@ -334,9 +335,8 @@ public class RoomRestController {
 
         /* MOVE IMAGE TO FOLDER */
         if (savedRoom != null) {
-            String STATIC_PATH = "src/main/resources/static/room_images/";
-            String uploadDir = STATIC_PATH + user.getEmail() + "/" + savedRoom.getId();
-            String source = STATIC_PATH + user.getEmail() + "/";
+            String uploadDir = STATIC_PATH + "/" + user.getEmail() + "/" + savedRoom.getId();
+            String source = STATIC_PATH + "/" + user.getEmail() + "/";
             Path sourcePath = Paths.get(source);
             Path targetPath = Files.createDirectories(Paths.get(uploadDir));
             for (String imageName : payload.getImages()) {
@@ -349,7 +349,7 @@ public class RoomRestController {
         return savedRoom.getId() + "";
     }
 
-    @GetMapping("/api/room/user/page/{pageid}")
+    @GetMapping("/api/rooms/user/{pageid}")
     public ResponseEntity<RoomByUserResponseEntity> fetchUserOwnedRooms(@CookieValue("user") String cookie,
             @PathVariable("pageid") Integer pageNumber,
             @RequestParam(name = "BATHROOMS", required = false, defaultValue = "0") String bathRoomsCount,

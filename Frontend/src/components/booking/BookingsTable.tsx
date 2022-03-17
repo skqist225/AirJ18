@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { IBooking } from '../../types/booking/type_Booking';
 import BookingDataRow from './BookingDataRow';
-import ColumnHeader from './ColumnHeader';
+import { ColumnHeader } from '../utils';
 
 interface IBookingsTableProps {
     bookings: IBooking[];
