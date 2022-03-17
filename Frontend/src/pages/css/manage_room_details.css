@@ -223,7 +223,8 @@
 #manage-ys__roomInfo-control-view.hideViewBox,
 #manage-ys__roomInfo-control-container,
 #manage-ys__roomInfo-control-view.hideViewBox,
-#manage-ys__amentities-control-container {
+#manage-ys__amentities-control-container,
+#manage-ys__amentities-control-view.hideViewBox {
     display: none;
 }
 

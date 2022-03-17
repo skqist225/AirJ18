@@ -1,17 +1,82 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ManageYSContainer } from '.';
+import { countryState, fetchCountries } from '../../features/country/countrySlice';
 import { Image } from '../../globalStyle';
 import { getImage } from '../../helpers';
 import { IRoomDetails } from '../../types/room/type_RoomDetails';
 import BoxFooter from './BoxFooter';
 import DisplayEditUI from './components/DisplayEditUI';
 import HideEditBox from './components/HideEditBox';
+import axios from 'axios';
+
+import { hideEditBox } from '../../pages/script/manage_your_space';
+import { userState } from '../../features/user/userSlice';
+
+import $ from 'jquery';
 
 interface IEditLocationProps {
     room: IRoomDetails;
 }
 
 const EditLocation: FC<IEditLocationProps> = ({ room }) => {
+    const dispatch = useDispatch();
+    const { countries } = useSelector(countryState);
+    const { user } = useSelector(userState);
+
+    useEffect(() => {
+        dispatch(fetchCountries());
+    }, []);
+
+    function useCurrentPosition() {
+        getLocation();
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                timeout: 10000,
+            });
+        } else {
+        }
+    }
+
+    function showError() {}
+    let userLat = 0;
+    let userLng = 0;
+    async function showPosition(position: { coords: { latitude: number; longitude: number } }) {
+        const accessToken =
+            'pk.eyJ1IjoibG9yZGVkc3dpZnQyMjUiLCJhIjoiY2t3MDJvZ2E5MDB0dDJxbndxbjZxM20wOCJ9.hYxzgffyfc93Aiogipp5bA';
+        userLat = position.coords.latitude;
+        userLng = position.coords.longitude;
+
+        const { data } = await axios.get(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${userLng},${userLat}.json?access_token=${accessToken}`,
+            {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                },
+            }
+        );
+
+        const { place_name } = data.features[0];
+        console.log(place_name);
+
+        if (place_name.length) {
+            const placeNameLength = place_name.split(',').length;
+
+            let country22 = place_name.toString().split(',')[placeNameLength - 1] || 'no-country';
+            const state2 = place_name.toString().split(',')[placeNameLength - 2] || 'no-state';
+            const city2 = place_name.toString().split(',')[placeNameLength - 3] || 'no-city';
+            const street2 = place_name.toString().split(',')[placeNameLength - 4] || 'no-street';
+
+            $('#manage-ys__location-country').val(216);
+            $('#manage-ys__location-state').val(state2 === 'no-state' ? '' : state2);
+            $('#manage-ys__location-city').val(city2 === 'no-city' ? '' : city2);
+            $('#manage-ys__location-street').val(street2 === 'no-street' ? '' : street2);
+        }
+    }
+
     return (
         <ManageYSContainer id='roomLocation'>
             <div id='manage-ys__location-control-view'>
@@ -21,8 +86,7 @@ const EditLocation: FC<IEditLocationProps> = ({ room }) => {
                         <div>
                             <div className='manage-ys__section-content-title'>Địa chỉ</div>
                             <div className='manage-ys__section-content-info'>
-                                {/* {room?.cityName}, {room.stateName},
-                                               {room.countryName} */}
+                                {room?.cityName}, {room?.stateName},{room?.countryName}
                             </div>
                         </div>
                         <div>
@@ -35,7 +99,7 @@ const EditLocation: FC<IEditLocationProps> = ({ room }) => {
                 <div className='manage-ys__location-control-content'>
                     <div className='flex-space'>
                         <div className='manage-ys__header-edit-main-title'>Địa chỉ</div>
-                        <HideEditBox sectionKey='location' />
+                        <HideEditBox sectionKey='location' hideEditBox={hideEditBox} />
                     </div>
                     <div style={{ maxWidth: '584px' }}>
                         <div style={{ margin: '25px 0' }}>
@@ -43,7 +107,7 @@ const EditLocation: FC<IEditLocationProps> = ({ room }) => {
                                 className='
                                                     manage-ys__location-control__useCurrentPosition-btn
                                                 '
-                                // onclick="useCurrentPosition();"
+                                onClick={useCurrentPosition}
                             >
                                 <span>
                                     <Image src={getImage('/svg/pin_drop.svg')} size='16px' />
@@ -54,14 +118,15 @@ const EditLocation: FC<IEditLocationProps> = ({ room }) => {
                         <div>
                             <div>Quốc gia/Khu vực</div>
                             <select id='manage-ys__location-country' className='manage-ys__input'>
-                                {/* <th:blockeach="c : ${countries}">
-                                                    <option
-                                                       value="${c.id}"
-                                                       selected="${c.id == room.country.id}"
-                                                    >
-                                                        [[${c.name}]]
-                                                    </option>
-                                                </th:blockeach=> */}
+                                {countries.map(country => (
+                                    <option
+                                        key={country.id}
+                                        value={country.id}
+                                        selected={country.name == room?.countryName}
+                                    >
+                                        {country.name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div>
@@ -69,7 +134,7 @@ const EditLocation: FC<IEditLocationProps> = ({ room }) => {
                             <div>
                                 <input
                                     type='text'
-                                    value="${room.street == null ? '' : room.street}"
+                                    value={room?.streetName}
                                     className='manage-ys__input'
                                     id='manage-ys__location-street'
                                 />
@@ -93,7 +158,7 @@ const EditLocation: FC<IEditLocationProps> = ({ room }) => {
                                     <div>
                                         <input
                                             type='text'
-                                            //    value=room.state.name}"
+                                            value={room?.stateName}
                                             className='manage-ys__input'
                                             id='manage-ys__location-state'
                                         />
@@ -104,7 +169,7 @@ const EditLocation: FC<IEditLocationProps> = ({ room }) => {
                     </div>
                 </div>
 
-                <BoxFooter dataEdit='location' idInput='' />
+                <BoxFooter sectionKey='location' idInput='' hideEditBox={hideEditBox} />
             </div>
         </ManageYSContainer>
     );

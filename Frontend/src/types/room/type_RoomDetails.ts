@@ -47,4 +47,10 @@ export type IRoomDetails = {
     likedByCurrentUser: boolean;
     status: boolean;
     accomodates: number;
+    groupId: number;
+    categoryId: number;
+    privacyId: number;
+    stateName: string;
+    countryName: string;
+    streetName: string;
 } | null;

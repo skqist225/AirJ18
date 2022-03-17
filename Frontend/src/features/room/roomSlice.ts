@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { boolean } from 'yup';
 import api from '../../axios';
 import { RootState } from '../../store';
 import { IRoom, IRoomGroup, IRoomPrivacy } from '../../types/room/type_Room';
@@ -143,6 +144,35 @@ export const addRoom = createAsyncThunk(
         } catch (error) {}
     }
 );
+interface IPostUpdateRoom {
+    roomid: number;
+    fieldName: string;
+    postObj: Object;
+}
+
+export const updateRoom = createAsyncThunk(
+    'room/updateRoom',
+    async (
+        { roomid, fieldName, postObj }: IPostUpdateRoom,
+        { dispatch, getState, rejectWithValue }
+    ) => {
+        try {
+            const { data } = await api.post(
+                `/manage-your-space/update/${roomid}/${fieldName}`,
+                postObj,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            if (data === 'OK') dispatch(fetchRoomById({ roomid: roomid.toString() }));
+
+            return { data };
+        } catch (error) {}
+    }
+);
 
 type RoomState = {
     rooms: IRoom[];
@@ -169,6 +199,7 @@ type RoomState = {
         bookingDates: string[];
     };
     newlyCreatedRoomId: number;
+    updateSuccess: boolean;
 };
 
 const initialState: RoomState = {
@@ -196,6 +227,7 @@ const initialState: RoomState = {
         bookingDates: [],
     },
     newlyCreatedRoomId: 0,
+    updateSuccess: false,
 };
 
 const roomSlice = createSlice({
@@ -219,6 +251,9 @@ const roomSlice = createSlice({
                 selectedAmentities: [],
                 bookingDates: [],
             };
+        },
+        resetUpdateStatus: state => {
+            state.updateSuccess = false;
         },
     },
     extraReducers: builder => {
@@ -252,6 +287,9 @@ const roomSlice = createSlice({
             .addCase(addRoom.fulfilled, (state, { payload }) => {
                 state.newlyCreatedRoomId = parseInt(payload?.data as string);
             })
+            .addCase(updateRoom.fulfilled, (state, { payload }) => {
+                if (payload?.data === 'OK') state.updateSuccess = true;
+            })
             .addMatcher(
                 isAnyOf(fetchRoomsByCategoryAndConditions.pending, fetchRoomById.pending),
                 state => {
@@ -267,7 +305,12 @@ const roomSlice = createSlice({
     },
 });
 export const {
-    actions: { setMockingRoomLoading, setCurrentFilterObject, resetCurretnFilterObject },
+    actions: {
+        setMockingRoomLoading,
+        setCurrentFilterObject,
+        resetCurretnFilterObject,
+        resetUpdateStatus,
+    },
 } = roomSlice;
 
 export const roomState = (state: RootState) => state.room;

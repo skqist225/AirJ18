@@ -15,6 +15,8 @@ import {
 } from '../components/manage_room_details';
 import { amenityState, fetchAmenities } from '../features/amenity/amenitySlice';
 import './css/manage_room_details.css';
+import { initComp } from './script/manage_your_space';
+import Toast from '../components/notify/Toast';
 
 interface IManageRoomDetailsPageProps {}
 
@@ -30,6 +32,10 @@ const ManageRoomDetailsPage: FC<IManageRoomDetailsPageProps> = () => {
 
         dispatch(fetchAmenities());
     }, []);
+
+    useEffect(() => {
+        if (room) initComp(room, amenities);
+    }, [room, amenities]);
 
     return (
         <>
@@ -52,6 +58,8 @@ const ManageRoomDetailsPage: FC<IManageRoomDetailsPageProps> = () => {
                     </div>
                 </div>
             )}
+
+            <Toast />
         </>
     );
 };

@@ -20,6 +20,7 @@ const RoomAmenities: FC<IRoomAmenitiesProps> = ({ title, amentities, dataType })
                             padding: ' 24px 0',
                             borderBottom: '1px solid rgb(221, 221, 221)',
                         }}
+                        key={amentity.id}
                     >
                         <div>{amentity.name}</div>
                         <div className='normal-flex'>

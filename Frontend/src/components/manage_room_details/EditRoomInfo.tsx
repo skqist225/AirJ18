@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { ManageYSContainer } from '.';
 import { Image } from '../../globalStyle';
 import { getImage } from '../../helpers';
@@ -10,12 +10,16 @@ import HideEditBox from './components/HideEditBox';
 import RoomStatus from './components/RoomStatus';
 
 import './css/edit_room_info.css';
+import { hideEditBox, onKeyDown } from '../../pages/script/manage_your_space';
 
 interface IEditRoomInfoProps {
     room: IRoomDetails;
 }
 
 const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
+    const [roomName, setRoomName] = useState(room?.name);
+    const [roomDescription, setRoomDescription] = useState(room?.description);
+
     return (
         <ManageYSContainer id='basicRoomInfos' data-aos='fade-down' data-aos-duration='2000'>
             <div className='manage--ys__section--title'>Thông tin cơ bản về nhà/phòng cho thuê</div>
@@ -28,7 +32,7 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                         <div className='manage-ys__section-content-title'>
                             Tiêu đề nhà phòng cho thuê
                         </div>
-                        <div className='manage-ys__section-content-info'>{room!.name}</div>
+                        <div className='manage-ys__section-content-info'>{roomName}</div>
                     </div>
 
                     <div>
@@ -49,7 +53,11 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                                     </div>
                                 </div>
 
-                                <HideEditBox sectionKey='name' />
+                                <HideEditBox
+                                    hideEditBox={hideEditBox}
+                                    sectionKey='name'
+                                    name={roomName}
+                                />
                             </div>
                             <div className=''>
                                 <div>
@@ -57,8 +65,10 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                                         type='text'
                                         className='_dsnwjc'
                                         id='roomNameInput'
-                                        value={room!.name}
-                                        // onkeydown="onKeyDown(event, '#roomNameCounter');"
+                                        value={roomName}
+                                        data-input-id='#roomNameCounter'
+                                        onKeyDown={onKeyDown}
+                                        onChange={e => setRoomName(e.currentTarget.value)}
                                     />
                                 </div>
                                 <div className='counter'>
@@ -68,7 +78,11 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                         </div>
                     </div>
 
-                    <BoxFooter dataEdit='name' idInput='#roomNameInput' />
+                    <BoxFooter
+                        sectionKey='name'
+                        idInput='#roomNameInput'
+                        hideEditBox={hideEditBox}
+                    />
                 </div>
             </div>
             <div className='viewAndEdit__line'>
@@ -80,7 +94,7 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                         <div className='manage-ys__section-content-title'>
                             Mô tả nhà/phòng cho thuê
                         </div>
-                        <div className='manage-ys__section-content-info'>{room?.description}</div>
+                        <div className='manage-ys__section-content-info'>{roomDescription}</div>
                     </div>
                     <div>
                         <DisplayEditUI sectionKey='description' />
@@ -92,18 +106,23 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                             <div className='manage-ys__header-edit-main-title'>
                                 <div>Mô tả nhà/phòng cho thuê</div>
                             </div>
-                            <HideEditBox sectionKey='description' />
+                            <HideEditBox
+                                sectionKey='description'
+                                description={roomDescription}
+                                hideEditBox={hideEditBox}
+                            />
                         </div>
                         <div className=''>
                             <div style={{ marginBottom: '10px' }}>
                                 <textarea
-                                    // type="text"
                                     className='_dsnwjc'
                                     style={{ width: '693px' }}
                                     draggable='true'
                                     id='descriptionInput'
-                                    value={room!.description}
-                                    // onkeydown="onKeyDown(event, '#descriptionCounter');"
+                                    value={roomDescription}
+                                    data-input-id='#descriptionCounter'
+                                    onKeyDown={onKeyDown}
+                                    onChange={e => setRoomDescription(e.currentTarget.value)}
                                 ></textarea>
                             </div>
                             <div className='counter'>
@@ -112,7 +131,11 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                         </div>
                     </div>
 
-                    <BoxFooter dataEdit='description' idInput='#descriptionInput' />
+                    <BoxFooter
+                        sectionKey='description'
+                        idInput='#descriptionInput'
+                        hideEditBox={hideEditBox}
+                    />
                 </div>
             </div>
 
@@ -139,11 +162,11 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                             Trạng thái nhà/phòng cho thuê
                         </div>
                         <div className='manage-ys__section-content-info'>
-                            <span>
+                            <span className='mr-10'>
                                 {!room?.status ? (
                                     <Image src={getImage('/svg/reddot.svg')} size='10px' />
                                 ) : (
-                                    <Image src={getImage('/svg/reddot.svg')} size='10px' />
+                                    <Image src={getImage('/svg/greendot.svg')} size='10px' />
                                 )}
                             </span>
                             {!room!.status ? 'Đã hủy đăng' : 'Đang đăng'} - Khách không thể đặt
@@ -187,7 +210,7 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                             />
                         </div>
                     </div>
-                    <BoxFooter dataEdit='status' idInput='' />
+                    <BoxFooter sectionKey='status' idInput='' hideEditBox={hideEditBox} />
                 </div>
             </div>
         </ManageYSContainer>

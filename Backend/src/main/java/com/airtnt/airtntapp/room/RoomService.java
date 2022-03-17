@@ -355,6 +355,10 @@ public class RoomService {
 				room.setThumbnail(values.get("thumbnail"));
 				break;
 			}
+			case "description": {
+				room.setDescription(values.get("description"));
+				break;
+			}
 		}
 
 		Room savedRoom = roomRepository.save(room);

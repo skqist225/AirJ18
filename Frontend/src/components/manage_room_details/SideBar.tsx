@@ -15,31 +15,31 @@ const SideBar: FC<ISideBarProps> = ({ roomName }) => {
                 <div className='menuContainer'>
                     <ul>
                         <li className='active' data-index='1'>
-                            <div className='li-before'></div>
+                            <div className='li-before' id='roomImagesKf'></div>
                             <a className='manage-ys__changeView' data-scroll='#roomImages'>
                                 Ảnh
                             </a>
                         </li>
                         <li data-index='2'>
-                            <div className='li-before'></div>
+                            <div className='li-before' id='basicRoomInfosKf'></div>
                             <a className='manage-ys__changeView' data-scroll='#basicRoomInfos'>
                                 Thông tin cơ bản về nhà/phòng cho thuê
                             </a>
                         </li>
                         <li data-index='3'>
-                            <div className='li-before'></div>
+                            <div className='li-before' id='roomAmentitiesKf'></div>
                             <a className='manage-ys__changeView' data-scroll='#roomAmentities'>
                                 Tiện nghi
                             </a>
                         </li>
                         <li data-index='4'>
-                            <div className='li-before'></div>
+                            <div className='li-before' id='roomLocationKf'></div>
                             <a className='manage-ys__changeView' data-scroll='#roomLocation'>
                                 Vị trí
                             </a>
                         </li>
                         <li data-index='5'>
-                            <div className='li-before'></div>
+                            <div className='li-before' id='roomInfoKf'></div>
                             <a className='manage-ys__changeView' data-scroll='#roomInfo'>
                                 Chỗ ở và phòng
                             </a>

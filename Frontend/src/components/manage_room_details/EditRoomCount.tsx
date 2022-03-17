@@ -1,16 +1,32 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ManageYSContainer } from '.';
+import { categoryState, fetchCategories } from '../../features/category/categorySlice';
+import { fetchRoomGroups, fetchRoomPrivacies, roomState } from '../../features/room/roomSlice';
 import { Div } from '../../globalStyle';
 import { IRoomDetails } from '../../types/room/type_RoomDetails';
 import BoxFooter from './BoxFooter';
 import { HideEditBox } from './components';
 import DisplayEditUI from './components/DisplayEditUI';
 
+import $ from 'jquery';
+import { hideEditBox } from '../../pages/script/manage_your_space';
+import { IncAndDecBtn } from '../utils/IncAndDecBtn';
+
 interface IEditRoomCountProps {
     room: IRoomDetails;
 }
 
 const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchRoomGroups());
+        dispatch(fetchCategories());
+        dispatch(fetchRoomPrivacies());
+    }, []);
+    const { roomGroups, roomPrivacies } = useSelector(roomState);
+    const { categories } = useSelector(categoryState);
+
     return (
         <ManageYSContainer id='roomInfo' data-aos='fade-up' data-aos-duration='2000'>
             <div>
@@ -43,7 +59,10 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                     <div className='manage-ys__header-edit-main-title'>
                                         Loại chỗ ở
                                     </div>
-                                    <HideEditBox sectionKey='groupAndTypeAndPrivacy' />
+                                    <HideEditBox
+                                        sectionKey='groupAndTypeAndPrivacy'
+                                        hideEditBox={hideEditBox}
+                                    />
                                 </div>
                                 <div>
                                     <div>
@@ -55,16 +74,15 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                                 id='manage-ys__group-input'
                                                 className='manage-ys__input'
                                             >
-                                                {/* <th:block
-                                                                   each="g : ${roomGroup}"
-                                                                >
-                                                                    <option
-                                                                       value="${g.id}"
-                                                                       selected="${g.id == room.roomGroup.id}"
-                                                                    >
-                                                                        [[${g.name}]]
-                                                                    </option>
-                                                                </th:block> */}
+                                                {roomGroups.map(group => (
+                                                    <option
+                                                        key={group.id}
+                                                        defaultValue={group.id}
+                                                        selected={group.id === room?.groupId}
+                                                    >
+                                                        {group.name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
@@ -75,16 +93,15 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                                 id='manage-ys__type-input'
                                                 className='manage-ys__input'
                                             >
-                                                {/* <th:block
-                                                                   each="c : ${categories}"
-                                                                >
-                                                                    <option
-                                                                       value="${c.id}"
-                                                                       selected="${c.id == room.category.id}"
-                                                                    >
-                                                                        [[${c.name}]]
-                                                                    </option>
-                                                                </th:block> */}
+                                                {categories.map(category => (
+                                                    <option
+                                                        key={category.id}
+                                                        value={category.id}
+                                                        selected={category.id === room?.categoryId}
+                                                    >
+                                                        {category.name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
@@ -95,22 +112,24 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                                 id='manage-ys__privacy-input'
                                                 className='manage-ys__input'
                                             >
-                                                {/* <th:block
-                                                                   each="pt : ${privacyType}"
-                                                                >
-                                                                    <option
-                                                                       value="${pt.id}"
-                                                                       selected="${pt.id == room.privacyType.id}"
-                                                                    >
-                                                                        [[${pt.name}]]
-                                                                    </option>
-                                                                </th:block> */}
+                                                {roomPrivacies.map(privacy => (
+                                                    <option
+                                                        value={privacy.id}
+                                                        selected={privacy.id === room!.privacyId}
+                                                    >
+                                                        {privacy.name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <BoxFooter dataEdit='groupAndTypeAndPrivacy' idInput='' />
+                            <BoxFooter
+                                sectionKey='groupAndTypeAndPrivacy'
+                                idInput=''
+                                hideEditBox={hideEditBox}
+                            />
                         </div>
                     </div>
 
@@ -142,22 +161,59 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                     <div className='manage-ys__header-edit-main-title'>
                                         Phòng ngủ và không gian khác
                                     </div>
-                                    {/* <div
-                                                       replace="manage_space/_manage_your_space_partial :: hideEditBox('roomInfo')"
-                                                    ></div>
-                                                </div>
-                                                <div
-                                                   replace="manage_space/_manage_your_space_partial :: incDecSegment('bedRoom', 'Phòng ngủ', ${room.bedroomCount})"
-                                                ></div>
-                                                <div
-                                                   replace="manage_space/_manage_your_space_partial :: incDecSegment('bed', 'Giường', ${room.bedCount})"
-                                                ></div>
-                                                <div
-                                                   replace="manage_space/_manage_your_space_partial :: incDecSegment('bathRoom', 'Phòng tắm', ${room.bathroomCount})"
-                                                ></div> */}
+                                    <HideEditBox sectionKey='roomInfo' hideEditBox={hideEditBox} />
                                 </div>
-                                <BoxFooter dataEdit='roomInfo' idInput='' />
+
+                                <div className='flex-space manage-ys__section-content'>
+                                    <div className='manage-ys__section-content-title'>
+                                        Phòng ngủ
+                                    </div>
+                                    <div>
+                                        <IncAndDecBtn
+                                            dataEdit='bedRoom'
+                                            dataTrigger=''
+                                            data={room!.accomodates}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className='flex-space manage-ys__section-content'>
+                                    <div className='manage-ys__section-content-title'>Giường</div>
+                                    <div>
+                                        <IncAndDecBtn
+                                            dataEdit='bed'
+                                            dataTrigger=''
+                                            data={room!.accomodates}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className='flex-space manage-ys__section-content'>
+                                    <div className='manage-ys__section-content-title'>
+                                        {' '}
+                                        Phòng tắm
+                                    </div>
+                                    <div>
+                                        <IncAndDecBtn
+                                            dataEdit='bathRoom'
+                                            dataTrigger=''
+                                            data={room!.accomodates}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className='flex-space manage-ys__section-content'>
+                                    <div className='manage-ys__section-content-title'></div>
+                                    <div>
+                                        <IncAndDecBtn
+                                            dataEdit='bathRoom'
+                                            dataTrigger=''
+                                            data={room!.bathroom}
+                                        />
+                                    </div>
+                                </div>
                             </div>
+                            <BoxFooter sectionKey='roomInfo' idInput='' hideEditBox={hideEditBox} />
                         </div>
                     </div>
                 </div>

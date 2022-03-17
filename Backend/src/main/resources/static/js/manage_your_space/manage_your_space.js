@@ -264,7 +264,7 @@ function useCurrentPosition() {
 }
 
 async function updateField(fieldName, dataInput) {
-    const postURL = `${baseURL}manage-your-space/update/${roomId}/${fieldName}`;
+    const postURL = `${baseURL}api/manage-your-space/update/${roomId}/${fieldName}`;
     switch (fieldName) {
         case 'name': {
             const roomName = $(dataInput).val();

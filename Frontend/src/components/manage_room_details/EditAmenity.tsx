@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { ManageYSContainer } from '.';
+import { hideEditBox } from '../../pages/script/manage_your_space';
 import IAmenity from '../../types/type_Amenity';
 import BoxFooter from './BoxFooter';
 import DisplayEditUI from './components/DisplayEditUI';
@@ -22,7 +23,7 @@ const EditAmenity: FC<IEditAmenityProps> = ({ amenities }) => {
                     <div className='manage--ys__section--title'>Tiện nghi</div>
                     <div>
                         {amenities.map(a => (
-                            <div>
+                            <div key={a.id}>
                                 <div
                                     data-amenity-id={a.id}
                                     className='manage-ys__section-content-info'
@@ -41,7 +42,7 @@ const EditAmenity: FC<IEditAmenityProps> = ({ amenities }) => {
                 <div className='manage-ys__location-control-content'>
                     <div className='flex-space'>
                         <div className='manage-ys__header-edit-main-title'>Tiện nghi</div>
-                        <HideEditBox sectionKey='amentities' />
+                        <HideEditBox sectionKey='amentities' hideEditBox={hideEditBox} />
                     </div>
                     <RoomAmenities
                         title='Tiện nghi nổi bật'
@@ -59,7 +60,7 @@ const EditAmenity: FC<IEditAmenityProps> = ({ amenities }) => {
                         dataType='safeAmentities'
                     />
                 </div>
-                <BoxFooter dataEdit='amentities' idInput='' />
+                <BoxFooter sectionKey='amentities' idInput='' hideEditBox={hideEditBox} />
             </div>
         </ManageYSContainer>
     );

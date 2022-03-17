@@ -243,6 +243,12 @@ public class RoomRestController {
                 .isLikedByCurrentUser(room.getHost().getFavRooms().contains(room))
                 .status(room.isStatus())
                 .accomodates(room.getAccomodatesCount())
+                .groupId(room.getRoomGroup().getId())
+                .categoryId(room.getCategory().getId())
+                .privacyId(room.getPrivacyType().getId())
+                .stateName(room.getState().getName())
+                .countryName(room.getCountry().getName())
+                .streetName(room.getStreet())
                 .build();
 
         return roomDetailsDTO;

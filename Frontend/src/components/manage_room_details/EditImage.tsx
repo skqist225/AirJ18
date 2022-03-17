@@ -28,7 +28,7 @@ const EditImage: FC<IEditImageProps> = ({ images }) => {
             </div>
             <div className='normal-flex p-relative overflow-hidden'>
                 {images.map(image => (
-                    <div className='mr-10'>
+                    <div className='mr-10' key={image}>
                         <img
                             src={getImage(image)}
                             alt=''

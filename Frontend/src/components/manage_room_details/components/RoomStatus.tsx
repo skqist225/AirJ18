@@ -18,9 +18,13 @@ const RoomStatus: FC<IRoomStatusProps> = ({ id, imageName, title, subTitle }) =>
                 <input type='radio' id={id} className='radioStatus' />
             </div>
             <div>
-                <div className='normal-flex mr-10'>
-                    <Image src={getImage(imageName)} size='14px' />
-                    <div>{title}</div>
+                <div className='normal-flex'>
+                    <Image
+                        src={getImage('/svg/' + imageName + '.svg')}
+                        size='14px'
+                        className='mr-10'
+                    />
+                    <div className='fs-16 fw-500'>{title}</div>
                 </div>
                 <div className='manage-ys__status-control-subtext'>{subTitle}</div>
             </div>

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
+import { RootState } from '../../store';
 
 export const fetchCountries = createAsyncThunk(
     'country/fetchCountries',
@@ -47,4 +48,5 @@ const countrySlice = createSlice({
     },
 });
 
+export const countryState = (state: RootState) => state.country;
 export default countrySlice.reducer;
