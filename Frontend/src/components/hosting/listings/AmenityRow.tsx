@@ -9,10 +9,10 @@ interface IAmenityRowProps {
 const AmenityRow: FC<IAmenityRowProps> = ({ amenity }) => {
     return (
         <div className='normal-flex'>
-            <div className='flex-2'>
+            <div className='normal-flex'>
                 <Checkbox value={amenity.id} className='amenity' />
             </div>
-            <div className='flex-2 amn-name'>{amenity.name}</div>
+            <div className='normal-flex amn-name'>{amenity.name}</div>
         </div>
     );
 };

@@ -45,4 +45,6 @@ export type IRoomDetails = {
     cityName: string;
     category: string;
     likedByCurrentUser: boolean;
+    status: boolean;
+    accomodates: number;
 } | null;

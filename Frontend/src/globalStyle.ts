@@ -10,6 +10,10 @@ const GlobalStyle = createGlobalStyle`
         color: #222;
     }
 
+    a:hover {
+        color: #222;
+    }
+
     .flex {
         display: flex;
     }

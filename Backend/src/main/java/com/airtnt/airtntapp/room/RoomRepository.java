@@ -93,7 +93,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
                         + " AND r.name LIKE %:query%"
                         + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
                         + " AND ra.id IN (:amentitiesID)"
-                        + " AND r.status IN (:statusesID) ORDER BY r.createdDate DESC")
+                        + " AND r.status IN (:statusesID) GROUP BY r.id ORDER BY r.createdDate DESC")
         public Page<RoomListingsDTO> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
                         int bedCount,
                         @Param("amentitiesID") List<Integer> amentitiesID,
@@ -102,7 +102,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
         @Query("SELECT new com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO(r.id, r.name, r.thumbnail, r.currency.symbol , r.category.name, r.price, r.priceType, r.bedroomCount, r.bathroomCount, r.bedCount, r.status, r.createdDate, r.updatedDate, CONCAT(r.street, ', ', r.city.name, ', ', r.state.name, ', ', r.country.name)) FROM Room r WHERE r.host = :host"
                         + " AND r.name LIKE %:query%"
                         + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
-                        + " AND r.status IN (:statusesID) ORDER BY r.createdDate DESC")
+                        + " AND r.status IN (:statusesID) GROUP BY r.id ORDER BY r.createdDate DESC")
         public Page<RoomListingsDTO> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
                         int bedCount,
                         @Param("statusesID") List<Boolean> statusesID, Pageable pageable);

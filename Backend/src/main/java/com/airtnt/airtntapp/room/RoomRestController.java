@@ -241,6 +241,8 @@ public class RoomRestController {
                 .cityName(room.getCity().getName())
                 .category(room.getCategory().getName())
                 .isLikedByCurrentUser(room.getHost().getFavRooms().contains(room))
+                .status(room.isStatus())
+                .accomodates(room.getAccomodatesCount())
                 .build();
 
         return roomDetailsDTO;

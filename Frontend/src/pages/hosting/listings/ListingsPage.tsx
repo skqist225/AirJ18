@@ -70,7 +70,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                 {totalRecords} nhà/phòng cho thuê
                             </div>
                             <div>
-                                <Link to={'/'} style={{ color: '#222' }}>
+                                <Link to={'/become-a-host/intro'}>
                                     {' '}
                                     <button className='listings__create-new-room'>
                                         <span>

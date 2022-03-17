@@ -1,12 +1,13 @@
 import { FC } from 'react';
-import $ from 'jquery';
+import $, { data } from 'jquery';
 
 interface IIncAndDecBtnProps {
     dataEdit: string;
     dataTrigger: string;
+    data?: number;
 }
 
-export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger }) => {
+export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger, data }) => {
     $('.incAndDecBtn').each(function () {
         $(this)
             .off('click')
@@ -83,7 +84,7 @@ export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger }) 
                     </span>
                 </button>
                 <span id={dataEdit} className='filter-count'>
-                    0
+                    {data}
                 </span>
                 <button
                     className='listings__plus-btn incAndDecBtn'

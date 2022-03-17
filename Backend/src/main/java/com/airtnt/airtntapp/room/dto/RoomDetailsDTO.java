@@ -42,8 +42,10 @@ public class RoomDetailsDTO {
     private String currencyUnit;
     private Integer id;
     private int bathroom;
+    private int accomodates;
     private float longitude;
     private String cityName;
     private String category;
     private boolean isLikedByCurrentUser;
+    private boolean status;
 }

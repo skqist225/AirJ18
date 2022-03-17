@@ -3,6 +3,7 @@ import datediff, { parseDBDate } from '../../../../helpers/datediff';
 import { getImage } from '../../../../helpers';
 import { IRoomListings } from '../../../../types/room/type_RoomListings';
 import { MyNumberForMat } from '../../../utils';
+import { Link } from 'react-router-dom';
 
 interface IRoomDataRowProps {
     room: IRoomListings;
@@ -16,16 +17,18 @@ export const RoomDataRow: FC<IRoomDataRowProps> = ({ room, email }) => {
                 <div className='room-listings__room-data-id'>{room.id}</div>
             </td>
             <td>
-                <div className='normal-flex'>
-                    <div className='listings__room-thumbnail-container'>
-                        <img
-                            src={getImage(`/room_images/${email}/${room.id}/${room.thumbnail}`)}
-                            alt="Room's thumbnail'"
-                            className='listings__room-thumbnail'
-                        />
+                <Link to={`/manage-your-space/${room.id}/details`}>
+                    <div className='normal-flex'>
+                        <div className='listings__room-thumbnail-container'>
+                            <img
+                                src={getImage(`/room_images/${email}/${room.id}/${room.thumbnail}`)}
+                                alt="Room's thumbnail'"
+                                className='listings__room-thumbnail'
+                            />
+                        </div>
+                        <div className='listings__room-name'>{room.name}</div>
                     </div>
-                    <div className='listings__room-name'>{room.name}</div>
-                </div>
+                </Link>
             </td>
             <td>
                 <div style={{ height: '100%' }} className='normal-flex'>

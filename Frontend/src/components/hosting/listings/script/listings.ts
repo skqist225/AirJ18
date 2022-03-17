@@ -1,7 +1,5 @@
 import $ from 'jquery';
 import { Dispatch } from 'react';
-import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import { fetchUserOwnedRoom } from '../../../../features/room/roomSlice';
 import { getPageNumber } from '../../../../helpers';
 
@@ -139,54 +137,6 @@ export default function hostingListings(
 
     // let url = `${baseURL}hosting/listings/${pageNumber}`;
 
-    // $('.applyBtn').each(function () {
-    //     $(this).on('click', function () {
-    //         const dataModify = $(this).data('modify');
-
-    //         switch (dataModify) {
-    //             case 'roomAndBedRoom': {
-    //                 let bathRooms = 0;
-    //                 let bedRooms = 0;
-    //                 let beds = 0;
-    //                 const query = $('#listings__search-input').val().toString().trim();
-
-    //                 $('.listings__minus-btn').each(function () {
-    //                     const dataEdit = $(this).data('edit');
-    //                     const spanValue = $(this).siblings(`#${dataEdit}`).text();
-
-    //                     if (dataEdit === 'listings__bath-room-count') bathRooms = spanValue;
-    //                     else if (dataEdit === 'listings__bed-room-count') bedRooms = spanValue;
-    //                     else beds = spanValue;
-    //                 });
-
-    //                 url += `?BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&query=${query}`;
-    //                 break;
-    //             }
-    //             case 'amenities': {
-    //                 const selectedAmentities = $('input[class="amenity"]:checked');
-    //                 let amentitiesID = [];
-    //                 selectedAmentities.each(function () {
-    //                     amentitiesID.push($(this).val());
-    //                 });
-    //                 url += `?AMENITY_IDS=${amentitiesID.join(' ')}`;
-    //                 break;
-    //             }
-    //             case 'status': {
-    //                 const selectedStatus = $('input[class="statusSelected"]:checked');
-    //                 let statuses = [];
-    //                 selectedStatus.each(function () {
-    //                     statuses.push($(this).val());
-    //                 });
-    //                 url += `?STATUSES=${statuses.join(' ')}`;
-
-    //                 break;
-    //             }
-    //         }
-
-    //         window.location.href = url;
-    //     });
-    // });
-
     // $('.listings__table-header').each(function () {
     //     $(this).click(function () {
     //         const searchInfo = window.location.search;
@@ -201,9 +151,9 @@ export default function hostingListings(
     //             });
     //         }
 
-    //         let sortDir = map.get('sort_dir') === 'asc' ? 'desc' : 'asc';
-    //         url += `?sort_field=${$(this).data('sort-field')}&sort_dir=${sortDir}`;
-    //         window.location.href = url;
+    //         // let sortDir = map.get('sort_dir') === 'asc' ? 'desc' : 'asc';
+    //         // url += `?sort_field=${$(this).data('sort-field')}&sort_dir=${sortDir}`;
+    //         // window.location.href = url;
     //     });
     // });
 
@@ -213,10 +163,6 @@ export default function hostingListings(
     //         const roomId = $(this).data('room-id');
     //         window.location.href = `${baseURL}manage-your-space/${roomId}/details`;
     //     });
-    // });
-
-    // $('.deleteAllFilterOption').click(function () {
-    //     window.location.href = `${baseURL}hosting/listings/1`;
     // });
 }
 

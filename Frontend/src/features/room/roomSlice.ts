@@ -61,18 +61,33 @@ export const fetchRoomById = createAsyncThunk(
 interface IGetUserOwnedRoom {
     pageNumber: number;
     query?: string;
+    bathRooms?: number;
+    bedRooms?: number;
+    beds?: number;
+    amenityIDs?: string;
+    statuses?: string;
 }
 
 export const fetchUserOwnedRoom = createAsyncThunk(
     'room/fetchUserOwnedRoom',
     async (
-        { pageNumber, query = '' }: IGetUserOwnedRoom,
+        {
+            pageNumber,
+            query = '',
+            bathRooms = 0,
+            bedRooms = 0,
+            beds = 0,
+            amenityIDs = '',
+            statuses = '',
+        }: IGetUserOwnedRoom,
         { dispatch, getState, rejectWithValue }
     ) => {
         try {
             const {
                 data: { rooms, successMessage, totalPages, totalRecords },
-            } = await api.get(`/rooms/user/${pageNumber}?query=${query}`);
+            } = await api.get(
+                `/rooms/user/${pageNumber}?query=${query}&BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&AMENITY_IDS=${amenityIDs}&STATUSES=${statuses}`
+            );
 
             return { rooms, successMessage, totalPages, totalRecords };
         } catch (error) {}

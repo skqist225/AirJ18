@@ -1,0 +1,19 @@
+.viewAndEdit__line {
+    border-bottom: 1px solid #d3d6db;
+}
+
+.manage-ys__section-content {
+    height: 80px;
+}
+
+.manage-ys__section-content:last-child {
+    border-bottom: none;
+}
+
+.manage-ys__section-content-title {
+    font-size: 16px;
+    line-height: 24px;
+    color: #222222;
+    display: block;
+    padding: 0px;
+}

@@ -1,0 +1,82 @@
+.manage--ys__left {
+    flex: 1;
+    max-width: 30%;
+    position: relative;
+}
+
+#manage--ys__roomName {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 30px;
+    margin-bottom: 48px;
+}
+
+.manage--ys__scrolling--menu {
+    width: 260px;
+}
+
+.manage--ys__scrolling--menu.active {
+    position: fixed;
+    top: 80px;
+    left: calc(calc(100% - calc(90% * 1440px)) / 2);
+}
+
+.manage--ys__title {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: #f7f7f7;
+}
+
+.menuContainer {
+    padding-top: 18px;
+    height: 300px;
+}
+
+.menuContainer ul {
+    height: 100%;
+    list-style: none;
+    margin-bottom: 0px;
+    padding-left: 10px;
+    border-left: 1px solid #cbc8c8;
+    margin-left: 10px;
+}
+
+.menuContainer ul li {
+    height: calc(100% / 5);
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.menuContainer ul li a {
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 20px;
+    border-left: 2px solid transparent;
+    position: relative;
+    display: block;
+    cursor: pointer;
+    color: #222222;
+    font-weight: 400;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    padding-left: 20px;
+}
+
+.menuContainer ul li.active .li-before {
+    display: block;
+}
+
+.li-before {
+    border-left: 2px solid #222;
+    position: absolute;
+    top: 50%;
+    left: -11px;
+    width: 0px;
+    height: 100%;
+    transform: translateY(-50%);
+    display: none;
+}

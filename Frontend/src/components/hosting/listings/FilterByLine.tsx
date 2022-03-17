@@ -106,12 +106,12 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
                     <>
                         <div className='f1 p-24'>
                             <div className='normal-flex listings__filter-status-row'>
-                                <Checkbox value='ACTIVE' />
-                                <div>Đã đăng</div>
+                                <Checkbox value='ACTIVE' className='statusSelected' />
+                                <div style={{ marginLeft: '10px' }}>Đã đăng</div>
                             </div>
                             <div className='normal-flex listings__filter-status-row'>
-                                <Checkbox value='UNLISTED' />
-                                <div>Đã hủy đăng</div>
+                                <Checkbox value='UNLISTED' className='statusSelected' />
+                                <div style={{ marginLeft: '10px' }}>Đã hủy đăng</div>
                             </div>
                         </div>
                     </>
@@ -128,11 +128,13 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
                         <div className='filter-box overflow-hidden'>
                             <div className='normal-flex listings__filter-others-row'>
                                 <Checkbox />
-                                <div>Chế độ Đặt ngay đang tắt</div>
+                                <div style={{ marginLeft: '10px' }}>Chế độ Đặt ngay đang tắt</div>
                             </div>
                             <div className='normal-flex listings__filter-others-row'>
                                 <Checkbox />
-                                <div>Yêu cầu cập nhật mục cho thuê</div>
+                                <div style={{ marginLeft: '10px' }}>
+                                    Yêu cầu cập nhật mục cho thuê
+                                </div>
                             </div>
                         </div>
                     </>
