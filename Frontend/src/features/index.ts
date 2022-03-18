@@ -6,3 +6,5 @@ export { default as citySlice } from './address/citySlice';
 export { default as stateSlice } from './address/stateSlice';
 export { default as amenitySlice } from './amenity/amenitySlice';
 export { default as bookingSlice } from './booking/bookingSlice';
+export { default as reviewSlice } from './review/reviewSlice';
+export { default as earningSlice } from './progress/earningSlice';

@@ -9,6 +9,8 @@ import {
     citySlice,
     amenitySlice,
     bookingSlice,
+    reviewSlice,
+    earningSlice,
 } from './features';
 
 const rootReducer = combineReducers({
@@ -20,6 +22,8 @@ const rootReducer = combineReducers({
     user: userSlice,
     amenity: amenitySlice,
     booking: bookingSlice,
+    review: reviewSlice,
+    earning: earningSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

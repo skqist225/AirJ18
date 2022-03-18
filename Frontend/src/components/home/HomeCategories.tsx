@@ -3,7 +3,6 @@ import { getImage } from '../../helpers';
 import { Category } from './Category';
 import { Image } from '../../globalStyle';
 import { categoryState, ICategory } from '../../features/category/categorySlice';
-import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomsByCategoryAndConditions } from '../../features/room/roomSlice';
 import $ from 'jquery';

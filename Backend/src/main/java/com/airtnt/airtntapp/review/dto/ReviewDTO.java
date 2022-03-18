@@ -17,6 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class ReviewDTO {
+    private Integer id;
     private String customerAvatar;
     private SubRating rating;
     private String comment;

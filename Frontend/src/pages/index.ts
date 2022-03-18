@@ -22,3 +22,6 @@ export { default as ProgressBookingPage } from './ProgressBookingPage';
 export { default as PublishCelebrationPage } from './become_a_host/PublishCelebrationPage';
 export { default as ManageRoomDetailsPage } from './ManageRoomDetailsPage';
 export { default as ManageRoomPhotosPage } from './ManageRoomPhotosPage';
+export { default as ProgressPage } from './progress/ProgressPage';
+export { default as ProgressReviewsPage } from './progress/ProgressReviewsPage';
+export { default as ProgressEarningsPage } from './progress/ProgressEarningsPage';

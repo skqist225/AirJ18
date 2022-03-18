@@ -11,8 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReviewRepository extends CrudRepository<Review, Integer> {
 
+    @Query("SELECT r FROM Review r WHERE r.booking.id IN (:bookingIds) AND r.finalRating = :numberOfStars")
+    public List<Review> getReviewsByBookingsAndNumberOfStars(Integer[] bookingIds, Float numberOfStars);
+
     @Query("SELECT r FROM Review r WHERE r.booking.id IN (:bookingIds) AND r.finalRating >= :numberOfStars")
-    public List<Review> getReviewsByBookings(Integer[] bookingIds, Float numberOfStars);
+    public List<Review> getAllReviewsByBookings(Integer[] bookingIds, Float numberOfStars);
 
     @Query("SELECT r FROM Review r WHERE r.booking.id IN (:bookingIds)")
     public List<Review> getReviewsByBookings(Integer[] bookingIds);

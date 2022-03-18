@@ -254,3 +254,9 @@
     overflow: hidden;
     margin-left: 12px;
 }
+
+@media (max-width: 991px) {
+    .header__middle {
+        display: none;
+    }
+}

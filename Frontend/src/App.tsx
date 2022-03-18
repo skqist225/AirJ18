@@ -9,6 +9,9 @@ import {
     ManageRoomDetailsPage,
     ManageRoomPhotosPage,
     ProgressBookingPage,
+    ProgressEarningsPage,
+    ProgressPage,
+    ProgressReviewsPage,
     PropertyAmenitiesPage,
     PropertyCategoryPage,
     PropertyDescriptionPage,
@@ -75,8 +78,25 @@ function App() {
                             element={<ManageRoomPhotosPage />}
                         ></Route>
                     </Route>
+                    <Route path='/progress'>
+                        <Route
+                            path='reviews'
+                            element={<ProgressPage content={<ProgressReviewsPage />} />}
+                        />
+                        <Route
+                            path='earnings'
+                            element={<ProgressPage content={<ProgressEarningsPage />} />}
+                        />
+                        {/* <Route path='reviews' element={<ProgressReviewsPage />} />
+                        <Route path='reviews' element={<ProgressReviewsPage />} />
+                        <Route path='reviews' element={<ProgressReviewsPage />} />
+                        <Route path='reviews' element={<ProgressReviewsPage />} />
+                        <Route path='reviews' element={<ProgressReviewsPage />} /> */}
+                    </Route>
                 </Routes>
             </Router>
+
+            <div></div>
         </div>
     );
 }

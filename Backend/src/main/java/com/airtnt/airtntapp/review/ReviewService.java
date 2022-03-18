@@ -18,7 +18,8 @@ public class ReviewService {
     }
 
     public List<Review> getReviewsByBookings(Integer[] bookingIds, Float numberOfStars) {
-        return reviewRepository.getReviewsByBookings(bookingIds, numberOfStars);
+        return numberOfStars == 0 ? reviewRepository.getAllReviewsByBookings(bookingIds, numberOfStars)
+                : reviewRepository.getReviewsByBookingsAndNumberOfStars(bookingIds, numberOfStars);
     }
 
     public Review createReview(Review review) {

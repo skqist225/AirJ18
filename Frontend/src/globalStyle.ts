@@ -152,6 +152,19 @@ const GlobalStyle = createGlobalStyle`
         grid-template-columns: repeat(3, 1fr);        
         gap: 10px;
     }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);        
+        gap: 10px;
+    }
+
+    #main {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        right: 0;
+    }
 `;
 
 interface IMainButton {

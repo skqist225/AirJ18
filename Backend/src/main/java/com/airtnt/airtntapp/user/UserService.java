@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
 
+import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryRepository;
 import com.airtnt.airtntapp.user.admin.RoleRepository;
 import com.airtnt.airtntapp.user.admin.UserNotFoundException;
@@ -36,6 +37,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CookieProcess cookieProcess;
 
     public void encodePassword(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -73,6 +77,11 @@ public class UserService {
     }
 
     public User getByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User getByCookie(String cookie) {
+        String email = cookieProcess.readCookie(cookie);
         return userRepository.findByEmail(email);
     }
 

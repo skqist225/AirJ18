@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HomeCategories } from '../components/home/HomeCategories';
 import { fetchCategories } from '../features/category/categorySlice';

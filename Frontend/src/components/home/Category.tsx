@@ -1,10 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import $ from 'jquery';
 import { useDispatch } from 'react-redux';
-import {
-    fetchRoomsByCategoryAndConditions,
-    setMockingRoomLoading,
-} from '../../features/room/roomSlice';
+import { fetchRoomsByCategoryAndConditions } from '../../features/room/roomSlice';
 import { ICategory } from '../../features/category/categorySlice';
 import { getImage } from '../../helpers';
 
