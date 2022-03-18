@@ -7,6 +7,7 @@ import {
     LoginPage,
     ManageBookingsPage,
     ManageRoomDetailsPage,
+    ManageRoomPhotosPage,
     ProgressBookingPage,
     PropertyAmenitiesPage,
     PropertyCategoryPage,
@@ -69,6 +70,10 @@ function App() {
                     </Route>
                     <Route path='/manage-your-space'>
                         <Route path=':roomid/details' element={<ManageRoomDetailsPage />}></Route>
+                        <Route
+                            path=':roomid/details/photos'
+                            element={<ManageRoomPhotosPage />}
+                        ></Route>
                     </Route>
                 </Routes>
             </Router>

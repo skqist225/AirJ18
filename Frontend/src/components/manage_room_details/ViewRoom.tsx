@@ -4,9 +4,14 @@ import { getImage } from '../../helpers';
 
 interface IViewRoomProps {
     status: boolean;
+    roomid: number;
 }
 
-const ViewRoom: FC<IViewRoomProps> = ({ status }) => {
+const ViewRoom: FC<IViewRoomProps> = ({ status, roomid }) => {
+    function previewRoom() {
+        window.location.href = window.location.origin + '/room/' + roomid;
+    }
+
     return (
         <div className='flex-space' style={{ marginBottom: '48px' }}>
             <div className='normal-flex'>
@@ -32,8 +37,7 @@ const ViewRoom: FC<IViewRoomProps> = ({ status }) => {
                 </div>
             </div>
             <div>
-                {/*onclick="previewRoom();" */}
-                <button className='manage-ys__preview-room-btn'>
+                <button className='manage-ys__preview-room-btn' onClick={previewRoom}>
                     Xem trước nhà phòng cho thuê
                 </button>
             </div>

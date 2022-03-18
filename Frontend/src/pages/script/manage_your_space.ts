@@ -21,17 +21,19 @@ export function initComp(room: IRoomDetails, amenities: IAmenity[]) {
     });
 
     $('.manage-ys__changeView').each(function () {
-        $(this).on('click', function () {
-            animate($(this) as JQuery<HTMLElement>);
+        $(this)
+            .off('click')
+            .on('click', function () {
+                const dataScroll = $(this).data('scroll');
+                const offsetTop = $(dataScroll).offset()!.top - 80;
+                $(document).off('scroll');
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth',
+                });
 
-            const dataScroll = $(this).data('scroll');
-            const offsetTop = $(dataScroll).offset()!.top - 80;
-
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth',
+                animate($(this) as JQuery<HTMLElement>);
             });
-        });
     });
 
     const roomImagesTopValue = getOffsetTop('#roomImages');
@@ -46,29 +48,24 @@ export function initComp(room: IRoomDetails, amenities: IAmenity[]) {
     let anchorRoomLocation = $('a[data-scroll="#roomLocation"]');
     let anchorRoomInfo = $('a[data-scroll="#roomInfo"]');
 
-    $(document).on('ready', function () {
-        $(document)
-            .off('scroll')
-            .on('scroll', function (e) {
-                const topValue: number = $(document).scrollTop()!;
+    function addScrollEventForDocument() {
+        const topValue: number = $(document).scrollTop()!;
 
-                if (topValue <= roomImagesTopValue) {
-                    if ($('.manage--ys__scrolling--menu').first().hasClass('active'))
-                        $('.manage--ys__scrolling--menu').first().removeClass('active');
-                } else if (topValue > roomImagesTopValue && topValue < basicRoomInfosTopValue) {
-                    animate(anchorRoomImages);
-                } else if (
-                    topValue >= basicRoomInfosTopValue &&
-                    topValue < roomAmentitiesTopValue
-                ) {
-                    animate(anchorBasicRoomInfos);
-                } else if (topValue >= roomAmentitiesTopValue && topValue < roomInfoTopValue) {
-                    animate(anchorRoomAmentities);
-                } else if (topValue >= roomInfoTopValue && topValue < roomInfoTopValue) {
-                    animate(anchorRoomLocation);
-                } else animate(anchorRoomInfo);
-            });
-    });
+        if (topValue <= roomImagesTopValue) {
+            if ($('.manage--ys__scrolling--menu').first().hasClass('active'))
+                $('.manage--ys__scrolling--menu').first().removeClass('active');
+        } else if (topValue > roomImagesTopValue && topValue < basicRoomInfosTopValue) {
+            animate(anchorRoomImages);
+        } else if (topValue >= basicRoomInfosTopValue && topValue < roomAmentitiesTopValue) {
+            animate(anchorBasicRoomInfos);
+        } else if (topValue >= roomAmentitiesTopValue && topValue < roomInfoTopValue) {
+            animate(anchorRoomAmentities);
+        } else if (topValue >= roomInfoTopValue && topValue < roomInfoTopValue) {
+            animate(anchorRoomLocation);
+        } else animate(anchorRoomInfo);
+    }
+
+    $(document).on('scroll', addScrollEventForDocument);
 
     $('#roomStatus1').on('change', function () {
         $('#roomStatus0').prop('checked', false);
@@ -146,11 +143,11 @@ export function initComp(room: IRoomDetails, amenities: IAmenity[]) {
     });
 }
 
-function getOffsetTop(id: string) {
+export function getOffsetTop(id: string) {
     return $(id).offset()!.top - 80;
 }
 
-function animate(self: JQuery<HTMLElement>) {
+export function animate(self: JQuery<HTMLElement>) {
     const currentActive = self.parent().siblings().filter('.active');
     const currentDataIndex = parseInt(currentActive.data('index'));
     currentActive.removeClass('active');
@@ -195,7 +192,6 @@ function animate(self: JQuery<HTMLElement>) {
         self.parent().addClass('active');
 
         const ball = new Keyframes(document.getElementById(self.siblings('div').prop('id')));
-        console.log(self.siblings('div').prop('id'));
         ball.play({
             name: 'translateY',
             duration: '1s',
@@ -205,24 +201,44 @@ function animate(self: JQuery<HTMLElement>) {
     }
 
     $('.manage--ys__scrolling--menu').first().addClass('active');
-}
+    $(document)
+        .off('scroll')
+        .on('scroll', function () {
+            const roomImagesTopValue = getOffsetTop('#roomImages');
+            const basicRoomInfosTopValue = getOffsetTop('#basicRoomInfos');
+            const roomAmentitiesTopValue = getOffsetTop('#roomAmentities');
+            const roomLocationTopValue = getOffsetTop('#roomLocation');
+            const roomInfoTopValue = getOffsetTop('#roomInfo');
 
-// function showError(error) {
-//     switch (error.code) {
-//         case error.PERMISSION_DENIED:
-//             x.innerHTML = 'User denied the request for Geolocation.';
-//             break;
-//         case error.POSITION_UNAVAILABLE:
-//             x.innerHTML = 'Location information is unavailable.';
-//             break;
-//         case error.TIMEOUT:
-//             x.innerHTML = 'The request to get user location timed out.';
-//             break;
-//         case error.UNKNOWN_ERROR:
-//             x.innerHTML = 'An unknown error occurred.';
-//             break;
-//     }
-// }
+            let anchorRoomImages = $('a[data-scroll="#roomImages"]');
+            let anchorBasicRoomInfos = $('a[data-scroll="#basicRoomInfos"]');
+            let anchorRoomAmentities = $('a[data-scroll="#roomAmentities"]');
+            let anchorRoomLocation = $('a[data-scroll="#roomLocation"]');
+            let anchorRoomInfo = $('a[data-scroll="#roomInfo"]');
+
+            function addScrollEventForDocument() {
+                const topValue: number = $(document).scrollTop()!;
+
+                if (topValue <= roomImagesTopValue) {
+                    if ($('.manage--ys__scrolling--menu').first().hasClass('active'))
+                        $('.manage--ys__scrolling--menu').first().removeClass('active');
+                } else if (topValue > roomImagesTopValue && topValue < basicRoomInfosTopValue) {
+                    animate(anchorRoomImages);
+                } else if (
+                    topValue >= basicRoomInfosTopValue &&
+                    topValue < roomAmentitiesTopValue
+                ) {
+                    animate(anchorBasicRoomInfos);
+                } else if (topValue >= roomAmentitiesTopValue && topValue < roomInfoTopValue) {
+                    animate(anchorRoomAmentities);
+                } else if (topValue >= roomInfoTopValue && topValue < roomInfoTopValue) {
+                    animate(anchorRoomLocation);
+                } else animate(anchorRoomInfo);
+            }
+
+            addScrollEventForDocument();
+        });
+}
 
 export function onKeyDown(event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const self = $(event.currentTarget);
@@ -311,10 +327,6 @@ export function hideEditBox(
     }
 }
 
-// function previewRoom() {
-//     window.location.href = `${baseURL}room/${roomId}`;
-// }
-
 // function redirectToPhotoPage() {
-//     window.location.href = `${baseURL}manage-your-space/${roomId}/details/photos`;
+
 // }

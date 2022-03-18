@@ -9,7 +9,6 @@ import BoxFooter from './BoxFooter';
 import { HideEditBox } from './components';
 import DisplayEditUI from './components/DisplayEditUI';
 
-import $ from 'jquery';
 import { hideEditBox } from '../../pages/script/manage_your_space';
 import { IncAndDecBtn } from '../utils/IncAndDecBtn';
 
@@ -34,19 +33,17 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                 <div>
                     <div>
                         <div
-                            // style="height: 85px; border-bottom: 1px solid #d3d6db"
+                            style={{ height: '85px', borderBottom: '1px solid #d3d6db' }}
                             className='flex-space'
                             id='manage-ys__groupAndTypeAndPrivacy-control-view'
                         >
                             <div>
                                 <div className='manage-ys__section-content-title'>Loại chỗ ở</div>
                                 <div className='manage-ys__section-content-info'>
-                                    {/* [[${room.roomGroup != null ? room.roomGroup.name
-                                                    : 'ko'}]] cho thuê */}
+                                    {room?.groupName} cho thuê
                                 </div>
                                 <div className='manage-ys__section-content-info'>
-                                    {/* Loại hình cho thuê: [[${room.privacyType != null
-                                                    ? room.privacyType.name : 'Toàn bộ nhà'}]] */}
+                                    Loại hình cho thuê: {room?.privacy}
                                 </div>
                             </div>
                             <div>
@@ -198,17 +195,6 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                             dataEdit='bathRoom'
                                             dataTrigger=''
                                             data={room!.accomodates}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className='flex-space manage-ys__section-content'>
-                                    <div className='manage-ys__section-content-title'></div>
-                                    <div>
-                                        <IncAndDecBtn
-                                            dataEdit='bathRoom'
-                                            dataTrigger=''
-                                            data={room!.bathroom}
                                         />
                                     </div>
                                 </div>

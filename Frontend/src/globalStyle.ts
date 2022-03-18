@@ -146,6 +146,12 @@ const GlobalStyle = createGlobalStyle`
         line-height: 24px;
         font-style: bold;
     }
+
+    .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);        
+        gap: 10px;
+    }
 `;
 
 interface IMainButton {

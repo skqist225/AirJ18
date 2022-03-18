@@ -48,9 +48,10 @@ export type IRoomDetails = {
     status: boolean;
     accomodates: number;
     groupId: number;
+    groupName: string;
     categoryId: number;
     privacyId: number;
     stateName: string;
     countryName: string;
     streetName: string;
-} | null;
+};

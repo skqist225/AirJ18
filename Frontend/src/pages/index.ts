@@ -21,3 +21,4 @@ export { default as RoomPreviewPage } from './become_a_host/RoomPreviewPage';
 export { default as ProgressBookingPage } from './ProgressBookingPage';
 export { default as PublishCelebrationPage } from './become_a_host/PublishCelebrationPage';
 export { default as ManageRoomDetailsPage } from './ManageRoomDetailsPage';
+export { default as ManageRoomPhotosPage } from './ManageRoomPhotosPage';

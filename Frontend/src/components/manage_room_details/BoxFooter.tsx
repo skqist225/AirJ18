@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from '../../axios';
 import { resetUpdateStatus, roomState, updateRoom } from '../../features/room/roomSlice';
@@ -63,9 +63,9 @@ const BoxFooter: FC<IBoxFooterProps> = ({
                 postObj: data,
             })
         );
+
         if (updateSuccess) {
             callToast('success', 'Cập nhật thông tin phòng thành công!');
-            dispatch(resetUpdateStatus());
         }
     }
 
@@ -74,17 +74,18 @@ const BoxFooter: FC<IBoxFooterProps> = ({
             case 'name': {
                 const roomName = $(idInput).val();
                 sendRequest({ name: roomName });
+                closeEditBox();
                 break;
             }
             case 'roomInfo': {
-                const bedroom2 = $('#manage-ys__bedRoom').text().trim();
-                const bed2 = $('#manage-ys__bed').text().trim();
-                const bathroom2 = $('#manage-ys__bathRoom').text().trim();
+                const bedroom = $('#manage-ys__bedRoom').text().trim();
+                const bed = $('#manage-ys__bed').text().trim();
+                const bathroom = $('#manage-ys__bathRoom').text().trim();
 
                 sendRequest({
-                    bedroom: bedroom2,
-                    bed: bed2,
-                    bathroom: bathroom2,
+                    bedroom,
+                    bed,
+                    bathroom,
                 });
                 break;
             }
@@ -102,16 +103,16 @@ const BoxFooter: FC<IBoxFooterProps> = ({
                 break;
             }
             case 'location': {
-                const country2 = $('#manage-ys__location-country').val();
-                const state2 = $('#manage-ys__location-state').val();
-                const city2 = $('#manage-ys__location-city').val();
-                const street2 = $('#manage-ys__location-street').val();
+                const country = $('#manage-ys__location-country').val();
+                const state = $('#manage-ys__location-state').val();
+                const city = $('#manage-ys__location-city').val();
+                const street = $('#manage-ys__location-street').val();
 
                 sendRequest({
-                    country: country2,
-                    state: state2,
-                    city: city2,
-                    street: street2,
+                    country,
+                    state,
+                    city,
+                    street,
                 });
 
                 break;

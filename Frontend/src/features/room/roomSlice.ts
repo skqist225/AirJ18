@@ -167,7 +167,10 @@ export const updateRoom = createAsyncThunk(
                 }
             );
 
-            if (data === 'OK') dispatch(fetchRoomById({ roomid: roomid.toString() }));
+            if (data === 'OK') {
+                dispatch(fetchRoomById({ roomid: roomid.toString() }));
+                dispatch(resetUpdateStatus());
+            }
 
             return { data };
         } catch (error) {}
@@ -182,7 +185,7 @@ type RoomState = {
         totalPages: number;
         totalRecords: number;
     };
-    room: IRoomDetails;
+    room: IRoomDetails | null;
     loading: boolean;
     roomPrivacies: IRoomPrivacy[];
     roomGroups: IRoomGroup[];

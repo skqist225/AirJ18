@@ -25,7 +25,7 @@ import org.springframework.mock.web.MockMultipartFile;
 @RequestMapping("/api/become-a-host/")
 public class HostRestController {
 
-    private final String STATIC_PATH = "/Backend/src/main/resources/static/room_images/";
+    private final String STATIC_PATH = "Backend/src/main/resources/static/room_images/";
 
     @Autowired
     private RoomService roomService;
@@ -60,7 +60,7 @@ public class HostRestController {
     public String updatedUploadRoomPhotos(
             @ModelAttribute PhotoDTO payload) throws IOException {
         String uploadDir = STATIC_PATH + payload.getHost() + "/" + payload.getRoomId();
-        FileUploadUtil.cleanDir(uploadDir);
+        // FileUploadUtil.cleanDir(uploadDir);
 
         Set<Image> newImages = new HashSet<>();
         for (MultipartFile multipartFile : payload.getPhotos()) {
@@ -90,11 +90,10 @@ public class HostRestController {
     public String getUploadPhoto(@ModelAttribute GetPhoto payload) throws IOException {
         String userName = payload.getUsername();
         String[] roomImages = payload.getRoomImages();
-
         String uploadDir = "";
 
         if (payload.getFolderno() != null) {
-            uploadDir = STATIC_PATH + userName + "/" + payload.getFolderno();
+            uploadDir = STATIC_PATH + userName + "/" + payload.getFolderno() + "/";
         } else
             uploadDir = STATIC_PATH + userName;
 

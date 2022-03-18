@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import $, { data } from 'jquery';
+import $ from 'jquery';
 
 interface IIncAndDecBtnProps {
     dataEdit: string;
@@ -15,8 +15,8 @@ export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger, da
                 const spanInfoTag = $(this).siblings(`#${$(this).data('edit')}`);
                 let spanValue = parseInt(spanInfoTag.text()! as string);
                 const dataFunction = $(this).data('function');
-                const deleteButton = $('.deleteBtn.' + $(this).data('trigger'));
-                const applyButton = $('.applyBtn.' + $(this).data('trigger'));
+                let deleteButton: JQuery<HTMLButtonElement>;
+                if (dataTrigger) deleteButton = $('.deleteBtn.' + $(this).data('trigger'));
                 const self = $(this);
 
                 if (dataFunction === 'dec') {
@@ -38,7 +38,7 @@ export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger, da
                         });
 
                     if (countZero === $('.listings__minus-btn').length - 1)
-                        deleteButton.attr('disabled', 'true');
+                        if (dataTrigger) deleteButton!.attr('disabled', 'true');
                 }
 
                 if (dataFunction === 'inc') {
@@ -48,7 +48,7 @@ export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger, da
                             .removeAttr('disabled');
                     spanInfoTag.text(++spanValue);
 
-                    if (spanValue > 0) deleteButton.removeAttr('disabled');
+                    if (spanValue > 0) if (dataTrigger) deleteButton!.removeAttr('disabled');
                 }
             });
     });

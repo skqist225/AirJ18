@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 import { Image } from '../../globalStyle';
-import { getImage } from '../../helpers';
+import { callToast, getImage } from '../../helpers';
 import axios from '../../axios';
 import $ from 'jquery';
 import './css/room_images_main_content.css';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { toast, ToastContainer } from 'react-toastify';
+import { addEmptyImage } from '../../pages/script/manage_photos';
 
 interface IPropertyRoomImagesMainContentProps {}
 
@@ -245,49 +246,49 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         }
     }
 
-    function addEmptyImage(
-        files: File[] | FileList,
-        uploadPhotos: JQuery<HTMLInputElement>,
-        subImagesContainer: JQuery<HTMLElement>
-    ) {
-        if (files.length - 1 < 4) {
-            for (let i = 0; i <= 4 - files.length; i++) {
-                const div = $(
-                    `<div class="singleImageContainer containerOfImageIcon">
-                    <img class="imageIcon" src="${getImage('/amentity_images/single_image.svg')}"/>
-                </div>`
-                );
-                subImagesContainer.append(div);
-            }
-        } else {
-            const div = $(
-                `<div class="singleImageContainer containerOfImageIcon">
-                <img class="imageIcon" src="${getImage('/amentity_images/single_image.svg')}"/>
-            </div>`
-            );
+    // function addEmptyImage(
+    //     files: File[] | FileList,
+    //     uploadPhotos: JQuery<HTMLInputElement>,
+    //     subImagesContainer: JQuery<HTMLElement>
+    // ) {
+    //     if (files.length - 1 < 4) {
+    //         for (let i = 0; i <= 4 - files.length; i++) {
+    //             const div = $(
+    //                 `<div class="singleImageContainer containerOfImageIcon">
+    //                 <img class="imageIcon" src="${getImage('/amentity_images/single_image.svg')}"/>
+    //             </div>`
+    //             );
+    //             subImagesContainer.append(div);
+    //         }
+    //     } else {
+    //         const div = $(
+    //             `<div class="singleImageContainer containerOfImageIcon">
+    //             <img class="imageIcon" src="${getImage('/amentity_images/single_image.svg')}"/>
+    //         </div>`
+    //         );
 
-            subImagesContainer.append(div);
-        }
+    //         subImagesContainer.append(div);
+    //     }
 
-        const singleImageContainer = $('.singleImageContainer');
-        if (singleImageContainer.length > 0) {
-            singleImageContainer.each(function (e) {
-                if (
-                    !$(this).children(`img[src="${getImage('/amentity_images/single_image.svg')}"]`)
-                ) {
-                    $(this).removeClass('singleImageContainer');
-                    $(this).off('click');
-                } else {
-                    $(this).on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
+    //     const singleImageContainer = $('.singleImageContainer');
+    //     if (singleImageContainer.length > 0) {
+    //         singleImageContainer.each(function (e) {
+    //             if (
+    //                 !$(this).children(`img[src="${getImage('/amentity_images/single_image.svg')}"]`)
+    //             ) {
+    //                 $(this).removeClass('singleImageContainer');
+    //                 $(this).off('click');
+    //             } else {
+    //                 $(this).on('click', function (e) {
+    //                     e.preventDefault();
+    //                     e.stopPropagation();
 
-                        uploadPhotos.trigger('click');
-                    });
-                }
-            });
-        }
-    }
+    //                     uploadPhotos.trigger('click');
+    //                 });
+    //             }
+    //         });
+    //     }
+    // }
 
     function displayAction(self: JQuery<HTMLElement>) {
         const sibling = self.siblings('.photo-action__div-hidden');
@@ -416,15 +417,7 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
 
     async function uploadImagesToFolder() {
         if (photos.length < 5) {
-            toast.warn('🦄 Thêm ít nhất 5 ảnh', {
-                position: 'top-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            callToast('warning', 'Vui lòng chọn ít nhất 5 hình ảnh.');
             return;
         }
 

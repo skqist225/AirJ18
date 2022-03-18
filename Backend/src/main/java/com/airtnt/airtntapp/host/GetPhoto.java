@@ -1,6 +1,5 @@
 package com.airtnt.airtntapp.host;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -7,18 +7,20 @@ import './css/edit_image.css';
 
 interface IEditImageProps {
     images: string[];
+    roomid: number;
 }
 
-const EditImage: FC<IEditImageProps> = ({ images }) => {
+const EditImage: FC<IEditImageProps> = ({ images, roomid }) => {
+    function redirectToPhotoPage() {
+        window.location.href = `${window.location.origin}/manage-your-space/${roomid}/details/photos`;
+    }
+
     return (
         <ManageYSContainer className='manage--ys__section' height='239px' id='roomImages'>
             <div className='flex-space' style={{ marginBottom: '20px' }}>
                 <div className='manage--ys__section--title'>Ảnh</div>
                 <div>
-                    <button
-                        className='manage--ys__transparentBtn'
-                        // onclick="redirectToPhotoPage();"
-                    >
+                    <button className='manage--ys__transparentBtn' onClick={redirectToPhotoPage}>
                         <span>Chỉnh sửa</span>
                         <span>
                             <Image src={getImage('/svg/next.svg')} size='12px' />

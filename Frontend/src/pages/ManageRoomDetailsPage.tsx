@@ -46,9 +46,9 @@ const ManageRoomDetailsPage: FC<IManageRoomDetailsPageProps> = () => {
                     <div id='manage-ys__container'>
                         <SideBar roomName={room.name} />
                         <div className='manage-ys__right'>
-                            <ViewRoom status={room.status} />
+                            <ViewRoom status={room.status} roomid={room.id} />
                             <div className='manage-ys__right-content'>
-                                <EditImage images={room!.images} />
+                                <EditImage images={room!.images} roomid={room.id} />
                                 <EditRoomInfo room={room} />
                                 <EditAmenity amenities={amenities} />
                                 <EditLocation room={room} />

@@ -249,6 +249,7 @@ public class RoomRestController {
                 .stateName(room.getState().getName())
                 .countryName(room.getCountry().getName())
                 .streetName(room.getStreet())
+                .groupName(room.getRoomGroup().getName())
                 .build();
 
         return roomDetailsDTO;

@@ -271,6 +271,10 @@ function readURL(files, uploadPhotos) {
                     $(this).attr('data-index', count++);
 
                     doneArray.push(fakePhotos2.get(imageName));
+                } else {
+                    if (!photos.some(photo => photo.name === imageName)) {
+                        photos.push(fakePhotos2.get(imageName));
+                    }
                 }
                 $(this).removeAttr('data-image-name');
             });

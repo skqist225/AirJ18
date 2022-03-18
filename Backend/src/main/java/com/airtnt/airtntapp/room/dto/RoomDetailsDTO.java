@@ -49,6 +49,7 @@ public class RoomDetailsDTO {
     private boolean isLikedByCurrentUser;
     private boolean status;
     private Integer groupId;
+    private String groupName;
     private Integer categoryId;
     private Integer privacyId;
     private String stateName;
