@@ -13,6 +13,7 @@ import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
+import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
@@ -65,6 +66,9 @@ public class UserORestController {
 
         @Autowired
         private CookieProcess cookiePorcess;
+
+        @Autowired
+        private Authenticate authenticate;
 
         @Autowired
         private CountryService countryService;
@@ -153,9 +157,8 @@ public class UserORestController {
 
         @GetMapping("/wishlists/ids")
         public Integer[] fetchWishlistsIds(@CookieValue("user") String cookie) {
-                String userEmail = cookiePorcess.readCookie(cookie);
+                User user = authenticate.getLoggedInUser(cookie);
 
-                User user = userService.getByEmail(userEmail);
                 Integer[] wishlists = new Integer[user.getFavRooms().size()];
                 int i = 0;
                 for (Room r : user.getFavRooms())
@@ -166,9 +169,8 @@ public class UserORestController {
 
         @GetMapping("/wishlists")
         public WishlistsDTO[] fetchWishlists(@CookieValue("user") String cookie) {
-                String userEmail = cookiePorcess.readCookie(cookie);
+                User user = authenticate.getLoggedInUser(cookie);
 
-                User user = userService.getByEmail(userEmail);
                 WishlistsDTO[] wishlists = new WishlistsDTO[user.getFavRooms().size()];
                 int i = 0;
 
@@ -192,8 +194,7 @@ public class UserORestController {
         public ResponseEntity<UserResponseEntity> updatePersonalInfo(@CookieValue("user") String cookie,
                         @RequestBody PostUpdateUserDTO postUpdateUserDTO, MultipartFile userAvatar)
                         throws IOException {
-                String userEmail = cookiePorcess.readCookie(cookie);
-                User currentUser = userService.getByEmail(userEmail);
+                User currentUser = authenticate.getLoggedInUser(cookie);
                 User savedUser = null;
                 String updatedField = postUpdateUserDTO.getUpdatedField();
                 Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
@@ -296,8 +297,7 @@ public class UserORestController {
         public ResponseEntity<UserBookedRoomsResponseEntity> getUserBookedRooms(
                         @CookieValue("user") String cookie,
                         @RequestParam(value = "query", required = false, defaultValue = "") String query) {
-                String userEmail = cookiePorcess.readCookie(cookie);
-                User user = userService.getByEmail(userEmail);
+                User user = authenticate.getLoggedInUser(cookie);
 
                 System.out.println(query);
 

@@ -15,14 +15,16 @@ import com.airtnt.airtntapp.room.dto.HostDTO;
 import com.airtnt.airtntapp.room.dto.PostAddRoomDTO;
 import com.airtnt.airtntapp.room.dto.RoomDetailsDTO;
 import com.airtnt.airtntapp.room.dto.RoomHomePageDTO;
-import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
+import com.airtnt.airtntapp.room.dto.RoomPricePerCurrencyDTO;
 import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
-import com.airtnt.airtntapp.room.response.RoomByUserResponseEntity;
+import com.airtnt.airtntapp.room.response.RoomsOwnedByUserResponseEntity;
 import com.airtnt.airtntapp.rule.RuleService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Room;
+import com.airtnt.airtntapp.response.ErrorJSONResponse;
+import com.airtnt.airtntapp.response.StandardJSONResponse;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +45,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.airtnt.entity.Amentity;
 import com.airtnt.entity.Booking;
-import com.airtnt.entity.Category;
 import com.airtnt.entity.City;
 import com.airtnt.entity.Country;
-import com.airtnt.entity.Currency;
 import com.airtnt.entity.Image;
 import com.airtnt.entity.PriceType;
 import com.airtnt.entity.Review;
@@ -61,8 +61,6 @@ import java.text.ParseException;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.airtnt.entity.RoomGroup;
-import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.Rule;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
@@ -99,7 +97,8 @@ public class RoomRestController {
     private Authenticate authenticate;
 
     @RequestMapping("/api/rooms")
-    public List<RoomHomePageDTO> fetchRoomsByCategoryId(@RequestParam("categoryId") Integer categoryId,
+    public ResponseEntity<StandardJSONResponse<List<RoomHomePageDTO>>> fetchRoomsByCategoryId(
+            @RequestParam("categoryId") Integer categoryId,
             @RequestParam(value = "privacies", required = false, defaultValue = "") String privacies,
             @RequestParam(value = "minPrice", required = false, defaultValue = "0") String minPrice,
             @RequestParam(value = "maxPrice", required = false, defaultValue = "1000000000") String maxPrice,
@@ -127,31 +126,20 @@ public class RoomRestController {
         List<RoomHomePageDTO> roomHomePageDTOs = new ArrayList<>();
         for (Room room : rooms) {
             List<Integer> likedByUsers = roomService.getLikedUsers(room.getId());
-            Set<Image> roomImages = room.getImages();
             List<String> images = new ArrayList<>();
-            for (Image image : roomImages) {
-                images.add(image.getImagePath(room.getHost().getEmail(), room.getId()));
-            }
-
-            RoomHomePageDTO roomHomePageDTO = RoomHomePageDTO.builder()
-                    .name(room.getName())
-                    .thumbnail(room.renderThumbnailImage())
-                    .images(images)
-                    .price(room.getPrice())
-                    .currencySymbol(room.getCurrency().getSymbol())
-                    .stayType(room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
-                    .likedByUsers(likedByUsers)
-                    .id(room.getId())
-                    .build();
-
-            roomHomePageDTOs.add(roomHomePageDTO);
+            room.getImages().forEach(image -> images.add(image.getImagePath(room.getHost().getEmail(), room.getId())));
+            roomHomePageDTOs.add(RoomHomePageDTO.buildRoomHomePageDTO(room, images, likedByUsers));
         }
 
-        return roomHomePageDTOs;
+        StandardJSONResponse<List<RoomHomePageDTO>> standardJSONResponse = new StandardJSONResponse<>(true,
+                roomHomePageDTOs,
+                null);
+        return new ResponseEntity<StandardJSONResponse<List<RoomHomePageDTO>>>(standardJSONResponse, null,
+                HttpStatus.OK);
     }
 
     @GetMapping("/api/room/{roomId}")
-    public RoomDetailsDTO fetchRoomById(@PathVariable("roomId") Integer id)
+    public ResponseEntity<StandardJSONResponse<RoomDetailsDTO>> fetchRoomById(@PathVariable("roomId") Integer id)
             throws RoomNotFoundException, ParseException {
         Room room = roomService.getById(id);
 
@@ -162,15 +150,9 @@ public class RoomRestController {
 
         List<Review> reviews = reviewService.getReviewsByBookings(bookingIds);
 
-        List<Integer> bedCount = new ArrayList<>();
-        for (int i = 0; i < room.getBedCount(); i++) {
-            bedCount.add(1);
-        }
-
         float avgRatings = 0;
-        for (Review r : reviews) {
+        for (Review r : reviews)
             avgRatings += r.getFinalRating();
-        }
         if (reviews.size() > 0)
             avgRatings /= reviews.size();
 
@@ -181,78 +163,21 @@ public class RoomRestController {
         for (Image image : room.getImages()) {
             if (image.getImage().equals(room.getThumbnail()))
                 continue;
-
             images.add(image.getImagePath(room.getHost().getEmail(), room.getId()));
         }
+        room.getAmentities().forEach(
+                amenity -> amenityRoomDetailsDTOs.add(AmenityRoomDetailsDTO.buildAmenityRoomDetailsDTO(amenity)));
+        reviews.forEach(review -> reviewDTOs.add(ReviewDTO.buildReviewDTO(review)));
 
-        for (Amentity a : room.getAmentities()) {
-            AmenityRoomDetailsDTO amenityRoomDetailsDTO = AmenityRoomDetailsDTO.builder()
-                    .id(a.getId())
-                    .icon(a.getIconImagePath())
-                    .name(a.getName())
-                    .build();
-
-            amenityRoomDetailsDTOs.add(amenityRoomDetailsDTO);
-        }
-
-        for (Review r : reviews) {
-            ReviewDTO reviewDTO = ReviewDTO.builder()
-                    .comment(r.getComment())
-                    .customerName(r.getBooking().getCustomer().getFullName())
-                    .customerAvatar(r.getBooking().getCustomer().getAvatarPath())
-                    .rating(r.getSubRating())
-                    .createdAt(r.getCreatedDate())
-                    .build();
-            reviewDTOs.add(reviewDTO);
-        }
         List<BookedDateDTO> bookedDates = bookingService.getBookedDate(room);
 
-        HostDTO hostDTO = HostDTO.builder()
-                .name(room.getHost().getFullName())
-                .avatar(room.getHost().getAvatarPath())
-                .createdDate(room.getHost().getCreatedDate())
-                .build();
+        HostDTO hostDTO = HostDTO.buildHostDTO(room);
+        RoomDetailsDTO roomDetailsDTO = RoomDetailsDTO.buildRoomDetailsDTO(room, reviewDTOs, images,
+                amenityRoomDetailsDTOs, hostDTO, bookedDates, avgRatings);
 
-        RoomDetailsDTO roomDetailsDTO = RoomDetailsDTO.builder()
-                .thumbnail(room.renderThumbnailImage())
-                .amenities(
-                        amenityRoomDetailsDTOs)
-                .rules(room.getRules())
-                .images(images)
-                .reviews(reviewDTOs)
-                .id(room.getId())
-                .name(room.getName())
-                .description(room.getDescription())
-                .location(room.getStreet() + " " + room.getCity().getName() + " " + room.getState().getName() + " "
-                        + room.getCountry().getName())
-                .privacy(room.getPrivacyType().getName()).guest(room.getAccomodatesCount()).host(hostDTO)
-                .bed(room.getBedCount())
-                .bathroom(room.getBathroomCount())
-                .bedroom(room.getBedroomCount())
-                .price(room.getPrice())
-                .currencySymbol(room.getCurrency().getSymbol())
-                .currencyUnit(room.getCurrency().getUnit())
-                .stayType(room.getPriceType() == (PriceType.PER_NIGHT) ? "đêm" : "tuần")
-                .longitude(room.getLongitude())
-                .latitude(room.getLatitude())
-                .averageRating(avgRatings)
-                .bookedDates(
-                        bookedDates)
-                .cityName(room.getCity().getName())
-                .category(room.getCategory().getName())
-                .isLikedByCurrentUser(room.getHost().getFavRooms().contains(room))
-                .status(room.isStatus())
-                .accomodates(room.getAccomodatesCount())
-                .groupId(room.getRoomGroup().getId())
-                .categoryId(room.getCategory().getId())
-                .privacyId(room.getPrivacyType().getId())
-                .stateName(room.getState().getName())
-                .countryName(room.getCountry().getName())
-                .streetName(room.getStreet())
-                .groupName(room.getRoomGroup().getName())
-                .build();
-
-        return roomDetailsDTO;
+        StandardJSONResponse<RoomDetailsDTO> standardJSONResponse = new StandardJSONResponse<>(true, roomDetailsDTO,
+                null);
+        return new ResponseEntity<StandardJSONResponse<RoomDetailsDTO>>(standardJSONResponse, null, HttpStatus.OK);
     }
 
     @PostMapping("/rooms/checkName")
@@ -285,10 +210,8 @@ public class RoomRestController {
         Integer roomId = payload.get("roomId");
         Room room = roomService.getRoomById(roomId);
         int isUpdated = userService.verifyPhoneNumber(room.getHost().getId());
-        if (isUpdated == 1)
-            return "success";
-        else
-            return "failure";
+
+        return isUpdated == 1 ? "success" : "failure";
     }
 
     @PostMapping("/api/room/save")
@@ -299,9 +222,7 @@ public class RoomRestController {
         Set<Image> images = new HashSet<>();
 
         Iterator<Rule> itr = ruleService.listAllRule();
-        while (itr.hasNext()) {
-            rules.add(itr.next());
-        }
+        itr.forEachRemaining(rules::add);
 
         for (int i = 0; i < payload.getAmentities().length; i++) {
             amenities.add(new Amentity(payload.getAmentities()[i]));
@@ -310,7 +231,8 @@ public class RoomRestController {
         for (int i = 0; i < payload.getImages().length; i++) {
             images.add(new Image(payload.getImages()[i]));
         }
-        PriceType pt = Objects.equals(payload.getPriceType(), "PER_NIGHT") ? PriceType.PER_NIGHT : PriceType.PER_WEEK;
+        PriceType pt = Objects.equals(payload.getPriceType(), PriceType.PER_NIGHT.name()) ? PriceType.PER_NIGHT
+                : PriceType.PER_WEEK;
         Country country = new Country(payload.getCountry());
 
         // check if state exist
@@ -329,17 +251,7 @@ public class RoomRestController {
 
         boolean status = user.isPhoneVerified();
 
-        Room room = Room.builder().name(payload.getName()).accomodatesCount(payload.getAccomodatesCount())
-                .bathroomCount(payload.getBathroomCount()).bedCount(payload.getBedCount())
-                .bedroomCount(payload.getBedroomCount()).description(payload.getDescription()).amentities(amenities)
-                .images(images).latitude(payload.getLatitude()).longitude(payload.getLongitude())
-                .price(payload.getPrice()).priceType(pt).city(city)
-                .state(state).country(country).rules(rules).host(new User(payload.getHost()))
-                .roomGroup(new RoomGroup(payload.getRoomGroup())).priceType(PriceType.PER_NIGHT)
-                .host(new User(payload.getHost())).category(new Category(payload.getCategory()))
-                .currency(new Currency(payload.getCurrency())).privacyType(new RoomPrivacy(payload.getPrivacyType()))
-                .thumbnail(images.iterator().next().getImage()).street(payload.getStreet()).status(status).build();
-
+        Room room = Room.buildRoom(payload, images, amenities, pt, city, state, country, rules, status);
         Room savedRoom = roomService.save(room);
 
         /* MOVE IMAGE TO FOLDER */
@@ -359,7 +271,8 @@ public class RoomRestController {
     }
 
     @GetMapping("/api/rooms/user/{pageid}")
-    public ResponseEntity<RoomByUserResponseEntity> fetchUserOwnedRooms(@CookieValue("user") String cookie,
+    public ResponseEntity<StandardJSONResponse<RoomsOwnedByUserResponseEntity>> fetchUserOwnedRooms(
+            @CookieValue(value = "user", required = false) String cookie,
             @PathVariable("pageid") Integer pageNumber,
             @RequestParam(name = "BATHROOMS", required = false, defaultValue = "0") String bathRoomsCount,
             @RequestParam(name = "BEDROOMS", required = false, defaultValue = "0") String bedRoomsCount,
@@ -371,16 +284,20 @@ public class RoomRestController {
             @RequestParam(name = "STATUSES", required = false, defaultValue = "ACTIVE UNLISTED") String status) {
         User host = authenticate.getLoggedInUser(cookie);
 
+        RoomsOwnedByUserResponseEntity roomByUserResponseEntity = new RoomsOwnedByUserResponseEntity();
+        StandardJSONResponse<RoomsOwnedByUserResponseEntity> standardJSONResponse = new StandardJSONResponse<>();
         // When user not logged in
-        RoomByUserResponseEntity roomByUserResponseEntity = new RoomByUserResponseEntity();
         if (host == null) {
-            roomByUserResponseEntity.setErrorMessage("UNAUTHORIZED");
-            return new ResponseEntity<RoomByUserResponseEntity>(roomByUserResponseEntity, null,
+            standardJSONResponse.setSuccess(false);
+            standardJSONResponse.setData(null);
+            standardJSONResponse.setError(new ErrorJSONResponse(401, "user not authenticated"));
+
+            return new ResponseEntity<StandardJSONResponse<RoomsOwnedByUserResponseEntity>>(
+                    standardJSONResponse, null,
                     HttpStatus.UNAUTHORIZED);
         }
 
         // When user logged in
-
         Map<String, String> filters = new HashMap<>();
         filters.put("bedroomCount", bedRoomsCount);
         filters.put("bathroomCount", bathRoomsCount);
@@ -391,31 +308,60 @@ public class RoomRestController {
         filters.put("amentities", amentitiesFilter);
         filters.put("status", status);
 
-        roomByUserResponseEntity.setSuccessMessage(FETCH_OWNED_ROOMS_SUCCESS);
-        Page<RoomListingsDTO> roomListingsDTOs = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
+        Page<Room> roomsPage = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
+        List<RoomListingsDTO> roomListingsDTOs = new ArrayList<>();
+        roomsPage.getContent().forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
 
-        roomByUserResponseEntity.setRooms(roomListingsDTOs.toList());
-        roomByUserResponseEntity.setTotalRecords(roomListingsDTOs.getTotalElements());
-        roomByUserResponseEntity.setTotalPages(roomListingsDTOs.getTotalPages());
+        roomByUserResponseEntity.setRooms(roomListingsDTOs);
+        roomByUserResponseEntity.setTotalRecords(roomsPage.getTotalElements());
+        roomByUserResponseEntity.setTotalPages(roomsPage.getTotalPages());
 
-        return new ResponseEntity<RoomByUserResponseEntity>(roomByUserResponseEntity, null,
+        standardJSONResponse.setSuccess(true);
+        standardJSONResponse.setData(roomByUserResponseEntity);
+        standardJSONResponse.setError(null);
+
+        return new ResponseEntity<StandardJSONResponse<RoomsOwnedByUserResponseEntity>>(
+                standardJSONResponse, null,
                 HttpStatus.OK);
     }
 
-    @GetMapping("/api/getAverageRoomPricePerNight")
-    public double getAverageRoomPricePerNight() {
-        List<RoomPricePerCurrency> roomPricePerCurrencies = roomService.getAverageRoomPricePerNight();
-        double averageRoomPricePerNight = 0;
+    @GetMapping("/api/rooms/average-price")
+    public ResponseEntity<StandardJSONResponse<Double>> getAverageRoomPricePerNight(
+            @RequestParam(value = "type", defaultValue = "PER_NIGHT") String priceType) {
+        double avgRoomPricePerNight = 0;
         long totalRecords = 0;
-        for (RoomPricePerCurrency rp : roomPricePerCurrencies) {
-            if (rp.getUnit().equals("USD")) {
-                averageRoomPricePerNight += rp.getTotalPricePerNight() * 23000;
-            } else {
-                averageRoomPricePerNight += rp.getTotalPricePerNight();
-            }
-            totalRecords += rp.getTotalRecords();
-        }
 
-        return (averageRoomPricePerNight / totalRecords);
+        if (priceType.equals(PriceType.PER_NIGHT.name())) {
+            List<RoomPricePerCurrencyDTO> roomPricePerCurrencies = roomService
+                    .findAverageRoomPriceByPriceType(PriceType.PER_NIGHT);
+
+            for (RoomPricePerCurrencyDTO price : roomPricePerCurrencies) {
+                if (price.getUnit().equals("USD"))
+                    avgRoomPricePerNight += price.getTotalPricePerNight() * 23000;
+                else
+                    avgRoomPricePerNight += price.getTotalPricePerNight();
+
+                totalRecords += price.getTotalRecords();
+            }
+        } else {
+            // List<RoomPricePerCurrencyDTO> roomPricePerCurrencies = roomService
+            // .findAverageRoomPriceByPriceType(priceType);
+            // double averageRoomPricePerNight = 0;
+            // long totalRecords = 0;
+            // for (RoomPricePerCurrencyDTO rp : roomPricePerCurrencies) {
+            // if (rp.getUnit().equals("USD"))
+            // averageRoomPricePerNight += rp.getTotalPricePerNight() * 23000;
+            // else
+            // averageRoomPricePerNight += rp.getTotalPricePerNight();
+
+            // totalRecords += rp.getTotalRecords();
+            // }
+        }
+        StandardJSONResponse<Double> standardJSONResponse = new StandardJSONResponse<>(true,
+                avgRoomPricePerNight / totalRecords, null);
+
+        return new ResponseEntity<StandardJSONResponse<Double>>(
+                standardJSONResponse, null,
+                HttpStatus.OK);
     }
 }

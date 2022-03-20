@@ -1,5 +1,6 @@
 package com.airtnt.entity;
 
+import com.airtnt.airtntapp.room.dto.PostAddRoomDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -161,7 +162,25 @@ public class Room extends BaseEntity {
 
 	@Transient
 	public String renderThumbnailImage() {
-		return "/room_images/" + this.host.getEmail() + "/" + this.getId() + "/" + this.thumbnail;
+		if (this.host.getEmail().equals("test@gmail.com"))
+			return "/room_images/" + this.host.getEmail() + "/" + this.thumbnail;
+		else
+			return "/room_images/" + this.host.getEmail() + "/" + this.getId() + "/" + this.thumbnail;
+	}
+
+	@Transient
+	public static Room buildRoom(PostAddRoomDTO payload, Set<Image> images, Set<Amentity> amenities, PriceType pt,
+			City city, State state, Country country, Set<Rule> rules, boolean status) {
+		return Room.builder().name(payload.getName()).accomodatesCount(payload.getAccomodatesCount())
+				.bathroomCount(payload.getBathroomCount()).bedCount(payload.getBedCount())
+				.bedroomCount(payload.getBedroomCount()).description(payload.getDescription()).amentities(amenities)
+				.images(images).latitude(payload.getLatitude()).longitude(payload.getLongitude())
+				.price(payload.getPrice()).priceType(pt).city(city)
+				.state(state).country(country).rules(rules).host(new User(payload.getHost()))
+				.roomGroup(new RoomGroup(payload.getRoomGroup())).priceType(PriceType.PER_NIGHT)
+				.host(new User(payload.getHost())).category(new Category(payload.getCategory()))
+				.currency(new Currency(payload.getCurrency())).privacyType(new RoomPrivacy(payload.getPrivacyType()))
+				.thumbnail(images.iterator().next().getImage()).street(payload.getStreet()).status(status).build();
 	}
 
 	@Transient

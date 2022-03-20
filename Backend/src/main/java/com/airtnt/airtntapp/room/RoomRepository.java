@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
-import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
-import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
+import com.airtnt.airtntapp.room.dto.RoomPricePerCurrencyDTO;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
+import com.airtnt.entity.PriceType;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecificationExecutor<Room> {
@@ -89,24 +89,24 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
         @Query("SELECT count(*) From Room r")
         public Integer getNumberOfRoom();
 
-        @Query("SELECT new com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO(r.id, r.name, r.thumbnail, r.currency.symbol , r.category.name, r.price, r.priceType, r.bedroomCount, r.bathroomCount, r.bedCount, r.status, r.createdDate, r.updatedDate, CONCAT(r.street, ', ', r.city.name, ', ', r.state.name, ', ', r.country.name)) FROM Room r JOIN r.amentities ra WHERE r.host = :host"
+        @Query("SELECT r FROM Room r JOIN r.amentities ra WHERE r.host = :host"
                         + " AND r.name LIKE %:query%"
                         + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
                         + " AND ra.id IN (:amentitiesID)"
                         + " AND r.status IN (:statusesID) GROUP BY r.id ORDER BY r.createdDate DESC")
-        public Page<RoomListingsDTO> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
+        public Page<Room> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
                         int bedCount,
                         @Param("amentitiesID") List<Integer> amentitiesID,
                         @Param("statusesID") List<Boolean> statusesID, Pageable pageable);
 
-        @Query("SELECT new com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO(r.id, r.name, r.thumbnail, r.currency.symbol , r.category.name, r.price, r.priceType, r.bedroomCount, r.bathroomCount, r.bedCount, r.status, r.createdDate, r.updatedDate, CONCAT(r.street, ', ', r.city.name, ', ', r.state.name, ', ', r.country.name)) FROM Room r WHERE r.host = :host"
+        @Query("SELECT r FROM Room r WHERE r.host = :host"
                         + " AND r.name LIKE %:query%"
                         + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
                         + " AND r.status IN (:statusesID) GROUP BY r.id ORDER BY r.createdDate DESC")
-        public Page<RoomListingsDTO> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
+        public Page<Room> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
                         int bedCount,
                         @Param("statusesID") List<Boolean> statusesID, Pageable pageable);
 
-        @Query("SELECT new com.airtnt.airtntapp.room.dto.RoomPricePerCurrency(SUM(r.price), r.currency.unit, COUNT(r.price)) FROM Room r WHERE r.priceType = 'PER_NIGHT' GROUP BY r.currency.unit")
-        public List<RoomPricePerCurrency> getAverageRoomPricePerNight();
+        @Query("SELECT new com.airtnt.airtntapp.room.dto.RoomPricePerCurrencyDTO(SUM(r.price), r.currency.unit, COUNT(r.price)) FROM Room r WHERE r.priceType = :priceType GROUP BY r.currency.unit")
+        public List<RoomPricePerCurrencyDTO> findAverageRoomPriceByPriceType(PriceType priceType);
 }

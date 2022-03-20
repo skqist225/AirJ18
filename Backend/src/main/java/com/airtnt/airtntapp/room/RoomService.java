@@ -29,8 +29,7 @@ import org.springframework.stereotype.Service;
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.city.CityRepository;
 import com.airtnt.airtntapp.privacy.PrivacyTypeRepository;
-import com.airtnt.airtntapp.room.dto.RoomPricePerCurrency;
-import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
+import com.airtnt.airtntapp.room.dto.RoomPricePerCurrencyDTO;
 import com.airtnt.airtntapp.state.StateRepository;
 import com.airtnt.airtntapp.user.UserRepository;
 import com.airtnt.entity.Amentity;
@@ -42,13 +41,14 @@ import com.airtnt.entity.RoomGroup;
 import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
+import com.airtnt.entity.PriceType;
 import com.airtnt.entity.exception.RoomNotFoundException;
 
 @Service
 @Transactional
 public class RoomService {
-	public static final int MAX_ROOM_PER_FETCH = 20;
-	public static final int MAX_ROOM_PER_FETCH_BY_HOST = 9;
+	public static final int MAX_ROOM_PER_FETCH = 40;
+	public static final int MAX_ROOM_PER_FETCH_BY_HOST = 1000;
 	public static final int ROOMS_PER_PAGE = 10;
 
 	@Autowired
@@ -428,7 +428,7 @@ public class RoomService {
 		return roomRepository.getLikedUsers(roomId);
 	}
 
-	public Page<RoomListingsDTO> fetchUserOwnedRooms(User host, Integer pageNumber, Map<String, String> filters) {
+	public Page<Room> fetchUserOwnedRooms(User host, Integer pageNumber, Map<String, String> filters) {
 		/*-------------------------------------------FILTER KEY------------------------------------------------*/
 		int bedroomCount = Integer.parseInt(filters.get("bedroomCount"));
 		int bathroomCount = Integer.parseInt(filters.get("bathroomCount"));
@@ -438,28 +438,20 @@ public class RoomService {
 		String sortField = filters.get("sortField");
 
 		/*-------------------------------------------FILTER KEY------------------------------------------------*/
-
 		List<Integer> amentitiesID = new ArrayList<>();
 		List<Boolean> statusesID = new ArrayList<>();
 
 		if (!filters.get("amentities").isEmpty()) {
 			String[] amentities = filters.get("amentities").split(" ");
-
-			for (int i = 0; i < amentities.length; i++) {
+			for (int i = 0; i < amentities.length; i++)
 				amentitiesID.add(Integer.parseInt(amentities[i]));
-			}
 		}
 
 		if (!filters.get("status").isEmpty()) {
 			String[] statuses = filters.get("status").split(" ");
-
 			for (int i = 0; i < statuses.length; i++) {
-				if (statuses[i].equals("ACTIVE")) {
-					statusesID.add(true);
-				}
-				if (statuses[i].equals("UNLISTED")) {
-					statusesID.add(false);
-				}
+				boolean x = statuses[i].equals("ACTIVE");
+				statusesID.add(x);
 			}
 		}
 
@@ -486,18 +478,42 @@ public class RoomService {
 		}
 		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
 
-		if (amentitiesID.size() == 0)
+		if (amentitiesID.size() != 0)
+			return roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
+					bedCount,
+					amentitiesID, statusesID, pageable);
+		else {
+			// try (Session session = HibernateUtils.getSessionFactory().openSession();) {
+			// session.beginTransaction();
+			// String hql = "SELECT r FROM Room r WHERE r.host = :host"
+			// + " AND r.name LIKE %:query%"
+			// + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount
+			// AND r.bedCount >= :bedCount"
+			// + " AND r.status IN (:statusesID) GROUP BY r.id ORDER BY r.createdDate DESC";
+			// Query q = session.createQuery(hql, Room.class);
+			// q.setParameter("host", host);
+			// q.setParameter("query", roomName);
+			// q.setParameter("bedroomCount", bedroomCount);
+			// q.setParameter("bathroomCount", bathroomCount);
+			// q.setParameter("bedCount", bedCount);
+			// q.setParameterList("statusesID", statusesID);
+			// q.setFirstResult(pageNumber - 1 * MAX_ROOM_PER_FETCH_BY_HOST);
+			// q.setMaxResults(MAX_ROOM_PER_FETCH_BY_HOST);
+
+			// a = q.getResultList();
+
+			// session.getTransaction().commit();
+			// } catch (Exception e) {
+			// // TODO: handle exception
+			// }
+
 			return roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
 					bedCount,
 					statusesID, pageable);
-
-		Page<RoomListingsDTO> rooms = roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
-				bedCount,
-				amentitiesID, statusesID, pageable);
-		return rooms;
+		}
 	}
 
-	public List<RoomPricePerCurrency> getAverageRoomPricePerNight() {
-		return roomRepository.getAverageRoomPricePerNight();
+	public List<RoomPricePerCurrencyDTO> findAverageRoomPriceByPriceType(PriceType type) {
+		return roomRepository.findAverageRoomPriceByPriceType(type);
 	}
 }

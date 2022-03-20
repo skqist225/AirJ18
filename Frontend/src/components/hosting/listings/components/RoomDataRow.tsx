@@ -21,7 +21,7 @@ export const RoomDataRow: FC<IRoomDataRowProps> = ({ room, email }) => {
                     <div className='normal-flex'>
                         <div className='listings__room-thumbnail-container'>
                             <img
-                                src={getImage(`/room_images/${email}/${room.id}/${room.thumbnail}`)}
+                                src={getImage(room.thumbnail)}
                                 alt="Room's thumbnail'"
                                 className='listings__room-thumbnail'
                             />

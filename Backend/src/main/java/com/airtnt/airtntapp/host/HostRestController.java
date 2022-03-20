@@ -59,7 +59,7 @@ public class HostRestController {
     @PostMapping("update/upload-room-photos")
     public String updatedUploadRoomPhotos(
             @ModelAttribute PhotoDTO payload) throws IOException {
-        String uploadDir = STATIC_PATH + payload.getHost() + "/" + payload.getRoomId();
+        String uploadDir =!payload.getHost().equals("test@gmail.com") ? STATIC_PATH + payload.getHost() + "/" + payload.getRoomId() : STATIC_PATH + payload.getHost();
         // FileUploadUtil.cleanDir(uploadDir);
 
         Set<Image> newImages = new HashSet<>();
@@ -92,10 +92,11 @@ public class HostRestController {
         String[] roomImages = payload.getRoomImages();
         String uploadDir = "";
 
-        if (payload.getFolderno() != null) {
+        if (payload.getFolderno() != null && !userName.equals("test@gmail.com")) {
             uploadDir = STATIC_PATH + userName + "/" + payload.getFolderno() + "/";
-        } else
-            uploadDir = STATIC_PATH + userName;
+        } 
+ else   uploadDir = STATIC_PATH + userName;
+          
 
         List<MultipartFile> multipartFiles = new ArrayList<>();
 

@@ -8,12 +8,12 @@ import java.util.Map;
 
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.booking.dto.BookingDTO;
+import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.progress.dto.ProgressEarningsDTO;
 import com.airtnt.airtntapp.progress.dto.ProgressReviewsDTO;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.review.dto.ReviewDTO;
 import com.airtnt.airtntapp.room.RoomService;
-import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Review;
 import com.airtnt.entity.Room;
@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/progress/")
 public class ProgressRestController {
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private RoomService roomService;
@@ -42,14 +40,16 @@ public class ProgressRestController {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private Authenticate authenticate;
+
     @GetMapping(value = "earnings")
     public ProgressEarningsDTO earnings(@CookieValue("user") String cookie, @Param("year") Integer year) {
-        int currentYear = LocalDateTime.now().getYear();
-        if (year == null) {
-            return null;
-        }
 
-        User host = userService.getByCookie(cookie);
+        if (year == null)
+            return null;
+
+        User host = authenticate.getLoggedInUser(cookie);
         List<Room> rooms = roomService.getRoomsByHostId(host);
         Integer[] roomIds = new Integer[rooms.size()];
 
@@ -109,7 +109,7 @@ public class ProgressRestController {
     public ProgressReviewsDTO reviews(@CookieValue("user") String cookie,
             @RequestParam(name = "numberOfStars", required = false, defaultValue = "0") String numberOfStars) {
 
-        User host = userService.getByCookie(cookie);
+        User host = authenticate.getLoggedInUser(cookie);
         List<Room> rooms = roomService.getRoomsByHostId(host);
         Integer[] roomIds = new Integer[rooms.size()];
 

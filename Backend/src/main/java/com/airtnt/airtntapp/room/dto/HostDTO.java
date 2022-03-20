@@ -1,8 +1,11 @@
 package com.airtnt.airtntapp.room.dto;
 
+import java.beans.Transient;
 import java.util.Date;
 
+import com.airtnt.entity.Room;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +25,14 @@ public class HostDTO {
 
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date createdDate;
+
+    @Transient
+    @JsonIgnore
+    public static HostDTO buildHostDTO(Room room) {
+        return HostDTO.builder()
+                .name(room.getHost().getFullName())
+                .avatar(room.getHost().getAvatarPath())
+                .createdDate(room.getHost().getCreatedDate())
+                .build();
+    }
 }

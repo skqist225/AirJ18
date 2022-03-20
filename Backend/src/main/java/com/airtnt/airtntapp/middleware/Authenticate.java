@@ -16,6 +16,9 @@ public class Authenticate {
     private CookieProcess cookieProcess;
 
     public User getLoggedInUser(String cookie) {
+        if (cookie == null)
+            return null;
+
         String userEmail = cookieProcess.readCookie(cookie);
         User user = userService.getByEmail(userEmail);
 

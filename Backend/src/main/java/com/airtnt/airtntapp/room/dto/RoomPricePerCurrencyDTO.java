@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomPricePerCurrency {
+public class RoomPricePerCurrencyDTO {
     private double totalPricePerNight;
     private String unit;
     private long totalRecords;
