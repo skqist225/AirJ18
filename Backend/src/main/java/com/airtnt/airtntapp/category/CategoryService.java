@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.airtnt.airtntapp.category.dto.CategoryDTO;
 import com.airtnt.entity.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class CategoryService {
         return categories;
     }
 
-    public List<Category> findAllCategoriesWithDesiredField() {
-        return categoryRepository.getAllCategoriesWithDesiredField();
+    public List<CategoryDTO> fetchCategories() {
+        return categoryRepository.fetchCategories();
     }
 
     public List<Category> listAll() {

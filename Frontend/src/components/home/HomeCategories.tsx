@@ -129,7 +129,7 @@ export const HomeCategories: FC<IHomeCategoriesProps> = ({}) => {
                                             return (
                                                 <li
                                                     data-category-id={category.id}
-                                                    data-category-icon={category.iconPath}
+                                                    data-category-icon={category.icon}
                                                     key={category.name + '-' + category.id}
                                                     onClick={setLastItem}
                                                 >

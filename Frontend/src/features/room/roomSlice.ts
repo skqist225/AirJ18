@@ -34,9 +34,7 @@ export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
         { dispatch, getState, rejectWithValue }
     ) => {
         try {
-            const {
-                data: { data },
-            } = await api.get(
+            const { data } = await api.get(
                 `/rooms?categoryId=${categoryid}&privacies=${privacies.join(
                     ' '
                 )}&minPrice=${minPrice}&maxPrice=${maxPrice}&bedRoom=${bedRoomCount}&bed=${bedCount}&bathRoom=${bathRoomCount}&amentities=${selectedAmentities.join(
@@ -53,9 +51,7 @@ export const fetchRoomById = createAsyncThunk(
     'room/fetchRoomById',
     async ({ roomid }: { roomid: string }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { data },
-            } = await api.get(`/room/${roomid}`);
+            const { data } = await api.get(`/room/${roomid}`);
 
             return { data };
         } catch (error) {}
@@ -88,9 +84,7 @@ export const fetchUserOwnedRoom = createAsyncThunk(
     ) => {
         try {
             const {
-                data: {
-                    data: { rooms, totalPages, totalRecords },
-                },
+                data: { rooms, totalPages, totalRecords },
             } = await api.get(
                 `/rooms/user/${pageNumber}?query=${query}&BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&AMENITY_IDS=${amenityIDs}&STATUSES=${statuses}`
             );
@@ -126,9 +120,7 @@ export const findAverageRoomPriceByType = createAsyncThunk(
     'room/findAverageRoomPriceByType',
     async (type: string = 'PER_NIGHT', { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { data },
-            } = await api.get(`/rooms/average-price?type=${type}`);
+            const { data } = await api.get(`/rooms/average-price?type=${type}`);
 
             return { data };
         } catch (error) {}
@@ -139,9 +131,7 @@ export const addRoom = createAsyncThunk(
     'room/addRoom',
     async (fd: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { data },
-            } = await api.post(`/room/save`, fd, {
+            const { data } = await api.post(`/room/save`, fd, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

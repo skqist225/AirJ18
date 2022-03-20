@@ -15,7 +15,7 @@ export const fetchCategories = createAsyncThunk(
 export interface ICategory {
     id: number;
     name: string;
-    iconPath: string;
+    icon: string;
 }
 
 type CategoryState = {

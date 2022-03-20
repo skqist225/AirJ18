@@ -11,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -150,6 +151,20 @@ public class User extends BaseEntity {
 		}
 
 		return objectNode;
+	}
+
+	@Transient
+	@JsonIgnore
+	public static User buildUser(PostRegisterUserDTO postUser) {
+		return User.builder().firstName(postUser.getFirstName()).lastName(postUser.getLastName())
+				.email(postUser.getEmail())
+				.password(postUser.getPassword())
+				.sex(postUser.getSex().equals("MALE") ? Sex.MALE
+						: (postUser.getSex()
+								.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER))
+				.birthday(postUser.getBirthday())
+				.phoneNumber(postUser.getPhoneNumber())
+				.build();
 	}
 
 	@Transient

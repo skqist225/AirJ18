@@ -50,13 +50,10 @@ export const login = createAsyncThunk(
                 withCredentials: true,
             };
 
-            const {
-                data: { user, successMessage },
-            } = await api.post('/user/login', loginInfo, config);
+            const { data } = await api.post('/user/login', loginInfo, config);
+            if (data) setUserToLocalStorage(data);
 
-            setUserToLocalStorage(user);
-
-            return { user, successMessage };
+            return { data };
         } catch ({ data: { errorMessage } }) {
             return rejectWithValue(errorMessage);
         }
@@ -65,13 +62,9 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValue }) => {
     try {
-        const {
-            data: { successMessage },
-        } = await api.get('/user/logout');
-
-        localStorage.removeItem('user');
-
-        return { successMessage };
+        const { data } = await api.get('/user/logout');
+        if (data) localStorage.removeItem('user');
+        return { data };
     } catch ({ data: { errorMessage } }) {
         return rejectWithValue(errorMessage);
     }
@@ -101,17 +94,27 @@ export const updateUserInfo = createAsyncThunk(
     'user/updateUserInfo',
     async (updatedInfo: IUserUpdate, { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { user, successMessage },
-            } = await api.post(`/user/update-personal-info`, updatedInfo, {
+            const { data } = await api.post(`/user/update-personal-info`, updatedInfo, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
             //update local user info
-            setUserToLocalStorage(user);
+            if (data) setUserToLocalStorage(data as IUser);
 
-            return { user, successMessage };
+            return { data };
+        } catch (error) {}
+    }
+);
+
+export const updateUserAvatar = createAsyncThunk(
+    'user/updateUserAvatar',
+    async (formData, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.post(`/user/update-avatar`, formData);
+            //update local user info
+
+            return { data };
         } catch (error) {}
     }
 );
@@ -122,8 +125,7 @@ export const fetchBookedRooms = createAsyncThunk(
         try {
             const {
                 data: { bookedRooms, ratingLabels },
-            } = await api.get(`/user/bookedRooms?query=${query}`);
-            //update local user info
+            } = await api.get(`/user/booked-rooms?query=${query}`);
 
             return { bookedRooms, ratingLabels };
         } catch (error) {}
@@ -152,7 +154,7 @@ const initialState: UserState = {
     loading: true,
     wishlistsIDsFetching: true,
     errorMessage: null,
-    successMessage: null,
+    successMessage: '',
     update: {
         loading: true,
         errorMessage: null,
@@ -177,7 +179,7 @@ const userSlice = createSlice({
             })
             .addCase(logout.fulfilled, (state, { payload }) => {
                 state.loading = false;
-                state.successMessage = payload.successMessage;
+                state.successMessage = payload.data;
                 state.user = null;
             })
             .addCase(fetchWishlistsIDsOfCurrentUser.pending, (state, { payload }) => {
@@ -194,22 +196,17 @@ const userSlice = createSlice({
             .addCase(fetchWishlistsOfCurrentUser.pending, (state, { payload }) => {
                 state.wishlistsIDsFetching = true;
             })
-            // .addCase(fetchWishlistsOfCurrentUser.pending, (state, { payload }) => {
-            //     state.wishlistsFetching = true;
-            // })
             .addCase(fetchBookedRooms.fulfilled, (state, { payload }) => {
                 state.bookedRooms = payload?.bookedRooms;
                 state.ratingLabels = payload?.ratingLabels;
             })
             .addCase(login.fulfilled, (state, { payload }) => {
                 state.loading = false;
-                state.successMessage = payload.successMessage;
-                state.user = payload.user;
+                state.user = payload.data;
             })
             .addCase(updateUserInfo.fulfilled, (state, { payload }) => {
                 state.update.loading = false;
-                state.update.successMessage = payload?.successMessage;
-                state.user = payload?.user;
+                state.user = payload?.data;
             })
             .addCase(updateUserInfo.pending, (state, { payload }) => {
                 state.update.loading = true;

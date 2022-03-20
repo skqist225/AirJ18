@@ -42,7 +42,7 @@ const PropertyCategoryMainContent: FC<IPropertyCategoryMainContentProps> = () =>
                     <div className='category__box' key={category.id} data-category-id={category.id}>
                         <div className='flex-space'>
                             <div className='content__box--name'>{category.name}</div>
-                            <Image src={getImage(category.iconPath)} size='32px' />
+                            <Image src={getImage(category.icon)} size='32px' />
                         </div>
                     </div>
                 ))}

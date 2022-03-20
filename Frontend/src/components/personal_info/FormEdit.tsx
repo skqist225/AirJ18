@@ -19,9 +19,11 @@ import {
     checkPhoneNumberConstraint,
 } from './script/check_constraints';
 
-import { updateUserInfo, userState } from '../../features/user/userSlice';
-import { toast } from 'react-toastify';
+import { updateUserAvatar, updateUserInfo, userState } from '../../features/user/userSlice';
 import { IUserUpdate } from '../../types/user/type_User';
+import { callToast } from '../../helpers';
+
+import $ from 'jquery';
 
 interface IFormEditProps {
     dataEdit: string;
@@ -37,20 +39,18 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
     } = useSelector(userState);
 
     useEffect(() => {
-        if (errorMessage === 'UPDATE_USER_FAILURE')
-            toast.error('🦄' + `Cập nhật thất bại`, {
-                position: 'bottom-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+        if (errorMessage === 'UPDATE_USER_FAILURE') callToast('error', 'Cập nhật thất bại');
     }, [errorMessage]);
 
     function updateInfo(updateInfo: IUserUpdate, field: string) {
         dispatch(updateUserInfo(updateInfo));
+    }
+
+    let newAvatar: File;
+    function saveNewAvatar(newAvatarArgs: File) {
+        newAvatar = newAvatarArgs;
+
+        console.log(newAvatar);
     }
 
     const onSubmit = async (data: any) => {
@@ -151,6 +151,11 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                 break;
             }
             case 'avatar': {
+                if (newAvatar) {
+                    const formData = new FormData();
+                    formData.set('newAvatar', newAvatar);
+                    // dispatch(updateUserAvatar(formData));
+                }
                 break;
             }
         }
@@ -190,7 +195,7 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                             cityDefaultValue={user.addressDetails.city.id}
                         />
                     )}
-                    {dataEdit === 'avatar' && <AvatarEdit register={register} />}
+                    {dataEdit === 'avatar' && <AvatarEdit saveNewAvatar={saveNewAvatar} />}
                     <button type='submit' className='saveEditBtn' data-edit={dataEdit}>
                         <span>Lưu</span>
                     </button>

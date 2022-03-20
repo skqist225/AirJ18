@@ -10,6 +10,7 @@ import { jqueryCode } from '../components/personal_info/script/personal_info';
 import Toast from '../components/notify/Toast';
 
 import './css/personal_info.css';
+import { Image } from '../globalStyle';
 
 type IPersonalInfoPageProps = {};
 
@@ -41,12 +42,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                         <div className='normal-flex'>
                             <span className='personal__info--title'>Tài khoản</span>
                             <div className='personal__info__next-icon'>
-                                <img
-                                    src={getImage('/svg/next.svg')}
-                                    alt=''
-                                    width={'10px'}
-                                    height={'10px'}
-                                />
+                                <Image src={getImage('/svg/next.svg')} size={'10px'} />
                             </div>{' '}
                             <span className='personal__info--title'>Thông tin cá nhân</span>
                         </div>
@@ -98,12 +94,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                             <div id='personal-info__right'>
                                 <div>
                                     <div>
-                                        <img
-                                            src={getImage('/svg/block.svg')}
-                                            alt=''
-                                            width={'40px'}
-                                            height={'40px'}
-                                        />
+                                        <Image src={getImage('/svg/block.svg')} size='40px' />
                                     </div>
                                     <h4>Bạn có thể chỉnh sửa những thông tin nào?</h4>
                                     <p>
@@ -116,11 +107,9 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                 </div>
                                 <div>
                                     <div>
-                                        <img
+                                        <Image
                                             src={getImage('/svg/paper_identity.svg')}
-                                            alt=''
-                                            width={'40px'}
-                                            height={'40px'}
+                                            size='40px'
                                         />
                                     </div>
                                     <h4>Thông tin nào được chia sẻ với người khác?</h4>

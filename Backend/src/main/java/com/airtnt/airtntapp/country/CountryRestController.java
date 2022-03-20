@@ -3,9 +3,12 @@ package com.airtnt.airtntapp.country;
 import java.util.List;
 
 import com.airtnt.airtntapp.country.dto.CountryDTO;
+import com.airtnt.airtntapp.response.StandardJSONResponse;
+import com.airtnt.airtntapp.response.SuccessResponse;
 import com.airtnt.entity.Country;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/")
 public class CountryRestController {
 
     @Autowired
@@ -23,8 +26,8 @@ public class CountryRestController {
     CountryService countryService;
 
     @GetMapping("/countries")
-    public List<Country> fetchCountries() {
-        return countryService.getCountriesWithoutStates();
+    public ResponseEntity<StandardJSONResponse<List<Country>>> fetchCategories() {
+        return new SuccessResponse().response(countryService.getCountriesWithoutStates());
     }
 
     @PostMapping(value = "/add-dial-code-to-db")

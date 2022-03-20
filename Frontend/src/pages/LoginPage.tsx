@@ -14,6 +14,7 @@ import FormError from '../components/register/FormError';
 import { addUser, login } from '../features/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import './css/register.css';
+import { getImage } from '../helpers';
 
 const schema = yup
     .object({
@@ -43,7 +44,7 @@ const LoginPage: FC<HomeProps> = () => {
     console.log(errors);
 
     useEffect(() => {
-        const bg = `${process.env.REACT_APP_SERVER_URL}/images/register_background.jpg`;
+        const bg = getImage('/images/register_background.jpg');
 
         $('#register').css({
             'background-image': `url(${bg})`,

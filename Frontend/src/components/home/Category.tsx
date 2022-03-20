@@ -53,7 +53,7 @@ export const Category: FC<ICategoryProps> = ({ category, index, setCurrentCatego
             >
                 <div>
                     <img
-                        src={getImage(category.iconPath)}
+                        src={getImage(category.icon)}
                         alt={category.name + "'s icon"}
                         className='cat__image'
                     />

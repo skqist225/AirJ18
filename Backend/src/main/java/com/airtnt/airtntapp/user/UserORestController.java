@@ -14,6 +14,9 @@ import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.middleware.Authenticate;
+import com.airtnt.airtntapp.response.FailureResponse;
+import com.airtnt.airtntapp.response.StandardJSONResponse;
+import com.airtnt.airtntapp.response.SuccessResponse;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
@@ -21,7 +24,6 @@ import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.WishlistsDTO;
 import com.airtnt.airtntapp.user.response.UserBookedRoomsResponseEntity;
-import com.airtnt.airtntapp.user.response.UserResponseEntity;
 import com.airtnt.entity.Address;
 import com.airtnt.entity.City;
 import com.airtnt.entity.Country;
@@ -31,7 +33,6 @@ import com.airtnt.entity.Sex;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
 
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,8 @@ public class UserORestController {
         public final String UPDATE_USER_SUCCESS = "UPDATE_USER_SUCCESSFULLY";
         public final String UPDATE_USER_FAILURE = "UPDATE_USER_FAILURE";
 
+        public final String STATIC_PATH = "src/main/resources/static/user_images";
+
         @Autowired
         private UserService userService;
 
@@ -80,96 +83,65 @@ public class UserORestController {
         private CityService cityService;
 
         @PostMapping("/register")
-        public ResponseEntity<UserResponseEntity> registerUser(@RequestBody PostRegisterUserDTO postUser,
+        public ResponseEntity<StandardJSONResponse<User>> registerUser(@RequestBody PostRegisterUserDTO postUser,
                         HttpServletResponse res) {
-                UserResponseEntity userResponseEntity = new UserResponseEntity();
                 // check email exist
                 boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
-                if (!isDuplicatedEmail) {
-                        userResponseEntity.setErrorMessage("Duplicate entry email");
-
-                        return new ResponseEntity<UserResponseEntity>(
-                                        userResponseEntity,
-                                        null, HttpStatus.SC_BAD_REQUEST);
-                }
+                if (!isDuplicatedEmail)
+                        return new FailureResponse("Duplicated entry email").response();
 
                 // create new user
-                User user = User.builder().firstName(postUser.getFirstName()).lastName(postUser.getLastName())
-                                .email(postUser.getEmail())
-                                .password(postUser.getPassword())
-                                .sex(postUser.getSex().equals("MALE") ? Sex.MALE
-                                                : (postUser.getSex()
-                                                                .equals("FEMALE") ? Sex.FEMALE : Sex.OTHER))
-                                .birthday(postUser.getBirthday())
-                                .phoneNumber(postUser.getPhoneNumber())
-                                .build();
+                User user = User.buildUser(postUser);
                 User savedUser = userService.save(user);
 
-                // response object
-                userResponseEntity.setSuccessMessage(REGISTER_USER_SUCCESS);
-                userResponseEntity.setUser(savedUser);
-
-                return new ResponseEntity<UserResponseEntity>(
-                                userResponseEntity,
-                                null, HttpStatus.SC_CREATED);
+                return new SuccessResponse(201).response(savedUser);
         }
 
         @PostMapping("/login")
-        public ResponseEntity<UserResponseEntity> login(@RequestBody PostLoginUserDTO postUser,
+        public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
                         HttpServletResponse res) {
-                UserResponseEntity userResponseEntity = new UserResponseEntity();
                 User user = userService.getByEmail(postUser.getEmail());
 
-                if (user == null) {
-                        userResponseEntity.setErrorMessage("Email does not exist");
+                if (user == null)
+                        return new FailureResponse("Email does not exist").response();
 
-                        return new ResponseEntity<UserResponseEntity>(
-                                        userResponseEntity,
-                                        null, HttpStatus.SC_BAD_REQUEST);
-                }
-                if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword())) {
-                        userResponseEntity.setErrorMessage("Password does not match");
-
-                        return new ResponseEntity<UserResponseEntity>(
-                                        userResponseEntity,
-                                        null, HttpStatus.SC_BAD_REQUEST);
-                }
-
-                userResponseEntity.setErrorMessage(null);
-                userResponseEntity.setSuccessMessage(LOGIN_SUCCESS);
-                userResponseEntity.setUser(user);
+                if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
+                        return new FailureResponse("Password does not match").response();
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                                cookiePorcess.writeCookie("user", user.getEmail())).body(userResponseEntity);
+                                cookiePorcess.writeCookie("user", user.getEmail()))
+                                .body(new StandardJSONResponse<User>(true, user, null));
         }
 
         @GetMapping("/logout")
-        public ResponseEntity<UserResponseEntity> logout() {
-                UserResponseEntity userResponseEntity = new UserResponseEntity();
-
-                userResponseEntity.setErrorMessage(null);
-                userResponseEntity.setSuccessMessage(LOGOUT_SUCCESS);
-                userResponseEntity.setUser(null);
-
+        public ResponseEntity<StandardJSONResponse<String>> logout() {
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                                cookiePorcess.writeCookie("user", null).toString()).body(userResponseEntity);
+                                cookiePorcess.writeCookie("user", null).toString()).body(
+                                                new StandardJSONResponse<String>(true, "log out successfully", null));
         }
 
         @GetMapping("/wishlists/ids")
-        public Integer[] fetchWishlistsIds(@CookieValue("user") String cookie) {
+        public ResponseEntity<StandardJSONResponse<Integer[]>> fetchWishlistsIds(
+                        @CookieValue(value = "user", required = false) String cookie) {
                 User user = authenticate.getLoggedInUser(cookie);
+
+                if (user == null)
+                        return new FailureResponse(401, "user not authenticated").response();
 
                 Integer[] wishlists = new Integer[user.getFavRooms().size()];
                 int i = 0;
                 for (Room r : user.getFavRooms())
                         wishlists[i++] = r.getId();
 
-                return wishlists;
+                return new SuccessResponse().response(wishlists);
         }
 
         @GetMapping("/wishlists")
-        public WishlistsDTO[] fetchWishlists(@CookieValue("user") String cookie) {
+        public ResponseEntity<StandardJSONResponse<WishlistsDTO[]>> fetchWishlists(
+                        @CookieValue(value = "user", required = false) String cookie) {
                 User user = authenticate.getLoggedInUser(cookie);
+                if (user == null)
+                        return new FailureResponse(401, "user not authenticated").response();
 
                 WishlistsDTO[] wishlists = new WishlistsDTO[user.getFavRooms().size()];
                 int i = 0;
@@ -187,18 +159,21 @@ public class UserORestController {
                         wlDTO.setImages(images);
                         wishlists[i++] = wlDTO;
                 }
-                return wishlists;
+
+                return new SuccessResponse().response(wishlists);
         }
 
         @PostMapping("update-personal-info")
-        public ResponseEntity<UserResponseEntity> updatePersonalInfo(@CookieValue("user") String cookie,
-                        @RequestBody PostUpdateUserDTO postUpdateUserDTO, MultipartFile userAvatar)
+        public ResponseEntity<StandardJSONResponse<User>> updatePersonalInfo(@CookieValue("user") String cookie,
+                        @RequestBody PostUpdateUserDTO postUpdateUserDTO)
                         throws IOException {
                 User currentUser = authenticate.getLoggedInUser(cookie);
+                if (currentUser == null)
+                        return new FailureResponse(401, "user not authenticated").response();
+
                 User savedUser = null;
                 String updatedField = postUpdateUserDTO.getUpdatedField();
                 Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
-                UserResponseEntity userResponseEntity = new UserResponseEntity();
 
                 switch (updatedField) {
                         case "firstNameAndLastName": {
@@ -250,13 +225,9 @@ public class UserORestController {
                                 currentUser.setEmail(newEmail);
                                 savedUser = userService.saveUser(currentUser);
 
-                                userResponseEntity.setErrorMessage(null);
-                                userResponseEntity.setSuccessMessage(UPDATE_USER_SUCCESS);
-                                userResponseEntity.setUser(savedUser);
-
                                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                                                 cookiePorcess.writeCookie("user", savedUser.getEmail()).toString())
-                                                .body(userResponseEntity);
+                                                .body(new StandardJSONResponse<>(true, savedUser, null));
                         }
                         case "password": {
                                 String newPassword = updateData.get("newPassword");
@@ -273,38 +244,42 @@ public class UserORestController {
                                 savedUser = userService.saveUser(currentUser);
                                 break;
                         }
-                        case "avatar": {
-                                if (userAvatar != null) {
-                                        String fileName = StringUtils.cleanPath(userAvatar.getOriginalFilename());
-                                        currentUser.setAvatar(fileName);
-                                        savedUser = userService.saveUser(currentUser);
-                                        String uploadDir = "../user_images/" + savedUser.getId();
-                                        FileUploadUtil.cleanDir(uploadDir);
-                                        FileUploadUtil.saveFile(uploadDir, fileName, userAvatar);
-                                }
-                                break;
-                        }
                 }
 
-                userResponseEntity.setErrorMessage(null);
-                userResponseEntity.setSuccessMessage(UPDATE_USER_SUCCESS);
-                userResponseEntity.setUser(savedUser);
-
-                return new ResponseEntity<UserResponseEntity>(userResponseEntity, null, HttpStatus.SC_OK);
+                return new SuccessResponse(201).response(savedUser);
         }
 
-        @GetMapping(value = "bookedRooms")
-        public ResponseEntity<UserBookedRoomsResponseEntity> getUserBookedRooms(
-                        @CookieValue("user") String cookie,
+        @PostMapping("update-avatar")
+        public ResponseEntity<StandardJSONResponse<User>> updateUserAvatar(@CookieValue("user") String cookie,
+                        @RequestParam(name = "newAvatar", required = false) MultipartFile newAvatar)
+                        throws IOException {
+                User currentUser = authenticate.getLoggedInUser(cookie);
+                if (currentUser == null)
+                        return new FailureResponse(401, "user not authenticated").response();
+
+                User savedUser = null;
+
+                if (newAvatar != null) {
+                        String fileName = StringUtils.cleanPath(newAvatar.getOriginalFilename());
+                        currentUser.setAvatar(fileName);
+                        savedUser = userService.saveUser(currentUser);
+                        String uploadDir = STATIC_PATH + "/" + savedUser.getId();
+                        FileUploadUtil.cleanDir(uploadDir);
+                        FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
+                }
+
+                return new SuccessResponse(201).response(savedUser);
+        }
+
+        @GetMapping(value = "booked-rooms")
+        public ResponseEntity<StandardJSONResponse<UserBookedRoomsResponseEntity>> getUserBookedRooms(
+                        @CookieValue(value = "user", required = false) String cookie,
                         @RequestParam(value = "query", required = false, defaultValue = "") String query) {
                 User user = authenticate.getLoggedInUser(cookie);
-
-                System.out.println(query);
+                if (user == null)
+                        return new FailureResponse(401, "user not authenticated").response();
 
                 List<BookedRoomDTO> bookings = bookingService.getBookedRoomsByUser(user.getId(), query);
-
-                UserBookedRoomsResponseEntity userBookedRoomsResponseEntity = new UserBookedRoomsResponseEntity();
-                userBookedRoomsResponseEntity.setBookedRooms(bookings);
 
                 Integer[] starLoop = new Integer[] { 1, 2, 3, 4, 5 };
                 String[] ratingLabel = new String[] { "Mức độ sạch sẽ", "Độ chính xác", "Liên lạc", "Vị trí",
@@ -315,9 +290,7 @@ public class UserORestController {
                         ratings.add(new RatingDTO(ratingLabel[i], starLoop));
                 }
 
-                userBookedRoomsResponseEntity.setRatingLabels(ratings);
-
-                return new ResponseEntity<UserBookedRoomsResponseEntity>(userBookedRoomsResponseEntity, null,
-                                HttpStatus.SC_OK);
+                return new SuccessResponse().response(new UserBookedRoomsResponseEntity(
+                                ratings, bookings));
         }
 }
