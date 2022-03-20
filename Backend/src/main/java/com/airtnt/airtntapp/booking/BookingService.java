@@ -13,12 +13,12 @@ import java.util.NoSuchElementException;
 import javax.transaction.Transactional;
 
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
+import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
 import com.airtnt.entity.exception.BookingNotFoundException;
-import com.airtnt.error.NotAuthenticatedError;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -310,12 +310,12 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking cancelBooking(Integer bookingId, User user) throws NotAuthenticatedError {
+    public Booking cancelBooking(Integer bookingId, User user) throws ForbiddenException {
         Booking canceledBooking = getBookingById(bookingId);
         LocalDateTime cancelDate = LocalDateTime.now();
 
         if (!user.getId().equals(canceledBooking.getRoom().getHost().getId())) {
-            throw new NotAuthenticatedError(); // if user sent request is not host of the room
+            throw new ForbiddenException(); // if user sent request is not host of the room
         }
 
         canceledBooking.setCancelDate(cancelDate);
@@ -326,17 +326,15 @@ public class BookingService {
         else
             canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
 
-        Booking updatedRecord = bookingRepository.save(canceledBooking);
-
-        return updatedRecord;
+        return bookingRepository.save(canceledBooking);
     }
 
     @Transactional
-    public Booking approveBooking(Integer bookingId, User user) throws NotAuthenticatedError {
+    public Booking approveBooking(Integer bookingId, User user) throws ForbiddenException {
         Booking approvedBooking = getBookingById(bookingId);
 
         if (!user.getId().equals(approvedBooking.getRoom().getHost().getId())) {
-            throw new NotAuthenticatedError(); // if user sent request is not host of the room
+            throw new ForbiddenException(); // if user sent request is not host of the room
         }
 
         approvedBooking.setComplete(true);

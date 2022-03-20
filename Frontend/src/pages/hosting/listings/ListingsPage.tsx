@@ -23,7 +23,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
     const { user, loading } = useSelector(userState);
 
     const {
-        hosting: { rooms, totalRecords, totalPages },
+        hosting: { rooms, totalRecords, totalPages, loading: roomsLoading },
     } = useSelector(roomState);
     const { pathname } = useLocation();
 
@@ -94,6 +94,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                             lastModifiedCb={lastModifiedCb}
                             rooms={rooms}
                         />
+
                         <Pagination totalPages={totalPages} />
                     </div>
                 </div>

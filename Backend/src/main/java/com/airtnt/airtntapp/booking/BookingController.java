@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.user.RatingDTO;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
-import com.airtnt.error.NotAuthenticatedError;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -157,7 +157,7 @@ public class BookingController {
     @GetMapping(value = "/{bookingId}/cancel")
     public String cancelBooking(@PathVariable("bookingId") Integer bookingId,
             @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes)
-            throws NotAuthenticatedError {
+            throws ForbiddenException {
         User currentUser = userService.getByEmail(userDetails.getUsername());
         Booking booking = bookingService.cancelBooking(bookingId, currentUser);
         if (booking != null)
@@ -171,7 +171,7 @@ public class BookingController {
     @GetMapping(value = "/{bookingId}/approved")
     public String approveBooking(@PathVariable("bookingId") Integer bookingId,
             @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes)
-            throws NotAuthenticatedError {
+            throws ForbiddenException {
         User requestedUser = userService.getByEmail(userDetails.getUsername());
 
         if (bookingService.approveBooking(bookingId, requestedUser) != null)

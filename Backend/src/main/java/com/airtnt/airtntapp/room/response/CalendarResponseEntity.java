@@ -1,4 +1,4 @@
-package com.airtnt.airtntapp.booking.response;
+package com.airtnt.airtntapp.room.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CancelBookingResponseEntity {
-    private String status;
+public class CalendarResponseEntity {
+    private String daysInMonth;
+    private int startInWeek;
 }

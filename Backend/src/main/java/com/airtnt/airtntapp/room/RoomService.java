@@ -48,7 +48,7 @@ import com.airtnt.entity.exception.RoomNotFoundException;
 @Transactional
 public class RoomService {
 	public static final int MAX_ROOM_PER_FETCH = 40;
-	public static final int MAX_ROOM_PER_FETCH_BY_HOST = 1000;
+	public static final int MAX_ROOM_PER_FETCH_BY_HOST = 100;
 	public static final int ROOMS_PER_PAGE = 10;
 
 	@Autowired
@@ -468,45 +468,20 @@ public class RoomService {
 		if (sortField.equals("category-name")) {
 			sort = Sort.by("category.name");
 		}
-
-		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+		System.out.println("true: " + sortDir.equals("ASC"));
+		sort = sortDir.equals("ASC") ? sort.ascending() : sort.descending();
 		Pageable pageable = PageRequest.of(pageNumber - 1, MAX_ROOM_PER_FETCH_BY_HOST, sort); // pase base 0
 
 		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
 		for (Map.Entry<String, String> key : filters.entrySet()) {
-			System.out.println("key: " + key.getKey() + " value: " + key.getValue());
+			System.out.println("key: " + key.getKey() + ", value: " + key.getValue());
 		}
 		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
-
 		if (amentitiesID.size() != 0)
 			return roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
 					bedCount,
 					amentitiesID, statusesID, pageable);
 		else {
-			// try (Session session = HibernateUtils.getSessionFactory().openSession();) {
-			// session.beginTransaction();
-			// String hql = "SELECT r FROM Room r WHERE r.host = :host"
-			// + " AND r.name LIKE %:query%"
-			// + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount
-			// AND r.bedCount >= :bedCount"
-			// + " AND r.status IN (:statusesID) GROUP BY r.id ORDER BY r.createdDate DESC";
-			// Query q = session.createQuery(hql, Room.class);
-			// q.setParameter("host", host);
-			// q.setParameter("query", roomName);
-			// q.setParameter("bedroomCount", bedroomCount);
-			// q.setParameter("bathroomCount", bathroomCount);
-			// q.setParameter("bedCount", bedCount);
-			// q.setParameterList("statusesID", statusesID);
-			// q.setFirstResult(pageNumber - 1 * MAX_ROOM_PER_FETCH_BY_HOST);
-			// q.setMaxResults(MAX_ROOM_PER_FETCH_BY_HOST);
-
-			// a = q.getResultList();
-
-			// session.getTransaction().commit();
-			// } catch (Exception e) {
-			// // TODO: handle exception
-			// }
-
 			return roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
 					bedCount,
 					statusesID, pageable);

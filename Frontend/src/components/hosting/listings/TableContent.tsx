@@ -4,6 +4,8 @@ import { userState } from '../../../features/user/userSlice';
 import { IRoomListings } from '../../../types/room/type_RoomListings';
 import { ColumnHeader } from '../../utils';
 import { ColumnSettings, RoomDataRow } from './components';
+import ReactLoading from 'react-loading';
+import { roomState } from '../../../features/room/roomSlice';
 
 interface ITableContentProps {
     commonNameCb: boolean;
@@ -23,10 +25,13 @@ const TableContent: FC<ITableContentProps> = ({
     rooms,
 }) => {
     const { user, loading } = useSelector(userState);
+    const {
+        hosting: { loading: roomsLoading },
+    } = useSelector(roomState);
 
     return (
         <div className='f1'>
-            <table id='table'>
+            <table id='table' className='p-relative'>
                 <thead>
                     <tr>
                         <th>
@@ -70,11 +75,33 @@ const TableContent: FC<ITableContentProps> = ({
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    {rooms.map(room => (
-                        <RoomDataRow room={room} key={room.id} email={user!.email} />
-                    ))}
-                </tbody>
+                {roomsLoading && (
+                    <div
+                        style={{
+                            width: '100%',
+                            height: '1000px',
+                            position: 'absolute',
+                            left: '0',
+                            top: '-150px',
+                            zIndex: '100',
+                        }}
+                        className='flex-center'
+                    >
+                        <ReactLoading
+                            height={50}
+                            width={50}
+                            color='rgb(230,30,77)'
+                            type='spinningBubbles'
+                        />
+                    </div>
+                )}
+                {!roomsLoading && (
+                    <tbody>
+                        {rooms.map(room => (
+                            <RoomDataRow room={room} key={room.id} email={user!.email} />
+                        ))}
+                    </tbody>
+                )}
             </table>
         </div>
     );

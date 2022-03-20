@@ -1,6 +1,5 @@
 package com.airtnt.airtntapp.response;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import lombok.AllArgsConstructor;

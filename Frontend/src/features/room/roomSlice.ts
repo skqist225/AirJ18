@@ -66,6 +66,8 @@ interface IGetUserOwnedRoom {
     beds?: number;
     amenityIDs?: string;
     statuses?: string;
+    sortField?: string;
+    sortDir?: string;
 }
 
 export const fetchUserOwnedRoom = createAsyncThunk(
@@ -79,6 +81,8 @@ export const fetchUserOwnedRoom = createAsyncThunk(
             beds = 0,
             amenityIDs = '',
             statuses = '',
+            sortField = 'id',
+            sortDir = 'asc',
         }: IGetUserOwnedRoom,
         { dispatch, getState, rejectWithValue }
     ) => {
@@ -86,7 +90,7 @@ export const fetchUserOwnedRoom = createAsyncThunk(
             const {
                 data: { rooms, totalPages, totalRecords },
             } = await api.get(
-                `/rooms/user/${pageNumber}?query=${query}&BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&AMENITY_IDS=${amenityIDs}&STATUSES=${statuses}`
+                `/rooms/user/${pageNumber}?QUERY=${query}&BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&AMENITY_IDS=${amenityIDs}&STATUSES=${statuses}&SORTFIELD=${sortField}&SORTDIR=${sortDir}`
             );
 
             return { rooms, totalPages, totalRecords };

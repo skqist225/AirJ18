@@ -7,7 +7,7 @@ interface IIncAndDecBtnProps {
     data?: number;
 }
 
-export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger, data }) => {
+export const IncAndDecBtn: FC<IIncAndDecBtnProps> = ({ dataEdit, dataTrigger, data = 0 }) => {
     $('.incAndDecBtn').each(function () {
         $(this)
             .off('click')

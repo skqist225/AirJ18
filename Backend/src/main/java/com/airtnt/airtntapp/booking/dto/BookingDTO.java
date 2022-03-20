@@ -2,6 +2,7 @@ package com.airtnt.airtntapp.booking.dto;
 
 import java.time.LocalDateTime;
 
+import com.airtnt.entity.Booking;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -22,4 +23,9 @@ public class BookingDTO {
     private String currencySymbol;
     private float totalFee;
     private long lastUpdated;
+
+    public static BookingDTO buildBookingDTO(Booking booking) {
+        return new BookingDTO(booking.getId(), booking.getBookingDate(),
+                booking.getRoom().getCurrency().getSymbol(), booking.getTotalFee(), 0);
+    }
 }

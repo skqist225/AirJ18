@@ -17,6 +17,7 @@ import com.airtnt.airtntapp.room.dto.RoomDetailsDTO;
 import com.airtnt.airtntapp.room.dto.RoomHomePageDTO;
 import com.airtnt.airtntapp.room.dto.RoomPricePerCurrencyDTO;
 import com.airtnt.airtntapp.room.dto.page.listings.RoomListingsDTO;
+import com.airtnt.airtntapp.room.response.CalendarResponseEntity;
 import com.airtnt.airtntapp.room.response.RoomsOwnedByUserResponseEntity;
 import com.airtnt.airtntapp.rule.RuleService;
 import com.airtnt.airtntapp.state.StateService;
@@ -24,7 +25,9 @@ import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Room;
 import com.airtnt.airtntapp.response.ErrorJSONResponse;
+import com.airtnt.airtntapp.response.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
+import com.airtnt.airtntapp.response.SuccessResponse;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,13 +197,15 @@ public class RoomRestController {
     }
 
     @GetMapping("/api/calendar/{selectedMonth}/{selectedYear}")
-    public String getCalendayByYearAndMonthV2(@PathVariable("selectedYear") int selectedYear,
+    public ResponseEntity<StandardJSONResponse<CalendarResponseEntity>> getCalendayByYearAndMonthV2(
+            @PathVariable("selectedYear") int selectedYear,
             @PathVariable("selectedMonth") int selectedMonth) {
         List<String> daysInMonth = CalendarClass.getDaysInMonth(selectedMonth - 1, selectedYear);
         String strDaysInMonth = daysInMonth.stream().map(Object::toString).collect(Collectors.joining(" "));
         GregorianCalendar gCal = new GregorianCalendar(selectedYear, selectedMonth - 1, 1);
         int startInWeek = gCal.get(Calendar.DAY_OF_WEEK); // ngày thứ mấy trong tuần đó
-        return new JSONObject().put("daysInMonth", strDaysInMonth).put("startInWeek", startInWeek).toString();
+
+        return new SuccessResponse().response(new CalendarResponseEntity(strDaysInMonth, startInWeek));
     }
 
     @PostMapping("/room/verify-phone")
@@ -275,25 +280,15 @@ public class RoomRestController {
             @RequestParam(name = "BATHROOMS", required = false, defaultValue = "0") String bathRoomsCount,
             @RequestParam(name = "BEDROOMS", required = false, defaultValue = "0") String bedRoomsCount,
             @RequestParam(name = "BEDS", required = false, defaultValue = "0") String bedsCount,
-            @RequestParam(name = "query", required = false, defaultValue = "") String query,
-            @RequestParam(name = "sort_dir", required = false, defaultValue = "asc") String sortDir,
-            @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
+            @RequestParam(name = "QUERY", required = false, defaultValue = "") String query,
+            @RequestParam(name = "SORTDIR", required = false, defaultValue = "DESC") String sortDir,
+            @RequestParam(name = "SORTFIELD", required = false, defaultValue = "createdDate") String sortField,
             @RequestParam(name = "AMENITY_IDS", required = false, defaultValue = "") String amentitiesFilter,
             @RequestParam(name = "STATUSES", required = false, defaultValue = "ACTIVE UNLISTED") String status) {
         User host = authenticate.getLoggedInUser(cookie);
-
-        RoomsOwnedByUserResponseEntity roomByUserResponseEntity = new RoomsOwnedByUserResponseEntity();
-        StandardJSONResponse<RoomsOwnedByUserResponseEntity> standardJSONResponse = new StandardJSONResponse<>();
         // When user not logged in
-        if (host == null) {
-            standardJSONResponse.setSuccess(false);
-            standardJSONResponse.setData(null);
-            standardJSONResponse.setError(new ErrorJSONResponse(401, "user not authenticated"));
-
-            return new ResponseEntity<StandardJSONResponse<RoomsOwnedByUserResponseEntity>>(
-                    standardJSONResponse, null,
-                    HttpStatus.UNAUTHORIZED);
-        }
+        if (host == null)
+            return NotAuthenticatedResponse.response();
 
         // When user logged in
         Map<String, String> filters = new HashMap<>();
@@ -310,17 +305,8 @@ public class RoomRestController {
         List<RoomListingsDTO> roomListingsDTOs = new ArrayList<>();
         roomsPage.getContent().forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
 
-        roomByUserResponseEntity.setRooms(roomListingsDTOs);
-        roomByUserResponseEntity.setTotalRecords(roomsPage.getTotalElements());
-        roomByUserResponseEntity.setTotalPages(roomsPage.getTotalPages());
-
-        standardJSONResponse.setSuccess(true);
-        standardJSONResponse.setData(roomByUserResponseEntity);
-        standardJSONResponse.setError(null);
-
-        return new ResponseEntity<StandardJSONResponse<RoomsOwnedByUserResponseEntity>>(
-                standardJSONResponse, null,
-                HttpStatus.OK);
+        return new SuccessResponse().response(new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
+                roomsPage.getTotalElements(), roomsPage.getTotalPages()));
     }
 
     @GetMapping("/api/rooms/average-price")

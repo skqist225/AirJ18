@@ -109,10 +109,10 @@ export const updateUserInfo = createAsyncThunk(
 
 export const updateUserAvatar = createAsyncThunk(
     'user/updateUserAvatar',
-    async (formData, { dispatch, getState, rejectWithValue }) => {
+    async (formData: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.post(`/user/update-avatar`, formData);
-            //update local user info
+            if (data) setUserToLocalStorage(data as IUser);
 
             return { data };
         } catch (error) {}

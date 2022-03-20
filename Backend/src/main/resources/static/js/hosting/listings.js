@@ -155,7 +155,7 @@ jQuery(document).ready(function () {
                         else beds = spanValue;
                     });
 
-                    url += `?BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&query=${query}`;
+                    url += `?BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&QUERY=${query}`;
                     break;
                 }
                 case 'amentities': {
@@ -197,8 +197,8 @@ jQuery(document).ready(function () {
                 });
             }
 
-            let sortDir = map.get('sort_dir') === 'asc' ? 'desc' : 'asc';
-            url += `?sort_field=${$(this).data('sort-field')}&sort_dir=${sortDir}`;
+            let sortDir = map.get('SORTDIR') === 'ASC' ? 'DESC' : 'ASC';
+            url += `?SORTFIELD=${$(this).data('sort-field')}&SORTDIR=${sortDir}`;
             window.location.href = url;
         });
     });

@@ -76,10 +76,8 @@ export const cancelBooking = createAsyncThunk(
     'booking/cancelBooking',
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { status },
-            } = await api.get(`/booking/${bookingid}/canceled`);
-            return { status };
+            const { data } = await api.get(`/booking/${bookingid}/canceled`);
+            return { data };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
         }
@@ -90,10 +88,8 @@ export const approveBooking = createAsyncThunk(
     'booking/approveBooking',
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { status },
-            } = await api.get(`/booking/${bookingid}/approved`);
-            return { status };
+            const { data } = await api.get(`/booking/${bookingid}/approved`);
+            return { data };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
         }
@@ -138,10 +134,10 @@ const bookingSlice = createSlice({
                 state.newlyCreatedBooking = payload;
             })
             .addCase(cancelBooking.fulfilled, (state, { payload }) => {
-                state.cancelMessage = payload?.status;
+                state.cancelMessage = payload?.data;
             })
             .addCase(approveBooking.fulfilled, (state, { payload }) => {
-                state.cancelMessage = payload?.status;
+                state.cancelMessage = payload?.data;
             })
             .addMatcher(isAnyOf(fetchUserBookings.pending), state => {
                 state.loading = true;

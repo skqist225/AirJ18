@@ -5,7 +5,6 @@ import java.util.List;
 import com.airtnt.airtntapp.category.dto.CategoryDTO;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.SuccessResponse;
-import com.airtnt.entity.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -25,8 +25,8 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
                     successMessage = 'Gỡ bỏ khỏi danh sách yêu thích thành công';
                     errorMessage = 'Gỡ bỏ khỏi danh sách yêu thích thất bại';
 
-                    const { data } = await axios.get(`/user/remove-from-wishlists/${roomId}`);
-                    if (data === 'success') {
+                    const { data } = await axios.get(`/user/remove-from-favoritelists/${roomId}`);
+                    if (data === 'remove from wishlists successfully') {
                         $('.room__likeBtn').each(function () {
                             if (parseInt($(this).data('room-id')) === parseInt(roomId))
                                 $(this).children('.heartSvg').removeClass('like');
@@ -37,8 +37,8 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
                     successMessage = 'Thêm vào danh sách yêu thích thành công';
                     errorMessage = 'Thêm vào danh sách yêu thích thất bại';
 
-                    const { data } = await axios.get(`/user/add-to-wishlists/${roomId}`);
-                    if (data === 'success') {
+                    const { data } = await axios.get(`/user/add-to-favoritelists/${roomId}`);
+                    if (data === 'add to wishlists successfully') {
                         $('.room__likeBtn').each(function () {
                             if ($(this).data('room-id') * 1 === parseInt(roomId))
                                 $(this).children('.heartSvg').addClass('like');

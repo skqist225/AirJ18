@@ -15,8 +15,10 @@ import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.FailureResponse;
+import com.airtnt.airtntapp.response.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
@@ -38,6 +40,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +50,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/")
 public class UserORestController {
 
         public final String REGISTER_USER_SUCCESS = "REGISTER_USER_SUCCESSFULLY";
@@ -82,7 +85,10 @@ public class UserORestController {
         @Autowired
         private CityService cityService;
 
-        @PostMapping("/register")
+        @Autowired
+        private RoomService roomService;
+
+        @PostMapping("register")
         public ResponseEntity<StandardJSONResponse<User>> registerUser(@RequestBody PostRegisterUserDTO postUser,
                         HttpServletResponse res) {
                 // check email exist
@@ -97,7 +103,7 @@ public class UserORestController {
                 return new SuccessResponse(201).response(savedUser);
         }
 
-        @PostMapping("/login")
+        @PostMapping("login")
         public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
                         HttpServletResponse res) {
                 User user = userService.getByEmail(postUser.getEmail());
@@ -113,14 +119,14 @@ public class UserORestController {
                                 .body(new StandardJSONResponse<User>(true, user, null));
         }
 
-        @GetMapping("/logout")
+        @GetMapping("logout")
         public ResponseEntity<StandardJSONResponse<String>> logout() {
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                                 cookiePorcess.writeCookie("user", null).toString()).body(
                                                 new StandardJSONResponse<String>(true, "log out successfully", null));
         }
 
-        @GetMapping("/wishlists/ids")
+        @GetMapping("wishlists/ids")
         public ResponseEntity<StandardJSONResponse<Integer[]>> fetchWishlistsIds(
                         @CookieValue(value = "user", required = false) String cookie) {
                 User user = authenticate.getLoggedInUser(cookie);
@@ -136,7 +142,7 @@ public class UserORestController {
                 return new SuccessResponse().response(wishlists);
         }
 
-        @GetMapping("/wishlists")
+        @GetMapping("wishlists")
         public ResponseEntity<StandardJSONResponse<WishlistsDTO[]>> fetchWishlists(
                         @CookieValue(value = "user", required = false) String cookie) {
                 User user = authenticate.getLoggedInUser(cookie);
@@ -269,6 +275,36 @@ public class UserORestController {
                 }
 
                 return new SuccessResponse(201).response(savedUser);
+        }
+
+        @GetMapping("add-to-favoritelists/{roomid}")
+        public ResponseEntity<StandardJSONResponse<String>> addToWishLists(
+                        @CookieValue(value = "user", required = false) String cookie,
+                        @PathVariable("roomid") Integer roomid) {
+                User user = authenticate.getLoggedInUser(cookie);
+                if (user == null)
+                        return NotAuthenticatedResponse.response();
+
+                user.addToWishLists(roomService.getRoomById(roomid));
+                User savedUser = userService.saveUser(user);
+
+                return savedUser != null ? new SuccessResponse().response("add to wishlists successfully")
+                                : new FailureResponse("can not sync user data into database").response();
+        }
+
+        @GetMapping("remove-from-favoritelists/{roomid}")
+        public ResponseEntity<StandardJSONResponse<String>> removeFromWishLists(
+                        @CookieValue(value = "user", required = false) String cookie,
+                        @PathVariable("roomid") Integer roomId) {
+                User user = authenticate.getLoggedInUser(cookie);
+                if (user == null)
+                        return NotAuthenticatedResponse.response();
+
+                user.removeFromWishLists(roomService.getRoomById(roomId));
+                User savedUser = userService.saveUser(user);
+
+                return savedUser != null ? new SuccessResponse().response("remove from wishlists successfully")
+                                : new FailureResponse("can not sync user data into database").response();
         }
 
         @GetMapping(value = "booked-rooms")

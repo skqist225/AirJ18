@@ -154,7 +154,7 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                 if (newAvatar) {
                     const formData = new FormData();
                     formData.set('newAvatar', newAvatar);
-                    // dispatch(updateUserAvatar(formData));
+                    dispatch(updateUserAvatar(formData));
                 }
                 break;
             }
