@@ -18,7 +18,7 @@ interface IFilterRoomBoxProps {}
 
 const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
     const dispatch = useDispatch();
-    const { roomPrivacies, averageRoomPricePerNight, filterObject } = useSelector(roomState);
+    const { roomPrivacies, averageRoomPriceByType, filterObject } = useSelector(roomState);
     const { amenities } = useSelector(amenityState);
 
     function hideEditThumbnailBox() {
@@ -153,7 +153,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                         <span> </span>
                                         <MyNumberForMat
                                             isPrefix
-                                            price={parseInt(averageRoomPricePerNight.toFixed(2))}
+                                            price={parseInt(averageRoomPriceByType.toFixed(2))}
                                             currency={'đ'}
                                         />
                                     </div>

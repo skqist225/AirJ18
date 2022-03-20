@@ -5,7 +5,7 @@ import { fetchCategories } from '../features/category/categorySlice';
 import {
     fetchRoomPrivacies,
     fetchRoomsByCategoryAndConditions,
-    getAverageRoomPricePerNight,
+    findAverageRoomPriceByType,
     roomState,
     setMockingRoomLoading,
 } from '../features/room/roomSlice';
@@ -42,7 +42,7 @@ const HomePage: FC<HomeProps> = () => {
         dispatch(fetchCategories());
         dispatch(fetchRoomPrivacies());
         dispatch(fetchAmenities());
-        dispatch(getAverageRoomPricePerNight());
+        dispatch(findAverageRoomPriceByType('PER_NIGHT'));
     }, []);
 
     useEffect(() => {

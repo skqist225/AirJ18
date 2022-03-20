@@ -68,8 +68,6 @@ import com.airtnt.entity.exception.RoomNotFoundException;
 
 @RestController
 public class RoomRestController {
-
-    private final String FETCH_OWNED_ROOMS_SUCCESS = "FETCH_OWNED_ROOMS_SUCCESSFULLY";
     private final String STATIC_PATH = "Backend/src/main/resources/static/room_images";
 
     @Autowired

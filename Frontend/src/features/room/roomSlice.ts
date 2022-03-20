@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { boolean } from 'yup';
 import api from '../../axios';
 import { RootState } from '../../store';
 import { IRoom, IRoomGroup, IRoomPrivacy } from '../../types/room/type_Room';
@@ -35,7 +34,9 @@ export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
         { dispatch, getState, rejectWithValue }
     ) => {
         try {
-            const { data } = await api.get(
+            const {
+                data: { data },
+            } = await api.get(
                 `/rooms?categoryId=${categoryid}&privacies=${privacies.join(
                     ' '
                 )}&minPrice=${minPrice}&maxPrice=${maxPrice}&bedRoom=${bedRoomCount}&bed=${bedCount}&bathRoom=${bathRoomCount}&amentities=${selectedAmentities.join(
@@ -52,7 +53,9 @@ export const fetchRoomById = createAsyncThunk(
     'room/fetchRoomById',
     async ({ roomid }: { roomid: string }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.get(`/room/${roomid}`);
+            const {
+                data: { data },
+            } = await api.get(`/room/${roomid}`);
 
             return { data };
         } catch (error) {}
@@ -85,12 +88,14 @@ export const fetchUserOwnedRoom = createAsyncThunk(
     ) => {
         try {
             const {
-                data: { rooms, successMessage, totalPages, totalRecords },
+                data: {
+                    data: { rooms, totalPages, totalRecords },
+                },
             } = await api.get(
                 `/rooms/user/${pageNumber}?query=${query}&BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&AMENITY_IDS=${amenityIDs}&STATUSES=${statuses}`
             );
 
-            return { rooms, successMessage, totalPages, totalRecords };
+            return { rooms, totalPages, totalRecords };
         } catch (error) {}
     }
 );
@@ -117,11 +122,13 @@ export const fetchRoomGroups = createAsyncThunk(
     }
 );
 
-export const getAverageRoomPricePerNight = createAsyncThunk(
-    'room/getAverageRoomPricePerNight',
-    async (_, { dispatch, getState, rejectWithValue }) => {
+export const findAverageRoomPriceByType = createAsyncThunk(
+    'room/findAverageRoomPriceByType',
+    async (type: string = 'PER_NIGHT', { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.get(`/getAverageRoomPricePerNight`);
+            const {
+                data: { data },
+            } = await api.get(`/rooms/average-price?type=${type}`);
 
             return { data };
         } catch (error) {}
@@ -132,7 +139,9 @@ export const addRoom = createAsyncThunk(
     'room/addRoom',
     async (fd: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.post(`/room/save`, fd, {
+            const {
+                data: { data },
+            } = await api.post(`/room/save`, fd, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -189,7 +198,7 @@ type RoomState = {
     loading: boolean;
     roomPrivacies: IRoomPrivacy[];
     roomGroups: IRoomGroup[];
-    averageRoomPricePerNight: number;
+    averageRoomPriceByType: number;
     mockingRoomLoading: boolean;
     filterObject: {
         choosenPrivacy: number[];
@@ -218,7 +227,7 @@ const initialState: RoomState = {
     roomPrivacies: [],
     roomGroups: [],
     mockingRoomLoading: true,
-    averageRoomPricePerNight: 0,
+    averageRoomPriceByType: 0,
     filterObject: {
         choosenPrivacy: [],
         minPrice: 0,
@@ -284,8 +293,8 @@ const roomSlice = createSlice({
             .addCase(fetchRoomGroups.fulfilled, (state, { payload }) => {
                 state.roomGroups = payload?.data;
             })
-            .addCase(getAverageRoomPricePerNight.fulfilled, (state, { payload }) => {
-                state.averageRoomPricePerNight = payload?.data;
+            .addCase(findAverageRoomPriceByType.fulfilled, (state, { payload }) => {
+                state.averageRoomPriceByType = payload?.data;
             })
             .addCase(addRoom.fulfilled, (state, { payload }) => {
                 state.newlyCreatedRoomId = parseInt(payload?.data as string);
