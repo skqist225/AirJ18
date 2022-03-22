@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "210400175318",
+    "project_id": "airj18-booking-app",
+    "storage_bucket": "airj18-booking-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210400175318:android:c2d4a249aa891fd9ac1577",
+        "android_client_info": {
+          "package_name": "com.devpro.airj18bookingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210400175318-0li5sv89vj84n2nkcg7dr0rf5ie30lgn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJR6HHnfUcZUhoVz6ESjL_842bYaAIORs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210400175318-0li5sv89vj84n2nkcg7dr0rf5ie30lgn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210400175318:android:0b3882c880067a46ac1577",
+        "android_client_info": {
+          "package_name": "com.example.book_hotel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210400175318-0li5sv89vj84n2nkcg7dr0rf5ie30lgn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJR6HHnfUcZUhoVz6ESjL_842bYaAIORs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "210400175318-0li5sv89vj84n2nkcg7dr0rf5ie30lgn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
