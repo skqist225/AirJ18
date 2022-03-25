@@ -6,7 +6,6 @@ import 'package:book_hotel/blocs/authentication_bloc/authentication_event.dart';
 import 'package:book_hotel/blocs/login_bloc/login_bloc.dart';
 import 'package:book_hotel/blocs/register_bloc/register_bloc.dart';
 import 'package:book_hotel/blocs/simple_bloc_observer.dart';
-import 'package:book_hotel/navigation_home_screen.dart';
 import 'package:book_hotel/repositories/user_repository.dart';
 import 'package:book_hotel/src/auth/splash_screen.dart';
 import 'package:book_hotel/src/introduction_animation/introduction_animation_screen.dart';

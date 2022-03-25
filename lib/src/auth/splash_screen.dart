@@ -1,10 +1,6 @@
-import 'dart:async';
-import 'dart:convert';
 
-import 'package:book_hotel/app_theme.dart';
 import 'package:book_hotel/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:book_hotel/blocs/authentication_bloc/authentication_state.dart';
-import 'package:book_hotel/helpers/directions_handler.dart';
 import 'package:book_hotel/main.dart';
 import 'package:book_hotel/navigation_home_screen.dart';
 import 'package:book_hotel/src/auth/auth_screen.dart';

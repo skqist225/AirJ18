@@ -12,6 +12,7 @@ String navType = 'cycling';
 Dio _dio = Dio();
 
 Future getCyclingRouteUsingMapbox(LatLng source, LatLng destination) async {
+  print("${source.longitude},${source.latitude} +-------+ ${destination.longitude},${destination.latitude}");
   String url =
       '$baseUrl/$navType/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?alternatives=true&continue_straight=true&geometries=geojson&language=en&overview=full&steps=true&access_token=$accessToken';
   try {

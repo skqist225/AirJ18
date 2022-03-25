@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:book_hotel/app_theme.dart';
 import 'package:book_hotel/blocs/room_detail_bloc/room_detail_bloc.dart';
 import 'package:book_hotel/constants/api_path.dart';
 import 'package:book_hotel/helpers/directions_handler.dart';
@@ -104,19 +105,40 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
             Positioned(
               left: 20,
               bottom: MediaQuery.of(context).size.height * .62,
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Color(0xfffd8c00), shape: BoxShape.circle),
-                child: Transform.rotate(
-                  angle: 25 * 3.1416 / 180,
-                  child: IconButton(
-                    icon: const Icon(Icons.navigation),
-                    onPressed: () async {
-                      initializeLocationAndSave([roomDetail]);
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => MapScreen(room: roomDetail)));
-                    },
-                    color: Colors.white,
+              child: GestureDetector(
+                onTap: () async {
+                  initializeLocationAndSave([roomDetail]);
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MapScreen(room: roomDetail)));
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: AppTheme.darkGrey.withOpacity(.6),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                            color: Color(0xfffd8c00), shape: BoxShape.circle),
+                        child: Transform.rotate(
+                          angle: 25 * 3.1416 / 180,
+                          child: const Icon(
+                            Icons.navigation,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Mở bản đồ",
+                          style: AppTheme.body1.copyWith(color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -154,10 +176,10 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
 
     // Get and store the directions API response in sharedPreferences
     for (int i = 0; i < rooms.length; i++) {
-      Map modifiedResponse = await getDirectionsAPIResponse(currentLatLng, i, rooms[i]);
+      Map modifiedResponse =
+          await getDirectionsAPIResponse(currentLatLng, i, rooms[i]);
       saveDirectionsAPIResponse(i, json.encode(modifiedResponse));
     }
-
   }
 }
 

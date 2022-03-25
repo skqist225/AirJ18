@@ -122,27 +122,32 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(widget.room.name!, style: AppTheme.title,),
+        title: Text(
+          widget.room.name!,
+          style: AppTheme.title,
+        ),
         backgroundColor: Colors.transparent,
-        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        elevation: 0.0,
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: MapboxMap(
-                accessToken: dotenv.env['MAPBOX_ACCESS_TOKEN'],
-                initialCameraPosition: _initialCameraPosition,
-                onMapCreated: _onMapCreated,
-                onStyleLoadedCallback: _onStyleLoadedCallback,
-                myLocationEnabled: true,
-                myLocationTrackingMode: MyLocationTrackingMode.TrackingGPS,
-                minMaxZoomPreference: const MinMaxZoomPreference(14, 50),
-              ),
-            ),
-            CarouselSlider(
+      body: Stack(
+        children: [
+          MapboxMap(
+            accessToken: dotenv.env['MAPBOX_ACCESS_TOKEN'],
+            initialCameraPosition: _initialCameraPosition,
+            onMapCreated: _onMapCreated,
+            onStyleLoadedCallback: _onStyleLoadedCallback,
+            myLocationEnabled: true,
+            myLocationTrackingMode: MyLocationTrackingMode.TrackingGPS,
+            minMaxZoomPreference: const MinMaxZoomPreference(14, 50),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 80),
+            child: CarouselSlider(
               items: carouselItems,
               options: CarouselOptions(
                 height: 100,
@@ -159,8 +164,8 @@ class _MapScreenState extends State<MapScreen> {
                 },
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -195,12 +200,13 @@ class _MapScreenState extends State<MapScreen> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  Text(rooms[index].description!,
+                  Text(rooms[index].description!,style: AppTheme.caption,
                       overflow: TextOverflow.ellipsis),
                   const SizedBox(height: 5),
                   Text(
                     '${distance.toStringAsFixed(2)}kms, ${duration.toStringAsFixed(2)} mins',
-                    style: const TextStyle(color: Colors.tealAccent),
+                    style: AppTheme.caption,
+
                   )
                 ],
               ),
