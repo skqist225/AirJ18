@@ -103,29 +103,6 @@ public class UserORestController {
                 return new SuccessResponse(201).response(savedUser);
         }
 
-        @PostMapping("login")
-        public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
-                        HttpServletResponse res) {
-                User user = userService.getByEmail(postUser.getEmail());
-
-                if (user == null)
-                        return new FailureResponse("Email does not exist").response();
-
-                if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
-                        return new FailureResponse("Password does not match").response();
-
-                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                                cookiePorcess.writeCookie("user", user.getEmail()))
-                                .body(new StandardJSONResponse<User>(true, user, null));
-        }
-
-        @GetMapping("logout")
-        public ResponseEntity<StandardJSONResponse<String>> logout() {
-                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                                cookiePorcess.writeCookie("user", null).toString()).body(
-                                                new StandardJSONResponse<String>(true, "log out successfully", null));
-        }
-
         @GetMapping("wishlists/ids")
         public ResponseEntity<StandardJSONResponse<Integer[]>> fetchWishlistsIds(
                         @CookieValue(value = "user", required = false) String cookie) {

@@ -3,7 +3,6 @@ package com.airtnt.airtntapp.user;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.security.AirtntUserDetails;
 import com.airtnt.entity.Room;
@@ -11,7 +10,6 @@ import com.airtnt.entity.User;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;

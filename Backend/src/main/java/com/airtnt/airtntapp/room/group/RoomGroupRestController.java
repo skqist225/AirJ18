@@ -5,9 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import com.airtnt.airtntapp.response.StandardJSONResponse;
+import com.airtnt.airtntapp.response.SuccessResponse;
 import com.airtnt.entity.RoomGroup;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
@@ -17,8 +20,7 @@ public class RoomGroupRestController {
     private RoomGroupService roomGroupService;
 
     @GetMapping(value = "room-group")
-    public List<RoomGroup> fetchRoomGroup() {
-        return roomGroupService.getRoomGroups();
+    public ResponseEntity<StandardJSONResponse<List<RoomGroup>>> fetchRoomGroup() {
+        return new SuccessResponse().response(roomGroupService.getRoomGroups());
     }
-
 }

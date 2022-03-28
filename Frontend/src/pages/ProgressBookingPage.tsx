@@ -76,7 +76,11 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
     const [beforeCheckinDateDate, beforeCheckinDateMonth] =
         calculateBeforeCheckinDateDateAndMonth(checkinDate);
 
+
+              console.log(checkinDate);
+              console.log(checkoutDate);
     function makeBooking() {
+  
         dispatch(
             createBooking({
                 roomid: room!.id,

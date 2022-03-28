@@ -637,10 +637,11 @@ const Calendar: FC<ICalendarProps> = ({
                 if (dayInWeek === '') {
                 } else if (dayInWeek.trim() !== '_') {
                     let isBlocked = false;
-                    if (year < date.getFullYear()) isBlocked = true;
-                    else if (month < date.getMonth() + 1 && year === date.getFullYear())
-                        isBlocked = true;
-                    else if (month === date.getMonth() + 1 && parseInt(dayInWeek) < date.getDate())
+                    if (
+                        year < date.getFullYear() ||
+                        (month < date.getMonth() + 1 && year === date.getFullYear()) ||
+                        (month === date.getMonth() + 1 && parseInt(dayInWeek) < date.getDate())
+                    )
                         isBlocked = true;
                     else {
                         const dateThis =

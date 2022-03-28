@@ -24,7 +24,6 @@ import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Room;
-import com.airtnt.airtntapp.response.ErrorJSONResponse;
 import com.airtnt.airtntapp.response.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.SuccessResponse;
