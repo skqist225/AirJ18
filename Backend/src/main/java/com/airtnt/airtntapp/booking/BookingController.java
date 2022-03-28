@@ -10,8 +10,8 @@ import java.util.Map;
 
 import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.room.RoomService;
-import com.airtnt.airtntapp.user.RatingDTO;
 import com.airtnt.airtntapp.user.UserService;
+import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;

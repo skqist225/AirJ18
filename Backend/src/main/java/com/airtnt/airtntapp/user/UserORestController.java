@@ -24,6 +24,7 @@ import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
+import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.airtntapp.user.dto.WishlistsDTO;
 import com.airtnt.airtntapp.user.response.UserBookedRoomsResponseEntity;
 import com.airtnt.entity.Address;

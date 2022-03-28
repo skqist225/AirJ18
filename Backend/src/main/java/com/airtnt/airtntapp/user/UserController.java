@@ -16,6 +16,7 @@ import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.security.AirtntUserDetails;
 import com.airtnt.airtntapp.state.StateService;
+import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.entity.Address;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.City;

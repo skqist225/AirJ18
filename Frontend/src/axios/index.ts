@@ -3,7 +3,11 @@ import axios from 'axios';
 const multipartFormData = 'multipart/form-data';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: `${
+        process.env.NODE_ENV === 'development'
+            ? process.env.REACT_APP_LOCAL_SERVER_URL
+            : process.env.REACT_APP_REMOTE_SERVER_URL
+    }/api`,
     headers: {
         'Content-Type': multipartFormData,
     },
