@@ -14,15 +14,14 @@ import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.middleware.Authenticate;
-import com.airtnt.airtntapp.response.FailureResponse;
-import com.airtnt.airtntapp.response.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
-import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.response.error.BadResponse;
+import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
+import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
-import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.airtntapp.user.dto.WishlistsDTO;
@@ -95,13 +94,13 @@ public class UserORestController {
                 // check email exist
                 boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
                 if (!isDuplicatedEmail)
-                        return new FailureResponse("Duplicated entry email").response();
+                        return new BadResponse<User>("Duplicated entry email").response();
 
                 // create new user
                 User user = User.buildUser(postUser);
                 User savedUser = userService.save(user);
 
-                return new SuccessResponse(201).response(savedUser);
+                return new OkResponse<User>(savedUser).response();
         }
 
         @GetMapping("wishlists/ids")
@@ -110,14 +109,14 @@ public class UserORestController {
                 User user = authenticate.getLoggedInUser(cookie);
 
                 if (user == null)
-                        return new FailureResponse(401, "user not authenticated").response();
+                        return new NotAuthenticatedResponse<Integer[]>().response();
 
                 Integer[] wishlists = new Integer[user.getFavRooms().size()];
                 int i = 0;
                 for (Room r : user.getFavRooms())
                         wishlists[i++] = r.getId();
 
-                return new SuccessResponse().response(wishlists);
+                return new OkResponse<Integer[]>(wishlists).response();
         }
 
         @GetMapping("wishlists")
@@ -125,7 +124,7 @@ public class UserORestController {
                         @CookieValue(value = "user", required = false) String cookie) {
                 User user = authenticate.getLoggedInUser(cookie);
                 if (user == null)
-                        return new FailureResponse(401, "user not authenticated").response();
+                        return new NotAuthenticatedResponse<WishlistsDTO[]>().response();
 
                 WishlistsDTO[] wishlists = new WishlistsDTO[user.getFavRooms().size()];
                 int i = 0;
@@ -144,7 +143,7 @@ public class UserORestController {
                         wishlists[i++] = wlDTO;
                 }
 
-                return new SuccessResponse().response(wishlists);
+                return new OkResponse<WishlistsDTO[]>(wishlists).response();
         }
 
         @PostMapping("update-personal-info")
@@ -153,7 +152,7 @@ public class UserORestController {
                         throws IOException {
                 User currentUser = authenticate.getLoggedInUser(cookie);
                 if (currentUser == null)
-                        return new FailureResponse(401, "user not authenticated").response();
+                        return new NotAuthenticatedResponse<User>().response();
 
                 User savedUser = null;
                 String updatedField = postUpdateUserDTO.getUpdatedField();
@@ -230,7 +229,7 @@ public class UserORestController {
                         }
                 }
 
-                return new SuccessResponse(201).response(savedUser);
+                return new OkResponse<User>(savedUser).response();
         }
 
         @PostMapping("update-avatar")
@@ -239,7 +238,7 @@ public class UserORestController {
                         throws IOException {
                 User currentUser = authenticate.getLoggedInUser(cookie);
                 if (currentUser == null)
-                        return new FailureResponse(401, "user not authenticated").response();
+                        return new NotAuthenticatedResponse<User>().response();
 
                 User savedUser = null;
 
@@ -252,7 +251,7 @@ public class UserORestController {
                         FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
                 }
 
-                return new SuccessResponse(201).response(savedUser);
+                return new OkResponse<User>(savedUser).response();
         }
 
         @GetMapping("add-to-favoritelists/{roomid}")
@@ -261,13 +260,13 @@ public class UserORestController {
                         @PathVariable("roomid") Integer roomid) {
                 User user = authenticate.getLoggedInUser(cookie);
                 if (user == null)
-                        return NotAuthenticatedResponse.response();
+                        return new NotAuthenticatedResponse<String>().response();
 
                 user.addToWishLists(roomService.getRoomById(roomid));
                 User savedUser = userService.saveUser(user);
 
-                return savedUser != null ? new SuccessResponse().response("add to wishlists successfully")
-                                : new FailureResponse("can not sync user data into database").response();
+                return savedUser != null ? new OkResponse<String>("add to wishlists successfully").response()
+                                : new BadResponse<String>("can not sync user data into database").response();
         }
 
         @GetMapping("remove-from-favoritelists/{roomid}")
@@ -276,13 +275,13 @@ public class UserORestController {
                         @PathVariable("roomid") Integer roomId) {
                 User user = authenticate.getLoggedInUser(cookie);
                 if (user == null)
-                        return NotAuthenticatedResponse.response();
+                        return new NotAuthenticatedResponse<String>().response();
 
                 user.removeFromWishLists(roomService.getRoomById(roomId));
                 User savedUser = userService.saveUser(user);
 
-                return savedUser != null ? new SuccessResponse().response("remove from wishlists successfully")
-                                : new FailureResponse("can not sync user data into database").response();
+                return savedUser != null ? new OkResponse<String>("remove from wishlists successfully").response()
+                                : new BadResponse<String>("can not sync user data into database").response();
         }
 
         @GetMapping(value = "booked-rooms")
@@ -291,7 +290,7 @@ public class UserORestController {
                         @RequestParam(value = "query", required = false, defaultValue = "") String query) {
                 User user = authenticate.getLoggedInUser(cookie);
                 if (user == null)
-                        return new FailureResponse(401, "user not authenticated").response();
+                        return new NotAuthenticatedResponse<UserBookedRoomsResponseEntity>().response();
 
                 List<BookedRoomDTO> bookings = bookingService.getBookedRoomsByUser(user.getId(), query);
 
@@ -304,7 +303,7 @@ public class UserORestController {
                         ratings.add(new RatingDTO(ratingLabel[i], starLoop));
                 }
 
-                return new SuccessResponse().response(new UserBookedRoomsResponseEntity(
-                                ratings, bookings));
+                return new OkResponse<UserBookedRoomsResponseEntity>(new UserBookedRoomsResponseEntity(
+                                ratings, bookings)).response();
         }
 }

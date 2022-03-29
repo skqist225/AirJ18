@@ -3,7 +3,7 @@ package com.airtnt.airtntapp.city;
 import java.util.List;
 
 import com.airtnt.airtntapp.response.StandardJSONResponse;
-import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.entity.City;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,6 @@ public class CityRestController {
 
     @GetMapping("/cities/state/{stateId}")
     public ResponseEntity<StandardJSONResponse<List<City>>> fetchCitiesByState(@PathVariable Integer stateId) {
-        return new SuccessResponse().response(cityService.fetchCitiesByState(stateId));
+        return new OkResponse<List<City>>(cityService.fetchCitiesByState(stateId)).response();
     }
 }

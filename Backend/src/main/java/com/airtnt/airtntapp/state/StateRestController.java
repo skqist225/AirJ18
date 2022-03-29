@@ -3,7 +3,7 @@ package com.airtnt.airtntapp.state;
 import java.util.List;
 
 import com.airtnt.airtntapp.response.StandardJSONResponse;
-import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.entity.State;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,6 @@ public class StateRestController {
     @GetMapping("states/country/{countryId}")
     public ResponseEntity<StandardJSONResponse<List<State>>> fetchStatesByCountry(
             @PathVariable("countryId") Integer countryId) {
-        return new SuccessResponse().response(stateService.fetchStatesByCountry(countryId));
+        return new OkResponse<List<State>>(stateService.fetchStatesByCountry(countryId)).response();
     }
 }

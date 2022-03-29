@@ -3,8 +3,8 @@ package com.airtnt.airtntapp.user;
 import javax.servlet.http.HttpServletResponse;
 
 import com.airtnt.airtntapp.cookie.CookieProcess;
-import com.airtnt.airtntapp.response.FailureResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
+import com.airtnt.airtntapp.response.error.BadResponse;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.entity.User;
 
@@ -32,10 +32,10 @@ public class AuthRestController {
         User user = userService.getByEmail(postUser.getEmail());
 
         if (user == null)
-            return new FailureResponse("Email does not exist").response();
+            return new BadResponse<User>("Email does not exist").response();
 
         if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
-            return new FailureResponse("Password does not match").response();
+            return new BadResponse<User>("Password does not match").response();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                 cookiePorcess.writeCookie("user", user.getEmail()))

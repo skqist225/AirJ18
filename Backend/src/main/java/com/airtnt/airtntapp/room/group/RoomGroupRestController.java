@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import com.airtnt.airtntapp.response.StandardJSONResponse;
-import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.entity.RoomGroup;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,6 @@ public class RoomGroupRestController {
 
     @GetMapping(value = "room-group")
     public ResponseEntity<StandardJSONResponse<List<RoomGroup>>> fetchRoomGroup() {
-        return new SuccessResponse().response(roomGroupService.getRoomGroups());
+        return new OkResponse<List<RoomGroup>>(roomGroupService.getRoomGroups()).response();
     }
 }

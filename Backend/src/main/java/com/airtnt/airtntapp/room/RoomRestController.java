@@ -24,9 +24,9 @@ import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Room;
-import com.airtnt.airtntapp.response.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
-import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
+import com.airtnt.airtntapp.response.success.OkResponse;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,11 +131,7 @@ public class RoomRestController {
             roomHomePageDTOs.add(RoomHomePageDTO.buildRoomHomePageDTO(room, images, likedByUsers));
         }
 
-        StandardJSONResponse<List<RoomHomePageDTO>> standardJSONResponse = new StandardJSONResponse<>(true,
-                roomHomePageDTOs,
-                null);
-        return new ResponseEntity<StandardJSONResponse<List<RoomHomePageDTO>>>(standardJSONResponse, null,
-                HttpStatus.OK);
+        return new OkResponse<List<RoomHomePageDTO>>(roomHomePageDTOs).response();
     }
 
     @GetMapping("/api/room/{roomId}")
@@ -175,9 +171,7 @@ public class RoomRestController {
         RoomDetailsDTO roomDetailsDTO = RoomDetailsDTO.buildRoomDetailsDTO(room, reviewDTOs, images,
                 amenityRoomDetailsDTOs, hostDTO, bookedDates, avgRatings);
 
-        StandardJSONResponse<RoomDetailsDTO> standardJSONResponse = new StandardJSONResponse<>(true, roomDetailsDTO,
-                null);
-        return new ResponseEntity<StandardJSONResponse<RoomDetailsDTO>>(standardJSONResponse, null, HttpStatus.OK);
+        return new OkResponse<RoomDetailsDTO>(roomDetailsDTO).response();
     }
 
     @PostMapping("/rooms/checkName")
@@ -204,7 +198,8 @@ public class RoomRestController {
         GregorianCalendar gCal = new GregorianCalendar(selectedYear, selectedMonth - 1, 1);
         int startInWeek = gCal.get(Calendar.DAY_OF_WEEK); // ngày thứ mấy trong tuần đó
 
-        return new SuccessResponse().response(new CalendarResponseEntity(strDaysInMonth, startInWeek));
+        return new OkResponse<CalendarResponseEntity>(new CalendarResponseEntity(strDaysInMonth, startInWeek))
+                .response();
     }
 
     @PostMapping("/room/verify-phone")
@@ -287,7 +282,7 @@ public class RoomRestController {
         User host = authenticate.getLoggedInUser(cookie);
         // When user not logged in
         if (host == null)
-            return NotAuthenticatedResponse.response();
+            return new NotAuthenticatedResponse<RoomsOwnedByUserResponseEntity>().response();
 
         // When user logged in
         Map<String, String> filters = new HashMap<>();
@@ -304,8 +299,8 @@ public class RoomRestController {
         List<RoomListingsDTO> roomListingsDTOs = new ArrayList<>();
         roomsPage.getContent().forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
 
-        return new SuccessResponse().response(new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
-                roomsPage.getTotalElements(), roomsPage.getTotalPages()));
+        return new OkResponse<RoomsOwnedByUserResponseEntity>(new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
+                roomsPage.getTotalElements(), roomsPage.getTotalPages())).response();
     }
 
     @GetMapping("/api/rooms/average-price")
@@ -340,11 +335,7 @@ public class RoomRestController {
             // totalRecords += rp.getTotalRecords();
             // }
         }
-        StandardJSONResponse<Double> standardJSONResponse = new StandardJSONResponse<>(true,
-                avgRoomPricePerNight / totalRecords, null);
 
-        return new ResponseEntity<StandardJSONResponse<Double>>(
-                standardJSONResponse, null,
-                HttpStatus.OK);
+        return new OkResponse<Double>(avgRoomPricePerNight / totalRecords).response();
     }
 }

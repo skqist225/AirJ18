@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.airtnt.airtntapp.country.dto.CountryDTO;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
-import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.entity.Country;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class CountryRestController {
 
     @GetMapping("/countries")
     public ResponseEntity<StandardJSONResponse<List<Country>>> fetchCategories() {
-        return new SuccessResponse().response(countryService.getCountriesWithoutStates());
+        return new OkResponse<List<Country>>(countryRepository.getCountriesWithoutStates()).response();
     }
 
     @PostMapping(value = "/add-dial-code-to-db")
