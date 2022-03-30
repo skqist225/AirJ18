@@ -21,17 +21,15 @@ pipeline {
                 AWS_S3_BUCKET = 'airj18'
                 BACKEND_FOLDER = 'Backend'
             }
-
             steps {
                 sh 'aws s3 cp ${WORKSPACE}/${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}'
-                // build job: 'Copy_Artifact_To_AWS_EC2'
             }
         }
         stage('Deploy Application Prodution Stage') {
             environment { 
-                DB_URL = credentials('airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com')
-                DB_USER = credentials('admin')
-                DB_PASS = credentials('12345678')
+                DB_URL = credentials('DB_URL')
+                DB_USER = credentials('DB_USER')
+                DB_PASS = credentials('DB_PASS')
             }
             steps {
                 timeout(time:5, unit:'DAYS') {
@@ -45,6 +43,11 @@ pipeline {
                     patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '.')], 
                     usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]
                 )
+            }
+            post {
+                success {
+                    emailext body: 'build successfully.', recipientProviders: [buildUser()], subject: 'Build AirJ18 Successfully', to: 'thuan.leminhthuan.10.2@gmail.com'
+                }
             }
         }
     }
