@@ -8,6 +8,9 @@ import com.airtnt.airtntapp.booking.BookedDateDTO;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
+import com.airtnt.airtntapp.exception.NotAuthenticatedException;
+import com.airtnt.airtntapp.exception.NullCookieException;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.review.dto.ReviewDTO;
@@ -22,9 +25,9 @@ import com.airtnt.airtntapp.room.response.RoomsOwnedByUserResponseEntity;
 import com.airtnt.airtntapp.rule.RuleService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.UserService;
-import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Room;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
+import com.airtnt.airtntapp.response.error.BadResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.success.OkResponse;
 
@@ -32,7 +35,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -242,7 +244,7 @@ public class RoomRestController {
         if (city == null)
             city = new City(payload.getCity(), state);
 
-        User user = userService.get(payload.getHost());
+        User user = userService.findById(payload.getHost());
         user.setRole(new Role(1));
         userService.saveUser(user);
 
@@ -279,28 +281,30 @@ public class RoomRestController {
             @RequestParam(name = "SORTFIELD", required = false, defaultValue = "createdDate") String sortField,
             @RequestParam(name = "AMENITY_IDS", required = false, defaultValue = "") String amentitiesFilter,
             @RequestParam(name = "STATUSES", required = false, defaultValue = "ACTIVE UNLISTED") String status) {
-        User host = authenticate.getLoggedInUser(cookie);
-        // When user not logged in
-        if (host == null)
+        try {
+            User host = authenticate.getLoggedInUser(cookie);
+
+            Map<String, String> filters = new HashMap<>();
+            filters.put("bedroomCount", bedRoomsCount);
+            filters.put("bathroomCount", bathRoomsCount);
+            filters.put("bedCount", bedsCount);
+            filters.put("query", query);
+            filters.put("sortDir", sortDir);
+            filters.put("sortField", sortField);
+            filters.put("amentities", amentitiesFilter);
+            filters.put("status", status);
+
+            Page<Room> roomsPage = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
+            List<RoomListingsDTO> roomListingsDTOs = new ArrayList<>();
+            roomsPage.getContent().forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
+
+            return new OkResponse<RoomsOwnedByUserResponseEntity>(new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
+                    roomsPage.getTotalElements(), roomsPage.getTotalPages())).response();
+        } catch (NullCookieException ex) {
+            return new BadResponse<RoomsOwnedByUserResponseEntity>(ex.getMessage()).response();
+        } catch (NotAuthenticatedException ex) {
             return new NotAuthenticatedResponse<RoomsOwnedByUserResponseEntity>().response();
-
-        // When user logged in
-        Map<String, String> filters = new HashMap<>();
-        filters.put("bedroomCount", bedRoomsCount);
-        filters.put("bathroomCount", bathRoomsCount);
-        filters.put("bedCount", bedsCount);
-        filters.put("query", query);
-        filters.put("sortDir", sortDir);
-        filters.put("sortField", sortField);
-        filters.put("amentities", amentitiesFilter);
-        filters.put("status", status);
-
-        Page<Room> roomsPage = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
-        List<RoomListingsDTO> roomListingsDTOs = new ArrayList<>();
-        roomsPage.getContent().forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
-
-        return new OkResponse<RoomsOwnedByUserResponseEntity>(new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
-                roomsPage.getTotalElements(), roomsPage.getTotalPages())).response();
+        }
     }
 
     @GetMapping("/api/rooms/average-price")

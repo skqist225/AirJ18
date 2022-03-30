@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.address.AddressRepository;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.security.AirtntUserDetails;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Address;
@@ -144,28 +145,28 @@ public class UserAdminController {
 		try {
 			List<Role> listRoles = service.listRoles();
 			List<Country> listCountries = service.listCountries();
-			
-			User user = service.get(id);
+
+			User user = service.findById(id);
 			Address address = user.getAddress();
-			Integer countryId,stateId,cityId;
-			if(address==null){
+			Integer countryId, stateId, cityId;
+			if (address == null) {
 				countryId = null;
 				stateId = null;
 				cityId = null;
-			}else{
-				countryId = address.getCountry()==null? null :address.getCountry().getId();
-				stateId = address.getState()==null? null :address.getState().getId();
-				cityId = address.getCity()==null? null :address.getCity().getId();
+			} else {
+				countryId = address.getCountry() == null ? null : address.getCountry().getId();
+				stateId = address.getState() == null ? null : address.getState().getId();
+				cityId = address.getCity() == null ? null : address.getCity().getId();
 			}
 			model.addAttribute("user", user);
 			model.addAttribute("listRoles", listRoles);
 			model.addAttribute("listCountries", listCountries);
 			model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
 			model.addAttribute("addresss", address);
-			model.addAttribute("countryId", countryId); 
+			model.addAttribute("countryId", countryId);
 			model.addAttribute("stateId", stateId);
 			model.addAttribute("cityId", cityId);
- 
+
 			return "users/user_form";
 
 		} catch (UserNotFoundException ex) {
@@ -204,7 +205,7 @@ public class UserAdminController {
 			List<Role> listRoles = service.listRoles();
 			List<Country> listCountries = service.listCountries();
 
-			User user = service.get(id);
+			User user = service.findById(id);
 			model.addAttribute("user", user);
 			model.addAttribute("listRoles", listRoles);
 			model.addAttribute("listCountries", listCountries);

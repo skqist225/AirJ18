@@ -8,6 +8,8 @@ import java.util.Map;
 import com.airtnt.airtntapp.booking.dto.BookingDTO;
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
 import com.airtnt.airtntapp.exception.ForbiddenException;
+import com.airtnt.airtntapp.exception.NotAuthenticatedException;
+import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
@@ -50,15 +52,19 @@ public class BookingRestController {
             @RequestParam("checkout") String checkout,
             @RequestParam("numberOfDays") Integer numberOfDays,
             @RequestParam("clientMessage") String clientMessage) throws ParseException {
-        User customer = authenticate.getLoggedInUser(cookie);
-        if (customer == null)
+        try {
+            User customer = authenticate.getLoggedInUser(cookie);
+
+            Booking booking = bookingService.createBooking(checkin, checkout, roomService.getRoomById(roomId),
+                    numberOfDays, clientMessage, customer);
+
+            return booking != null ? new OkResponse<BookingDTO>(BookingDTO.buildBookingDTO(
+                    booking)).response() : new BadResponse<BookingDTO>("can not create booking").response();
+        } catch (NullCookieException ex) {
+            return new BadResponse<BookingDTO>(ex.getMessage()).response();
+        } catch (NotAuthenticatedException ex) {
             return new NotAuthenticatedResponse<BookingDTO>().response();
-
-        Booking booking = bookingService.createBooking(checkin, checkout, roomService.getRoomById(roomId),
-                numberOfDays, clientMessage, customer);
-
-        return booking != null ? new OkResponse<BookingDTO>(BookingDTO.buildBookingDTO(
-                booking)).response() : new BadResponse<BookingDTO>("can not create booking").response();
+        }
     }
 
     @GetMapping(value = "/listings/{pageNumber}")
@@ -74,62 +80,70 @@ public class BookingRestController {
             @RequestParam(name = "bookingDate", required = false, defaultValue = "") String bookingDate,
             @RequestParam(name = "isComplete", required = false, defaultValue = "") String isComplete)
             throws ParseException {
-        User host = authenticate.getLoggedInUser(cookie);
-        if (host == null)
+        try {
+            User host = authenticate.getLoggedInUser(cookie);
+
+            List<Room> rooms = roomService.getRoomsByHostId(host);
+            Integer[] roomIds = new Integer[rooms.size()];
+            for (int i = 0; i < rooms.size(); i++) {
+                roomIds[i] = rooms.get(i).getId();
+            }
+            Map<String, String> filters = new HashMap<>();
+            filters.put("sortField", sortField);
+            filters.put("sortDir", sortDir);
+            filters.put("query", query);
+            filters.put("isComplete", isComplete);
+            filters.put("bookingDate", bookingDate);
+            filters.put("bookingDateMonth", bookingDateMonth);
+            filters.put("bookingDateYear", bookingDateYear);
+            filters.put("totalFee", totalFee);
+
+            Page<BookingListDTO> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
+            return new OkResponse<Page<BookingListDTO>>(bookings).response();
+
+        } catch (NullCookieException ex) {
+            return new BadResponse<Page<BookingListDTO>>(ex.getMessage()).response();
+        } catch (NotAuthenticatedException ex) {
             return new NotAuthenticatedResponse<Page<BookingListDTO>>().response();
-
-        List<Room> rooms = roomService.getRoomsByHostId(host);
-        Integer[] roomIds = new Integer[rooms.size()];
-        for (int i = 0; i < rooms.size(); i++) {
-            roomIds[i] = rooms.get(i).getId();
         }
-        Map<String, String> filters = new HashMap<>();
-        filters.put("sortField", sortField);
-        filters.put("sortDir", sortDir);
-        filters.put("query", query);
-        filters.put("isComplete", isComplete);
-        filters.put("bookingDate", bookingDate);
-        filters.put("bookingDateMonth", bookingDateMonth);
-        filters.put("bookingDateYear", bookingDateYear);
-        filters.put("totalFee", totalFee);
-
-        Page<BookingListDTO> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
-        return new OkResponse<Page<BookingListDTO>>(bookings).response();
     }
 
     @GetMapping(value = "/{bookingid}/canceled")
     public ResponseEntity<StandardJSONResponse<String>> cancelBooking(
             @PathVariable("bookingid") Integer bookingid,
             @CookieValue(value = "user", required = false) String cookie) {
-        User customer = authenticate.getLoggedInUser(cookie);
-        if (customer == null)
-            return new NotAuthenticatedResponse<String>().response();
-
         try {
+            User customer = authenticate.getLoggedInUser(cookie);
             Booking booking = bookingService.cancelBooking(bookingid, customer);
 
             return booking != null ? new OkResponse<String>("cancel booking successfully").response()
                     : new BadResponse<String>("can not cancel booking").response();
 
+        } catch (NullCookieException ex) {
+            return new BadResponse<String>(ex.getMessage()).response();
+        } catch (NotAuthenticatedException ex) {
+            return new NotAuthenticatedResponse<String>().response();
         } catch (ForbiddenException e) {
             return new ForbiddenResponse<String>().response();
         }
     }
 
-    @GetMapping(value = "/{bookingId}/approved")
-    public ResponseEntity<StandardJSONResponse<String>> approveBooking(@PathVariable("bookingId") Integer bookingId,
+    @GetMapping(value = "/{bookingid}/approved")
+    public ResponseEntity<StandardJSONResponse<String>> approveBooking(@PathVariable("bookingid") Integer bookingId,
             @CookieValue(value = "user", required = false) String cookie) {
-        User customer = authenticate.getLoggedInUser(cookie);
-        if (customer == null)
-            return new NotAuthenticatedResponse<String>().response();
-
         try {
+            User customer = authenticate.getLoggedInUser(cookie);
             Booking booking = bookingService.approveBooking(bookingId, customer);
 
             return booking != null ? new OkResponse<String>("approve booking successfully").response()
                     : new BadResponse<String>("can not approve booking").response();
+
         } catch (ForbiddenException e) {
             return new ForbiddenResponse<String>().response();
+        } catch (NullCookieException ex) {
+            return new BadResponse<String>(ex.getMessage()).response();
+        } catch (NotAuthenticatedException ex) {
+            return new NotAuthenticatedResponse<String>().response();
         }
     }
 }

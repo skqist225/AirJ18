@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.airtnt.airtntapp.amentity.AmentityService;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Amentity;
@@ -52,11 +53,11 @@ public class HostingController {
             @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
             @RequestParam(name = "AMENITY_IDS", required = false, defaultValue = "") String amentitiesFilter,
             @RequestParam(name = "STATUSES", required = false, defaultValue = "ACTIVE UNLISTED") String status,
-            @AuthenticationPrincipal Model model) {
+            @AuthenticationPrincipal Model model) throws UserNotFoundException {
 
         /*-------------------HOST------------------ */
         String userName = userDetails.getUsername();
-        User user = userService.getByEmail(userName);
+        User user = userService.findByEmail(userName);
 
         model.addAttribute("userName", user.getFullName());
         model.addAttribute("userEmail", user.getEmail());

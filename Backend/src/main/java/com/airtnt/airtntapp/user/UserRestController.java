@@ -3,6 +3,7 @@ package com.airtnt.airtntapp.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.security.AirtntUserDetails;
 import com.airtnt.entity.Room;
@@ -33,9 +34,9 @@ public class UserRestController {
 
     @PostMapping("check-password-constraint")
     public String checkPasswordConstaint(@RequestBody Map<String, String> payLoad,
-            @AuthenticationPrincipal AirtntUserDetails userDetails) {
+            @AuthenticationPrincipal AirtntUserDetails userDetails) throws UserNotFoundException {
         Integer userId = Integer.parseInt(payLoad.get("userId").toString());
-        User currentUser = userService.getCurrentUser(userId);
+        User currentUser = userService.findById(userId);
         String oldPassword = payLoad.get("oldPassword").toString();
         String newPassword = payLoad.get("newPassword").toString();
 
@@ -112,9 +113,9 @@ public class UserRestController {
 
     @GetMapping("add-to-wishlists/{roomId}")
     public String addToWishLists(@AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable("roomId") Integer roomId) {
+            @PathVariable("roomId") Integer roomId) throws UserNotFoundException {
         Room room = roomService.getRoomById(roomId);
-        User user = userService.getByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername());
 
         user.addToWishLists(room);
         User savedUser = userService.saveUser(user);
@@ -126,9 +127,9 @@ public class UserRestController {
 
     @GetMapping("remove-from-wishlists/{roomId}")
     public String removeFromWishLists(@AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable("roomId") Integer roomId) {
+            @PathVariable("roomId") Integer roomId) throws UserNotFoundException {
         Room room = roomService.getRoomById(roomId);
-        User user = userService.getByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername());
 
         user.removeFromWishLists(room);
         User savedUser = userService.saveUser(user);

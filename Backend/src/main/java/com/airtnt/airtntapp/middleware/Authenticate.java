@@ -1,6 +1,9 @@
 package com.airtnt.airtntapp.middleware;
 
 import com.airtnt.airtntapp.cookie.CookieProcess;
+import com.airtnt.airtntapp.exception.NotAuthenticatedException;
+import com.airtnt.airtntapp.exception.NullCookieException;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.User;
 
@@ -15,13 +18,15 @@ public class Authenticate {
     @Autowired
     private CookieProcess cookieProcess;
 
-    public User getLoggedInUser(String cookie) {
-        if (cookie == null)
-            return null;
+    public User getLoggedInUser(String cookie) throws NullCookieException, NotAuthenticatedException {
+        if (cookie.isEmpty() || cookie == null)
+            throw new NullCookieException("invalid cookie");
 
         String userEmail = cookieProcess.readCookie(cookie);
-        User user = userService.getByEmail(userEmail);
-
-        return user;
+        try {
+            return userService.findByEmail(userEmail);
+        } catch (UserNotFoundException e) {
+            throw new NotAuthenticatedException();
+        }
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.airtnt.airtntapp.booking.BookingService;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.user.UserService;
@@ -43,13 +44,13 @@ public class ProgressController {
 
     @GetMapping(value = "earnings")
     public String earnings(@AuthenticationPrincipal UserDetails userDetails, @Param("year") Integer year,
-            Model model) throws ParseException {
+            Model model) throws ParseException, UserNotFoundException {
         int currentYear = LocalDateTime.now().getYear();
         if (year == null) {
             return "redirect:/progress/earnings?year=" + currentYear;
         }
 
-        User host = userService.getByEmail(userDetails.getUsername());
+        User host = userService.findByEmail(userDetails.getUsername());
         List<Room> rooms = roomService.getRoomsByHostId(host);
         Integer[] roomIds = new Integer[rooms.size()];
 
@@ -104,8 +105,8 @@ public class ProgressController {
     @GetMapping(value = "reviews")
     public String reviews(@AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(name = "numberOfStars", required = false, defaultValue = "0") String numberOfStars,
-            Model model) throws ParseException {
-        User host = userService.getByEmail(userDetails.getUsername());
+            Model model) throws ParseException, UserNotFoundException {
+        User host = userService.findByEmail(userDetails.getUsername());
         List<Room> rooms = roomService.getRoomsByHostId(host);
         Integer[] roomIds = new Integer[rooms.size()];
 

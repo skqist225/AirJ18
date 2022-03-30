@@ -5,6 +5,7 @@ import java.util.List;
 import com.airtnt.airtntapp.amentity.AmentityService;
 import com.airtnt.airtntapp.category.CategoryService;
 import com.airtnt.airtntapp.country.CountryService;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.privacy.PrivacyTypeService;
 import com.airtnt.airtntapp.room.group.RoomGroupService;
 import com.airtnt.airtntapp.user.UserService;
@@ -71,9 +72,10 @@ public class HostController {
     }
 
     @GetMapping("location")
-    public String locationSelect(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String locationSelect(Model model, @AuthenticationPrincipal UserDetails userDetails)
+            throws UserNotFoundException {
         String userName = userDetails.getUsername();
-        User user = userService.getByEmail(userName);
+        User user = userService.findByEmail(userName);
         model.addAttribute("userAvatar", user.getAvatarPath());
         model.addAttribute("userName", user.getFullName());
         model.addAttribute("countries", countryService.getCountries());
@@ -83,7 +85,7 @@ public class HostController {
     @GetMapping("room-info")
     public String roomInfoSelect(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         // String userName = userDetails.getUsername();
-        // User user = userService.getByEmail(userName);
+        // User user = userService.findByEmail(userName);
         // model.addAttribute("userAvatar", user.getAvatarPath());
         // model.addAttribute("userName", user.getFullName());
         return "become_host/room_info";
@@ -123,9 +125,10 @@ public class HostController {
     }
 
     @GetMapping(value = "preview")
-    public String previewRoom(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String previewRoom(@AuthenticationPrincipal UserDetails userDetails, Model model)
+            throws UserNotFoundException {
         String userName = userDetails.getUsername();
-        User user = userService.getByEmail(userName);
+        User user = userService.findByEmail(userName);
         model.addAttribute("userAvatar", user.getAvatarPath());
         model.addAttribute("userName", user.getFullName());
         model.addAttribute("host", user.getId());

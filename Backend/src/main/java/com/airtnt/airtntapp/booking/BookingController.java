@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.airtnt.airtntapp.exception.ForbiddenException;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
@@ -75,8 +76,12 @@ public class BookingController {
 
     @GetMapping(value = "success-booking")
     public String booking(@AuthenticationPrincipal UserDetails userDetails, Model model) throws ParseException {
-        User user = userService.getByEmail(userDetails.getUsername());
-        model.addAttribute("username", user.getFullName());
+        try {
+            User user = userService.findByEmail(userDetails.getUsername());
+            model.addAttribute("username", user.getFullName());
+        } catch (UserNotFoundException ex) {
+            model.addAttribute("username", "");
+        }
         return new String("booking/success");
     }
 
@@ -91,8 +96,8 @@ public class BookingController {
             @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
             @RequestParam(name = "bookingDate", required = false, defaultValue = "") String bookingDate,
             @RequestParam(name = "isComplete", required = false, defaultValue = "") String isComplete,
-            Model model) throws ParseException {
-        User host = userService.getByEmail(userDetails.getUsername());
+            Model model) throws ParseException, UserNotFoundException {
+        User host = userService.findByEmail(userDetails.getUsername());
         List<Room> rooms = roomService.getRoomsByHostId(host);
         Integer[] roomIds = new Integer[rooms.size()];
         for (int i = 0; i < rooms.size(); i++) {
@@ -119,13 +124,13 @@ public class BookingController {
 
     @GetMapping(value = "{bookingId}/view")
     public String viewBooking(@PathVariable("bookingId") Integer bookingId,
-            @AuthenticationPrincipal UserDetails userDetails, Model model) {
+            @AuthenticationPrincipal UserDetails userDetails, Model model) throws UserNotFoundException {
         Booking booking = bookingService.findById(bookingId);
         List<Booking> bookings = new ArrayList<>();
         bookings.add(booking);
         User user = null;
         if (userDetails != null) {
-            user = userService.getByEmail(userDetails.getUsername());
+            user = userService.findByEmail(userDetails.getUsername());
             Integer[] roomIds = new Integer[user.getFavRooms().size()];
             int i = 0;
             for (Room r : user.getFavRooms())
@@ -157,8 +162,8 @@ public class BookingController {
     @GetMapping(value = "/{bookingId}/cancel")
     public String cancelBooking(@PathVariable("bookingId") Integer bookingId,
             @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes)
-            throws ForbiddenException {
-        User currentUser = userService.getByEmail(userDetails.getUsername());
+            throws ForbiddenException, UserNotFoundException {
+        User currentUser = userService.findByEmail(userDetails.getUsername());
         Booking booking = bookingService.cancelBooking(bookingId, currentUser);
         if (booking != null)
             redirectAttributes.addFlashAttribute("cancelMessage", "Hủy đặt phòng thành công");
@@ -171,8 +176,8 @@ public class BookingController {
     @GetMapping(value = "/{bookingId}/approved")
     public String approveBooking(@PathVariable("bookingId") Integer bookingId,
             @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes)
-            throws ForbiddenException {
-        User requestedUser = userService.getByEmail(userDetails.getUsername());
+            throws ForbiddenException, UserNotFoundException {
+        User requestedUser = userService.findByEmail(userDetails.getUsername());
 
         if (bookingService.approveBooking(bookingId, requestedUser) != null)
             redirectAttributes.addFlashAttribute("approveMessage", "Duyệt lịch đặt phòng thành công");

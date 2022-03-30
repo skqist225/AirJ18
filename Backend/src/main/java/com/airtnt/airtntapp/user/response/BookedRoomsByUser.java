@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserBookedRoomsResponseEntity {
+public class BookedRoomsByUser {
     private List<RatingDTO> ratingLabels;
     private List<BookedRoomDTO> bookedRooms;
 }

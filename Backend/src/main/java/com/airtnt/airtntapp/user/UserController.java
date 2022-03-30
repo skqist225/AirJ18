@@ -13,6 +13,7 @@ import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.country.CountryService;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.security.AirtntUserDetails;
 import com.airtnt.airtntapp.state.StateService;
@@ -112,13 +113,14 @@ public class UserController {
 
     @GetMapping(value = "bookings")
     public String userBookings(@AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam(value = "query", required = false, defaultValue = "") String query, Model model) {
-        User customer = userService.getByEmail(userDetails.getUsername());
+            @RequestParam(value = "query", required = false, defaultValue = "") String query, Model model)
+            throws UserNotFoundException {
+        User customer = userService.findByEmail(userDetails.getUsername());
 
         List<Booking> bookings = bookingService.getBookingsByUser(customer.getId(), query);
         User user = null;
         if (userDetails != null) {
-            user = userService.getByEmail(userDetails.getUsername());
+            user = userService.findByEmail(userDetails.getUsername());
             Integer[] roomIds = new Integer[user.getFavRooms().size()];
             int i = 0;
             for (Room r : user.getFavRooms())
@@ -126,7 +128,7 @@ public class UserController {
             model.addAttribute("wishlists", roomIds);
         }
         if (user == null)
-            model.addAttribute("user", null);
+            model.addAttribute("user", "");
         else
             model.addAttribute("user", user.getFullName());
 
@@ -146,8 +148,9 @@ public class UserController {
     }
 
     @GetMapping("personal-info")
-    public String personalInfo(ModelMap model, @AuthenticationPrincipal AirtntUserDetails userDetails) {
-        User user = userService.getByEmail(userDetails.getUsername());
+    public String personalInfo(ModelMap model, @AuthenticationPrincipal AirtntUserDetails userDetails)
+            throws UserNotFoundException {
+        User user = userService.findByEmail(userDetails.getUsername());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         List<Country> countries = countryService.getCountries();
         List<State> states = stateService.listAll();
@@ -189,8 +192,8 @@ public class UserController {
             @RequestParam(name = "userStateId", required = false) Integer stateId,
             @RequestParam(name = "userCityId", required = false) Integer cityId, HttpServletRequest request,
             RedirectAttributes ra, Model model)
-            throws IOException {
-        User currentUser = userService.getCurrentUser(user.getId());
+            throws IOException, UserNotFoundException {
+        User currentUser = userService.findById(user.getId());
         User savedUser = null;
 
         if (updatedField.equals("avatar")) {

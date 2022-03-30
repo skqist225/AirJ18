@@ -6,8 +6,8 @@ import java.util.NoSuchElementException;
 import javax.transaction.Transactional;
 
 import com.airtnt.airtntapp.country.CountryRepository;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.user.admin.RoleRepository;
-import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Country;
 import com.airtnt.entity.Role;
 import com.airtnt.entity.User;
@@ -72,12 +72,12 @@ public class UserService {
         return true;
     }
 
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    public User getCurrentUser(Integer userId) {
-        return userRepository.findById(userId).get();
+    public User findByEmail(String email) throws UserNotFoundException {
+        try {
+            return userRepository.findByEmail(email);
+        } catch (NoSuchElementException ex) {
+            throw new UserNotFoundException("can not find user with this email");
+        }
     }
 
     @Transactional
@@ -109,7 +109,6 @@ public class UserService {
 
     public User save(User user) {
         boolean isUpdatingUser = (user.getId() != null);
-        System.out.println("get called" + System.nanoTime());
         if (isUpdatingUser) {
             User existingUser = userRepository.findById(user.getId()).get();
 
@@ -133,14 +132,6 @@ public class UserService {
         return (List<Country>) countryRepo.findAll();
     }
 
-    public User get(Integer id) throws UserNotFoundException {
-        try {
-            return userRepository.findById(id).get();
-        } catch (NoSuchElementException ex) {
-            throw new UserNotFoundException("Could not find any user with ID " + id);
-        }
-    }
-
     public void delete(Integer id) throws UserNotFoundException {
         Long countById = userRepository.countById(id);
         if ((countById == null || countById == 0)) {
@@ -154,8 +145,12 @@ public class UserService {
         userRepository.updateStatus(id, enabled);
     }
 
-    public User findById(Integer id) {
-        return userRepository.findById(id).get();
+    public User findById(Integer id) throws UserNotFoundException {
+        try {
+            return userRepository.findById(id).get();
+        } catch (NoSuchElementException ex) {
+            throw new UserNotFoundException("Could not find any user with ID " + id);
+        }
     }
 
     public Integer getNumberOfUser() {

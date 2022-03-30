@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.hosting;
 
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Room;
@@ -24,10 +25,10 @@ public class VerifyController {
 
     @GetMapping(value = "verify-listing/{roomId}")
     public String verifyListing(@AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable("roomId") Integer roomId, Model model) {
+            @PathVariable("roomId") Integer roomId, Model model) throws UserNotFoundException {
         Room room = roomService.getRoomById(roomId);
         String userName = userDetails.getUsername();
-        User user = userService.getByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(userDetails.getUsername());
 
         if (user.isPhoneVerified())
             return "redirect:/hosting/listings/1";

@@ -17,6 +17,7 @@ import com.airtnt.entity.User;
 import com.airtnt.entity.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.booking.BookedDateDTO;
 import com.airtnt.airtntapp.booking.BookingService;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Booking;
@@ -40,12 +41,12 @@ public class RoomController {
 
 	@GetMapping("/room/{roomId}")
 	public String getRoomById(@PathVariable("roomId") Integer roomId, @AuthenticationPrincipal UserDetails userDetails,
-			Model model) throws ParseException {
+			Model model) throws ParseException, UserNotFoundException {
 		Room room = roomService.getRoomById(roomId);
 
 		User user = null;
 		if (userDetails != null) {
-			user = userService.getByEmail(userDetails.getUsername());
+			user = userService.findByEmail(userDetails.getUsername());
 			List<Room> favRooms = new ArrayList<>(user.getFavRooms());
 
 			if (favRooms.contains(room)) {
@@ -112,8 +113,8 @@ public class RoomController {
 
 	@GetMapping(value = "room/{roomId}/publish-celebration")
 	public String publishCelebration(@AuthenticationPrincipal UserDetails userDetails,
-			@PathVariable("roomId") Integer roomId, Model model) {
-		User user = userService.getByEmail(userDetails.getUsername());
+			@PathVariable("roomId") Integer roomId, Model model) throws UserNotFoundException {
+		User user = userService.findByEmail(userDetails.getUsername());
 		model.addAttribute("userName", user.getFullName());
 		model.addAttribute("roomId", roomId);
 
@@ -129,8 +130,9 @@ public class RoomController {
 	}
 
 	@GetMapping(value = "wishlists")
-	public String wishlists(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-		User user = userService.getByEmail(userDetails.getUsername());
+	public String wishlists(@AuthenticationPrincipal UserDetails userDetails, Model model)
+			throws UserNotFoundException {
+		User user = userService.findByEmail(userDetails.getUsername());
 		model.addAttribute("wishlists", user.getFavRooms());
 		return new String("room/wishlists");
 	}

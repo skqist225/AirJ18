@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +14,8 @@ import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
+import com.airtnt.airtntapp.exception.NotAuthenticatedException;
+import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
@@ -25,7 +28,7 @@ import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.airtntapp.user.dto.WishlistsDTO;
-import com.airtnt.airtntapp.user.response.UserBookedRoomsResponseEntity;
+import com.airtnt.airtntapp.user.response.BookedRoomsByUser;
 import com.airtnt.entity.Address;
 import com.airtnt.entity.City;
 import com.airtnt.entity.Country;
@@ -104,206 +107,242 @@ public class UserORestController {
         }
 
         @GetMapping("wishlists/ids")
-        public ResponseEntity<StandardJSONResponse<Integer[]>> fetchWishlistsIds(
+        public ResponseEntity<StandardJSONResponse<List<Integer>>> fetchWishlistsIds(
                         @CookieValue(value = "user", required = false) String cookie) {
-                User user = authenticate.getLoggedInUser(cookie);
+                try {
+                        User user = authenticate.getLoggedInUser(cookie);
 
-                if (user == null)
-                        return new NotAuthenticatedResponse<Integer[]>().response();
-
-                Integer[] wishlists = new Integer[user.getFavRooms().size()];
-                int i = 0;
-                for (Room r : user.getFavRooms())
-                        wishlists[i++] = r.getId();
-
-                return new OkResponse<Integer[]>(wishlists).response();
+                        return new OkResponse<List<Integer>>(user.getFavRooms().stream().map(favRoom -> favRoom.getId())
+                                        .collect(Collectors.toList())).response();
+                } catch (NullCookieException ex) {
+                        return new BadResponse<List<Integer>>(ex.getMessage()).response();
+                } catch (NotAuthenticatedException ex) {
+                        return new NotAuthenticatedResponse<List<Integer>>().response();
+                }
         }
 
         @GetMapping("wishlists")
         public ResponseEntity<StandardJSONResponse<WishlistsDTO[]>> fetchWishlists(
                         @CookieValue(value = "user", required = false) String cookie) {
-                User user = authenticate.getLoggedInUser(cookie);
-                if (user == null)
-                        return new NotAuthenticatedResponse<WishlistsDTO[]>().response();
+                try {
+                        User user = authenticate.getLoggedInUser(cookie);
 
-                WishlistsDTO[] wishlists = new WishlistsDTO[user.getFavRooms().size()];
-                int i = 0;
+                        WishlistsDTO[] wishlists = new WishlistsDTO[user.getFavRooms().size()];
+                        int i = 0;
 
-                for (Room r : user.getFavRooms()) {
-                        WishlistsDTO wlDTO = new WishlistsDTO();
-                        wlDTO.setId(r.getId());
-                        String[] images = new String[3];
-                        int j = 0;
-                        for (Image image : r.getImages()) {
-                                if (j == 3)
-                                        break;
-                                images[j++] = image.getImagePath(r.getHost().getEmail(), r.getId());
+                        for (Room r : user.getFavRooms()) {
+                                WishlistsDTO wlDTO = new WishlistsDTO();
+                                wlDTO.setId(r.getId());
+                                String[] images = new String[3];
+                                int j = 0;
+                                for (Image image : r.getImages()) {
+                                        if (j == 3)
+                                                break;
+                                        images[j++] = image.getImagePath(r.getHost().getEmail(),
+                                                        r.getId());
+                                }
+                                wlDTO.setImages(images);
+                                wishlists[i++] = wlDTO;
                         }
-                        wlDTO.setImages(images);
-                        wishlists[i++] = wlDTO;
-                }
 
-                return new OkResponse<WishlistsDTO[]>(wishlists).response();
+                        return new OkResponse<WishlistsDTO[]>(wishlists).response();
+                } catch (NullCookieException ex) {
+                        return new BadResponse<WishlistsDTO[]>(ex.getMessage()).response();
+                } catch (NotAuthenticatedException ex) {
+                        return new NotAuthenticatedResponse<WishlistsDTO[]>().response();
+                }
         }
 
         @PostMapping("update-personal-info")
         public ResponseEntity<StandardJSONResponse<User>> updatePersonalInfo(@CookieValue("user") String cookie,
                         @RequestBody PostUpdateUserDTO postUpdateUserDTO)
                         throws IOException {
-                User currentUser = authenticate.getLoggedInUser(cookie);
-                if (currentUser == null)
+                try {
+                        User currentUser = authenticate.getLoggedInUser(cookie);
+
+                        User savedUser = null;
+                        String updatedField = postUpdateUserDTO.getUpdatedField();
+                        Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
+
+                        switch (updatedField) {
+                                case "firstNameAndLastName": {
+                                        String newFirstName = updateData.get("firstName");
+                                        String newLastName = updateData.get("lastName");
+
+                                        currentUser.setFirstName(newFirstName);
+                                        currentUser.setLastName(newLastName);
+                                        savedUser = userService.saveUser(currentUser);
+                                        break;
+                                }
+                                case "sex": {
+                                        String newSex = updateData.get("sex");
+                                        Sex sex = newSex.equals("MALE") ? Sex.MALE
+                                                        : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
+                                        currentUser.setSex(sex);
+                                        savedUser = userService.saveUser(currentUser);
+                                        break;
+                                }
+                                case "birthday": {
+                                        Integer yearOfBirth = Integer.parseInt(updateData.get("yearOfBirth"));
+                                        Integer monthOfBirth = Integer.parseInt(updateData.get("monthOfBirth"));
+                                        Integer dayOfBirth = Integer.parseInt(updateData.get("dayOfBirth"));
+
+                                        currentUser.setBirthday(LocalDate.of(
+                                                        yearOfBirth,
+                                                        monthOfBirth,
+                                                        dayOfBirth));
+                                        savedUser = userService.saveUser(currentUser);
+                                        break;
+                                }
+                                case "address": {
+                                        Integer countryId = Integer.parseInt(updateData.get("country"));
+                                        Integer stateId = Integer.parseInt(updateData.get("country"));
+                                        Integer cityId = Integer.parseInt(updateData.get("country"));
+                                        String aprtNoAndStreet = updateData.get("aprtNoAndStreet");
+
+                                        Country country = countryService.getCountryById(countryId);
+                                        State state = stateService.getStateById(stateId);
+                                        City city = cityService.getCityById(cityId);
+
+                                        Address newAddress = new Address(country, state, city, aprtNoAndStreet);
+                                        currentUser.setAddress(newAddress);
+                                        savedUser = userService.saveUser(currentUser);
+                                        break;
+                                }
+                                case "email": {
+                                        String newEmail = updateData.get("email");
+                                        currentUser.setEmail(newEmail);
+                                        savedUser = userService.saveUser(currentUser);
+
+                                        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
+                                                        cookiePorcess.writeCookie("user", savedUser.getEmail())
+                                                                        .toString())
+                                                        .body(new StandardJSONResponse<>(true, savedUser, null));
+                                }
+                                case "password": {
+                                        String newPassword = updateData.get("newPassword");
+
+                                        currentUser.setPassword(newPassword);
+                                        userService.encodePassword(currentUser);
+                                        savedUser = userService.saveUser(currentUser);
+                                        break;
+                                }
+                                case "phoneNumber": {
+                                        String newPhoneNumber = updateData.get("phoneNumber");
+
+                                        currentUser.setPhoneNumber(newPhoneNumber);
+                                        savedUser = userService.saveUser(currentUser);
+                                        break;
+                                }
+                        }
+
+                        return new OkResponse<User>(savedUser).response();
+                } catch (NullCookieException ex) {
+                        return new BadResponse<User>(ex.getMessage()).response();
+                } catch (NotAuthenticatedException ex) {
                         return new NotAuthenticatedResponse<User>().response();
-
-                User savedUser = null;
-                String updatedField = postUpdateUserDTO.getUpdatedField();
-                Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
-
-                switch (updatedField) {
-                        case "firstNameAndLastName": {
-                                String newFirstName = updateData.get("firstName");
-                                String newLastName = updateData.get("lastName");
-
-                                currentUser.setFirstName(newFirstName);
-                                currentUser.setLastName(newLastName);
-                                savedUser = userService.saveUser(currentUser);
-                                break;
-                        }
-                        case "sex": {
-                                String newSex = updateData.get("sex");
-                                Sex sex = newSex.equals("MALE") ? Sex.MALE
-                                                : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
-                                currentUser.setSex(sex);
-                                savedUser = userService.saveUser(currentUser);
-                                break;
-                        }
-                        case "birthday": {
-                                Integer yearOfBirth = Integer.parseInt(updateData.get("yearOfBirth"));
-                                Integer monthOfBirth = Integer.parseInt(updateData.get("monthOfBirth"));
-                                Integer dayOfBirth = Integer.parseInt(updateData.get("dayOfBirth"));
-
-                                currentUser.setBirthday(LocalDate.of(
-                                                yearOfBirth,
-                                                monthOfBirth,
-                                                dayOfBirth));
-                                savedUser = userService.saveUser(currentUser);
-                                break;
-                        }
-                        case "address": {
-                                Integer countryId = Integer.parseInt(updateData.get("country"));
-                                Integer stateId = Integer.parseInt(updateData.get("country"));
-                                Integer cityId = Integer.parseInt(updateData.get("country"));
-                                String aprtNoAndStreet = updateData.get("aprtNoAndStreet");
-
-                                Country country = countryService.getCountryById(countryId);
-                                State state = stateService.getStateById(stateId);
-                                City city = cityService.getCityById(cityId);
-
-                                Address newAddress = new Address(country, state, city, aprtNoAndStreet);
-                                currentUser.setAddress(newAddress);
-                                savedUser = userService.saveUser(currentUser);
-                                break;
-                        }
-                        case "email": {
-                                String newEmail = updateData.get("email");
-                                currentUser.setEmail(newEmail);
-                                savedUser = userService.saveUser(currentUser);
-
-                                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                                                cookiePorcess.writeCookie("user", savedUser.getEmail()).toString())
-                                                .body(new StandardJSONResponse<>(true, savedUser, null));
-                        }
-                        case "password": {
-                                String newPassword = updateData.get("newPassword");
-
-                                currentUser.setPassword(newPassword);
-                                userService.encodePassword(currentUser);
-                                savedUser = userService.saveUser(currentUser);
-                                break;
-                        }
-                        case "phoneNumber": {
-                                String newPhoneNumber = updateData.get("phoneNumber");
-
-                                currentUser.setPhoneNumber(newPhoneNumber);
-                                savedUser = userService.saveUser(currentUser);
-                                break;
-                        }
                 }
-
-                return new OkResponse<User>(savedUser).response();
         }
 
         @PostMapping("update-avatar")
         public ResponseEntity<StandardJSONResponse<User>> updateUserAvatar(@CookieValue("user") String cookie,
                         @RequestParam(name = "newAvatar", required = false) MultipartFile newAvatar)
                         throws IOException {
-                User currentUser = authenticate.getLoggedInUser(cookie);
-                if (currentUser == null)
+                try {
+                        User currentUser = authenticate.getLoggedInUser(cookie);
+
+                        if (newAvatar != null) {
+                                String fileName = StringUtils
+                                                .cleanPath(newAvatar.getOriginalFilename());
+                                currentUser.setAvatar(fileName);
+                                User savedUser = userService.saveUser(currentUser);
+                                String uploadDir = STATIC_PATH + "/" + savedUser.getId();
+                                FileUploadUtil.cleanDir(uploadDir);
+                                FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
+
+                                return new OkResponse<User>(savedUser).response();
+                        }
+                        return new OkResponse<User>(currentUser).response();
+                } catch (NullCookieException ex) {
+                        return new BadResponse<User>(ex.getMessage()).response();
+                } catch (NotAuthenticatedException ex) {
                         return new NotAuthenticatedResponse<User>().response();
-
-                User savedUser = null;
-
-                if (newAvatar != null) {
-                        String fileName = StringUtils.cleanPath(newAvatar.getOriginalFilename());
-                        currentUser.setAvatar(fileName);
-                        savedUser = userService.saveUser(currentUser);
-                        String uploadDir = STATIC_PATH + "/" + savedUser.getId();
-                        FileUploadUtil.cleanDir(uploadDir);
-                        FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
                 }
-
-                return new OkResponse<User>(savedUser).response();
         }
 
         @GetMapping("add-to-favoritelists/{roomid}")
         public ResponseEntity<StandardJSONResponse<String>> addToWishLists(
                         @CookieValue(value = "user", required = false) String cookie,
                         @PathVariable("roomid") Integer roomid) {
-                User user = authenticate.getLoggedInUser(cookie);
-                if (user == null)
+                try {
+                        User user = authenticate.getLoggedInUser(cookie);
+
+                        user.addToWishLists(roomService.getRoomById(roomid));
+                        User savedUser = userService.saveUser(user);
+
+                        return savedUser != null
+                                        ? new OkResponse<String>("add to wishlists successfully")
+                                                        .response()
+                                        : new BadResponse<String>(
+                                                        "can not sync user data into database")
+                                                        .response();
+                } catch (NullCookieException ex) {
+                        return new BadResponse<String>(ex.getMessage()).response();
+                } catch (NotAuthenticatedException ex) {
                         return new NotAuthenticatedResponse<String>().response();
-
-                user.addToWishLists(roomService.getRoomById(roomid));
-                User savedUser = userService.saveUser(user);
-
-                return savedUser != null ? new OkResponse<String>("add to wishlists successfully").response()
-                                : new BadResponse<String>("can not sync user data into database").response();
+                }
         }
 
         @GetMapping("remove-from-favoritelists/{roomid}")
         public ResponseEntity<StandardJSONResponse<String>> removeFromWishLists(
                         @CookieValue(value = "user", required = false) String cookie,
                         @PathVariable("roomid") Integer roomId) {
-                User user = authenticate.getLoggedInUser(cookie);
-                if (user == null)
+                try {
+                        User user = authenticate.getLoggedInUser(cookie);
+                        user.removeFromWishLists(roomService.getRoomById(roomId));
+                        User savedUser = userService.saveUser(user);
+
+                        return savedUser != null
+                                        ? new OkResponse<String>("remove from wishlists successfully")
+                                                        .response()
+                                        : new BadResponse<String>(
+                                                        "can not sync user data into database")
+                                                        .response();
+                } catch (NullCookieException ex) {
+                        return new BadResponse<String>(ex.getMessage()).response();
+                } catch (NotAuthenticatedException ex) {
                         return new NotAuthenticatedResponse<String>().response();
-
-                user.removeFromWishLists(roomService.getRoomById(roomId));
-                User savedUser = userService.saveUser(user);
-
-                return savedUser != null ? new OkResponse<String>("remove from wishlists successfully").response()
-                                : new BadResponse<String>("can not sync user data into database").response();
+                }
         }
 
         @GetMapping(value = "booked-rooms")
-        public ResponseEntity<StandardJSONResponse<UserBookedRoomsResponseEntity>> getUserBookedRooms(
+        public ResponseEntity<StandardJSONResponse<BookedRoomsByUser>> getUserBookedRooms(
                         @CookieValue(value = "user", required = false) String cookie,
                         @RequestParam(value = "query", required = false, defaultValue = "") String query) {
-                User user = authenticate.getLoggedInUser(cookie);
-                if (user == null)
-                        return new NotAuthenticatedResponse<UserBookedRoomsResponseEntity>().response();
+                try {
 
-                List<BookedRoomDTO> bookings = bookingService.getBookedRoomsByUser(user.getId(), query);
+                        User user = authenticate.getLoggedInUser(cookie);
+                        List<BookedRoomDTO> bookings = bookingService.getBookedRoomsByUser(user.getId(),
+                                        query);
 
-                Integer[] starLoop = new Integer[] { 1, 2, 3, 4, 5 };
-                String[] ratingLabel = new String[] { "Mức độ sạch sẽ", "Độ chính xác", "Liên lạc", "Vị trí",
-                                "Nhận phòng",
-                                "Giá trị" };
-                List<RatingDTO> ratings = new ArrayList<>();
-                for (int i = 0; i < ratingLabel.length; i++) {
-                        ratings.add(new RatingDTO(ratingLabel[i], starLoop));
+                        Integer[] starLoop = new Integer[] { 1, 2, 3, 4, 5 };
+                        String[] ratingLabel = new String[] { "Mức độ sạch sẽ", "Độ chính xác",
+                                        "Liên lạc", "Vị trí",
+                                        "Nhận phòng",
+                                        "Giá trị" };
+                        List<RatingDTO> ratings = new ArrayList<>();
+                        for (int i = 0; i < ratingLabel.length; i++) {
+                                ratings.add(new RatingDTO(ratingLabel[i], starLoop));
+                        }
+
+                        return new OkResponse<BookedRoomsByUser>(
+                                        new BookedRoomsByUser(
+                                                        ratings, bookings))
+                                        .response();
+                } catch (NullCookieException ex) {
+                        return new BadResponse<BookedRoomsByUser>(ex.getMessage()).response();
+                } catch (NotAuthenticatedException ex) {
+                        return new NotAuthenticatedResponse<BookedRoomsByUser>().response();
                 }
-
-                return new OkResponse<UserBookedRoomsResponseEntity>(new UserBookedRoomsResponseEntity(
-                                ratings, bookings)).response();
         }
 }

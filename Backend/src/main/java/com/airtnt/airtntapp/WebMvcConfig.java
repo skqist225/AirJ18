@@ -2,8 +2,6 @@ package com.airtnt.airtntapp;
 
 import javax.servlet.MultipartConfigElement;
 
-import com.airtnt.airtntapp.config.AirJ18Interceptor;
-
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

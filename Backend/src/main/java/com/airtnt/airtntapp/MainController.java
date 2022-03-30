@@ -7,10 +7,10 @@ import java.util.Map;
 
 import com.airtnt.airtntapp.amentity.AmentityService;
 import com.airtnt.airtntapp.category.CategoryService;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.room.privacy.RoomPrivacyService;
 import com.airtnt.airtntapp.user.UserService;
-import com.airtnt.airtntapp.user.admin.UserNotFoundException;
 import com.airtnt.entity.Amentity;
 import com.airtnt.entity.Category;
 import com.airtnt.entity.Room;
@@ -58,7 +58,7 @@ public class MainController {
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
             @RequestParam(value = "amenities", required = false, defaultValue = "") String amenities,
             @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates,
-            Model model) throws ParseException {
+            Model model) throws ParseException, UserNotFoundException {
         if (categoryId == null) {
             return "redirect:/?categoryId=1";
         }
@@ -79,7 +79,7 @@ public class MainController {
         // User's favorite room ids
         User user = null;
         if (userDetails != null) {
-            user = userService.getByEmail(userDetails.getUsername());
+            user = userService.findByEmail(userDetails.getUsername());
             if (user.hasRole("Admin"))
                 return "redirect:/admin/";
             Integer[] roomIds = new Integer[user.getFavRooms().size()];
