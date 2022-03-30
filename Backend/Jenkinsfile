@@ -9,12 +9,6 @@ pipeline {
                 sh 'echo $(pwd)'
                 sh 'mvn clean package --file */pom.xml'
             }
-            // post {
-                // success {
-                    // echo 'Now archiving the artifacts...'
-                    // archiveArtifacts artifacts: '**/target/*.war'
-                // }
-            // }
         }
         stage('Send Build Artifact To AWS S3') {
             environment {
@@ -38,7 +32,7 @@ pipeline {
                 sshPublisher(
                     publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', 
                     transfers: [sshTransfer(cleanRemote: false, excludes: '', 
-                    execCommand: '~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}', 
+                    execCommand: 'sh -c "~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}"', 
                     execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, 
                     patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '.')], 
                     usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]
