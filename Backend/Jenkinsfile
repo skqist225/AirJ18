@@ -18,8 +18,8 @@ pipeline {
         }
         stage('Send Build Artifact To AWS S3') {
             environment {
-                AWS_S3_BUCKET = airj18
-                BACKEND_FOLDER = Backend
+                AWS_S3_BUCKET = 'airj18'
+                BACKEND_FOLDER = 'Backend'
             }
 
             steps {
