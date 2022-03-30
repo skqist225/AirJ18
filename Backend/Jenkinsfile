@@ -24,7 +24,7 @@ pipeline {
                 // DB_URL = credentials('DB_URL')
                 // DB_USER = credentials('DB_USER')
                 // DB_PASSWORD = credentials('DB_PASSWORD')
-            // }
+            /*}*/
             steps {
                 timeout(time:5, unit:'DAYS') {
                     input message: 'Approve PRODUCTION Deployment?'
