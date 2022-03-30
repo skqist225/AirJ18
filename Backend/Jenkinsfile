@@ -29,7 +29,7 @@ pipeline {
             environment { 
                 DB_URL = credentials('DB_URL')
                 DB_USER = credentials('DB_USER')
-                DB_PASS = credentials('DB_PASS')
+                DB_PASSWORD = credentials('DB_PASSWORD')
             }
             steps {
                 timeout(time:5, unit:'DAYS') {
@@ -38,7 +38,7 @@ pipeline {
                 sshPublisher(
                     publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', 
                     transfers: [sshTransfer(cleanRemote: false, excludes: '', 
-                    execCommand: '~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASS}', 
+                    execCommand: '~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}', 
                     execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, 
                     patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '.')], 
                     usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]
