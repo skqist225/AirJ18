@@ -21,9 +21,9 @@ pipeline {
         }
         stage('Deploy Application Prodution Stage') {
             environment { 
-                DB_URL = credentials('DB_URL')
-                DB_USER = credentials('DB_USER')
-                DB_PASSWORD = credentials('DB_PASSWORD')
+                // DB_URL = credentials('DB_URL')
+                // DB_USER = credentials('DB_USER')
+                // DB_PASSWORD = credentials('DB_PASSWORD')
             }
             steps {
                 timeout(time:5, unit:'DAYS') {
@@ -32,7 +32,8 @@ pipeline {
                 sshPublisher(
                     publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', 
                     transfers: [sshTransfer(cleanRemote: false, excludes: '', 
-                    execCommand: 'sh -c "~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}"', 
+                    // execCommand: '~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}', 
+                    execCommand: '~/airtnt-build.sh airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com:3306 admin 12345678', 
                     execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, 
                     patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '.')], 
                     usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]
