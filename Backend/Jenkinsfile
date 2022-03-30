@@ -23,7 +23,7 @@ pipeline {
             }
 
             steps {
-                sh 'aws s3 cp ${WORKSPACE}/${JOB_NAME}/${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}'
+                sh 'aws s3 cp ${WORKSPACE}/${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}'
                 // build job: 'Copy_Artifact_To_AWS_EC2'
             }
         }
