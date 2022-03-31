@@ -1,7 +1,6 @@
 package com.airtnt.airtntapp.user;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
 
@@ -73,11 +72,11 @@ public class UserService {
     }
 
     public User findByEmail(String email) throws UserNotFoundException {
-        try {
-            return userRepository.findByEmail(email);
-        } catch (NoSuchElementException ex) {
-            throw new UserNotFoundException("can not find user with this email");
-        }
+        User user = userRepository.findByEmail(email);
+        if (user != null)
+            return user;
+        else
+            throw new UserNotFoundException("Could not find any user with email: " + email);
     }
 
     @Transactional
@@ -146,11 +145,11 @@ public class UserService {
     }
 
     public User findById(Integer id) throws UserNotFoundException {
-        try {
-            return userRepository.findById(id).get();
-        } catch (NoSuchElementException ex) {
+        User user = userRepository.findById(id).get();
+        if (user != null)
+            return user;
+        else
             throw new UserNotFoundException("Could not find any user with ID " + id);
-        }
     }
 
     public Integer getNumberOfUser() {

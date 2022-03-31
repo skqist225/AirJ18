@@ -1,13 +1,34 @@
+def modules = [:]
+// CODE_CHANGES = getGitChanges()
 pipeline {
-    agent any 
+    agent any
     options {
         skipStagesAfterUnstable()
     }
+    parameters {
+        // choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+        booleanParam(name: 'executeBuild', defaultValue: true, description: '')
+    }
     stages {
-        stage('Build') {
+        stage('init') {
             steps {
-                sh 'echo $(pwd)'
-                sh 'mvn clean package --file */pom.xml'
+                script {
+                    modules.build = load 'script.groovy'
+                }
+            }
+        }
+        stage('Build') {
+            when {
+                expression {
+                    params.executeBuild
+                }
+            }
+            steps {
+                script {
+                    modules.build.buildApp()
+                }
+            // sh 'echo $(pwd)'
+            // sh 'mvn clean package --file */pom.xml'
             }
         }
         stage('Send Build Artifact To AWS S3') {
@@ -15,8 +36,17 @@ pipeline {
                 AWS_S3_BUCKET = 'airj18'
                 BACKEND_FOLDER = 'Backend'
             }
+            when {
+                expression {
+                    BRANCH_NAME == 'main' || BRANCH_NAME == 'master'
+                // && CODE_CHANGES
+                }
+            }
             steps {
-                sh 'aws s3 cp ${WORKSPACE}/${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}'
+                // sh 'aws s3 cp ${WORKSPACE}/${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}'
+                script {
+                    modules.build.sendArtifactToS3()
+                }
             }
         }
         stage('Deploy Application Prodution Stage') {
@@ -25,12 +55,12 @@ pipeline {
                     input message: 'Approve PRODUCTION Deployment?'
                 }
                 sshPublisher(
-                    publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181', 
-                    transfers: [sshTransfer(cleanRemote: false, excludes: '', 
-                    // execCommand: '~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}', 
-                    execCommand: '~/airtnt-build.sh airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com admin 12345678', 
-                    execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, 
-                    patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '.')], 
+                    publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181',
+                    transfers: [sshTransfer(cleanRemote: false, excludes: '',
+                    // execCommand: '~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}',
+                    execCommand: '~/airtnt-build.sh airtnt.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com admin 12345678',
+                    execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false,
+                    patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '.')],
                     usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]
                 )
             }
@@ -42,4 +72,3 @@ pipeline {
         }
     }
 }
-

@@ -19,7 +19,7 @@ public class Authenticate {
     private CookieProcess cookieProcess;
 
     public User getLoggedInUser(String cookie) throws NullCookieException, NotAuthenticatedException {
-        if (cookie.isEmpty() || cookie == null)
+        if (cookie == null || cookie.isEmpty())
             throw new NullCookieException("invalid cookie");
 
         String userEmail = cookieProcess.readCookie(cookie);

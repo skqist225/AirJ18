@@ -100,9 +100,7 @@ public class UserORestController {
                         return new BadResponse<User>("Duplicated entry email").response();
 
                 // create new user
-                User user = User.buildUser(postUser);
-                User savedUser = userService.save(user);
-
+                User savedUser = userService.save(User.buildUser(postUser));
                 return new OkResponse<User>(savedUser).response();
         }
 
