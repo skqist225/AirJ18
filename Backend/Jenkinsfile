@@ -13,7 +13,7 @@ pipeline {
         stage('init') {
             steps {
                 script {
-                    modules.build = load 'script.groovy'
+                    modules.build = load '*/script.groovy'
                 }
             }
         }
