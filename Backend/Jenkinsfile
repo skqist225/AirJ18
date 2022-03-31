@@ -9,14 +9,11 @@ pipeline {
         // choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
         booleanParam(name: 'executeBuild', defaultValue: true, description: '')
     }
-    environment {
-        BACKEND_FOLDER = 'Backend'
-    }
     stages {
         stage('init') {
             steps {
                 script {
-                    modules.build = load '${WORKSPACE}/${BACKEND_FOLDER}/script.groovy'
+                    modules.build = load '/Backend/script.groovy'
                 }
             }
         }
@@ -37,6 +34,7 @@ pipeline {
         stage('Send Build Artifact To AWS S3') {
             environment {
                 AWS_S3_BUCKET = 'airj18'
+                BACKEND_FOLDER = 'Backend'
             }
             when {
                 expression {
