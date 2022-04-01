@@ -23,8 +23,9 @@ services:
     networks:
       - backend
 
-  app-server:
-    image: skqist225/airj18
+  app:
+    # image: skqist225/airj18
+    image: skqist225/test
     depends_on:
       - mysqldb
         # condition: service_healthy
@@ -51,17 +52,17 @@ services:
       - backend
       - frontend
   
-  app-client:
-    build: ./Frontend
-    env:
-      NODE_ENV: development
-      REACT_APP_API_BASE_URL: http://127.0.0.1:8080/api
-    ports:
-      - 9999:80
-    depends_on:
-      - app-server
-    networks:
-      - frontend
+  # app-client:
+  #   build: ./Frontend
+  #   env:
+  #     NODE_ENV: development
+  #     REACT_APP_API_BASE_URL: http://127.0.0.1:8080/api
+  #   ports:
+  #     - 9999:80
+  #   depends_on:
+  #     - app-server
+  #   networks:
+  #     - frontend
 volumes:
   db:
 
