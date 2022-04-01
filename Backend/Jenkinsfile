@@ -61,7 +61,7 @@ pipeline {
         stage('Push Docker Image') {
             // withCredentials([string(credentialsId: 'DockerHubPassword', variable: 'dockerHubPassword2')]) {
             //     sh "docker login -u skqist225 -p ${dockerHubPassword2}"
-            // }
+            /* }*/
             sh 'docker push skqist225/airj18'
         }
         stage('Deploy Application Prodution Stage') {
@@ -93,4 +93,9 @@ pipeline {
             }
         }
     }
+}
+
+def getVersion() {
+    def commitHash = sh returnStdout: true, script: 'git rev-parse --short HEAD'
+    return commitHash
 }
