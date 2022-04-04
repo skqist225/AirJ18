@@ -40,6 +40,10 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
     }
+    
+    public String getEncodedPassword(String rawPassword) {
+    	return passwordEncoder.encode(rawPassword);
+    }
 
     public boolean isPasswordMatch(String rawPass, String hashPass) {
         return passwordEncoder.matches(rawPass, hashPass);

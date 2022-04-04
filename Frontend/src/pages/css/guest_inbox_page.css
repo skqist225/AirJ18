@@ -1,0 +1,54 @@
+.guest--inbox__header--info {
+    height: 72px;
+}
+
+.guest--inbox__left {
+    width: 373px;
+    padding: 20px 24px;
+    border: 1px solid red;
+}
+
+.guest--inbox__right {
+    padding: 0 24px;
+    height: 72px;
+    border: 1px solid red;
+    border-left: none;
+}
+
+.guest--inbox__right:last-child {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.guest--inbox__title {
+    margin: 0px;
+    padding: 0px;
+    contain: paint;
+}
+
+.guest--inbox__inputWrapper {
+    padding:  24px 24px;
+}
+
+#guest--inbox__input {
+    -webkit-box-flex: 1;
+    color: inherit;
+    display: block;
+    min-width: 568px;
+    outline: none;
+    border: 1px solid red;
+    margin: 0px 1px 0px 0px;
+    box-sizing: border-box;
+    background-color: rgb(255, 255, 255);
+    /* appearance: none; */
+    padding: 9px 8px;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 400;
+    resize: none;
+    width: 100%;
+    min-height: 40px;
+    flex-grow: 1;
+    border-radius: 20px;
+    max-height: 40px;
+}

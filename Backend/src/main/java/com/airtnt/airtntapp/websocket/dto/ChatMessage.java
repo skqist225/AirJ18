@@ -1,4 +1,4 @@
-package com.airtnt.airtntapp.config;
+package com.airtnt.airtntapp.websocket.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,7 @@
 package com.airtnt.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -101,7 +102,18 @@ public class User extends BaseEntity {
 	@ManyToMany
 	@JoinTable(name = "users_favorite_rooms", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
 	private Set<Room> favRooms = new HashSet<>();
-
+	
+	@Builder.Default
+	@OneToMany(mappedBy = "sender")
+	private List<Chat> senderChats =new ArrayList<Chat>();
+	
+	@Builder.Default
+	@OneToMany(mappedBy = "receiver")
+	private List<Chat> receiverChats =new ArrayList<Chat>();
+	
+	private Integer resetPasswordCode;
+	private LocalDateTime resetPasswordExpirationTime;
+	
 	public User(int id) {
 		super(id);
 	}

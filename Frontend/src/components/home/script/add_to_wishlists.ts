@@ -25,7 +25,7 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
                     successMessage = 'Gỡ bỏ khỏi danh sách yêu thích thành công';
                     errorMessage = 'Gỡ bỏ khỏi danh sách yêu thích thất bại';
 
-                    const { data } = await axios.get(`/user/remove-from-favoritelists/${roomId}`);
+                    const { data } = await axios.put(`/user/remove-from-favoritelists/${roomId}`);
                     if (data === 'remove from wishlists successfully') {
                         $('.room__likeBtn').each(function () {
                             if (parseInt($(this).data('room-id')) === parseInt(roomId))
@@ -37,7 +37,7 @@ export function addClickEventForLoveButton(wishlistsArr: number[], user: IUser |
                     successMessage = 'Thêm vào danh sách yêu thích thành công';
                     errorMessage = 'Thêm vào danh sách yêu thích thất bại';
 
-                    const { data } = await axios.get(`/user/add-to-favoritelists/${roomId}`);
+                    const { data } = await axios.put(`/user/add-to-favoritelists/${roomId}`);
                     if (data === 'add to wishlists successfully') {
                         $('.room__likeBtn').each(function () {
                             if ($(this).data('room-id') * 1 === parseInt(roomId))

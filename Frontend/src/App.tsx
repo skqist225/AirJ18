@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useMatch } from 'react-router-d
 import {
     BecomeAHostIndexPage,
     BookedRoomsPage,
+    GuestInboxPage,
     HomePage,
     ListingsPage,
     LoginPage,
@@ -93,6 +94,7 @@ function App() {
                         <Route path='reviews' element={<ProgressReviewsPage />} />
                         <Route path='reviews' element={<ProgressReviewsPage />} /> */}
                     </Route>
+                    <Route path='/guest/inbox/:hostid' element={<GuestInboxPage />} />
                 </Routes>
             </Router>
 

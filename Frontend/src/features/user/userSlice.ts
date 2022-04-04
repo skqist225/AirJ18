@@ -50,7 +50,7 @@ export const login = createAsyncThunk(
                 withCredentials: true,
             };
 
-            const { data } = await api.post('/user/login', loginInfo, config);
+            const { data } = await api.post('/user/auth/login', loginInfo, config);
             if (data) setUserToLocalStorage(data);
 
             return { data };
@@ -62,7 +62,7 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValue }) => {
     try {
-        const { data } = await api.get('/user/logout');
+        const { data } = await api.get('/user/auth/logout');
         if (data) localStorage.removeItem('user');
         return { data };
     } catch ({ data: { errorMessage } }) {

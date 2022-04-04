@@ -23,7 +23,7 @@ public class AirTntApplication extends SpringBootServletInitializer {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOriginPatterns("*").allowCredentials(true).allowedHeaders("*");
+				registry.addMapping("/**").allowedOriginPatterns("*").allowCredentials(true).allowedHeaders("Access-Control-Allow-Origin");
 			}
 		};
 	}

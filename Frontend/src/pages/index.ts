@@ -25,3 +25,4 @@ export { default as ManageRoomPhotosPage } from './ManageRoomPhotosPage';
 export { default as ProgressPage } from './progress/ProgressPage';
 export { default as ProgressReviewsPage } from './progress/ProgressReviewsPage';
 export { default as ProgressEarningsPage } from './progress/ProgressEarningsPage';
+export { default as GuestInboxPage } from './GuestInboxPage';

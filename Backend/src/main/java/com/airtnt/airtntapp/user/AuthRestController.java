@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.user;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
@@ -25,7 +26,9 @@ import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
+import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
+import com.airtnt.airtntapp.user.dto.ResetPasswordDTO;
 import com.airtnt.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,97 +45,135 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthRestController {
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private Authenticate authenticate;
+	@Autowired
+	private Authenticate authenticate;
 
-    @Autowired
-    private CookieProcess cookiePorcess;
+	@Autowired
+	private CookieProcess cookiePorcess;
 
-    @PostMapping("login")
-    public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
-            HttpServletResponse res) {
-        try {
-            User user = userService.findByEmail(postUser.getEmail());
-            if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
-                return new BadResponse<User>("Password does not match").response();
+	@PostMapping("login")
+	public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
+			HttpServletResponse res) {
+		try {
+			User user = userService.findByEmail(postUser.getEmail());
+			if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
+				return new BadResponse<User>("Password does not match").response();
 
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                    cookiePorcess.writeCookie("user", user.getEmail()))
-                    .body(new StandardJSONResponse<User>(true, user, null));
+			return ResponseEntity.ok()
+					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", user.getEmail()))
+					.body(new StandardJSONResponse<User>(true, user, null));
 
-        } catch (UserNotFoundException e) {
-            return new BadResponse<User>(e.getMessage()).response();
-        }
-    }
+		} catch (UserNotFoundException e) {
+			return new BadResponse<User>(e.getMessage()).response();
+		}
+	}
 
-    @GetMapping("logout")
-    public ResponseEntity<StandardJSONResponse<String>> logout(
-            @CookieValue(value = "user", required = false) String cookie) {
-        try {
-            authenticate.getLoggedInUser(cookie);
+	@GetMapping("logout")
+	public ResponseEntity<StandardJSONResponse<String>> logout(
+			@CookieValue(value = "user", required = false) String cookie) {
+		try {
+			authenticate.getLoggedInUser(cookie);
 
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                    cookiePorcess.writeCookie("user", null).toString()).body(
-                            new StandardJSONResponse<String>(true, "log out successfully", null));
-        } catch (NullCookieException ex) {
-            return new BadResponse<String>(ex.getMessage()).response();
-        } catch (NotAuthenticatedException ex) {
-            return new NotAuthenticatedResponse<String>().response();
-        }
-    }
+			return ResponseEntity.ok()
+					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", null).toString())
+					.body(new StandardJSONResponse<String>(true, "log out successfully", null));
+		} catch (NullCookieException ex) {
+			return new BadResponse<String>(ex.getMessage()).response();
+		} catch (NotAuthenticatedException ex) {
+			return new NotAuthenticatedResponse<String>().response();
+		}
+	}
 
-    @PostMapping("forgot-password")
-    public ResponseEntity<StandardJSONResponse<String>> forgotPassword(@RequestBody Map<String, String> payLoad)
-            throws AddressException, MessagingException {
-        String email = payLoad.get("email");
-        try {
-            User user = userService.findByEmail(email);
+	@PostMapping("forgot-password")
+	public ResponseEntity<StandardJSONResponse<String>> forgotPassword(@RequestBody Map<String, String> payLoad)
+			throws AddressException, MessagingException {
+		String email = payLoad.get("email");
+		try {
+			User user = userService.findByEmail(email);
 
-            Properties properties = new Properties();
-            properties.put("mail.smtp.auth", true);
-            properties.put("mail.smtp.host", "smtp.gmail.com");
-            properties.put("mail.smtp.port", "465");
-            properties.put("mail.smtp.ssl.enable", "true");
+			Properties properties = new Properties();
+			properties.put("mail.smtp.auth", true);
+			properties.put("mail.smtp.host", "smtp.gmail.com");
+			properties.put("mail.smtp.port", "465");
+			properties.put("mail.smtp.ssl.enable", "true");
 
-            Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("thuan.leminhthuan.10.2@gmail.com", "khicalcsugfzfowu");
-                }
-            });
-            session.setDebug(true);
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("airj18-support"));
-            message.setRecipients(
-                    Message.RecipientType.TO, InternetAddress.parse(email));
-            message.setSubject("Reset your password - AirJ18");
-            int code = new Random().nextInt(900000) + 100000;
-            String msg = "Hi " + user.getFullName()
-                    + "<div>Need to reset your password?</div>"
-                    + "<div>Use your secret code!</div>"
-                    + "<div style='font-weight: bold; font-size:20px;'>" + code + "</div>"
-                    + "<div>Click on the link below and enter the secret code above.</div>"
-                    + "<a href='http://localhost:3000/reset-password'>Reset your password</a>"
-                    + "<div>If you did not forget your password, you can ignore this email.</div>";
+			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication("thuan.leminhthuan.10.2@gmail.com", "khicalcsugfzfowu");
+				}
+			});
+			session.setDebug(true);
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress("airj18-support"));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+			message.setSubject("Reset your password - AirJ18");
+			int code = new Random().nextInt(900000) + 100000;
+			String msg = "Hi " + user.getFullName() + "<div>Need to reset your password?</div>"
+					+ "<div>Use your secret code!</div>" + "<div style='font-weight: bold; font-size:20px;'>" + code
+					+ "</div>" + "<div>Click on the link below and enter the secret code above.</div>"
+					+ "<a href='http://localhost:3000/reset-password'>Reset your password</a>"
+					+ "<div>If you did not forget your password, you can ignore this email.</div>";
 
-            MimeBodyPart mimeBodyPart = new MimeBodyPart();
-            mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
+			MimeBodyPart mimeBodyPart = new MimeBodyPart();
+			mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
 
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(mimeBodyPart);
+			Multipart multipart = new MimeMultipart();
+			multipart.addBodyPart(mimeBodyPart);
 
-            message.setContent(multipart);
+			message.setContent(multipart);
 
-            Transport.send(message);
+			Transport.send(message);
 
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                    cookiePorcess.writeCookie("user", null).toString()).body(
-                            new StandardJSONResponse<String>(true, "reset email has been sent to" + user.getEmail(),
-                                    null));
-        } catch (UserNotFoundException e) {
-            return new BadResponse<String>(e.getMessage()).response();
-        }
-    }
+			user.setResetPasswordCode(code);
+			user.setResetPasswordExpirationTime(LocalDateTime.now().plusMinutes(30));
+			userService.saveUser(user);
+
+			return ResponseEntity.ok()
+					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", null).toString())
+					.body(new StandardJSONResponse<String>(true, "reset email has been sent to" + user.getEmail(),
+							null));
+		} catch (UserNotFoundException e) {
+			return new BadResponse<String>(e.getMessage()).response();
+		}
+	}
+
+	@PutMapping("reset-password")
+	public ResponseEntity<StandardJSONResponse<String>> resetPassword(@RequestBody ResetPasswordDTO resetPassword) {
+		int resetCode = resetPassword.getResetCode();
+		String userEmail = resetPassword.getUserEmail();
+		String newPassword = resetPassword.getNewPassword();
+		String confirmNewPassword = resetPassword.getConfirmNewPassword();
+		LocalDateTime now = LocalDateTime.now();
+
+		try {
+			User user = userService.findByEmail(userEmail);
+
+			if (resetCode != user.getResetPasswordCode())
+				return new BadResponse<String>("invalid reset code").response();
+
+			boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
+			if (isAfter)
+				return new BadResponse<String>("reset password session is out of time").response();
+			
+			if(!newPassword.equals(confirmNewPassword))
+				return new BadResponse<String>("new password does not match confirm new password").response();
+			
+			
+			user.setPassword(userService.getEncodedPassword(newPassword));
+			user.setResetPasswordCode(null);
+			user.setResetPasswordExpirationTime(null);
+			userService.saveUser(user);
+
+			return new OkResponse<String>("success").response();
+		} catch (UserNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new BadResponse<String>(e.getMessage()).response();
+		}
+
+	}
+
 }

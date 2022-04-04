@@ -11,15 +11,9 @@ pipeline {
     }
     environment {
         BACKEND_FOLDER = 'Backend'
+        DOCKER_TAG = getVersion()
     }
     stages {
-        // stage('init') {
-        //     steps {
-        //         script {
-        //             modules.build = load '$WORKSPACE/$JOB_NAME/Backend/script.groovy'
-        //         }
-        //     }
-        // }
         stage('Build') {
             when {
                 expression {
@@ -27,9 +21,6 @@ pipeline {
                 }
             }
             steps {
-                // script {
-                //     modules.build.buildApp()
-                // }
                 sh 'echo $(pwd)'
                 sh 'mvn clean package --file */pom.xml'
             }
@@ -38,38 +29,24 @@ pipeline {
             environment {
                 AWS_S3_BUCKET = 'airj18'
             }
-            // when {
-            //     expression {
-            //         BRANCH_NAME == 'main' || BRANCH_NAME == 'master'
-            //     // && CODE_CHANGES
-            //     }
-            // }
             steps {
                 sh "aws s3 cp ${WORKSPACE}/${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}"
-                // script {
-                //     modules.build.sendArtifactToS3()
-                /* }*/
             }
         }
         stage('Build Docker Image') {
-            // withCredentials([string(credentialsId: 'DockerHubPassword', variable: 'dockerHubPassword1')]) {
-            //     sh "docker login -u skqist225 -p ${dockerHubPassword1}"
-            // }
-            sh "sudo -S jar -xvf ${WORKSPACE}/${BACKEND_FOLDER}/target/*.war"
-            sh "docker build -t skqist225/airj18 ${WORKSPACE}/${BACKEND_FOLDER}"
+            sh "sudo -S jar -xvf ${BACKEND_FOLDER}/target/*.war"
+            sh "docker build ${BACKEND_FOLDER} -t skqist225/airj18:${DOCKER_TAG}"
         }
         stage('Push Docker Image') {
-            // withCredentials([string(credentialsId: 'DockerHubPassword', variable: 'dockerHubPassword2')]) {
-            //     sh "docker login -u skqist225 -p ${dockerHubPassword2}"
-            /* }*/
-            sh 'docker push skqist225/airj18'
+            sh "docker push skqist225/airj18:${DOCKER_TAG}"
         }
         stage('Deploy Application Prodution Stage') {
             steps {
                 timeout(time:5, unit:'DAYS') {
                     input message: 'Approve PRODUCTION Deployment?'
                 }
-                sshPublisher(
+                withCredentials([string(credentialsId: 'DockerHubPassword', variable: 'dockerHubPassword1')]) {
+                    sshPublisher(
                     publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.237.181',
                     transfers: [sshTransfer(cleanRemote: false, excludes: '',
                     // execCommand: '~/airtnt-build.sh ${DB_URL} ${DB_USER} ${DB_PASSWORD}',
@@ -80,6 +57,7 @@ pipeline {
                     sourceFiles: '.')],
                     usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]
                 )
+                }
             }
             post {
                 success {
