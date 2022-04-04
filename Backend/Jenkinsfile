@@ -1,12 +1,9 @@
-// def modules = [:]
-// CODE_CHANGES = getGitChanges()
 pipeline {
     agent any
     options {
         skipStagesAfterUnstable()
     }
     parameters {
-        // choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
         booleanParam(name: 'executeBuild', defaultValue: true, description: '')
     }
     environment {
@@ -34,11 +31,15 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            sh "sudo -S jar -xvf ${BACKEND_FOLDER}/target/*.war"
-            sh "docker build ${BACKEND_FOLDER} -t skqist225/airj18:${DOCKER_TAG}"
+            steps {
+                sh "sudo -S jar -xvf ${BACKEND_FOLDER}/target/*.war"
+                sh "docker build ${BACKEND_FOLDER} -t skqist225/airj18:${DOCKER_TAG}"
+            }
         }
         stage('Push Docker Image') {
-            sh "docker push skqist225/airj18:${DOCKER_TAG}"
+            steps {
+                sh "docker push skqist225/airj18:${DOCKER_TAG}"
+            }
         }
         stage('Deploy Application Prodution Stage') {
             steps {
