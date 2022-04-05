@@ -52,3 +52,8 @@
     border-radius: 20px;
     max-height: 40px;
 }
+
+.guest--inbox__receiverinfo {
+        padding: 24px 12px ;
+        position: relative ;
+}

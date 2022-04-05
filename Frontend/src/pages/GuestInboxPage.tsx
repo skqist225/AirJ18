@@ -2,47 +2,63 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
-import { fetchInbox } from '../features/inbox/inboxSlice';
+import {
+    fetchInboxBetweenSenderAndReceiver,
+    fetchReceivers,
+    inboxState,
+} from '../features/inbox/inboxSlice';
 
 import './css/guest_inbox_page.css';
 import $ from 'jquery';
 import { userState } from '../features/user/userSlice';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { Image } from '../globalStyle';
+import { getImage } from '../helpers';
 
 interface IGuestInboxPageProps {}
 
 const GuestInboxPage: FC<IGuestInboxPageProps> = () => {
-    const { hostid } = useParams();
+    const { receiverid } = useParams();
     const dispatch = useDispatch();
 
     const { user } = useSelector(userState);
+    const { chats, receivers } = useSelector(inboxState);
 
     var global = window;
     Object.assign(global, { WebSocket: require('websocket').w3cwebsocket });
     useEffect(() => {
-        dispatch(fetchInbox({ hostid: hostid! }));
+        // dispatch(fetchInboxBetweenSenderAndReceiver({ receiver: parseInt(receiverid!) }));
+        // dispatch(fetchReceivers);
     }, []);
+
+    console.log(chats);
 
     let client: any = null;
 
     function connect() {
-        console.log('called');
-        const websocketUrl = 'ws://localhost:8080/websocket';
         const sockjs = new SockJS('http://localhost:8080/websocket');
-        // client = new Client();
         client = new Client();
         client.webSocketFactory = function () {
-            // Note that the URL is different from the WebSocket URL
             return sockjs;
         };
-        // client.brokerURL = websocketUrl;
         client.connectHeaders = {};
 
         client.onConnect = function (frame: any) {
-            console.log('Connected:' + frame);
-            client.subscribe('/topic/private-messages', function (message: any) {
-                if (message.body) console.log(JSON.parse(message.body).content);
+            client.subscribe('/user/' + user?.id + '/private', function (message: any) {
+                if (message.headers['content-type'] === 'application/octet-stream') {
+                    const msg = message._binaryBody
+                        .reduce((acc: string[], curr: number) => {
+                            acc.push(String.fromCharCode(parseInt(curr.toString(), 2)));
+
+                            return acc;
+                        }, [])
+                        .join('');
+                    console.log(msg);
+                } else {
+                    console.log(message);
+                    console.log(message.body);
+                }
             });
         };
 
@@ -59,18 +75,20 @@ const GuestInboxPage: FC<IGuestInboxPageProps> = () => {
     }
     useEffect(() => {
         connect();
-    }, []);
+    }, [receiverid]);
 
     function sendMessge() {
         console.log('Sending message');
+        console.log(client);
+        if (client === null) connect();
+
         client.publish({
             destination: '/app/private-message',
             body: JSON.stringify({
                 sender: user?.id,
-                receiver: 29,
+                receiver: receiverid!,
                 message: $('#guest--inbox__input').val(),
             }),
-            headers: {},
         });
     }
 
@@ -93,16 +111,26 @@ const GuestInboxPage: FC<IGuestInboxPageProps> = () => {
                     </div>
                     <article className='normal-flex f1'>
                         <div className='guest--inbox__left h-100'>
-                            <div>
-                                <div>
-                                    <img src='' alt='' />
-                                </div>
-                                <div>
-                                    <div>Tên chủ nhà</div>
-                                    <div>Loại:</div>
-                                    <div>Message:</div>
-                                </div>
-                            </div>
+                            {receivers &&
+                                receivers.length &&
+                                receivers.map(receiver => (
+                                    <div className='normal-flex guest--inbox__receiverinfo'>
+                                        <div className='mr-10'>
+                                            <Image
+                                                src={getImage(receiver.avatar)}
+                                                alt=''
+                                                width={'50px'}
+                                                height='50px'
+                                                className='rounded-border'
+                                            />
+                                        </div>
+                                        <div>
+                                            <div>{receiver.fullName}</div>
+                                            <div>Loại:</div>
+                                            <div>Message:</div>
+                                        </div>
+                                    </div>
+                                ))}
                         </div>
                         <div className='guest--inbox__right f1 h-100 col-flex'>
                             <div>

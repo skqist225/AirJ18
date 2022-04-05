@@ -23,6 +23,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,12 +32,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Builder
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
 
-	// @JsonIgnore
+	@JsonIgnore
 	private String avatar;
 
 	@NotEmpty(message = "Tên không được để trống.")
@@ -102,18 +104,21 @@ public class User extends BaseEntity {
 	@ManyToMany
 	@JoinTable(name = "users_favorite_rooms", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
 	private Set<Room> favRooms = new HashSet<>();
-	
-	@Builder.Default
-	@OneToMany(mappedBy = "sender")
-	private List<Chat> senderChats =new ArrayList<Chat>();
-	
-	@Builder.Default
-	@OneToMany(mappedBy = "receiver")
-	private List<Chat> receiverChats =new ArrayList<Chat>();
-	
+
+//	@Builder.Default
+//	@OneToMany(mappedBy = "sender")
+//	private List<Chat> senderChats =new ArrayList<Chat>();
+//	
+//	@Builder.Default
+//	@OneToMany(mappedBy = "receiver")
+//	private List<Chat> receiverChats =new ArrayList<Chat>();
+
+	@JsonIgnore
 	private Integer resetPasswordCode;
+
+	@JsonIgnore
 	private LocalDateTime resetPasswordExpirationTime;
-	
+
 	public User(int id) {
 		super(id);
 	}
@@ -137,8 +142,10 @@ public class User extends BaseEntity {
 
 	@Transient
 	public String getFullPathAddress() {
-		return this.address != null ? this.address.getAprtNoAndStreet() + ", " + this.address.getCity().getName() + ", "
-				+ this.address.getState().getName() + ", " + this.address.getCountry().getName() : "";
+		return this.address != null
+				? this.address.getAprtNoAndStreet() + ", " + this.address.getCity().getName() + ", "
+						+ this.address.getState().getName() + ", " + this.address.getCountry().getName()
+				: "";
 	}
 
 	@Transient
@@ -154,10 +161,8 @@ public class User extends BaseEntity {
 			State s = this.address.getState();
 			City city = this.address.getCity();
 
-			objectNode.set("country",
-					countryNode.put("id", c.getId()).put("name", c.getName()));
-			objectNode.set("state",
-					stateNode.put("id", s.getId()).put("name", s.getName()));
+			objectNode.set("country", countryNode.put("id", c.getId()).put("name", c.getName()));
+			objectNode.set("state", stateNode.put("id", s.getId()).put("name", s.getName()));
 			objectNode.set("city", cityNode.put("id", city.getId()).put("name", city.getName()));
 			objectNode.put("aprtNoAndStreet", this.address.getAprtNoAndStreet());
 		}
@@ -169,14 +174,10 @@ public class User extends BaseEntity {
 	@JsonIgnore
 	public static User buildUser(PostRegisterUserDTO postUser) {
 		return User.builder().firstName(postUser.getFirstName()).lastName(postUser.getLastName())
-				.email(postUser.getEmail())
-				.password(postUser.getPassword())
+				.email(postUser.getEmail()).password(postUser.getPassword())
 				.sex(postUser.getSex().equals("MALE") ? Sex.MALE
-						: (postUser.getSex()
-								.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER))
-				.birthday(postUser.getBirthday())
-				.phoneNumber(postUser.getPhoneNumber())
-				.build();
+						: (postUser.getSex().equals("FEMALE") ? Sex.FEMALE : Sex.OTHER))
+				.birthday(postUser.getBirthday()).phoneNumber(postUser.getPhoneNumber()).build();
 	}
 
 	@Transient

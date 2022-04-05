@@ -27,7 +27,7 @@ pipeline {
                 AWS_S3_BUCKET = 'airj18'
             }
             steps {
-                sh "aws s3 cp ${WORKSPACE}/${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}"
+                sh "aws s3 cp ${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}"
             }
         }
         stage('Build Docker Image') {

@@ -22,141 +22,141 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 public class UserService {
-    public static final int USERS_PER_PAGE = 4;
+	public static final int USERS_PER_PAGE = 4;
 
-    @Autowired
-    private RoleRepository roleRepo;
+	@Autowired
+	private RoleRepository roleRepo;
 
-    @Autowired
-    private CountryRepository countryRepo;
+	@Autowired
+	private CountryRepository countryRepo;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    public void encodePassword(User user) {
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-    }
-    
-    public String getEncodedPassword(String rawPassword) {
-    	return passwordEncoder.encode(rawPassword);
-    }
+	public void encodePassword(User user) {
+		String encodedPassword = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encodedPassword);
+	}
 
-    public boolean isPasswordMatch(String rawPass, String hashPass) {
-        return passwordEncoder.matches(rawPass, hashPass);
-    }
+	public String getEncodedPassword(String rawPassword) {
+		return passwordEncoder.encode(rawPassword);
+	}
 
-    public void registerUser(User user) {
-        user.setRole(new Role(2));
-        encodePassword(user);
-        userRepository.save(user);
-    }
+	public boolean isPasswordMatch(String rawPass, String hashPass) {
+		return passwordEncoder.matches(rawPass, hashPass);
+	}
 
-    public boolean isEmailUnique(Integer id, String email) {
-        User userByEmail = userRepository.findByEmail(email);
+	public void registerUser(User user) {
+		user.setRole(new Role(2));
+		encodePassword(user);
+		userRepository.save(user);
+	}
 
-        if (userByEmail == null)
-            return true;
+	public boolean isEmailUnique(Integer id, String email) {
+		User userByEmail = userRepository.findByEmail(email);
 
-        boolean isCreatingNew = (id == null);
+		if (userByEmail == null)
+			return true;
 
-        if (isCreatingNew) { // create
-            if (userByEmail != null)
-                return false;
-        } else { // edit
-            if (userByEmail.getId() != id) {
-                return false;
-            }
-        }
+		boolean isCreatingNew = (id == null);
 
-        return true;
-    }
+		if (isCreatingNew) { // create
+			if (userByEmail != null)
+				return false;
+		} else { // edit
+			if (userByEmail.getId() != id) {
+				return false;
+			}
+		}
 
-    public User findByEmail(String email) throws UserNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user != null)
-            return user;
-        else
-            throw new UserNotFoundException("Could not find any user with email: " + email);
-    }
+		return true;
+	}
 
-    @Transactional
-    public int verifyPhoneNumber(Integer userId) {
-        return userRepository.verifyPhoneNumber(userId);
-    }
+	public User findByEmail(String email) throws UserNotFoundException {
+		User user = userRepository.findByEmail(email);
+		if (user != null)
+			return user;
+		else
+			throw new UserNotFoundException("User does not exist.");
+	}
 
-    public List<User> findAllUsers() {
-        return (List<User>) userRepository.findAll();
-    }
+	@Transactional
+	public int verifyPhoneNumber(Integer userId) {
+		return userRepository.verifyPhoneNumber(userId);
+	}
 
-    public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
-        Sort sort = Sort.by(sortField);
+	public List<User> findAllUsers() {
+		return (List<User>) userRepository.findAll();
+	}
 
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+	public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
+		Sort sort = Sort.by(sortField);
 
-        Pageable pageable = PageRequest.of(pageNum - 1, USERS_PER_PAGE, sort);
+		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
 
-        if (keyword != null) {
-            return userRepository.findAll(keyword, pageable);
-        }
+		Pageable pageable = PageRequest.of(pageNum - 1, USERS_PER_PAGE, sort);
 
-        return userRepository.findAll(pageable);
-    }
+		if (keyword != null) {
+			return userRepository.findAll(keyword, pageable);
+		}
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
-    }
+		return userRepository.findAll(pageable);
+	}
 
-    public User save(User user) {
-        boolean isUpdatingUser = (user.getId() != null);
-        if (isUpdatingUser) {
-            User existingUser = userRepository.findById(user.getId()).get();
+	public User saveUser(User user) {
+		return userRepository.save(user);
+	}
 
-            if (user.getPassword().isEmpty()) {
-                user.setPassword(existingUser.getPassword());
-            } else {
-                encodePassword(user);
-            }
-        } else {
-            encodePassword(user);
-        }
+	public User save(User user) {
+		boolean isUpdatingUser = (user.getId() != null);
+		if (isUpdatingUser) {
+			User existingUser = userRepository.findById(user.getId()).get();
 
-        return userRepository.save(user);
-    }
+			if (user.getPassword().isEmpty()) {
+				user.setPassword(existingUser.getPassword());
+			} else {
+				encodePassword(user);
+			}
+		} else {
+			encodePassword(user);
+		}
 
-    public List<Role> listRoles() {
-        return (List<Role>) roleRepo.findAll();
-    }
+		return userRepository.save(user);
+	}
 
-    public List<Country> listCountries() {
-        return (List<Country>) countryRepo.findAll();
-    }
+	public List<Role> listRoles() {
+		return (List<Role>) roleRepo.findAll();
+	}
 
-    public void delete(Integer id) throws UserNotFoundException {
-        Long countById = userRepository.countById(id);
-        if ((countById == null || countById == 0)) {
-            throw new UserNotFoundException("Could not find any user with ID " + id);
-        }
+	public List<Country> listCountries() {
+		return (List<Country>) countryRepo.findAll();
+	}
 
-        userRepository.deleteById(id);
-    }
+	public void delete(Integer id) throws UserNotFoundException {
+		Long countById = userRepository.countById(id);
+		if ((countById == null || countById == 0)) {
+			throw new UserNotFoundException("Could not find any user with ID " + id);
+		}
 
-    public void updateUserEnabledStatus(Integer id, boolean enabled) {
-        userRepository.updateStatus(id, enabled);
-    }
+		userRepository.deleteById(id);
+	}
 
-    public User findById(Integer id) throws UserNotFoundException {
-        User user = userRepository.findById(id).get();
-        if (user != null)
-            return user;
-        else
-            throw new UserNotFoundException("Could not find any user with ID " + id);
-    }
+	public void updateUserEnabledStatus(Integer id, boolean enabled) {
+		userRepository.updateStatus(id, enabled);
+	}
 
-    public Integer getNumberOfUser() {
-        return userRepository.getNumberOfUser();
-    }
+	public User findById(Integer id) throws UserNotFoundException {
+		User user = userRepository.findById(id).get();
+		if (user != null)
+			return user;
+		else
+			throw new UserNotFoundException("User does not exist.");
+	}
+
+	public Integer getNumberOfUser() {
+		return userRepository.getNumberOfUser();
+	}
 }

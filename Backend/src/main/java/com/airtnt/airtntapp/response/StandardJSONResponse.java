@@ -12,5 +12,5 @@ import lombok.Setter;
 public class StandardJSONResponse<T> {
     private boolean success;
     private T data;
-    public ErrorJSONResponse error;
+    public String error;
 }

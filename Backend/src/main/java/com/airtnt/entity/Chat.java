@@ -2,56 +2,93 @@ package com.airtnt.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
-import com.airtnt.airtntapp.chat.dto.ChatDTO;
+import com.airtnt.airtntapp.chat.ChatId;
+import com.airtnt.airtntapp.chat.dto.Message;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.sym.Name;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Builder
 @Entity
 @Table(name = "chats")
 public class Chat {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@EmbeddedId
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private ChatId id;
 
+	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "sender_id")
+	@MapsId("senderId")
+//	@JoinColumn(name = "sender_id")
 	private User sender;
 
+	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "receiver_id")
+	@MapsId("receiverId")
+//	@JoinColumn(name = "receiver_id")
 	private User receiver;
 
 	@NotNull
 	private String message;
-	
+
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
 	private LocalDateTime sendAt;
 
 	@Transient
-	public static Chat buildChatDTO(ChatDTO chatDTO) {
-		return new Chat(new User(chatDTO.getSender()), new User(chatDTO.getReceiver()), chatDTO.getMessage(),
-				LocalDateTime.now());
+	public static Chat buildChatDTO(Message chatDTO) {
+		return new Chat(new ChatId(chatDTO.getSender(), chatDTO.getReceiver()), new User(chatDTO.getSender()),
+				new User(chatDTO.getReceiver()), chatDTO.getMessage(), LocalDateTime.now());
 	}
 
-	public Chat(User sender, User receiver, String message, LocalDateTime sendAt) {
-		super();
-		this.sender = sender;
-		this.receiver = receiver;
-		this.message = message;
-		this.sendAt = sendAt;
-	}
+//	@Transient
+//	public ObjectNode getReceiverInfo() throws JsonProcessingException {
+//		ObjectMapper mapper = new ObjectMapper();
+//		ObjectNode rootNode = mapper.createObjectNode();
+//
+//		if (this.receiver != null) {
+//			String receiverImage = this.receiver.getAvatarPath();
+//			String receiverFullName = this.receiver.getFullName();
+//
+//			rootNode.put("avatar", receiverImage);
+//			rootNode.put("fullName", receiverFullName);
+//		}
+//
+//		return rootNode;
+//	}
+
+//	public Chat(User sender, User receiver, String message, LocalDateTime sendAt) {
+//		super();
+//		this.sender = sender;
+//		this.receiver = receiver;
+//		this.message = message;
+//		this.sendAt = sendAt;
+//	}
 }

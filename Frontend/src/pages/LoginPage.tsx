@@ -19,7 +19,7 @@ import { getImage } from '../helpers';
 const schema = yup
     .object({
         email: yup.string().email().required('Vui lòng nhập địa chỉ email!'),
-        password: yup.string().length(8, 'Mật khẩu ít nhất 8 kí tự!'),
+        password: yup.string().min(8, 'Mật khẩu ít nhất 8 kí tự!'),
     })
     .required();
 

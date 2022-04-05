@@ -94,7 +94,7 @@ function App() {
                         <Route path='reviews' element={<ProgressReviewsPage />} />
                         <Route path='reviews' element={<ProgressReviewsPage />} /> */}
                     </Route>
-                    <Route path='/guest/inbox/:hostid' element={<GuestInboxPage />} />
+                    <Route path='/guest/inbox/:receiverid' element={<GuestInboxPage />} />
                 </Routes>
             </Router>
 

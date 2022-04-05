@@ -28,6 +28,7 @@ import com.airtnt.airtntapp.response.error.BadResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
+import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.ResetPasswordDTO;
 import com.airtnt.entity.User;
 
@@ -60,7 +61,7 @@ public class AuthRestController {
 		try {
 			User user = userService.findByEmail(postUser.getEmail());
 			if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
-				return new BadResponse<User>("Password does not match").response();
+				return new BadResponse<User>("Incorrect password").response();
 
 			return ResponseEntity.ok()
 					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", user.getEmail()))
@@ -85,6 +86,19 @@ public class AuthRestController {
 		} catch (NotAuthenticatedException ex) {
 			return new NotAuthenticatedResponse<String>().response();
 		}
+	}
+
+	@PostMapping("register")
+	public ResponseEntity<StandardJSONResponse<User>> registerUser(@RequestBody PostRegisterUserDTO postUser,
+			HttpServletResponse res) {
+		// check email exist
+		boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
+		if (!isDuplicatedEmail)
+			return new BadResponse<User>("Email has already been taken").response();
+
+		// create new user
+		User savedUser = userService.save(User.buildUser(postUser));
+		return new OkResponse<User>(savedUser).response();
 	}
 
 	@PostMapping("forgot-password")
@@ -157,11 +171,10 @@ public class AuthRestController {
 			boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
 			if (isAfter)
 				return new BadResponse<String>("reset password session is out of time").response();
-			
-			if(!newPassword.equals(confirmNewPassword))
+
+			if (!newPassword.equals(confirmNewPassword))
 				return new BadResponse<String>("new password does not match confirm new password").response();
-			
-			
+
 			user.setPassword(userService.getEncodedPassword(newPassword));
 			user.setResetPasswordCode(null);
 			user.setResetPasswordExpirationTime(null);

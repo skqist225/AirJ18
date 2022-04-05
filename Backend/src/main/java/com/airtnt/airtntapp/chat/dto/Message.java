@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ChatDTO {
+public class Message {
 	private Integer sender;
 	private Integer receiver;
     private String message;

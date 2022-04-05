@@ -93,19 +93,6 @@ public class UserORestController {
 	@Autowired
 	private RoomService roomService;
 
-	@PostMapping("register")
-	public ResponseEntity<StandardJSONResponse<User>> registerUser(@RequestBody PostRegisterUserDTO postUser,
-			HttpServletResponse res) {
-		// check email exist
-		boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
-		if (!isDuplicatedEmail)
-			return new BadResponse<User>("Duplicated entry email").response();
-
-		// create new user
-		User savedUser = userService.save(User.buildUser(postUser));
-		return new OkResponse<User>(savedUser).response();
-	}
-
 	@GetMapping("wishlists/ids")
 	public ResponseEntity<StandardJSONResponse<List<Integer>>> fetchWishlistsIds(
 			@CookieValue(value = "user", required = false) String cookie) {
@@ -329,7 +316,7 @@ public class UserORestController {
 		try {
 			User user = authenticate.getLoggedInUser(cookie);
 //		return new OkResponse<List<Chat>>(user.getSender()).response();
-			
+
 			return null;
 
 		} catch (NullCookieException e) {

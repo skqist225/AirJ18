@@ -1,30 +1,52 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import api from '../../axios';
 import { RootState } from '../../store';
+import { Chat, ReceiverInfo } from '../../types/type_Chat';
 
-export const fetchInbox = createAsyncThunk(
-    'inbox/fetchInbox',
-    async ({ hostid }: { hostid: string }, { dispatch, getState, rejectWithValue }) => {
+export const fetchInboxBetweenSenderAndReceiver = createAsyncThunk(
+    'inbox/fetchInboxBetweenSenderAndReceiver',
+    async ({ receiver }: { receiver: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { bookedRooms, ratingLabels },
-            } = await api.get(`/user/booked-rooms?query=${hostid}`);
+            const { data } = await api.get(`/chat/receiver/${receiver}`);
 
-            return { bookedRooms, ratingLabels };
+            return { data };
         } catch (error) {}
     }
 );
 
-type InboxState = {};
+export const fetchReceivers = createAsyncThunk(
+    'inbox/fetchReceivers',
+    async (_, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const { data } = await api.get(`/chat/receivers`);
 
-const initialState: InboxState = {};
+            return { data };
+        } catch (error) {}
+    }
+);
+
+type InboxState = {
+    chats: Chat[];
+    receivers: ReceiverInfo[];
+};
+
+const initialState: InboxState = {
+    chats: [],
+    receivers: [],
+};
 
 const inboxSlice = createSlice({
     name: 'inbox',
     initialState,
     reducers: {},
     extraReducers: builder => {
-        // builder.addCase;
+        builder
+            .addCase(fetchInboxBetweenSenderAndReceiver.fulfilled, (state, { payload }) => {
+                state.chats = payload?.data;
+            })
+            .addCase(fetchReceivers.fulfilled, (state, { payload }) => {
+                state.receivers = payload?.data;
+            });
     },
 });
 
