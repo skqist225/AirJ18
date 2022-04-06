@@ -1,9 +1,11 @@
 package com.airtnt.airtntapp.user;
 
 import java.time.LocalDateTime;
+
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -17,12 +19,15 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.middleware.Authenticate;
+import com.airtnt.airtntapp.response.FailureResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
@@ -31,10 +36,16 @@ import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.ResetPasswordDTO;
 import com.airtnt.entity.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -89,16 +100,37 @@ public class AuthRestController {
 	}
 
 	@PostMapping("register")
-	public ResponseEntity<StandardJSONResponse<User>> registerUser(@RequestBody PostRegisterUserDTO postUser,
-			HttpServletResponse res) {
+	public ResponseEntity<StandardJSONResponse<String>> registerUser(
+			@Validated @RequestBody PostRegisterUserDTO postUser, HttpServletResponse res)
+			throws JsonProcessingException {
 		// check email exist
-		boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
-		if (!isDuplicatedEmail)
-			return new BadResponse<User>("Email has already been taken").response();
+		ObjectMapper mapper = new ObjectMapper();
 
-		// create new user
-		User savedUser = userService.save(User.buildUser(postUser));
-		return new OkResponse<User>(savedUser).response();
+		ArrayNode arrays = mapper.createArrayNode();
+		try {
+			boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
+			if (!isDuplicatedEmail)
+				return new BadResponse<String>("Email has already been taken").response();
+
+			// create new user
+			User savedUser = userService.save(User.buildUser(postUser));
+			return new OkResponse<String>(mapper.writeValueAsString(savedUser)).response();
+		} catch (ConstraintViolationException ex) {
+			Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
+			if (!violations.isEmpty()) {
+				violations.forEach(violation -> {
+					ObjectNode node = mapper.createObjectNode();
+					node.put(violation.getPropertyPath().toString(), violation.getMessage());
+					arrays.add(node);
+				});
+
+				return new FailureResponse<String>().setMessage("The given data is invalid")
+						.setResponse(400, arrays.toString()).response();
+			} else {
+				User savedUser = userService.save(User.buildUser(postUser));
+				return new OkResponse<String>(mapper.writeValueAsString(savedUser)).response();
+			}
+		}
 	}
 
 	@PostMapping("forgot-password")

@@ -27,6 +27,7 @@ import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
+import com.airtnt.airtntapp.user.dto.UserSexDTO;
 import com.airtnt.airtntapp.user.dto.WishlistsDTO;
 import com.airtnt.airtntapp.user.response.BookedRoomsByUser;
 import com.airtnt.entity.Address;
@@ -92,6 +93,18 @@ public class UserORestController {
 
 	@Autowired
 	private RoomService roomService;
+
+	@GetMapping("sex")
+	public ResponseEntity<StandardJSONResponse<List<UserSexDTO>>> getSexs() {
+		List<UserSexDTO> sexs = new ArrayList<UserSexDTO>();
+
+		for (Sex sex : Sex.values()) {
+			sexs.add(new UserSexDTO(sex.toString(),
+					sex.toString().equals("MALE") ? "Nam" : sex.toString().equals("FEMALE") ? "Nữ" : "Khác"));
+		}
+
+		return new OkResponse<List<UserSexDTO>>(sexs).response();
+	}
 
 	@GetMapping("wishlists/ids")
 	public ResponseEntity<StandardJSONResponse<List<Integer>>> fetchWishlistsIds(

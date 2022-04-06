@@ -24,7 +24,7 @@ export const addUser = createAsyncThunk(
         try {
             const {
                 data: { user, successMessage },
-            } = await api.post(`/user/register`, postUser, {
+            } = await api.post(`/auth/register`, postUser, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
