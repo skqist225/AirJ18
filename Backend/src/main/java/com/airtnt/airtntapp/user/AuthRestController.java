@@ -65,6 +65,9 @@ public class AuthRestController {
 
 	@Autowired
 	private CookieProcess cookiePorcess;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@PostMapping("login")
 	public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
@@ -103,10 +106,9 @@ public class AuthRestController {
 	public ResponseEntity<StandardJSONResponse<String>> registerUser(
 			@Validated @RequestBody PostRegisterUserDTO postUser, HttpServletResponse res)
 			throws JsonProcessingException {
-		// check email exist
-		ObjectMapper mapper = new ObjectMapper();
+		// check email exists
 
-		ArrayNode arrays = mapper.createArrayNode();
+		ArrayNode arrays = objectMapper.createArrayNode();
 		try {
 			boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
 			if (!isDuplicatedEmail)
@@ -114,12 +116,12 @@ public class AuthRestController {
 
 			// create new user
 			User savedUser = userService.save(User.buildUser(postUser));
-			return new OkResponse<String>(mapper.writeValueAsString(savedUser)).response();
+			return new OkResponse<String>(objectMapper.writeValueAsString(savedUser)).response();
 		} catch (ConstraintViolationException ex) {
 			Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
 			if (!violations.isEmpty()) {
 				violations.forEach(violation -> {
-					ObjectNode node = mapper.createObjectNode();
+					ObjectNode node = objectMapper.createObjectNode();
 					node.put(violation.getPropertyPath().toString(), violation.getMessage());
 					arrays.add(node);
 				});
@@ -128,7 +130,7 @@ public class AuthRestController {
 						.setResponse(400, arrays.toString()).response();
 			} else {
 				User savedUser = userService.save(User.buildUser(postUser));
-				return new OkResponse<String>(mapper.writeValueAsString(savedUser)).response();
+				return new OkResponse<String>(objectMapper.writeValueAsString(savedUser)).response();
 			}
 		}
 	}

@@ -55,12 +55,12 @@ public class User extends BaseEntity {
 	@Column(length = 10, nullable = false)
 	private Sex sex;
 
-	@Past(message = "Không chọn ngày lớn hơn hiện tại")
+	@Past(message = "Không chọn ngày lớn hơn hiện tại.")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthday;
 
-	@Email(message = "Không đúng định dạng email")
+	@Email(message = "Không đúng định dạng email.")
 	@NotEmpty(message = "Email không được để trống.")
 	@Column(nullable = false, unique = true)
 	private String email;
@@ -76,8 +76,6 @@ public class User extends BaseEntity {
 	@JoinColumn(name = "role_id")
 	private Role role;
 
-//	@NotEmpty(message = "Số điện thoại không được để trống.")
-//	@Size(min = 10, max = 11, message = "SDT phải ít nhất 10 chữ số và lớn nhất 11 chữ số.")
 	@Pattern(regexp = "^[0-9]{10,11}$", message = "SĐT phải ít nhất 10 chữ số và lớn nhất 11 chữ số và là kí tự số")
 	@Column(length = 10, nullable = false)
 	private String phoneNumber;
