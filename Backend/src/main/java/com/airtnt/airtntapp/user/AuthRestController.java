@@ -75,7 +75,7 @@ public class AuthRestController {
 		try {
 			User user = userService.findByEmail(postUser.getEmail());
 			String cookie = cookiePorcess.writeCookie("user", user.getEmail());
-			user.setCookie(cookie.split(";")[0].split("=")[1]);
+			user.setCookie(cookie.split(";")[0]);
 			if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
 				return new BadResponse<User>("Incorrect password").response();
 
