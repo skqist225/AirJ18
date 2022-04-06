@@ -112,6 +112,9 @@ public class User extends BaseEntity {
 
 	@JsonIgnore
 	private LocalDateTime resetPasswordExpirationTime;
+	
+	@Transient
+	private String cookie;
 
 	public User(int id) {
 		super(id);

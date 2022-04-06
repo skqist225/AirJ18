@@ -1,6 +1,8 @@
 pipeline {
     agent any
     options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        disableConcurrentBuilds()
         skipStagesAfterUnstable()
     }
     parameters {
@@ -20,6 +22,8 @@ pipeline {
             steps {
                 sh 'echo $(pwd)'
                 sh 'mvn clean package --file */pom.xml'
+                sh 'echo "Hello World" > hello.txt'
+                archiveArtifacts(artifacts: '**/*.txt', followSymlinks: false)
             }
         }
         stage('Send Build Artifact To AWS S3') {

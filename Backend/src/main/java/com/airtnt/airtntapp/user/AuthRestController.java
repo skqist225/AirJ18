@@ -65,7 +65,7 @@ public class AuthRestController {
 
 	@Autowired
 	private CookieProcess cookiePorcess;
-	
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
@@ -74,11 +74,12 @@ public class AuthRestController {
 			HttpServletResponse res) {
 		try {
 			User user = userService.findByEmail(postUser.getEmail());
+			String cookie = cookiePorcess.writeCookie("user", user.getEmail());
+			user.setCookie(cookie.split(";")[0].split("=")[1]);
 			if (!userService.isPasswordMatch(postUser.getPassword(), user.getPassword()))
 				return new BadResponse<User>("Incorrect password").response();
 
-			return ResponseEntity.ok()
-					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", user.getEmail()))
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie)
 					.body(new StandardJSONResponse<User>(true, user, null));
 
 		} catch (UserNotFoundException e) {
@@ -90,7 +91,8 @@ public class AuthRestController {
 	public ResponseEntity<StandardJSONResponse<String>> logout(
 			@CookieValue(value = "user", required = false) String cookie) {
 		try {
-			authenticate.getLoggedInUser(cookie);
+			User user = authenticate.getLoggedInUser(cookie);
+			user.setCookie(null);
 
 			return ResponseEntity.ok()
 					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", null).toString())
