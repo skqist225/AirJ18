@@ -36,6 +36,7 @@ import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.ResetPasswordDTO;
 import com.airtnt.entity.User;
+import com.airtnt.entity.exception.DuplicatedEntryPhoneNumberExeption;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
@@ -105,35 +106,35 @@ public class AuthRestController {
 	}
 
 	@PostMapping("register")
-	public ResponseEntity<StandardJSONResponse<String>> registerUser(
-			@Validated @RequestBody PostRegisterUserDTO postUser, HttpServletResponse res)
-			throws JsonProcessingException {
+	public ResponseEntity<StandardJSONResponse<User>> registerUser(@Validated @RequestBody PostRegisterUserDTO postUser,
+			HttpServletResponse res) throws JsonProcessingException {
 		// check email exists
 
 		ArrayNode arrays = objectMapper.createArrayNode();
 		try {
 			boolean isDuplicatedEmail = userService.isEmailUnique(null, postUser.getEmail());
 			if (!isDuplicatedEmail)
-				return new BadResponse<String>("Email has already been taken").response();
+				return new BadResponse<User>("Email has already been taken").response();
 
 			// create new user
-			User savedUser = userService.save(User.buildUser(postUser));
-			return new OkResponse<String>(objectMapper.writeValueAsString(savedUser)).response();
+			User savedUser;
+			try {
+				savedUser = userService.save(User.buildUser(postUser));
+				return new OkResponse<User>(savedUser).response();
+			} catch (DuplicatedEntryPhoneNumberExeption e) {
+				return new BadResponse<User>(e.getMessage()).response();
+			}
+
 		} catch (ConstraintViolationException ex) {
 			Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
-			if (!violations.isEmpty()) {
-				violations.forEach(violation -> {
-					ObjectNode node = objectMapper.createObjectNode();
-					node.put(violation.getPropertyPath().toString(), violation.getMessage());
-					arrays.add(node);
-				});
 
-				return new FailureResponse<String>().setMessage("The given data is invalid")
-						.setResponse(400, arrays.toString()).response();
-			} else {
-				User savedUser = userService.save(User.buildUser(postUser));
-				return new OkResponse<String>(objectMapper.writeValueAsString(savedUser)).response();
-			}
+			violations.forEach(violation -> {
+				ObjectNode node = objectMapper.createObjectNode();
+				node.put(violation.getPropertyPath().toString(), violation.getMessage());
+				arrays.add(node);
+			});
+
+			return new BadResponse<User>(violations.iterator().next().getMessage()).response();
 		}
 	}
 

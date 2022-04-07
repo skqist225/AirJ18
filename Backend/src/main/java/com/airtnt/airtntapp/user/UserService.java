@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.user;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -10,6 +11,7 @@ import com.airtnt.airtntapp.user.admin.RoleRepository;
 import com.airtnt.entity.Country;
 import com.airtnt.entity.Role;
 import com.airtnt.entity.User;
+import com.airtnt.entity.exception.DuplicatedEntryPhoneNumberExeption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -110,7 +112,7 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	public User save(User user) {
+	public User save(User user) throws DuplicatedEntryPhoneNumberExeption {
 		boolean isUpdatingUser = (user.getId() != null);
 		if (isUpdatingUser) {
 			User existingUser = userRepository.findById(user.getId()).get();
@@ -121,6 +123,14 @@ public class UserService {
 				encodePassword(user);
 			}
 		} else {
+			Iterator<User> users = userRepository.findAll().iterator();
+			while (users.hasNext()) {
+				User usr = users.next();
+				if (usr.getPhoneNumber().equals(user.getPhoneNumber()))
+					throw new DuplicatedEntryPhoneNumberExeption("Phone number has already been taken");
+			}
+
+			user.setRole(new Role(2));
 			encodePassword(user);
 		}
 

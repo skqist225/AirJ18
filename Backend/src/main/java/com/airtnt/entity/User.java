@@ -76,8 +76,8 @@ public class User extends BaseEntity {
 	@JoinColumn(name = "role_id")
 	private Role role;
 
-	@Pattern(regexp = "^[0-9]{10,11}$", message = "SĐT phải ít nhất 10 chữ số và lớn nhất 11 chữ số và là kí tự số")
-	@Column(length = 10, nullable = false)
+	@Pattern(regexp = "^[0-9]{10}$", message = "Số điện thoại phải là 10 chữ số")
+	@Column(length = 10, nullable = false, unique = true)
 	private String phoneNumber;
 
 	@Builder.Default
