@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
@@ -24,7 +22,6 @@ import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
-import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.airtntapp.user.dto.UserSexDTO;
@@ -46,7 +43,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,7 +110,7 @@ public class UserORestController {
 
 			return new OkResponse<List<Integer>>(
 					user.getFavRooms().stream().map(favRoom -> favRoom.getId()).collect(Collectors.toList()))
-							.response();
+					.response();
 		} catch (NullCookieException ex) {
 			return new BadResponse<List<Integer>>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
@@ -164,71 +160,71 @@ public class UserORestController {
 			Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
 
 			switch (updatedField) {
-			case "firstNameAndLastName": {
-				String newFirstName = updateData.get("firstName");
-				String newLastName = updateData.get("lastName");
+				case "firstNameAndLastName": {
+					String newFirstName = updateData.get("firstName");
+					String newLastName = updateData.get("lastName");
 
-				currentUser.setFirstName(newFirstName);
-				currentUser.setLastName(newLastName);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "sex": {
-				String newSex = updateData.get("sex");
-				Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
-				currentUser.setSex(sex);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "birthday": {
-				Integer yearOfBirth = Integer.parseInt(updateData.get("yearOfBirth"));
-				Integer monthOfBirth = Integer.parseInt(updateData.get("monthOfBirth"));
-				Integer dayOfBirth = Integer.parseInt(updateData.get("dayOfBirth"));
+					currentUser.setFirstName(newFirstName);
+					currentUser.setLastName(newLastName);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "sex": {
+					String newSex = updateData.get("sex");
+					Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
+					currentUser.setSex(sex);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "birthday": {
+					Integer yearOfBirth = Integer.parseInt(updateData.get("yearOfBirth"));
+					Integer monthOfBirth = Integer.parseInt(updateData.get("monthOfBirth"));
+					Integer dayOfBirth = Integer.parseInt(updateData.get("dayOfBirth"));
 
-				currentUser.setBirthday(LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth));
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "address": {
-				Integer countryId = Integer.parseInt(updateData.get("country"));
-				Integer stateId = Integer.parseInt(updateData.get("country"));
-				Integer cityId = Integer.parseInt(updateData.get("country"));
-				String aprtNoAndStreet = updateData.get("aprtNoAndStreet");
+					currentUser.setBirthday(LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth));
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "address": {
+					Integer countryId = Integer.parseInt(updateData.get("country"));
+					Integer stateId = Integer.parseInt(updateData.get("country"));
+					Integer cityId = Integer.parseInt(updateData.get("country"));
+					String aprtNoAndStreet = updateData.get("aprtNoAndStreet");
 
-				Country country = countryService.getCountryById(countryId);
-				State state = stateService.getStateById(stateId);
-				City city = cityService.getCityById(cityId);
+					Country country = countryService.getCountryById(countryId);
+					State state = stateService.getStateById(stateId);
+					City city = cityService.getCityById(cityId);
 
-				Address newAddress = new Address(country, state, city, aprtNoAndStreet);
-				currentUser.setAddress(newAddress);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "email": {
-				String newEmail = updateData.get("email");
-				currentUser.setEmail(newEmail);
-				savedUser = userService.saveUser(currentUser);
+					Address newAddress = new Address(country, state, city, aprtNoAndStreet);
+					currentUser.setAddress(newAddress);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "email": {
+					String newEmail = updateData.get("email");
+					currentUser.setEmail(newEmail);
+					savedUser = userService.saveUser(currentUser);
 
-				return ResponseEntity.ok()
-						.header(HttpHeaders.SET_COOKIE,
-								cookiePorcess.writeCookie("user", savedUser.getEmail()).toString())
-						.body(new StandardJSONResponse<>(true, savedUser, null));
-			}
-			case "password": {
-				String newPassword = updateData.get("newPassword");
+					return ResponseEntity.ok()
+							.header(HttpHeaders.SET_COOKIE,
+									cookiePorcess.writeCookie("user", savedUser.getEmail()).toString())
+							.body(new StandardJSONResponse<>(true, savedUser, null));
+				}
+				case "password": {
+					String newPassword = updateData.get("newPassword");
 
-				currentUser.setPassword(newPassword);
-				userService.encodePassword(currentUser);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "phoneNumber": {
-				String newPhoneNumber = updateData.get("phoneNumber");
+					currentUser.setPassword(newPassword);
+					userService.encodePassword(currentUser);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "phoneNumber": {
+					String newPhoneNumber = updateData.get("phoneNumber");
 
-				currentUser.setPhoneNumber(newPhoneNumber);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
+					currentUser.setPhoneNumber(newPhoneNumber);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
 			}
 
 			return new OkResponse<User>(savedUser).response();
@@ -328,7 +324,7 @@ public class UserORestController {
 			@CookieValue(value = "user", required = false) String cookie) {
 		try {
 			User user = authenticate.getLoggedInUser(cookie);
-//		return new OkResponse<List<Chat>>(user.getSender()).response();
+			// return new OkResponse<List<Chat>>(user.getSender()).response();
 
 			return null;
 

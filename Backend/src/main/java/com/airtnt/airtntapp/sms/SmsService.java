@@ -27,10 +27,12 @@ public class SmsService {
         int max = 999999;
         int number = (int) (Math.random() * (max - min + 1) + min);
 
-        String msg = "Your OTP - " + number + " please verify this OTP in order to complete the rental process.";
-
-        Message.creator(new PhoneNumber(sms.getPhoneNumber()), new PhoneNumber(FROM_NUMBER), msg)
+        String msg = "Your OTP number is: " + number;
+        Message
+                .creator(new com.twilio.type.PhoneNumber(
+                        sms.getPhoneNumber()), "MGb473ce8dd8a56550609192ba3c51c6f4", msg)
                 .create();
+
         StoreOTP.setOtp(number);
     }
 
