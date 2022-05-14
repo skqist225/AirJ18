@@ -1,7 +1,10 @@
 package com.airtnt.airtntapp.user;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,7 @@ import com.airtnt.entity.State;
 import com.airtnt.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -51,6 +55,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 @RestController
@@ -89,6 +94,9 @@ public class UserORestController {
 
 	@Autowired
 	private RoomService roomService;
+
+	@Autowired
+	private Environment env;
 
 	@GetMapping("sex")
 	public ResponseEntity<StandardJSONResponse<List<UserSexDTO>>> getSexs() {
@@ -235,6 +243,11 @@ public class UserORestController {
 		}
 	}
 
+	public static String getResourceAsFile(String relativeFilePath) throws FileNotFoundException {
+		System.out.println(ResourceUtils.getURL("classpath:" + relativeFilePath).getFile());
+		return ResourceUtils.getURL("classpath:" + relativeFilePath).getFile();
+	}
+
 	@PutMapping("update-avatar")
 	public ResponseEntity<StandardJSONResponse<User>> updateUserAvatar(@CookieValue("user") String cookie,
 			@RequestParam(name = "newAvatar", required = false) MultipartFile newAvatar) throws IOException {
@@ -243,14 +256,19 @@ public class UserORestController {
 
 			if (newAvatar != null) {
 				String fileName = StringUtils.cleanPath(newAvatar.getOriginalFilename());
-				currentUser.setAvatar(fileName);
-				User savedUser = userService.saveUser(currentUser);
+				String uploadDir = "";
+				String environment = env.getProperty("env");
+				System.out.println(environment);
+				if (environment.equals("development")) {
+					uploadDir = "src/main/resources/static/user_images/" + currentUser.getId() + "/";
+				} else {
+					uploadDir = getResourceAsFile("static/user_images/" + currentUser.getId() + "/");
+				}
 
-				String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/user_images/"
-						+ savedUser.getId();
-				System.out.println(uploadDir);
 				FileUploadUtil.cleanDir(uploadDir);
 				FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
+				currentUser.setAvatar(fileName);
+				User savedUser = userService.saveUser(currentUser);
 				return new OkResponse<User>(savedUser).response();
 			} else {
 				return new BadResponse<User>("Please add image").response();

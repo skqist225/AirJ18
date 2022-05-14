@@ -27,7 +27,7 @@ public class FileUploadUtil {
 
     public static void cleanDir(String dir) {
         Path dirPath = Paths.get(dir);
-        System.out.println(dirPath);
+
         try {
             Files.list(dirPath).forEach(file -> {
                 System.out.println(file);
