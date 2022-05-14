@@ -10,7 +10,7 @@ pipeline {
     }
     environment {
         BACKEND_FOLDER = 'Backend'
-        DOCKER_TAG = getVersion()
+//         DOCKER_TAG = getVersion()
     }
     stages {
         stage('Build') {
