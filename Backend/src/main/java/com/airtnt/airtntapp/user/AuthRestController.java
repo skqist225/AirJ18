@@ -23,6 +23,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import com.airtnt.airtntapp.cookie.CookieProcess;
+import com.airtnt.airtntapp.exception.DuplicatedEntryPhoneNumberExeption;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
@@ -35,7 +36,6 @@ import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.ResetPasswordDTO;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.DuplicatedEntryPhoneNumberExeption;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;

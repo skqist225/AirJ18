@@ -8,6 +8,7 @@ import com.airtnt.airtntapp.amentity.AmentityService;
 import com.airtnt.airtntapp.category.CategoryService;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.currency.CurrencyRepository;
+import com.airtnt.airtntapp.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.room.group.RoomGroupService;
@@ -24,7 +25,6 @@ import com.airtnt.entity.RoomGroup;
 import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.Rule;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.RoomNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

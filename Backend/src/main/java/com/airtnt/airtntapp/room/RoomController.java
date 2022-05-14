@@ -14,9 +14,9 @@ import java.util.List;
 
 import com.airtnt.entity.Image;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.booking.BookedDateDTO;
 import com.airtnt.airtntapp.booking.BookingService;
+import com.airtnt.airtntapp.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.user.UserService;

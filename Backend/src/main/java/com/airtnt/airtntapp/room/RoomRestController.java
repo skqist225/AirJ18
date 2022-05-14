@@ -10,6 +10,7 @@ import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
+import com.airtnt.airtntapp.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.review.ReviewService;
@@ -68,7 +69,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.airtnt.entity.Rule;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.RoomNotFoundException;
 
 @RestController
 public class RoomRestController {
@@ -108,7 +108,8 @@ public class RoomRestController {
             @RequestParam(value = "bed", required = false, defaultValue = "0") String bed,
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
             @RequestParam(value = "amentities", required = false, defaultValue = "") String amenitiesFilter,
-            @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates)
+            @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates,
+            @RequestParam(value = "query", required = false, defaultValue = "") String query)
             throws ParseException {
         Map<String, String> filters = new HashMap<>();
         filters.put("privacies", privacies);
@@ -119,6 +120,7 @@ public class RoomRestController {
         filters.put("bathRoom", bathRoom);
         filters.put("amenities", amenitiesFilter);
         filters.put("bookingDates", bookingDates);
+        filters.put("query", query);
 
         List<Room> rooms = roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getContent();
         System.out.println("total eles: ");

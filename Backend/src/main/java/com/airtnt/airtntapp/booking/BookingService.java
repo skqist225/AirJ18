@@ -13,12 +13,12 @@ import java.util.NoSuchElementException;
 import javax.transaction.Transactional;
 
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
+import com.airtnt.airtntapp.exception.BookingNotFoundException;
 import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.BookingNotFoundException;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
