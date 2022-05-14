@@ -57,6 +57,7 @@ import com.airtnt.entity.PriceType;
 import com.airtnt.entity.Review;
 import com.airtnt.entity.Role;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,7 +73,7 @@ import com.airtnt.entity.User;
 
 @RestController
 public class RoomRestController {
-    private final String STATIC_PATH = "Backend/src/main/resources/static/room_images";
+    private final String STATIC_PATH = "src/main/resources/static/room_images";
 
     @Autowired
     private RoomService roomService;
@@ -257,8 +258,9 @@ public class RoomRestController {
 
         /* MOVE IMAGE TO FOLDER */
         if (savedRoom != null) {
-            String uploadDir = STATIC_PATH + "/" + user.getEmail() + "/" + savedRoom.getId();
-            String source = STATIC_PATH + "/" + user.getEmail() + "/";
+            String uploadDir = new File(STATIC_PATH + "/" + user.getEmail() + "/" + savedRoom.getId())
+                    .getAbsolutePath();
+            String source = new File(STATIC_PATH + "/" + user.getEmail() + "/").getAbsolutePath();
             Path sourcePath = Paths.get(source);
             Path targetPath = Files.createDirectories(Paths.get(uploadDir));
             for (String imageName : payload.getImages()) {

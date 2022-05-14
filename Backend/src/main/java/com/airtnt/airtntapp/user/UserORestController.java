@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.user;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -63,8 +64,6 @@ public class UserORestController {
 
 	public final String UPDATE_USER_SUCCESS = "UPDATE_USER_SUCCESSFULLY";
 	public final String UPDATE_USER_FAILURE = "UPDATE_USER_FAILURE";
-
-	public final String STATIC_PATH = "src/main/resources/static/user_images";
 
 	@Autowired
 	private UserService userService;
@@ -245,7 +244,8 @@ public class UserORestController {
 				String fileName = StringUtils.cleanPath(newAvatar.getOriginalFilename());
 				currentUser.setAvatar(fileName);
 				User savedUser = userService.saveUser(currentUser);
-				String uploadDir = STATIC_PATH + "/" + savedUser.getId();
+				String uploadDir = new File("src/main/resources/static/user_images/" + savedUser.getId())
+						.getAbsolutePath();
 				FileUploadUtil.cleanDir(uploadDir);
 				FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
 

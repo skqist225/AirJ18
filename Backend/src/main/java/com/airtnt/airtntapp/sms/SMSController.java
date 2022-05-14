@@ -24,27 +24,19 @@ public class SMSController {
     private final String TOPIC_DESTINATION = "/lesson/sms";
 
     // You can send SMS in verified Number
-    @PostMapping("/mobile-number")
-    public ResponseEntity<String> smsSubmit(@RequestBody SmsPojo sms) {
+    @PostMapping("/api/otp")
+    public ResponseEntity<String> smsSubmit(@RequestBody String phoneNumber) {
         try {
-            service.send(sms);
+            service.send(phoneNumber);
         } catch (Exception e) {
             return new ResponseEntity<String>("Phone number is not correct or exist!",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        webSocket.convertAndSend(TOPIC_DESTINATION, getTimeStamp() + ": SMS has been sent!: " + sms.getPhoneNumber());
+        webSocket.convertAndSend(TOPIC_DESTINATION, getTimeStamp() + ": SMS has been sent!: " + phoneNumber);
         return new ResponseEntity<String>("Sent successfully!", HttpStatus.OK);
-    }
-
-    @PostMapping("/smscallback")
-    public void smsCallback(@RequestBody MultiValueMap<String, String> map) {
-        service.receive(map);
-        webSocket.convertAndSend(TOPIC_DESTINATION,
-                getTimeStamp() + ": Twilio has made a callback request! Here are the contents: " + map.toString());
     }
 
     private String getTimeStamp() {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now());
     }
-
 }
