@@ -3,6 +3,10 @@ package com.airtnt.airtntapp.sms;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.airtnt.airtntapp.response.StandardJSONResponse;
+import com.airtnt.airtntapp.response.SuccessResponse;
+import com.airtnt.airtntapp.response.error.BadResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +28,14 @@ public class SMSController {
 
     // You can send SMS in verified Number
     @PostMapping("/api/otp")
-    public ResponseEntity<String> smsSubmit(@RequestBody String phoneNumber) {
+    public ResponseEntity<StandardJSONResponse<String>> smsSubmit(@RequestBody String phoneNumber) {
         try {
             service.send(phoneNumber);
         } catch (Exception e) {
-            return new ResponseEntity<String>("Phone number is not correct or exist!",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new BadResponse<String>("Phone number is not correct or exist!").response();
         }
         webSocket.convertAndSend(TOPIC_DESTINATION, getTimeStamp() + ": SMS has been sent!: " + phoneNumber);
-        return new ResponseEntity<String>("Sent successfully!", HttpStatus.OK);
+        return new SuccessResponse<String>().setResponse(200, "Sent successfully!").response();
     }
 
     private String getTimeStamp() {

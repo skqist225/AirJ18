@@ -18,6 +18,7 @@ import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
+import com.airtnt.airtntapp.response.error.InternalServerErrorResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.room.RoomService;
@@ -244,15 +245,15 @@ public class UserORestController {
 				String fileName = StringUtils.cleanPath(newAvatar.getOriginalFilename());
 				currentUser.setAvatar(fileName);
 				User savedUser = userService.saveUser(currentUser);
-				System.out.println(System.getProperty("user.dir"));
+
 				String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/user_images/"
-						+ savedUser.getId();
+						+ savedUser.getId() + "/";
 				FileUploadUtil.cleanDir(uploadDir);
 				FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
-
 				return new OkResponse<User>(savedUser).response();
+			} else {
+				return new BadResponse<User>("Please add image").response();
 			}
-			return new OkResponse<User>(currentUser).response();
 		} catch (NullCookieException ex) {
 			return new BadResponse<User>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
