@@ -248,6 +248,7 @@ public class UserORestController {
 
 				String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/user_images/"
 						+ savedUser.getId() + "/";
+				System.out.println(uploadDir);
 				FileUploadUtil.cleanDir(uploadDir);
 				FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
 				return new OkResponse<User>(savedUser).response();
