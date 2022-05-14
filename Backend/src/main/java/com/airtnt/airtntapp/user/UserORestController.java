@@ -247,7 +247,7 @@ public class UserORestController {
 				User savedUser = userService.saveUser(currentUser);
 
 				String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/user_images/"
-						+ savedUser.getId() + "/";
+						+ savedUser.getId();
 				System.out.println(uploadDir);
 				FileUploadUtil.cleanDir(uploadDir);
 				FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
