@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.firebase;
 
+import java.io.File;
 import java.io.FileInputStream;
 
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class FirebaseInitialize {
 
     public void initialize() {
         try {
-            FileInputStream serviceAccount = new FileInputStream("serviceAccountKey.json");
+            FileInputStream serviceAccount = new FileInputStream(new File("serviceAccountKey.json"));
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
