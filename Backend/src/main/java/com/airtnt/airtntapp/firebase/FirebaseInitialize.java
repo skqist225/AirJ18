@@ -1,9 +1,12 @@
 package com.airtnt.airtntapp.firebase;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -16,9 +19,23 @@ public class FirebaseInitialize {
     private static DatabaseReference database = null;
     private static FirebaseApp firebaseInstance = null;
 
+    @Autowired
+    private Environment env;
+
+    public static String getResourceAsFile(String relativeFilePath) throws FileNotFoundException {
+        System.out.println(ResourceUtils.getURL("classpath:" + relativeFilePath).getFile());
+        return ResourceUtils.getURL("classpath:" + relativeFilePath).getFile();
+    }
+
     public void initialize() {
         try {
-            FileInputStream serviceAccount = new FileInputStream(new File("serviceAccountKey.json"));
+            FileInputStream serviceAccount;
+            String environment = env.getProperty("env");
+            if (environment.equals("development")) {
+                serviceAccount = new FileInputStream("src/main/resources/static/serviceAccountKey.json");
+            } else {
+                serviceAccount = new FileInputStream(getResourceAsFile("static/serviceAccountKey.json"));
+            }
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))

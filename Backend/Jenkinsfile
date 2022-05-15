@@ -21,7 +21,7 @@ pipeline {
             }
             steps {
                 sh 'echo $(pwd)'
-                sh 'aws s3 cp s3://airj18/serviceAccountKey.json $WORKSPACE/Backend/'
+                sh 'aws s3 cp s3://airj18/serviceAccountKey.json $WORKSPACE/Backend/src/main/resources/static/'
                 sh 'mvn clean package --file */pom.xml'
                 sh 'echo "Hello World" > hello.txt'
                 archiveArtifacts(artifacts: '**/*.txt', followSymlinks: false)
