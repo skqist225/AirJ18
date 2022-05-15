@@ -99,7 +99,8 @@ public class BookingService {
                 .clientMessage(
                         clientMessage)
                 .userToken(userToken)
-                .isComplete(false).build();
+                .isComplete(true).build();
+        // .isComplete(false).build();
 
         Booking savedBooking = bookingRepository.save(booking);
 
