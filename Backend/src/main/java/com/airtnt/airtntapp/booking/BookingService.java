@@ -15,6 +15,8 @@ import javax.transaction.Transactional;
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
 import com.airtnt.airtntapp.exception.BookingNotFoundException;
 import com.airtnt.airtntapp.exception.ForbiddenException;
+import com.airtnt.airtntapp.exception.RoomHasBeenBookedException;
+import com.airtnt.airtntapp.exception.UserHasBeenBookedThisRoomException;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
@@ -45,21 +47,47 @@ public class BookingService {
         return bookingRepository.findById(bookingId).get();
     }
 
-    public boolean isBooked(Date checkinDate, Date checkoutDate) throws ParseException {
-        Booking isBooked = bookingRepository.findByCheckinDateAndCheckoutDate(checkinDate, checkoutDate);
-        if (isBooked != null)
-            return true;
-        return false;
+    public boolean isBooked(Date checkinDate, Date checkoutDate, Integer roomId) throws ParseException {
+        List<Booking> bookings = bookingRepository.getBookedDates(roomId);
+
+        boolean isBooked = false;
+        for (Booking booking : bookings) {
+            Date cid = booking.getCheckinDate();
+            Date cod = booking.getCheckoutDate();
+
+            if ((checkinDate.compareTo(cid) >= 0 && checkinDate.compareTo(cod) <= 0) || (checkoutDate
+                    .compareTo(cid) >= 0 && checkoutDate.compareTo(cod) <= 0)) {
+                isBooked = true;
+                break;
+            }
+
+            if ((cid.compareTo(checkinDate) >= 0 && cid.compareTo(checkoutDate) <= 0) || (cod
+                    .compareTo(checkinDate) >= 0 && cod.compareTo(checkoutDate) <= 0)) {
+                isBooked = true;
+                break;
+            }
+        }
+
+        return isBooked;
+    }
+
+    public boolean isBookedByUser(Date checkinDate, Date checkoutDate, Integer roomId, Integer customerId) {
+        return bookingRepository.isBookedByUser(checkinDate, checkoutDate, roomId, customerId).size() > 0 ? true
+                : false;
     }
 
     public Booking createBooking(String checkin, String checkout, Room room, int numberOfDays, String clientMessage,
-            User customer) throws ParseException {
+            User customer, String userToken)
+            throws ParseException, RoomHasBeenBookedException, UserHasBeenBookedThisRoomException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Date checkinDate = sdf.parse(checkin);
         Date checkoutDate = sdf.parse(checkout);
 
-        if (isBooked(checkinDate, checkoutDate))
-            return null;
+        if (isBooked(checkinDate, checkoutDate, room.getId()))
+            throw new RoomHasBeenBookedException("This room has been booked");
+
+        if (isBookedByUser(checkinDate, checkoutDate, room.getId(), customer.getId()))
+            throw new UserHasBeenBookedThisRoomException("You have been booked this room");
 
         Float cleanFee = room.getPrice() * 5 / 100;
         Float siteFee = room.getPrice() * 10 / 100;
@@ -70,6 +98,7 @@ public class BookingService {
                 .totalFee(room.getPrice() * numberOfDays + siteFee + cleanFee)
                 .clientMessage(
                         clientMessage)
+                .userToken(userToken)
                 .isComplete(false).build();
 
         Booking savedBooking = bookingRepository.save(booking);
@@ -77,7 +106,7 @@ public class BookingService {
         return savedBooking;
     }
 
-    public List<BookedDateDTO> getBookedDate(Room room) throws ParseException {
+    public List<BookedDateDTO> getBookedDates(Room room) throws ParseException {
         List<BookedDateDTO> bookedDates = new ArrayList<>();
         List<Booking> bookings = new ArrayList<>();
         Iterator<Booking> bookingsItr = bookingRepository.findByRoom(room).iterator();
@@ -338,6 +367,8 @@ public class BookingService {
         }
 
         approvedBooking.setComplete(true);
+        approvedBooking.setUserToken(null);
+
         return bookingRepository.save(approvedBooking);
     }
 

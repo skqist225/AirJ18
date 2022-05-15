@@ -54,7 +54,7 @@ public class RoomController {
 			}
 		}
 
-		List<BookedDateDTO> bookedDates = bookingService.getBookedDate(room);
+		List<BookedDateDTO> bookedDates = bookingService.getBookedDates(room);
 		List<Image> images = new ArrayList<>(room.getImages());
 		List<Image> secondToFive = new ArrayList<>();
 		for (int i = 0; i < images.size(); i++) {

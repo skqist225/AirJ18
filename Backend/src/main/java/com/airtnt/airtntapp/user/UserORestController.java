@@ -1,10 +1,7 @@
 package com.airtnt.airtntapp.user;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +18,6 @@ import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
-import com.airtnt.airtntapp.response.error.InternalServerErrorResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.room.RoomService;
@@ -216,7 +212,7 @@ public class UserORestController {
 					return ResponseEntity.ok()
 							.header(HttpHeaders.SET_COOKIE,
 									cookiePorcess.writeCookie("user", savedUser.getEmail()).toString())
-							.body(new StandardJSONResponse<>(true, savedUser, null));
+							.body(new StandardJSONResponse<User>(true, savedUser, null));
 				}
 				case "password": {
 					String newPassword = updateData.get("newPassword");

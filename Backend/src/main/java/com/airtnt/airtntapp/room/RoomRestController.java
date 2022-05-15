@@ -57,7 +57,6 @@ import com.airtnt.entity.PriceType;
 import com.airtnt.entity.Review;
 import com.airtnt.entity.Role;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -170,7 +169,7 @@ public class RoomRestController {
                 amenity -> amenityRoomDetailsDTOs.add(AmenityRoomDetailsDTO.buildAmenityRoomDetailsDTO(amenity)));
         reviews.forEach(review -> reviewDTOs.add(ReviewDTO.buildReviewDTO(review)));
 
-        List<BookedDateDTO> bookedDates = bookingService.getBookedDate(room);
+        List<BookedDateDTO> bookedDates = bookingService.getBookedDates(room);
 
         HostDTO hostDTO = HostDTO.buildHostDTO(room);
         RoomDetailsDTO roomDetailsDTO = RoomDetailsDTO.buildRoomDetailsDTO(room, reviewDTOs, images,

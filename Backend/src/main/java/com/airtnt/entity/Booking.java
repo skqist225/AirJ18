@@ -65,6 +65,7 @@ public class Booking extends BaseEntity {
 	private Review review;
 
 	private String clientMessage;
+	private String userToken;
 
 	@Transient
 	long lastUpdated;
