@@ -3,6 +3,7 @@
 # dependencies
 /Frontend/node_modules
 /Backend/target
+/Backend/serviceAccountKey.json
 /Frontend/.pnp
 /Frontend/.pnp.js
 
