@@ -145,10 +145,14 @@ public class AuthRestController {
 
 			Properties properties = new Properties();
 			properties.put("mail.smtp.auth", true);
+			properties.put("mail.smtp.username", "thuan.leminhthuan.10.2@gmail.com");
 			properties.put("mail.smtp.host", "smtp.gmail.com");
-			properties.put("mail.smtp.port", "465");
+			properties.put("mail.smtp.port", "587");
+			properties.put("mail.smtp.ssl.trust", "*");
 			properties.put("mail.smtp.ssl.enable", "true");
-			properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			// properties.put("mail.smtp.starttls.enable","true");
+			// properties.put("mail.smtp.socketFactory.class",
+			// "javax.net.ssl.SSLSocketFactory");
 
 			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
@@ -192,7 +196,7 @@ public class AuthRestController {
 
 	@PutMapping("reset-password")
 	public ResponseEntity<StandardJSONResponse<String>> resetPassword(@RequestBody ResetPasswordDTO resetPassword) {
-		int resetCode = resetPassword.getResetCode();
+		// int resetCode = resetPassword.getResetCode();
 		String userEmail = resetPassword.getUserEmail();
 		String newPassword = resetPassword.getNewPassword();
 		String confirmNewPassword = resetPassword.getConfirmNewPassword();
@@ -201,12 +205,13 @@ public class AuthRestController {
 		try {
 			User user = userService.findByEmail(userEmail);
 
-			if (resetCode != user.getResetPasswordCode())
-				return new BadResponse<String>("invalid reset code").response();
+			// if (resetCode != user.getResetPasswordCode())
+			// return new BadResponse<String>("invalid reset code").response();
 
-			boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
-			if (isAfter)
-				return new BadResponse<String>("reset password session is out of time").response();
+			// boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
+			// if (isAfter)
+			// return new BadResponse<String>("reset password session is out of
+			// time").response();
 
 			if (!newPassword.equals(confirmNewPassword))
 				return new BadResponse<String>("new password does not match confirm new password").response();
