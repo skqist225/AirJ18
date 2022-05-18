@@ -142,26 +142,27 @@ public class AuthRestController {
 		String email = payLoad.get("email");
 		try {
 			User user = userService.findByEmail(email);
+			final String username = "thuan.leminhthuan.10.2@gmail.com";
+			final String password = "tqgxcudjgljrhztj";
+			final String smtpServer = "smtp.gmail.com";
 
 			Properties properties = new Properties();
-			properties.put("mail.smtp.auth", true);
-			properties.put("mail.smtp.username", "thuan.leminhthuan.10.2@gmail.com");
-			properties.put("mail.smtp.host", "smtp.gmail.com");
-			properties.put("mail.smtp.port", "587");
-			properties.put("mail.smtp.ssl.trust", "*");
-			properties.put("mail.smtp.ssl.enable", "true");
-			// properties.put("mail.smtp.starttls.enable","true");
-			// properties.put("mail.smtp.socketFactory.class",
-			// "javax.net.ssl.SSLSocketFactory");
+			properties.put("mail.smtp.auth", "true");
+			// properties.put("mail.smtp.starttls.enable", "true"); #587
+			properties.put("mail.smtp.ssl.enable", "true"); // #465
+			properties.put("mail.smtp.host", smtpServer);
+			properties.put("mail.smtp.port", "465");
+			properties.put("mail.smtp.ssl.trust", smtpServer);
+			properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
 			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("thuan.leminhthuan.10.2@gmail.com", "khicalcsugfzfowu");
+					return new PasswordAuthentication(username, password);
 				}
 			});
 			session.setDebug(true);
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("airj18-support"));
+			message.setFrom(new InternetAddress(username));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 			message.setSubject("Reset your password - AirJ18");
 			int code = new Random().nextInt(900000) + 100000;
@@ -187,7 +188,8 @@ public class AuthRestController {
 
 			return ResponseEntity.ok()
 					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", null).toString())
-					.body(new StandardJSONResponse<String>(true, "reset email has been sent to" + user.getEmail(),
+					.body(new StandardJSONResponse<String>(true,
+							"Reset password's code has been sent to " + user.getEmail(),
 							null));
 		} catch (UserNotFoundException e) {
 			return new BadResponse<String>(e.getMessage()).response();
