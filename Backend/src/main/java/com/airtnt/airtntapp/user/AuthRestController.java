@@ -198,7 +198,7 @@ public class AuthRestController {
 
 	@PutMapping("reset-password")
 	public ResponseEntity<StandardJSONResponse<String>> resetPassword(@RequestBody ResetPasswordDTO resetPassword) {
-		// int resetCode = resetPassword.getResetCode();
+		int resetCode = resetPassword.getResetCode();
 		String userEmail = resetPassword.getUserEmail();
 		String newPassword = resetPassword.getNewPassword();
 		String confirmNewPassword = resetPassword.getConfirmNewPassword();
@@ -207,16 +207,15 @@ public class AuthRestController {
 		try {
 			User user = userService.findByEmail(userEmail);
 
-			// if (resetCode != user.getResetPasswordCode())
-			// return new BadResponse<String>("invalid reset code").response();
+			if (resetCode != user.getResetPasswordCode())
+				return new BadResponse<String>("Invalid reset code").response();
 
-			// boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
-			// if (isAfter)
-			// return new BadResponse<String>("reset password session is out of
-			// time").response();
+			boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
+			if (isAfter)
+				return new BadResponse<String>("Reset password session is out of time").response();
 
 			if (!newPassword.equals(confirmNewPassword))
-				return new BadResponse<String>("new password does not match confirm new password").response();
+				return new BadResponse<String>("New password does not match confirm new password").response();
 
 			user.setPassword(userService.getEncodedPassword(newPassword));
 			user.setResetPasswordCode(null);
@@ -225,11 +224,8 @@ public class AuthRestController {
 
 			return new OkResponse<String>("success").response();
 		} catch (UserNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new BadResponse<String>(e.getMessage()).response();
 		}
-
 	}
-
 }

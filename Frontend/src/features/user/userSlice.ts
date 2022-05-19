@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import api from '../../axios';
-import { RootState } from '../../store';
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
+import api from "../../axios";
+import { RootState } from "../../store";
 import {
     IAddUser,
     ILoginInfo,
@@ -9,24 +9,24 @@ import {
     IBookedRoom,
     RoomWishlists,
     IRatingLabel,
-} from '../../types/user/type_User';
+} from "../../types/user/type_User";
 
 function setUserToLocalStorage(user: IUser) {
     if (user) {
-        localStorage.removeItem('user');
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.removeItem("user");
+        localStorage.setItem("user", JSON.stringify(user));
     }
 }
 
 export const addUser = createAsyncThunk(
-    'user/register',
+    "user/register",
     async (postUser: IAddUser, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
                 data: { user, successMessage },
             } = await api.post(`/auth/register`, postUser, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
 
@@ -40,17 +40,17 @@ export const addUser = createAsyncThunk(
 );
 
 export const login = createAsyncThunk(
-    'user/login',
+    "user/login",
     async (loginInfo: ILoginInfo, { rejectWithValue }) => {
         try {
             const config = {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 withCredentials: true,
             };
 
-            const { data } = await api.post('/auth/login', loginInfo, config);
+            const { data } = await api.post("/auth/login", loginInfo, config);
             if (data) setUserToLocalStorage(data);
 
             return { data };
@@ -60,10 +60,29 @@ export const login = createAsyncThunk(
     }
 );
 
-export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValue }) => {
+export const forgotPassword = createAsyncThunk(
+    "user/forgotPassword",
+    async (loginInfo: ILoginInfo, { rejectWithValue }) => {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+
+            const { data } = await api.post("/auth/forgot-password", loginInfo, config);
+
+            return { data };
+        } catch ({ data: { errorMessage } }) {
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
+
+export const logout = createAsyncThunk("user/logout", async (_, { rejectWithValue }) => {
     try {
-        const { data } = await api.get('/auth/logout');
-        if (data) localStorage.removeItem('user');
+        const { data } = await api.get("/auth/logout");
+        if (data) localStorage.removeItem("user");
         return { data };
     } catch ({ data: { errorMessage } }) {
         return rejectWithValue(errorMessage);
@@ -71,7 +90,7 @@ export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValu
 });
 
 export const fetchWishlistsIDsOfCurrentUser = createAsyncThunk(
-    'user/fetchWishlistsIDsOfCurrentUser',
+    "user/fetchWishlistsIDsOfCurrentUser",
     async (_, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/user/wishlists/ids`);
@@ -81,7 +100,7 @@ export const fetchWishlistsIDsOfCurrentUser = createAsyncThunk(
 );
 
 export const fetchWishlistsOfCurrentUser = createAsyncThunk(
-    'user/fetchWishlistsOfCurrentUser',
+    "user/fetchWishlistsOfCurrentUser",
     async (_, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/user/wishlists`);
@@ -91,12 +110,12 @@ export const fetchWishlistsOfCurrentUser = createAsyncThunk(
 );
 
 export const updateUserInfo = createAsyncThunk(
-    'user/updateUserInfo',
+    "user/updateUserInfo",
     async (updatedInfo: IUserUpdate, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.post(`/user/update-personal-info`, updatedInfo, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
             //update local user info
@@ -108,7 +127,7 @@ export const updateUserInfo = createAsyncThunk(
 );
 
 export const updateUserAvatar = createAsyncThunk(
-    'user/updateUserAvatar',
+    "user/updateUserAvatar",
     async (formData: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.post(`/user/update-avatar`, formData);
@@ -120,7 +139,7 @@ export const updateUserAvatar = createAsyncThunk(
 );
 
 export const fetchBookedRooms = createAsyncThunk(
-    'user/fetchBookedRooms',
+    "user/fetchBookedRooms",
     async ({ query }: { query: string }, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
@@ -154,7 +173,7 @@ const initialState: UserState = {
     loading: true,
     wishlistsIDsFetching: true,
     errorMessage: null,
-    successMessage: '',
+    successMessage: "",
     update: {
         loading: true,
         errorMessage: null,
@@ -167,7 +186,7 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-    name: 'user',
+    name: "user",
     initialState,
     reducers: {},
     extraReducers: builder => {
@@ -210,6 +229,9 @@ const userSlice = createSlice({
             })
             .addCase(updateUserInfo.pending, (state, { payload }) => {
                 state.update.loading = true;
+            })
+            .addCase(forgotPassword.fulfilled, (state, { payload }) => {
+                state.successMessage = payload.data;
             })
             .addMatcher(isAnyOf(addUser.pending, login.pending, logout.pending), state => {
                 state.loading = true;

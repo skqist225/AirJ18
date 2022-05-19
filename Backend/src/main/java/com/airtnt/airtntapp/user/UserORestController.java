@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
+import com.airtnt.airtntapp.common.GetResource;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
@@ -51,7 +52,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 @RestController
@@ -239,11 +239,6 @@ public class UserORestController {
 		}
 	}
 
-	public static String getResourceAsFile(String relativeFilePath) throws FileNotFoundException {
-		System.out.println(ResourceUtils.getURL("classpath:" + relativeFilePath).getFile());
-		return ResourceUtils.getURL("classpath:" + relativeFilePath).getFile();
-	}
-
 	@PutMapping("update-avatar")
 	public ResponseEntity<StandardJSONResponse<User>> updateUserAvatar(@CookieValue("user") String cookie,
 			@RequestParam(name = "newAvatar", required = false) MultipartFile newAvatar) throws IOException {
@@ -258,7 +253,7 @@ public class UserORestController {
 				if (environment.equals("development")) {
 					uploadDir = "src/main/resources/static/user_images/" + currentUser.getId() + "/";
 				} else {
-					uploadDir = getResourceAsFile("static/user_images/" + currentUser.getId() + "/");
+					uploadDir = GetResource.getResourceAsFile("static/user_images/" + currentUser.getId() + "/");
 				}
 
 				FileUploadUtil.cleanDir(uploadDir);

@@ -1,4 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
     ul {
@@ -165,6 +165,12 @@ const GlobalStyle = createGlobalStyle`
         left: 0;
         right: 0;
     }
+
+    button.transparent-button {
+        background: none;
+        border: none;
+        outline: none;
+    }
 `;
 
 interface IMainButton {
@@ -197,8 +203,8 @@ export const MainButton = styled.button`
         rgb(215, 4, 102) 100%
     );
     color: rgb(255, 255, 255);
-    width: ${(props: IMainButton) => props.width || 'auto'};
-    height: ${(props: IMainButton) => props.height || 'auto'};
+    width: ${(props: IMainButton) => props.width || "auto"};
+    height: ${(props: IMainButton) => props.height || "auto"};
 `;
 
 export const Divider = styled.div`
@@ -220,18 +226,18 @@ interface ImageProps {
 }
 
 export const Div = styled.div`
-    width: ${(props: DivProps) => props.width || '100%'};
-    height: ${(props: DivProps) => props.height || '100%'};
-    margin: ${(props: DivProps) => props.margin || '0 0 0 0'};
-    padding: ${(props: DivProps) => props.padding || '0 0 0 0'};
+    width: ${(props: DivProps) => props.width || "100%"};
+    height: ${(props: DivProps) => props.height || "100%"};
+    margin: ${(props: DivProps) => props.margin || "0 0 0 0"};
+    padding: ${(props: DivProps) => props.padding || "0 0 0 0"};
     background-color: ${(props: DivProps) => props.backgroundColor};
 `;
 
 export const Image = styled.img.attrs(props => ({
     alt: props.src,
 }))`
-    ${(props: ImageProps) => props.size && 'width: ' + props.size};
-    ${(props: ImageProps) => props.size && 'height: ' + props.size};
+    ${(props: ImageProps) => props.size && "width: " + props.size};
+    ${(props: ImageProps) => props.size && "height: " + props.size};
 `;
 
 interface IDivWithBackGroundProps {
@@ -240,7 +246,7 @@ interface IDivWithBackGroundProps {
 }
 
 export const DivWithBackGround = styled.div`
-    background-image: ${(props: IDivWithBackGroundProps) => 'url(' + props.src + ')'};
+    background-image: ${(props: IDivWithBackGroundProps) => "url(" + props.src + ")"};
     background-position: center;
     background-size: cover;
     ${(props: IDivWithBackGroundProps) => props.gradientBg}

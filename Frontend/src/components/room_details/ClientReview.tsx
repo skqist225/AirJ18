@@ -1,11 +1,11 @@
-import { FC, useEffect } from 'react';
-import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers';
-import { IRoomDetails } from '../../types/room/type_RoomDetails';
-import { leftReviewLines, rightReviewLines } from '../room/script/room_details';
-import { ReviewLine, ReviewValue } from './components';
+import { FC, useEffect } from "react";
+import { Div, Image } from "../../globalStyle";
+import { getImage } from "../../helpers";
+import { IRoomDetails } from "../../types/room/type_RoomDetails";
+import { leftReviewLines, rightReviewLines } from "../room/script/room_details";
+import { ReviewLine, ReviewValue } from "./components";
 
-import $ from 'jquery';
+import $ from "jquery";
 
 interface IClientReviewProps {
     room: IRoomDetails;
@@ -14,7 +14,7 @@ interface IClientReviewProps {
 const ClientReview: FC<IClientReviewProps> = ({ room }) => {
     useEffect(() => {
         if (room?.likedByCurrentUser) {
-            $('.heartSvg').addClass('like');
+            $(".heartSvg").addClass("like");
         }
     }, []);
 
@@ -22,21 +22,21 @@ const ClientReview: FC<IClientReviewProps> = ({ room }) => {
         <div id='rdt__review'>
             <div>
                 <div className='normal-flex'>
-                    <Image src={getImage('/svg/star.svg')} size='16px' />
+                    <Image src={getImage("/svg/star.svg")} size='16px' />
                     <span
                         style={{
-                            fontWeight: '600',
-                            fontSize: '22px',
-                            display: 'inline-block',
-                            marginLeft: '12px',
+                            fontWeight: "600",
+                            fontSize: "22px",
+                            display: "inline-block",
+                            marginLeft: "12px",
                         }}
                     >
                         {room!.reviews.length > 0 && <span>{room!.averageRating}</span>}
-
+                        <span> · </span>
                         <span>{room!.reviews.length || 0} đánh giá</span>
                     </span>
                 </div>
-                <div className='normal-flex' style={{ marginBottom: '42px' }}>
+                <div className='normal-flex' style={{ marginBottom: "42px" }}>
                     <div className='flex-1'>
                         {leftReviewLines.map(({ title, id }) => (
                             <ReviewLine title={title} id={id} key={title} />
@@ -68,11 +68,11 @@ const ClientReview: FC<IClientReviewProps> = ({ room }) => {
                                         alt={review.customerAvatar}
                                     />
                                 </div>
-                                <div style={{ marginLeft: '10px' }}>
+                                <div style={{ marginLeft: "10px" }}>
                                     <div className='fs-16 fw-600'>{review.customerName}</div>
                                     <div
                                         style={{
-                                            color: '#717171',
+                                            color: "#717171",
                                         }}
                                         className='fs-14'
                                     >
@@ -82,7 +82,7 @@ const ClientReview: FC<IClientReviewProps> = ({ room }) => {
                             </Div>
                             <div
                                 style={{
-                                    maxWidth: '457px',
+                                    maxWidth: "457px",
                                 }}
                                 className='fs-16'
                             >

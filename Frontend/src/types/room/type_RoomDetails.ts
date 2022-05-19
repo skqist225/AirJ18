@@ -1,5 +1,5 @@
-import IHost from '../type_Host';
-import { IReview } from '../type_Review';
+import IHost from "../type_Host";
+import { IReview } from "../type_Review";
 
 export interface IRDAmenity {
     name: string;
