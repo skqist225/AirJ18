@@ -3,9 +3,19 @@
 # dependencies
 /Frontend/node_modules
 /Backend/target
+/Backend/serviceAccountKey.json
 /Frontend/.pnp
 /Frontend/.pnp.js
-
+/Backend/.apt_generated_tests
+/Backend/.mvn
+/Backend/src/main/resources/application.properties
+/Backend/META-INF
+/Backend/.vscode
+/Backend/.classpath
+/Backend/terraform
+/Backend/mvnw
+/Backend/mvnw.cmd
+/Backend/test_ubuntu.sh
 # testing
 /Frontend/coverage
 

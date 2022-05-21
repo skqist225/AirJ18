@@ -1,32 +1,26 @@
-import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import api from '../../axios';
-import { RootState } from '../../store';
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
+import { string } from "yup";
+import api from "../../axios";
+import { RootState } from "../../store";
 import {
     IAddUser,
-    ILoginInfo,
     IUser,
     IUserUpdate,
     IBookedRoom,
     RoomWishlists,
     IRatingLabel,
-} from '../../types/user/type_User';
-
-function setUserToLocalStorage(user: IUser) {
-    if (user) {
-        localStorage.removeItem('user');
-        localStorage.setItem('user', JSON.stringify(user));
-    }
-}
+} from "../../types/user/type_User";
+import { setUserToLocalStorage } from "../common";
 
 export const addUser = createAsyncThunk(
-    'user/register',
+    "user/register",
     async (postUser: IAddUser, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
                 data: { user, successMessage },
             } = await api.post(`/auth/register`, postUser, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
 
@@ -39,39 +33,8 @@ export const addUser = createAsyncThunk(
     }
 );
 
-export const login = createAsyncThunk(
-    'user/login',
-    async (loginInfo: ILoginInfo, { rejectWithValue }) => {
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true,
-            };
-
-            const { data } = await api.post('/auth/login', loginInfo, config);
-            if (data) setUserToLocalStorage(data);
-
-            return { data };
-        } catch ({ data: { errorMessage } }) {
-            return rejectWithValue(errorMessage);
-        }
-    }
-);
-
-export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValue }) => {
-    try {
-        const { data } = await api.get('/auth/logout');
-        if (data) localStorage.removeItem('user');
-        return { data };
-    } catch ({ data: { errorMessage } }) {
-        return rejectWithValue(errorMessage);
-    }
-});
-
 export const fetchWishlistsIDsOfCurrentUser = createAsyncThunk(
-    'user/fetchWishlistsIDsOfCurrentUser',
+    "user/fetchWishlistsIDsOfCurrentUser",
     async (_, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/user/wishlists/ids`);
@@ -81,7 +44,7 @@ export const fetchWishlistsIDsOfCurrentUser = createAsyncThunk(
 );
 
 export const fetchWishlistsOfCurrentUser = createAsyncThunk(
-    'user/fetchWishlistsOfCurrentUser',
+    "user/fetchWishlistsOfCurrentUser",
     async (_, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/user/wishlists`);
@@ -91,12 +54,12 @@ export const fetchWishlistsOfCurrentUser = createAsyncThunk(
 );
 
 export const updateUserInfo = createAsyncThunk(
-    'user/updateUserInfo',
+    "user/updateUserInfo",
     async (updatedInfo: IUserUpdate, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.post(`/user/update-personal-info`, updatedInfo, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
             //update local user info
@@ -108,7 +71,7 @@ export const updateUserInfo = createAsyncThunk(
 );
 
 export const updateUserAvatar = createAsyncThunk(
-    'user/updateUserAvatar',
+    "user/updateUserAvatar",
     async (formData: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.post(`/user/update-avatar`, formData);
@@ -120,7 +83,7 @@ export const updateUserAvatar = createAsyncThunk(
 );
 
 export const fetchBookedRooms = createAsyncThunk(
-    'user/fetchBookedRooms',
+    "user/fetchBookedRooms",
     async ({ query }: { query: string }, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
@@ -154,7 +117,7 @@ const initialState: UserState = {
     loading: true,
     wishlistsIDsFetching: true,
     errorMessage: null,
-    successMessage: '',
+    successMessage: "",
     update: {
         loading: true,
         errorMessage: null,
@@ -167,20 +130,19 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-    name: 'user',
+    name: "user",
     initialState,
-    reducers: {},
+    reducers: {
+        setUser: (state, { payload }) => {
+            state.user = payload as IUser;
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(addUser.fulfilled, (state, { payload }) => {
                 state.loading = false;
                 state.successMessage = payload.successMessage;
                 state.user = payload.user;
-            })
-            .addCase(logout.fulfilled, (state, { payload }) => {
-                state.loading = false;
-                state.successMessage = payload.data;
-                state.user = null;
             })
             .addCase(fetchWishlistsIDsOfCurrentUser.pending, (state, { payload }) => {
                 state.wishlistsIDsFetching = true;
@@ -200,10 +162,6 @@ const userSlice = createSlice({
                 state.bookedRooms = payload?.bookedRooms;
                 state.ratingLabels = payload?.ratingLabels;
             })
-            .addCase(login.fulfilled, (state, { payload }) => {
-                state.loading = false;
-                state.user = payload.data;
-            })
             .addCase(updateUserInfo.fulfilled, (state, { payload }) => {
                 state.update.loading = false;
                 state.user = payload?.data;
@@ -211,16 +169,11 @@ const userSlice = createSlice({
             .addCase(updateUserInfo.pending, (state, { payload }) => {
                 state.update.loading = true;
             })
-            .addMatcher(isAnyOf(addUser.pending, login.pending, logout.pending), state => {
+            .addMatcher(isAnyOf(addUser.pending), state => {
                 state.loading = true;
             })
             .addMatcher(
-                isAnyOf(
-                    addUser.rejected,
-                    login.rejected,
-                    logout.rejected,
-                    fetchWishlistsOfCurrentUser.rejected
-                ),
+                isAnyOf(addUser.rejected, fetchWishlistsOfCurrentUser.rejected),
                 (state, { payload }) => {
                     state.loading = false;
                     if (payload) state.errorMessage = payload as string;
@@ -229,5 +182,6 @@ const userSlice = createSlice({
     },
 });
 
+export const { setUser } = userSlice.actions;
 export const userState = (state: RootState) => state.user;
 export default userSlice.reducer;

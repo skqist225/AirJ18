@@ -30,6 +30,7 @@ public class FileUploadUtil {
 
         try {
             Files.list(dirPath).forEach(file -> {
+                System.out.println(file);
                 if (!Files.isDirectory(file)) {
                     try {
                         Files.delete(file);

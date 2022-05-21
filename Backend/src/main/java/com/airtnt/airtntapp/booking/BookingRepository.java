@@ -18,7 +18,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-        public Booking findByCheckinDateAndCheckoutDate(Date checkinDate, Date checkoutDate);
+        @Query("SELECT b FROM Booking b WHERE b.room.id = :roomId AND b.isComplete = true")
+        public List<Booking> getBookedDates(Integer roomId);
+
+        @Query("SELECT b FROM Booking b WHERE b.checkinDate = :checkinDate AND b.checkoutDate = :checkoutDate" +
+                        " AND b.room.id = :roomId AND b.customer.id = :customerId")
+        public List<Booking> isBookedByUser(Date checkinDate, Date checkoutDate, Integer roomId, Integer customerId);
 
         public List<Booking> findByRoom(Room room);
 

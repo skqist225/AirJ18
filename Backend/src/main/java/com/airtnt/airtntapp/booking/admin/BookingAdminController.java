@@ -3,8 +3,8 @@ package com.airtnt.airtntapp.booking.admin;
 import java.util.List;
 
 import com.airtnt.airtntapp.booking.BookingService;
+import com.airtnt.airtntapp.exception.BookingNotFoundException;
 import com.airtnt.entity.Booking;
-import com.airtnt.entity.exception.BookingNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

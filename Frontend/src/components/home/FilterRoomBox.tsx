@@ -1,18 +1,18 @@
-import { FC, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Div, Image } from '../../globalStyle';
-import { getImage, seperateNumber } from '../../helpers';
-import { IncAndDecBtn } from '../utils/IncAndDecBtn';
-import { Switch, Checkbox, Slider } from 'antd';
-import { MyNumberForMat } from '../utils';
+import { FC, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Div, Image } from "../../globalStyle";
+import { getImage, seperateNumber } from "../../helpers";
+import { IncAndDecBtn } from "../utils/IncAndDecBtn";
+import { Switch, Checkbox, Slider } from "antd";
+import { MyNumberForMat } from "../utils";
 import {
     fetchRoomsByCategoryAndConditions,
     roomState,
     setCurrentFilterObject,
-} from '../../features/room/roomSlice';
-import { amenityState } from '../../features/amenity/amenitySlice';
+} from "../../features/room/roomSlice";
+import { amenityState } from "../../features/amenity/amenitySlice";
 
-import $ from 'jquery';
+import $ from "jquery";
 
 interface IFilterRoomBoxProps {}
 
@@ -28,11 +28,11 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
         //     } else $(this).prop('checked', false);
         // });
 
-        $('#chooseRoomThumbnail').css('display', 'none');
-        $('#home__mainContainer').removeClass('remove-scroll');
+        $("#chooseRoomThumbnail").css("display", "none");
+        $("#home__mainContainer").removeClass("remove-scroll");
     }
     const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(10_000_000);
+    const [maxPrice, setMaxPrice] = useState(10000000);
 
     function onChange(checked: any) {
         console.log(`switch to ${checked}`);
@@ -43,11 +43,11 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
         setMaxPrice(value[1]);
     }
 
-    $('#filterRoomBoxApply')
-        .off('click')
-        .on('click', function () {
+    $("#filterRoomBoxApply")
+        .off("click")
+        .on("click", function () {
             const categoryId =
-                parseInt(new URLSearchParams(window.location.search).get('categoryid') as string) ||
+                parseInt(new URLSearchParams(window.location.search).get("categoryid") as string) ||
                 1;
 
             let choosenPrivacy: number[] = [];
@@ -55,12 +55,12 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                 choosenPrivacy.push(parseInt($(this).val()! as string));
             });
 
-            const minPrice = ($('#min-input__modify').val() as string).replace(/\./g, '');
-            const maxPrice = ($('#max-input__modify').val() as string).replace(/\./g, '');
+            const minPrice = ($("#min-input__modify").val() as string).replace(/\./g, "");
+            const maxPrice = ($("#max-input__modify").val() as string).replace(/\./g, "");
 
-            const bedRoomCount = parseInt($('#listings__bed-room-count').text());
-            const bedCount = parseInt($('#listings__bed-count').text());
-            const bathRoomCount = parseInt($('#listings__bath-room-count').text());
+            const bedRoomCount = parseInt($("#listings__bed-room-count").text());
+            const bedCount = parseInt($("#listings__bed-count").text());
+            const bathRoomCount = parseInt($("#listings__bath-room-count").text());
 
             const selectedAmentities: number[] = [];
             $('input[class="amentitySelected"]:checked').each(function () {
@@ -107,9 +107,9 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                         <div id='boxHeader' className='normal-flex' onClick={hideEditThumbnailBox}>
                             <div>
                                 <Image
-                                    src={getImage('/svg/close2.svg')}
+                                    src={getImage("/svg/close2.svg")}
                                     size='16px'
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ cursor: "pointer" }}
                                 />
                             </div>
                             <div className='index__box-header-title flex-center'>Bộ lọc</div>
@@ -122,7 +122,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                         <div
                                             className='col-flex'
                                             style={{
-                                                padding: '12px 0',
+                                                padding: "12px 0",
                                             }}
                                             key={privacy.id}
                                         >
@@ -136,8 +136,8 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                                     {privacy.name}
                                                 </Checkbox>
                                             </div>
-                                            <div style={{ marginLeft: '25px' }}>
-                                                <div className='fs-14' style={{ marginTop: '4px' }}>
+                                            <div style={{ marginLeft: "25px" }}>
+                                                <div className='fs-14' style={{ marginTop: "4px" }}>
                                                     {privacy.description}
                                                 </div>
                                             </div>
@@ -154,7 +154,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                         <MyNumberForMat
                                             isPrefix
                                             price={parseInt(averageRoomPriceByType.toFixed(2))}
-                                            currency={'đ'}
+                                            currency={"đ"}
                                         />
                                     </div>
                                     <Div className='flex-center' height='50px'>
@@ -164,7 +164,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                             max={10000000}
                                             step={500000}
                                             range={{ draggableTrack: true }}
-                                            style={{ width: '400px' }}
+                                            style={{ width: "400px" }}
                                             onChange={sliderOnChange}
                                             value={[minPrice, maxPrice]}
                                         />
@@ -183,7 +183,7 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                                 />
                                             </div>
                                         </div>
-                                        <div style={{ margin: '8px' }}>-</div>
+                                        <div style={{ margin: "8px" }}>-</div>
                                         <div className='max-price-button'>
                                             <div className='max-price-title'>giá tối đa</div>
                                             <div className='normal-flex'>
@@ -221,21 +221,21 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                     </div>
 
                                     <div>
-                                        <div className='flex-space' style={{ height: '50px' }}>
+                                        <div className='flex-space' style={{ height: "50px" }}>
                                             <div className='fs-18'>Giường</div>
                                             <IncAndDecBtn
                                                 dataEdit='listings__bed-count'
                                                 dataTrigger='roomAndBedRoom'
                                             />
                                         </div>
-                                        <div className='flex-space' style={{ height: '50px' }}>
+                                        <div className='flex-space' style={{ height: "50px" }}>
                                             <div className='fs-18'>Phòng ngủ</div>
                                             <IncAndDecBtn
                                                 dataEdit='listings__bed-room-count'
                                                 dataTrigger='roomAndBedRoom'
                                             />
                                         </div>
-                                        <div className='flex-space' style={{ height: '50px' }}>
+                                        <div className='flex-space' style={{ height: "50px" }}>
                                             <div className='fs-18'>Phòng tắm</div>
                                             <IncAndDecBtn
                                                 dataEdit='listings__bath-room-count'
@@ -250,12 +250,12 @@ const FilterRoomBox: FC<IFilterRoomBoxProps> = () => {
                                 <div className='index__box-filter-title'>Tiện nghi</div>
                                 <div className='listings__filter'>
                                     <div>
-                                        <div className='grid-2 ' style={{ height: '80%' }}>
+                                        <div className='grid-2 ' style={{ height: "80%" }}>
                                             {amenities.length &&
                                                 amenities.map(amenity => (
                                                     <div
                                                         className='normal-flex'
-                                                        style={{ height: '30px' }}
+                                                        style={{ height: "30px" }}
                                                         key={amenity.id}
                                                     >
                                                         <Checkbox

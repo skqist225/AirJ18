@@ -11,10 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class BookingDTO {
     private Integer id;
@@ -23,9 +23,10 @@ public class BookingDTO {
     private String currencySymbol;
     private float totalFee;
     private long lastUpdated;
+    private String userToken;
 
     public static BookingDTO buildBookingDTO(Booking booking) {
         return new BookingDTO(booking.getId(), booking.getBookingDate(),
-                booking.getRoom().getCurrency().getSymbol(), booking.getTotalFee(), 0);
+                booking.getRoom().getCurrency().getSymbol(), booking.getTotalFee(), 0, booking.getUserToken());
     }
 }

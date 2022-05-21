@@ -25,11 +25,6 @@ export interface IUser extends IAddUser {
     addressDetails: IAddress;
 }
 
-export type ILoginInfo = {
-    email: string;
-    password: string;
-};
-
 export interface IRatingLabel {
     label: string;
     stars: number[];

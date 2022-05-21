@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from "jquery";
 
 export default function initComp(
     setCleanlinessRating: React.Dispatch<React.SetStateAction<number>>,
@@ -10,56 +10,56 @@ export default function initComp(
     setRatingComment: React.Dispatch<React.SetStateAction<string>>,
     ratingComment: string
 ) {
-    $('.bookingDate').each(function () {
+    $(".bookingDate").each(function () {
         //customer can cancel booking if
         //1. less than 24h
         const bookingDate = new Date($(this).val()! as number).getTime();
-        const nextDateOfBookingDate = bookingDate + 86_400_000;
+        const nextDateOfBookingDate = bookingDate + 86400000;
         const currentTime = new Date().getTime();
 
         //2. is-cancel = false
-        const isCancel = $(this).data('is-cancel');
+        const isCancel = $(this).data("is-cancel");
 
         //3.if complete refund totalfee - sitefee else refund 100%
-        const isComplete = $(this).data('is-complete');
+        const isComplete = $(this).data("is-complete");
 
         if (currentTime <= nextDateOfBookingDate && currentTime >= bookingDate && !isCancel)
-            $(this).siblings('.cancelBookingBtn').css('display', 'block');
-        else $(this).siblings('.cancelBookingBtn').css('display', 'none');
+            $(this).siblings(".cancelBookingBtn").css("display", "block");
+        else $(this).siblings(".cancelBookingBtn").css("display", "none");
     });
 
-    $(document).on('keypress', function (event) {
-        if (event.key === 'Enter') {
+    $(document).on("keypress", function (event) {
+        if (event.key === "Enter") {
             filterBookings();
         }
     });
 
-    $('input[name="ratingComment"]').on('change', function () {
+    $('input[name="ratingComment"]').on("change", function () {
         console.log($(this).val());
         setRatingComment($(this).val()! as string);
     });
 
     (function () {
-        $('.ratingStar').each(function () {
+        $(".ratingStar").each(function () {
             if (ratingComment !== null) {
-                $('.ratingStar').off('click');
+                $(".ratingStar").off("click");
             } else
-                $(this).on('click', function () {
-                    const starValue = parseInt($(this).data('star-value'));
-                    const ratingName = $(this).parent().parent().parent().data('rating-name');
+                $(this).on("click", function () {
+                    const starValue = parseInt($(this).data("star-value"));
+                    const ratingName = $(this).parent().parent().parent().data("rating-name");
                     let isHavingGreaterRating = false;
 
-                    if ($(this).hasClass('selected')) {
+                    if ($(this).hasClass("selected")) {
                         $(this)
                             .parent()
                             .siblings()
                             .each(function () {
                                 if (
-                                    $(this).children('.ratingStar').data('star-value') * 1 >
+                                    $(this).children(".ratingStar").data("star-value") * 1 >
                                         starValue &&
-                                    $(this).children('.ratingStar').hasClass('selected')
+                                    $(this).children(".ratingStar").hasClass("selected")
                                 ) {
-                                    $(this).children('.ratingStar').removeClass('selected');
+                                    $(this).children(".ratingStar").removeClass("selected");
                                     isHavingGreaterRating = true;
                                 }
                             });
@@ -70,37 +70,37 @@ export default function initComp(
                                 .siblings()
                                 .each(function () {
                                     if (
-                                        $(this).children('.ratingStar').data('star-value') * 1 <
+                                        $(this).children(".ratingStar").data("star-value") * 1 <
                                         starValue
                                     ) {
-                                        $(this).children('.ratingStar').removeClass('selected');
+                                        $(this).children(".ratingStar").removeClass("selected");
                                     }
                                 });
 
-                            $(this).removeClass('selected');
+                            $(this).removeClass("selected");
                         } else {
                             switch (ratingName) {
-                                case 'Mức độ sạch sẽ': {
+                                case "Mức độ sạch sẽ": {
                                     setCleanlinessRating(starValue);
                                     break;
                                 }
-                                case 'Độ chính xác': {
+                                case "Độ chính xác": {
                                     setAccuracyRating(starValue);
                                     break;
                                 }
-                                case 'Liên lạc': {
+                                case "Liên lạc": {
                                     setContactRating(starValue);
                                     break;
                                 }
-                                case 'Vị trí': {
+                                case "Vị trí": {
                                     setLocationRating(starValue);
                                     break;
                                 }
-                                case 'Nhận phòng': {
+                                case "Nhận phòng": {
                                     setCheckinRating(starValue);
                                     break;
                                 }
-                                case 'Giá trị': {
+                                case "Giá trị": {
                                     setValueRating(starValue);
                                     break;
                                 }
@@ -112,35 +112,35 @@ export default function initComp(
                             .siblings()
                             .each(function () {
                                 if (
-                                    $(this).children('.ratingStar').data('star-value') * 1 <=
+                                    $(this).children(".ratingStar").data("star-value") * 1 <=
                                     starValue
                                 )
-                                    $(this).children('.ratingStar').addClass('selected');
+                                    $(this).children(".ratingStar").addClass("selected");
                             });
-                        $(this).addClass('selected');
+                        $(this).addClass("selected");
 
                         switch (ratingName) {
-                            case 'Mức độ sạch sẽ': {
+                            case "Mức độ sạch sẽ": {
                                 setCleanlinessRating(starValue);
                                 break;
                             }
-                            case 'Độ chính xác': {
+                            case "Độ chính xác": {
                                 setAccuracyRating(starValue);
                                 break;
                             }
-                            case 'Liên lạc': {
+                            case "Liên lạc": {
                                 setContactRating(starValue);
                                 break;
                             }
-                            case 'Vị trí': {
+                            case "Vị trí": {
                                 setLocationRating(starValue);
                                 break;
                             }
-                            case 'Nhận phòng': {
+                            case "Nhận phòng": {
                                 setCheckinRating(starValue);
                                 break;
                             }
-                            case 'Giá trị': {
+                            case "Giá trị": {
                                 setValueRating(starValue);
                                 break;
                             }
@@ -151,7 +151,7 @@ export default function initComp(
     })();
 
     function filterBookings() {
-        const searchValue = $('#user-bookings__search-input').val();
+        const searchValue = $("#user-bookings__search-input").val();
 
         // const filterOption =
         //     (window.location.href = `${baseURL}user/bookings?query=${searchValue}`);

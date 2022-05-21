@@ -28,6 +28,16 @@
     text-align: center;
     font-weight: 600;
     flex: 1;
+    font-size: 22px;
+}
+
+#authOptions {
+    margin-bottom: 10px;
+}
+
+#authOptions a { 
+    color: rgb(93, 93, 207);
+    text-decoration: underline;
 }
 
 #register__body {

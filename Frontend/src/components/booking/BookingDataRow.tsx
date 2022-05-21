@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
-import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers';
-import { IBooking } from '../../types/booking/type_Booking';
-import { MyNumberForMat } from '../utils';
-import $ from 'jquery';
-import { useDispatch } from 'react-redux';
-import { approveBooking, cancelBooking } from '../../features/booking/bookingSlice';
-import { Link } from 'react-router-dom';
+import React, { FC } from "react";
+import { Div, Image } from "../../globalStyle";
+import { getImage } from "../../helpers";
+import { IBooking } from "../../types/booking/type_Booking";
+import { MyNumberForMat } from "../utils";
+import $ from "jquery";
+import { useDispatch } from "react-redux";
+import { approveBooking, cancelBooking } from "../../features/booking/bookingSlice";
+import { Link } from "react-router-dom";
 
 interface IBookingDataRowProps {
     bookingRowData: IBooking;
@@ -15,77 +15,77 @@ interface IBookingDataRowProps {
 const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
     let pageNumber = 1;
     const currentUrl = window.location.href;
-    if (currentUrl.toString().includes('?')) {
-        pageNumber = parseInt(currentUrl.split('?')[0].split('/').pop()!);
-    } else pageNumber = parseInt(window.location.href.split('/').pop()!);
+    if (currentUrl.toString().includes("?")) {
+        pageNumber = parseInt(currentUrl.split("?")[0].split("/").pop()!);
+    } else pageNumber = parseInt(window.location.href.split("/").pop()!);
     $(document).ready(function () {
-        $('#totalFeeRangeInput').attr('max', 100_000_000);
+        $("#totalFeeRangeInput").attr("max", 100000000);
         highlightCurrentPageNumber(pageNumber);
         let url = `${window.location.origin}/booking/listings/${pageNumber}`;
 
-        $('.listings__table-header').each(function () {
+        $(".listings__table-header").each(function () {
             $(this).click(function () {
                 const params = new URLSearchParams(window.location.search);
-                const sortField = $(this).data('sort-field');
-                const sortDir = params.get('sort_dir') === 'asc' ? 'desc' : 'asc';
+                const sortField = $(this).data("sort-field");
+                const sortDir = params.get("sort_dir") === "asc" ? "desc" : "asc";
 
                 url += `?sort_field=${sortField}&sort_dir=${sortDir}`;
                 window.location.href = url;
             });
         });
 
-        $('.listings__filter-option').each(function () {
+        $(".listings__filter-option").each(function () {
             $(this).click(function () {
                 const self = $(this);
-                $('.listings__filter-option').each(function () {
+                $(".listings__filter-option").each(function () {
                     if (!$(this).is(self))
-                        $(this).siblings().filter('.active').removeClass('active');
+                        $(this).siblings().filter(".active").removeClass("active");
                 });
 
-                const id = $(this).data('dropdown');
-                const filterBox = $('#' + id);
-                if (filterBox.hasClass('active')) filterBox.removeClass('active');
-                else filterBox.addClass('active');
+                const id = $(this).data("dropdown");
+                const filterBox = $("#" + id);
+                if (filterBox.hasClass("active")) filterBox.removeClass("active");
+                else filterBox.addClass("active");
             });
         });
 
-        $('.applyBtn').each(function () {
+        $(".applyBtn").each(function () {
             $(this).click(function () {
                 let redirectURL = `${window.location.origin}/booking/listings/${pageNumber}`;
-                const dataModify = $(this).data('modify');
+                const dataModify = $(this).data("modify");
 
                 switch (dataModify) {
-                    case 'isComplete': {
+                    case "isComplete": {
                         const selectedStatus = $('input[class="isCompleteSelected"]:checked');
                         let statuses: string[] = [];
                         selectedStatus.each(function () {
                             statuses.push($(this).val() as string);
                         });
-                        redirectURL += `?isComplete=${statuses.join(' ')}`;
+                        redirectURL += `?isComplete=${statuses.join(" ")}`;
 
                         break;
                     }
-                    case 'bookingDate': {
-                        const bookingDateInput = $('#bookingDateInput').val();
+                    case "bookingDate": {
+                        const bookingDateInput = $("#bookingDateInput").val();
                         if (bookingDateInput) redirectURL += `?bookingDate=${bookingDateInput}`;
 
                         break;
                     }
-                    case 'bookingDateByMonthAndYear': {
-                        const month = $('#bookingDateMonthInput').val() as number;
-                        const year = $('#bookingDateYearInput').val() as number;
+                    case "bookingDateByMonthAndYear": {
+                        const month = $("#bookingDateMonthInput").val() as number;
+                        const year = $("#bookingDateYearInput").val() as number;
 
                         if (!isNaN(month) && !isNaN(year)) {
                             redirectURL += `?booking_date_month=${month}&booking_date_year=${year}`;
                         } else {
-                            alert('Tháng hoặc năm không hợp lệ!');
+                            alert("Tháng hoặc năm không hợp lệ!");
                         }
                         break;
                     }
-                    case 'totalFee': {
-                        redirectURL += `?totalFee=${($('#textInput').val()! as string).replace(
+                    case "totalFee": {
+                        redirectURL += `?totalFee=${($("#textInput").val()! as string).replace(
                             /\./g,
-                            ''
+                            ""
                         )}`;
                         break;
                     }
@@ -95,14 +95,14 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
             });
         });
 
-        $('.deleteAllFilterOption').click(function () {
+        $(".deleteAllFilterOption").click(function () {
             window.location.href = `${window.location.origin}/booking/listings/1`;
         });
 
-        $('.listings__link').each(function () {
+        $(".listings__link").each(function () {
             $(this).attr(
-                'href',
-                `${window.location.origin}/booking/listings/${$(this).data('page')}${
+                "href",
+                `${window.location.origin}/booking/listings/${$(this).data("page")}${
                     window.location.search
                 }`
             );
@@ -110,26 +110,26 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
     });
 
     function highlightCurrentPageNumber(pageNumber: number) {
-        $('.pagination').children().filter('.active').removeClass('active');
-        $('.pagination')
+        $(".pagination").children().filter(".active").removeClass("active");
+        $(".pagination")
             .children()
             .each(function () {
-                const pageNum = $(this).data('page');
+                const pageNum = $(this).data("page");
                 if (pageNum.toString() === pageNumber.toString()) {
-                    $(this).addClass('active');
+                    $(this).addClass("active");
                     return false;
                 }
             });
     }
 
     function filterBookingByInput() {
-        const query = ($('#listings__search-input').val()! as string).trim();
+        const query = ($("#listings__search-input").val()! as string).trim();
         let url = window.location.href;
         const paramsMap: globalThis.Map<string, string> = new Map();
-        if (url.includes('?')) {
+        if (url.includes("?")) {
             let params = new URLSearchParams(window.location.search);
 
-            if (params.get('query')) {
+            if (params.get("query")) {
                 for (const key of Array.from(params.keys())) {
                     paramsMap.set(key, params.get(key)!);
                 }
@@ -139,9 +139,9 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
 
                 let count = 0;
                 for (const [key, value] of Array.from(paramsMap.entries())) {
-                    if (key === 'query') newURL += `query=${query}`;
+                    if (key === "query") newURL += `query=${query}`;
                     else newURL += `${key}=${value}`;
-                    if (count <= mapLen - 2) newURL += '&';
+                    if (count <= mapLen - 2) newURL += "&";
                     count++;
                 }
                 window.location.href = newURL;
@@ -166,32 +166,32 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
 
     const dispatch = useDispatch();
     function apprvBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        dispatch(approveBooking({ bookingid: $(event.currentTarget).data('booking-id') }));
+        dispatch(approveBooking({ bookingid: $(event.currentTarget).data("booking-id") }));
     }
 
     function viewBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         const self = $(event.currentTarget);
-        window.location.href = `${window.location.origin}/booking/${self.data('booking-id')}/view`;
+        window.location.href = `${window.location.origin}/booking/${self.data("booking-id")}/view`;
     }
 
     function dropoutBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        dispatch(cancelBooking({ bookingid: $(event.currentTarget).data('booking-id') }));
+        dispatch(cancelBooking({ bookingid: $(event.currentTarget).data("booking-id") }));
     }
 
     return (
         <>
             <tr data-room-id={bookingRowData.bookingId}>
-                <td style={{ width: '7%' }}>
-                    <div style={{ paddingLeft: '8px', textAlign: 'center', paddingRight: '8px' }}>
+                <td style={{ width: "7%" }}>
+                    <div style={{ paddingLeft: "8px", textAlign: "center", paddingRight: "8px" }}>
                         <span>{bookingRowData.bookingId}</span>
                     </div>
                 </td>
-                <td style={{ width: '10%' }}>
+                <td style={{ width: "10%" }}>
                     <div className='normal-flex'>
                         <Link
                             to={`/room/${bookingRowData.roomId}`}
                             className='normal-flex'
-                            style={{ color: '#222' }}
+                            style={{ color: "#222" }}
                         >
                             <Div width='56px' height='40px'>
                                 <img
@@ -203,9 +203,9 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                             <div
                                 className='listings__room-name'
                                 style={{
-                                    textOverflow: 'ellipsis',
-                                    overflow: 'hidden',
-                                    maxWidth: '80%',
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    maxWidth: "80%",
                                 }}
                             >
                                 {bookingRowData.roomName}
@@ -219,13 +219,13 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                             {bookingRowData.complete === true && bookingRowData.refund === false && (
                                 <div
                                     style={{
-                                        padding: '1px 6px',
-                                        borderRadius: '4px',
-                                        backgroundColor: 'rgb(203 244 201)',
-                                        width: '90px',
+                                        padding: "1px 6px",
+                                        borderRadius: "4px",
+                                        backgroundColor: "rgb(203 244 201)",
+                                        width: "90px",
                                     }}
                                 >
-                                    <span style={{ color: 'rgba(14, 98, 69, 1)' }}>
+                                    <span style={{ color: "rgba(14, 98, 69, 1)" }}>
                                         <svg
                                             aria-hidden='true'
                                             className='
@@ -247,7 +247,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                     </span>
                                     <span
                                         className='booking-status fs-14 inline-block'
-                                        style={{ paddingLeft: '4px' }}
+                                        style={{ paddingLeft: "4px" }}
                                     >
                                         Hoàn tất
                                     </span>
@@ -256,12 +256,12 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                             {bookingRowData.complete === false && bookingRowData.refund === false && (
                                 <div
                                     style={{
-                                        padding: '1px 6px',
-                                        borderRadius: '4px',
-                                        backgroundColor: 'rgb(227 232 238)',
+                                        padding: "1px 6px",
+                                        borderRadius: "4px",
+                                        backgroundColor: "rgb(227 232 238)",
                                     }}
                                 >
-                                    <span style={{ color: 'rgba(14, 98, 69, 1)' }}>
+                                    <span style={{ color: "rgba(14, 98, 69, 1)" }}>
                                         <svg
                                             aria-hidden='true'
                                             className='
@@ -274,7 +274,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                             width='12'
                                             viewBox='0 0 16 16'
                                             xmlns='http://www.w3.org/2000/svg'
-                                            style={{ fill: 'rgb(105 115 134)' }}
+                                            style={{ fill: "rgb(105 115 134)" }}
                                         >
                                             <path
                                                 d='M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16zm1-8.577V4a1 1 0 1 0-2 0v4a1 1 0 0 0 .517.876l2.581 1.49a1 1 0 0 0 1-1.732z'
@@ -284,7 +284,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                     </span>
                                     <span
                                         className='booking-status fs-14 inline-block'
-                                        style={{ paddingLeft: '4px' }}
+                                        style={{ paddingLeft: "4px" }}
                                     >
                                         Phê duyệt
                                     </span>
@@ -293,17 +293,17 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                             {bookingRowData.refund === true && (
                                 <div
                                     style={{
-                                        backgroundColor: 'rgb(227 232 238)',
-                                        padding: '1px 6px',
-                                        borderRadius: '4px',
-                                        width: '90px',
+                                        backgroundColor: "rgb(227 232 238)",
+                                        padding: "1px 6px",
+                                        borderRadius: "4px",
+                                        width: "90px",
                                     }}
                                     className='normal-flex'
                                 >
                                     <span
                                         style={{
-                                            color: 'rgba(14, 98, 69, 1)',
-                                            marginRight: '5px',
+                                            color: "rgba(14, 98, 69, 1)",
+                                            marginRight: "5px",
                                         }}
                                         className='inline-block'
                                     >
@@ -328,7 +328,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                     </span>
                                     <span
                                         className='booking-status fs-14 inline-block'
-                                        style={{ paddingLeft: '4px' }}
+                                        style={{ paddingLeft: "4px" }}
                                     >
                                         Đã hủy
                                     </span>

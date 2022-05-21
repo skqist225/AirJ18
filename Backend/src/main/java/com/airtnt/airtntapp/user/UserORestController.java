@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.user;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,11 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
+import com.airtnt.airtntapp.common.GetResource;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
@@ -24,7 +24,6 @@ import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
-import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.airtntapp.user.dto.UserSexDTO;
@@ -41,12 +40,12 @@ import com.airtnt.entity.State;
 import com.airtnt.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,8 +66,6 @@ public class UserORestController {
 
 	public final String UPDATE_USER_SUCCESS = "UPDATE_USER_SUCCESSFULLY";
 	public final String UPDATE_USER_FAILURE = "UPDATE_USER_FAILURE";
-
-	public final String STATIC_PATH = "src/main/resources/static/user_images";
 
 	@Autowired
 	private UserService userService;
@@ -94,6 +91,9 @@ public class UserORestController {
 	@Autowired
 	private RoomService roomService;
 
+	@Autowired
+	private Environment env;
+
 	@GetMapping("sex")
 	public ResponseEntity<StandardJSONResponse<List<UserSexDTO>>> getSexs() {
 		List<UserSexDTO> sexs = new ArrayList<UserSexDTO>();
@@ -114,7 +114,7 @@ public class UserORestController {
 
 			return new OkResponse<List<Integer>>(
 					user.getFavRooms().stream().map(favRoom -> favRoom.getId()).collect(Collectors.toList()))
-							.response();
+					.response();
 		} catch (NullCookieException ex) {
 			return new BadResponse<List<Integer>>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
@@ -164,71 +164,71 @@ public class UserORestController {
 			Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
 
 			switch (updatedField) {
-			case "firstNameAndLastName": {
-				String newFirstName = updateData.get("firstName");
-				String newLastName = updateData.get("lastName");
+				case "firstNameAndLastName": {
+					String newFirstName = updateData.get("firstName");
+					String newLastName = updateData.get("lastName");
 
-				currentUser.setFirstName(newFirstName);
-				currentUser.setLastName(newLastName);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "sex": {
-				String newSex = updateData.get("sex");
-				Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
-				currentUser.setSex(sex);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "birthday": {
-				Integer yearOfBirth = Integer.parseInt(updateData.get("yearOfBirth"));
-				Integer monthOfBirth = Integer.parseInt(updateData.get("monthOfBirth"));
-				Integer dayOfBirth = Integer.parseInt(updateData.get("dayOfBirth"));
+					currentUser.setFirstName(newFirstName);
+					currentUser.setLastName(newLastName);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "sex": {
+					String newSex = updateData.get("sex");
+					Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
+					currentUser.setSex(sex);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "birthday": {
+					Integer yearOfBirth = Integer.parseInt(updateData.get("yearOfBirth"));
+					Integer monthOfBirth = Integer.parseInt(updateData.get("monthOfBirth"));
+					Integer dayOfBirth = Integer.parseInt(updateData.get("dayOfBirth"));
 
-				currentUser.setBirthday(LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth));
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "address": {
-				Integer countryId = Integer.parseInt(updateData.get("country"));
-				Integer stateId = Integer.parseInt(updateData.get("country"));
-				Integer cityId = Integer.parseInt(updateData.get("country"));
-				String aprtNoAndStreet = updateData.get("aprtNoAndStreet");
+					currentUser.setBirthday(LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth));
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "address": {
+					Integer countryId = Integer.parseInt(updateData.get("country"));
+					Integer stateId = Integer.parseInt(updateData.get("country"));
+					Integer cityId = Integer.parseInt(updateData.get("country"));
+					String aprtNoAndStreet = updateData.get("aprtNoAndStreet");
 
-				Country country = countryService.getCountryById(countryId);
-				State state = stateService.getStateById(stateId);
-				City city = cityService.getCityById(cityId);
+					Country country = countryService.getCountryById(countryId);
+					State state = stateService.getStateById(stateId);
+					City city = cityService.getCityById(cityId);
 
-				Address newAddress = new Address(country, state, city, aprtNoAndStreet);
-				currentUser.setAddress(newAddress);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "email": {
-				String newEmail = updateData.get("email");
-				currentUser.setEmail(newEmail);
-				savedUser = userService.saveUser(currentUser);
+					Address newAddress = new Address(country, state, city, aprtNoAndStreet);
+					currentUser.setAddress(newAddress);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "email": {
+					String newEmail = updateData.get("email");
+					currentUser.setEmail(newEmail);
+					savedUser = userService.saveUser(currentUser);
 
-				return ResponseEntity.ok()
-						.header(HttpHeaders.SET_COOKIE,
-								cookiePorcess.writeCookie("user", savedUser.getEmail()).toString())
-						.body(new StandardJSONResponse<>(true, savedUser, null));
-			}
-			case "password": {
-				String newPassword = updateData.get("newPassword");
+					return ResponseEntity.ok()
+							.header(HttpHeaders.SET_COOKIE,
+									cookiePorcess.writeCookie("user", savedUser.getEmail()).toString())
+							.body(new StandardJSONResponse<User>(true, savedUser, null));
+				}
+				case "password": {
+					String newPassword = updateData.get("newPassword");
 
-				currentUser.setPassword(newPassword);
-				userService.encodePassword(currentUser);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
-			case "phoneNumber": {
-				String newPhoneNumber = updateData.get("phoneNumber");
+					currentUser.setPassword(newPassword);
+					userService.encodePassword(currentUser);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "phoneNumber": {
+					String newPhoneNumber = updateData.get("phoneNumber");
 
-				currentUser.setPhoneNumber(newPhoneNumber);
-				savedUser = userService.saveUser(currentUser);
-				break;
-			}
+					currentUser.setPhoneNumber(newPhoneNumber);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
 			}
 
 			return new OkResponse<User>(savedUser).response();
@@ -247,15 +247,23 @@ public class UserORestController {
 
 			if (newAvatar != null) {
 				String fileName = StringUtils.cleanPath(newAvatar.getOriginalFilename());
-				currentUser.setAvatar(fileName);
-				User savedUser = userService.saveUser(currentUser);
-				String uploadDir = STATIC_PATH + "/" + savedUser.getId();
+				String uploadDir = "";
+				String environment = env.getProperty("env");
+				System.out.println(environment);
+				if (environment.equals("development")) {
+					uploadDir = "src/main/resources/static/user_images/" + currentUser.getId() + "/";
+				} else {
+					uploadDir = GetResource.getResourceAsFile("static/user_images/" + currentUser.getId() + "/");
+				}
+
 				FileUploadUtil.cleanDir(uploadDir);
 				FileUploadUtil.saveFile(uploadDir, fileName, newAvatar);
-
+				currentUser.setAvatar(fileName);
+				User savedUser = userService.saveUser(currentUser);
 				return new OkResponse<User>(savedUser).response();
+			} else {
+				return new BadResponse<User>("Please add image").response();
 			}
-			return new OkResponse<User>(currentUser).response();
 		} catch (NullCookieException ex) {
 			return new BadResponse<User>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
@@ -328,7 +336,7 @@ public class UserORestController {
 			@CookieValue(value = "user", required = false) String cookie) {
 		try {
 			User user = authenticate.getLoggedInUser(cookie);
-//		return new OkResponse<List<Chat>>(user.getSender()).response();
+			// return new OkResponse<List<Chat>>(user.getSender()).response();
 
 			return null;
 

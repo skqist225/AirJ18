@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Set;
 
 import javax.mail.Message;
@@ -23,11 +22,11 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import com.airtnt.airtntapp.cookie.CookieProcess;
+import com.airtnt.airtntapp.exception.DuplicatedEntryPhoneNumberExeption;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.middleware.Authenticate;
-import com.airtnt.airtntapp.response.FailureResponse;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
@@ -35,11 +34,10 @@ import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.airtnt.airtntapp.user.dto.ResetPasswordDTO;
+import com.airtnt.airtntapp.user.response.ForgotPasswordResponse;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.DuplicatedEntryPhoneNumberExeption;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -53,6 +51,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.Random;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -71,8 +70,7 @@ public class AuthRestController {
 	private ObjectMapper objectMapper;
 
 	@PostMapping("login")
-	public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
-			HttpServletResponse res) {
+	public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser) {
 		try {
 			User user = userService.findByEmail(postUser.getEmail());
 			String cookie = cookiePorcess.writeCookie("user", user.getEmail());
@@ -97,7 +95,7 @@ public class AuthRestController {
 
 			return ResponseEntity.ok()
 					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", null).toString())
-					.body(new StandardJSONResponse<String>(true, "log out successfully", null));
+					.body(new StandardJSONResponse<String>(true, "Log out successfully", null));
 		} catch (NullCookieException ex) {
 			return new BadResponse<String>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
@@ -139,33 +137,39 @@ public class AuthRestController {
 	}
 
 	@PostMapping("forgot-password")
-	public ResponseEntity<StandardJSONResponse<String>> forgotPassword(@RequestBody Map<String, String> payLoad)
+	public ResponseEntity<StandardJSONResponse<ForgotPasswordResponse>> forgotPassword(
+			@RequestBody Map<String, String> payLoad)
 			throws AddressException, MessagingException {
 		String email = payLoad.get("email");
 		try {
 			User user = userService.findByEmail(email);
+			final String username = "thuan.leminhthuan.10.2@gmail.com";
+			final String password = "tqgxcudjgljrhztj";
+			final String smtpServer = "smtp.gmail.com";
 
 			Properties properties = new Properties();
-			properties.put("mail.smtp.auth", true);
-			properties.put("mail.smtp.host", "smtp.gmail.com");
+			properties.put("mail.smtp.auth", "true");
+			// properties.put("mail.smtp.starttls.enable", "true"); #587
+			properties.put("mail.smtp.ssl.enable", "true"); // #465
+			properties.put("mail.smtp.host", smtpServer);
 			properties.put("mail.smtp.port", "465");
-			properties.put("mail.smtp.ssl.enable", "true");
+			properties.put("mail.smtp.ssl.trust", smtpServer);
+			properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
 			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("thuan.leminhthuan.10.2@gmail.com", "khicalcsugfzfowu");
+					return new PasswordAuthentication(username, password);
 				}
 			});
 			session.setDebug(true);
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("airj18-support"));
+			message.setFrom(new InternetAddress(username));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 			message.setSubject("Reset your password - AirJ18");
-			int code = new Random().nextInt(900000) + 100000;
+
 			String msg = "Hi " + user.getFullName() + "<div>Need to reset your password?</div>"
-					+ "<div>Use your secret code!</div>" + "<div style='font-weight: bold; font-size:20px;'>" + code
 					+ "</div>" + "<div>Click on the link below and enter the secret code above.</div>"
-					+ "<a href='http://localhost:3000/reset-password'>Reset your password</a>"
+					+ "<a href='http://localhost:3000/auth/reset-password'>Reset your password</a>"
 					+ "<div>If you did not forget your password, you can ignore this email.</div>";
 
 			MimeBodyPart mimeBodyPart = new MimeBodyPart();
@@ -178,52 +182,59 @@ public class AuthRestController {
 
 			Transport.send(message);
 
-			user.setResetPasswordCode(code);
+			Random rand = new Random();
+			int resetPasswordCode = rand.nextInt(999999) + 1;
+
+			user.setResetPasswordCode(resetPasswordCode);
 			user.setResetPasswordExpirationTime(LocalDateTime.now().plusMinutes(30));
 			userService.saveUser(user);
 
 			return ResponseEntity.ok()
 					.header(HttpHeaders.SET_COOKIE, cookiePorcess.writeCookie("user", null).toString())
-					.body(new StandardJSONResponse<String>(true, "reset email has been sent to" + user.getEmail(),
+					.body(new StandardJSONResponse<ForgotPasswordResponse>(true,
+							new ForgotPasswordResponse(
+									resetPasswordCode,
+									"Your reset password link has been sent to your email: " + user.getEmail(),
+									user.getEmail()),
 							null));
 		} catch (UserNotFoundException e) {
-			return new BadResponse<String>(e.getMessage()).response();
+			return new BadResponse<ForgotPasswordResponse>(e.getMessage()).response();
 		}
 	}
 
 	@PutMapping("reset-password")
 	public ResponseEntity<StandardJSONResponse<String>> resetPassword(@RequestBody ResetPasswordDTO resetPassword) {
-		int resetCode = resetPassword.getResetCode();
-		String userEmail = resetPassword.getUserEmail();
+		if (resetPassword.getEmail().isEmpty()) {
+			return new BadResponse<String>("Email is required to reset password. Discard reset password session.")
+					.response();
+		}
+		int resetPasswordCode = resetPassword.getResetPasswordCode();
+		String email = resetPassword.getEmail();
 		String newPassword = resetPassword.getNewPassword();
 		String confirmNewPassword = resetPassword.getConfirmNewPassword();
 		LocalDateTime now = LocalDateTime.now();
 
 		try {
-			User user = userService.findByEmail(userEmail);
+			User user = userService.findByEmail(email);
 
-			if (resetCode != user.getResetPasswordCode())
-				return new BadResponse<String>("invalid reset code").response();
+			if (resetPasswordCode != user.getResetPasswordCode())
+				return new BadResponse<String>("Invalid reset code").response();
 
 			boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
 			if (isAfter)
-				return new BadResponse<String>("reset password session is out of time").response();
+				return new BadResponse<String>("Reset password session is out of time").response();
 
 			if (!newPassword.equals(confirmNewPassword))
-				return new BadResponse<String>("new password does not match confirm new password").response();
+				return new BadResponse<String>("New password does not match confirm new password").response();
 
 			user.setPassword(userService.getEncodedPassword(newPassword));
-			user.setResetPasswordCode(null);
 			user.setResetPasswordExpirationTime(null);
 			userService.saveUser(user);
 
-			return new OkResponse<String>("success").response();
+			return new OkResponse<String>("Your password has been changed successfully").response();
 		} catch (UserNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new BadResponse<String>(e.getMessage()).response();
 		}
-
 	}
-
 }

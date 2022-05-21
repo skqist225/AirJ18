@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.address.AddressRepository;
+import com.airtnt.airtntapp.exception.DuplicatedEntryPhoneNumberExeption;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.security.AirtntUserDetails;
 import com.airtnt.airtntapp.user.UserService;
@@ -14,7 +15,6 @@ import com.airtnt.entity.Country;
 import com.airtnt.entity.Role;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.DuplicatedEntryPhoneNumberExeption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -96,7 +96,8 @@ public class UserAdminController {
 			@RequestParam("countrySelected") Integer countryId,
 			@RequestParam(name = "state", required = false) Integer stateId,
 			@RequestParam(name = "city", required = false) Integer cityId,
-			@RequestParam(name = "addresss", required = false) String address) throws IOException, DuplicatedEntryPhoneNumberExeption {
+			@RequestParam(name = "addresss", required = false) String address)
+			throws IOException, DuplicatedEntryPhoneNumberExeption {
 		State state;
 		Country country;
 		City city;
