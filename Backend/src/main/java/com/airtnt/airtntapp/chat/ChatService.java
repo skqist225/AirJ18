@@ -1,16 +1,12 @@
 package com.airtnt.airtntapp.chat;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.chat.dto.ChatReceiverDTO;
-import com.airtnt.airtntapp.middleware.Authenticate;
-import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Chat;
 import com.airtnt.entity.User;
 

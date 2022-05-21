@@ -56,7 +56,7 @@ public class BookingController {
         Date checkinDate = sdf.parse(checkin);
         Date checkoutDate = sdf.parse(checkout);
 
-        if (bookingService.isBooked(checkinDate, checkoutDate))
+        if (bookingService.isBooked(checkinDate, checkoutDate, roomId))
             return "redirect:/room/" + roomId;
 
         Room room = roomService.getRoomById(roomId);

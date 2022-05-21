@@ -10,6 +10,7 @@ import com.airtnt.airtntapp.calendar.CalendarClass;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
+import com.airtnt.airtntapp.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.review.ReviewService;
@@ -68,11 +69,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.airtnt.entity.Rule;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.RoomNotFoundException;
 
 @RestController
 public class RoomRestController {
-    private final String STATIC_PATH = "Backend/src/main/resources/static/room_images";
+    private final String STATIC_PATH = System.getProperty("user.dir") + "/src/main/resources/static/room_images";
 
     @Autowired
     private RoomService roomService;
@@ -108,7 +108,8 @@ public class RoomRestController {
             @RequestParam(value = "bed", required = false, defaultValue = "0") String bed,
             @RequestParam(value = "bathRoom", required = false, defaultValue = "0") String bathRoom,
             @RequestParam(value = "amentities", required = false, defaultValue = "") String amenitiesFilter,
-            @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates)
+            @RequestParam(value = "bookingDates", required = false, defaultValue = "") String bookingDates,
+            @RequestParam(value = "query", required = false, defaultValue = "") String query)
             throws ParseException {
         Map<String, String> filters = new HashMap<>();
         filters.put("privacies", privacies);
@@ -119,6 +120,7 @@ public class RoomRestController {
         filters.put("bathRoom", bathRoom);
         filters.put("amenities", amenitiesFilter);
         filters.put("bookingDates", bookingDates);
+        filters.put("query", query);
 
         List<Room> rooms = roomService.getRoomsByCategoryId(categoryId, true, 1, filters).getContent();
         System.out.println("total eles: ");
@@ -167,7 +169,7 @@ public class RoomRestController {
                 amenity -> amenityRoomDetailsDTOs.add(AmenityRoomDetailsDTO.buildAmenityRoomDetailsDTO(amenity)));
         reviews.forEach(review -> reviewDTOs.add(ReviewDTO.buildReviewDTO(review)));
 
-        List<BookedDateDTO> bookedDates = bookingService.getBookedDate(room);
+        List<BookedDateDTO> bookedDates = bookingService.getBookedDates(room);
 
         HostDTO hostDTO = HostDTO.buildHostDTO(room);
         RoomDetailsDTO roomDetailsDTO = RoomDetailsDTO.buildRoomDetailsDTO(room, reviewDTOs, images,
@@ -255,7 +257,8 @@ public class RoomRestController {
 
         /* MOVE IMAGE TO FOLDER */
         if (savedRoom != null) {
-            String uploadDir = STATIC_PATH + "/" + user.getEmail() + "/" + savedRoom.getId();
+            String uploadDir = STATIC_PATH + "/" + user.getEmail() + "/"
+                    + savedRoom.getId();
             String source = STATIC_PATH + "/" + user.getEmail() + "/";
             Path sourcePath = Paths.get(source);
             Path targetPath = Files.createDirectories(Paths.get(uploadDir));

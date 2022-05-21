@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useMatch } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useMatch } from "react-router-dom";
 import {
     BecomeAHostIndexPage,
     BookedRoomsPage,
@@ -28,8 +28,9 @@ import {
     RoomDetailsPage,
     RoomPreviewPage,
     WishListsPage,
-} from './pages';
-import PersonalInfoPage from './pages/PersonalInfoPage';
+} from "./pages";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import PersonalInfoPage from "./pages/PersonalInfoPage";
 
 function App() {
     return (
@@ -37,8 +38,6 @@ function App() {
             <Router>
                 <Routes>
                     <Route path='/' element={<HomePage />} />
-                    <Route path='/register' element={<RegisterPage />} />
-                    <Route path='/login' element={<LoginPage />} />
                     <Route path='/account-settings/personal-info' element={<PersonalInfoPage />} />
                     <Route path='/room'>
                         <Route path=':id' element={<RoomDetailsPage />} />
@@ -95,6 +94,11 @@ function App() {
                         <Route path='reviews' element={<ProgressReviewsPage />} /> */}
                     </Route>
                     <Route path='/guest/inbox/:receiverid' element={<GuestInboxPage />} />
+                    <Route path='/auth'>
+                        <Route path='reset-password' element={<ResetPasswordPage />} />
+                        <Route path='register' element={<RegisterPage />} />
+                        <Route path='login' element={<LoginPage />} />
+                    </Route>
                 </Routes>
             </Router>
 

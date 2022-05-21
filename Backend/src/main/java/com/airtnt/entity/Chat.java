@@ -4,25 +4,16 @@ import java.time.LocalDateTime;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import com.airtnt.airtntapp.chat.ChatId;
 import com.airtnt.airtntapp.chat.dto.Message;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.sym.Name;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,19 +32,19 @@ import lombok.Setter;
 @Table(name = "chats")
 public class Chat {
 	@EmbeddedId
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private ChatId id;
 
 	@JsonIgnore
 	@ManyToOne
 	@MapsId("senderId")
-//	@JoinColumn(name = "sender_id")
+	// @JoinColumn(name = "sender_id")
 	private User sender;
 
 	@JsonIgnore
 	@ManyToOne
 	@MapsId("receiverId")
-//	@JoinColumn(name = "receiver_id")
+	// @JoinColumn(name = "receiver_id")
 	private User receiver;
 
 	@NotNull
@@ -68,27 +59,28 @@ public class Chat {
 				new User(chatDTO.getReceiver()), chatDTO.getMessage(), LocalDateTime.now());
 	}
 
-//	@Transient
-//	public ObjectNode getReceiverInfo() throws JsonProcessingException {
-//		ObjectMapper mapper = new ObjectMapper();
-//		ObjectNode rootNode = mapper.createObjectNode();
-//
-//		if (this.receiver != null) {
-//			String receiverImage = this.receiver.getAvatarPath();
-//			String receiverFullName = this.receiver.getFullName();
-//
-//			rootNode.put("avatar", receiverImage);
-//			rootNode.put("fullName", receiverFullName);
-//		}
-//
-//		return rootNode;
-//	}
+	// @Transient
+	// public ObjectNode getReceiverInfo() throws JsonProcessingException {
+	// ObjectMapper mapper = new ObjectMapper();
+	// ObjectNode rootNode = mapper.createObjectNode();
+	//
+	// if (this.receiver != null) {
+	// String receiverImage = this.receiver.getAvatarPath();
+	// String receiverFullName = this.receiver.getFullName();
+	//
+	// rootNode.put("avatar", receiverImage);
+	// rootNode.put("fullName", receiverFullName);
+	// }
+	//
+	// return rootNode;
+	// }
 
-//	public Chat(User sender, User receiver, String message, LocalDateTime sendAt) {
-//		super();
-//		this.sender = sender;
-//		this.receiver = receiver;
-//		this.message = message;
-//		this.sendAt = sendAt;
-//	}
+	// public Chat(User sender, User receiver, String message, LocalDateTime sendAt)
+	// {
+	// super();
+	// this.sender = sender;
+	// this.receiver = receiver;
+	// this.message = message;
+	// this.sendAt = sendAt;
+	// }
 }

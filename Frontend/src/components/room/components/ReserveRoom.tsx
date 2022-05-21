@@ -1,13 +1,13 @@
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { userState } from '../../../features/user/userSlice';
-import { Div, Image } from '../../../globalStyle';
-import { getImage, callToast } from '../../../helpers';
-import { IRoomDetails } from '../../../types/room/type_RoomDetails';
-import Toast from '../../notify/Toast';
-import $ from 'jquery';
-import { MyNumberForMat } from '../../utils';
+import { FC } from "react";
+import { useSelector } from "react-redux";
+import styled from "styled-components";
+import { userState } from "../../../features/user/userSlice";
+import { Div, Image } from "../../../globalStyle";
+import { getImage, callToast } from "../../../helpers";
+import { IRoomDetails } from "../../../types/room/type_RoomDetails";
+import Toast from "../../notify/Toast";
+import $ from "jquery";
+import { MyNumberForMat } from "../../utils";
 
 interface IReserveRoomProps {
     room: IRoomDetails;
@@ -33,7 +33,7 @@ const RDTBookingRatingAndReview = styled.div`
 `;
 
 const RDTBookingPreviewPriceLine = styled.div.attrs(props => ({
-    className: 'previewPrice-line',
+    className: "previewPrice-line",
 }))`
     padding-bottom: 12px;
     display: none;
@@ -52,24 +52,24 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
     const { user } = useSelector(userState);
 
     function processBooking() {
-        const checkinDate = $('#checkinDate').text().replaceAll('/', '-');
-        const checkoutDate = $('#checkoutDate').text().replaceAll('/', '-');
+        const checkinDate = $("#checkinDate").text().replaceAll("/", "-");
+        const checkoutDate = $("#checkoutDate").text().replaceAll("/", "-");
 
-        if (checkinDate === 'Thêm ngày' && checkoutDate === 'Thêm ngày') {
-            callToast('warning', 'Vui lòng chọn ngày bắt đầu và kết thúc');
+        if (checkinDate === "Thêm ngày" && checkoutDate === "Thêm ngày") {
+            callToast("warning", "Vui lòng chọn ngày bắt đầu và kết thúc");
             return;
         }
         if (user === null) {
-            callToast('warning', 'Vui lòng đăng nhập để đặt phòng');
+            callToast("warning", "Vui lòng đăng nhập để đặt phòng");
             return;
         }
 
-        const numberOfNights = $('#numberOfNight').text();
+        const numberOfNights = $("#numberOfNight").text();
         window.location.href = `${window.location.origin}/booking/${
             room?.id
-        }?checkin=${checkinDate.replace(/\//g, '-')}&checkout=${checkoutDate.replace(
+        }?checkin=${checkinDate.replace(/\//g, "-")}&checkout=${checkoutDate.replace(
             /\//g,
-            '-'
+            "-"
         )}&numberOfNights=${numberOfNights}`;
     }
 
@@ -89,10 +89,10 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
                 </Div>
                 <RDTBookingRatingAndReview className='normal-flex'>
                     <span>
-                        <Image src={getImage('/svg/star.svg')} size='12px' />
+                        <Image src={getImage("/svg/star.svg")} size='12px' />
                     </span>
-                    <span>4,32 ·</span>
-                    <span>34 đánh giá</span>
+                    <span>{room.averageRating} ·</span>
+                    <span>{room.reviews.length} đánh giá</span>
                 </RDTBookingRatingAndReview>
                 <div className='rdt__booking--receiveRoom'>
                     <div className='flex'>
@@ -104,7 +104,7 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
                             width='50%'
                             padding='10px 12px 10px'
                             style={{
-                                borderLeft: '0.5px solid rgb(211, 211, 211)',
+                                borderLeft: "0.5px solid rgb(211, 211, 211)",
                             }}
                         >
                             <div className='fw-600'>Trả phòng</div>
@@ -118,7 +118,7 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
                             <span
                                 style={{
                                     backgroundPosition:
-                                        'calc((100 - 96.4371) * 1%) calc((100 - 50) * 1%)',
+                                        "calc((100 - 96.4371) * 1%) calc((100 - 50) * 1%)",
                                 }}
                             ></span>
                         </span>
@@ -140,7 +140,7 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
                                         removeStayType
                                     />
                                 </div>
-                                <div style={{ color: 'rgb(32, 32, 32)' }} className='fs-16'>
+                                <div style={{ color: "rgb(32, 32, 32)" }} className='fs-16'>
                                     <span>&nbsp;x&nbsp;</span>
                                     <span id='numberOfNight'>7</span>
                                     &nbsp;đêm&nbsp;
@@ -158,9 +158,9 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
                         <div>
                             <div
                                 style={{
-                                    color: 'rgb(32, 32, 32)',
-                                    fontSize: '16px',
-                                    textDecoration: 'underline',
+                                    color: "rgb(32, 32, 32)",
+                                    fontSize: "16px",
+                                    textDecoration: "underline",
                                 }}
                             >
                                 Phí dịch vụ
@@ -172,7 +172,7 @@ const ReserveRoom: FC<IReserveRoomProps> = ({ room }) => {
                         </div>
                     </div>
                 </RDTBookingPreviewPriceLine>
-                <div className='flex' style={{ paddingTop: '16px' }}>
+                <div className='flex' style={{ paddingTop: "16px" }}>
                     <div className='totalPriceTitle'>Tổng</div>
                     <div className='totalPriceTitle'>
                         {room!.currencySymbol}

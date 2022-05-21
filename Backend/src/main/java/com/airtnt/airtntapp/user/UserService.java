@@ -6,12 +6,12 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import com.airtnt.airtntapp.country.CountryRepository;
+import com.airtnt.airtntapp.exception.DuplicatedEntryPhoneNumberExeption;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.user.admin.RoleRepository;
 import com.airtnt.entity.Country;
 import com.airtnt.entity.Role;
 import com.airtnt.entity.User;
-import com.airtnt.entity.exception.DuplicatedEntryPhoneNumberExeption;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

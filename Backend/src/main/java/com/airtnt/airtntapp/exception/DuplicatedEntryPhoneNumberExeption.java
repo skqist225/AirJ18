@@ -1,4 +1,4 @@
-package com.airtnt.entity.exception;
+package com.airtnt.airtntapp.exception;
 
 public class DuplicatedEntryPhoneNumberExeption extends Exception {
 	public DuplicatedEntryPhoneNumberExeption(String message) {

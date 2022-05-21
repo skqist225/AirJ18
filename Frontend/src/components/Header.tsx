@@ -1,15 +1,14 @@
-import React, { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { logout } from "../features/auth/authSlice";
 import {
     fetchRoomsByCategoryAndConditions,
     resetCurretnFilterObject,
-    setCurrentFilterObject,
-} from '../features/room/roomSlice';
-import { logout, userState } from '../features/user/userSlice';
-import { getImage } from '../helpers';
-import { RootState } from '../store';
-import './header.css';
+} from "../features/room/roomSlice";
+import { userState } from "../features/user/userSlice";
+import { getImage } from "../helpers";
+import "./header.css";
 
 interface IHeaderProps {
     includeMiddle: boolean;
@@ -21,16 +20,16 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
     const { user } = useSelector(userState);
 
     const jQuerycode = () => {
-        const headerNavButton = document.getElementsByClassName('account__button')[0];
-        const navMenu = document.getElementsByClassName('loginAndLogoutHidden')[0];
+        const headerNavButton = document.getElementsByClassName("account__button")[0];
+        const navMenu = document.getElementsByClassName("loginAndLogoutHidden")[0];
         let isClicked = false;
 
-        headerNavButton.addEventListener('click', function () {
+        headerNavButton.addEventListener("click", function () {
             if (!isClicked) {
-                navMenu.classList.add('active');
+                navMenu.classList.add("active");
                 isClicked = true;
             } else {
-                navMenu.classList.remove('active');
+                navMenu.classList.remove("active");
                 isClicked = false;
             }
         });
@@ -48,7 +47,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
         dispatch(resetCurretnFilterObject());
         dispatch(fetchRoomsByCategoryAndConditions({ categoryid: 1 }));
 
-        window.location.href = '/';
+        window.location.href = "/";
     }
 
     return (
@@ -56,11 +55,11 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
             <div className='header__container'>
                 <div className='header__right'>
                     <button
-                        style={{ outline: 'none', border: 'none', backgroundColor: 'none' }}
+                        style={{ outline: "none", border: "none", backgroundColor: "none" }}
                         onClick={refreshPage}
                     >
                         <img
-                            src={getImage('/images/airtntlogo.png')}
+                            src={getImage("/images/airtntlogo.png")}
                             id='airj18-logo'
                             alt='application-logo'
                             className='image'
@@ -100,8 +99,8 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                 )}
                 <div className='header__left'>
                     {!excludeBecomeHostAndNavigationHeader && (
-                        <div style={{ marginRight: '20px' }}>
-                            <Link to={'/become-a-host/intro'} className='header__become-host'>
+                        <div style={{ marginRight: "20px" }}>
+                            <Link to={"/become-a-host/intro"} className='header__become-host'>
                                 Trở thành chủ nhà
                             </Link>
                         </div>
@@ -132,7 +131,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                                             alt="User's avatar'"
                                             className='header__user-avatar'
                                             id='userAvatar'
-                                            src={getImage('/images/default_user_avatar.png')}
+                                            src={getImage("/images/default_user_avatar.png")}
                                         />
                                     ) : (
                                         <img
@@ -150,10 +149,10 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                             {user === null && (
                                 <ul>
                                     <li>
-                                        <Link to={'/register'}>Đăng ký</Link>
+                                        <Link to={"/auth/register"}>Đăng ký</Link>
                                     </li>
                                     <li>
-                                        <Link to={'/login'}>Đăng nhập</Link>
+                                        <Link to={"/auth/login"}>Đăng nhập</Link>
                                     </li>
                                 </ul>
                             )}
@@ -161,10 +160,10 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                                 <div>
                                     <ul>
                                         <li>
-                                            <Link to={'/user/booked-rooms'}>Phòng đã đặt</Link>
+                                            <Link to={"/user/booked-rooms"}>Phòng đã đặt</Link>
                                         </li>
                                         <li>
-                                            <Link to={'/wishlists'}>Danh sách yêu thích</Link>
+                                            <Link to={"/wishlists"}>Danh sách yêu thích</Link>
                                         </li>
                                         <li>
                                             <Link to='/hosting/listings/1'>
@@ -172,7 +171,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                                             </Link>
                                         </li>
                                         <li>
-                                            <Link to={'/account-settings/personal-info'}>
+                                            <Link to={"/account-settings/personal-info"}>
                                                 Tài khoản
                                             </Link>
                                         </li>

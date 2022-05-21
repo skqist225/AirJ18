@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResetPasswordDTO {
-	private int resetCode;
-	private String userEmail;
+	private int resetPasswordCode;
+	private String email;
 	private String newPassword;
 	private String confirmNewPassword;
 }

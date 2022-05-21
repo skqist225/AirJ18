@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.city.CityRepository;
+import com.airtnt.airtntapp.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.privacy.PrivacyTypeRepository;
 import com.airtnt.airtntapp.room.dto.RoomPricePerCurrencyDTO;
 import com.airtnt.airtntapp.state.StateRepository;
@@ -42,7 +43,6 @@ import com.airtnt.entity.RoomPrivacy;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
 import com.airtnt.entity.PriceType;
-import com.airtnt.entity.exception.RoomNotFoundException;
 
 @Service
 @Transactional
@@ -180,7 +180,7 @@ public class RoomService {
 		int bedroomCount = Integer.parseInt(filters.get("bedRoom"));
 		int bedCount = Integer.parseInt(filters.get("bed"));
 		int bathroomCount = Integer.parseInt(filters.get("bathRoom"));
-
+		String query = filters.get("query");
 		// default case for amenities and privacies
 		List<Integer> amentitiesID = new ArrayList<>();
 		List<Integer> privaciesID = privacyTypeRepository.getPrivacyIDs();
@@ -216,19 +216,19 @@ public class RoomService {
 			if (amentitiesID.size() > 0) {
 				return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
 						minPrice,
-						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, amentitiesID, bookingDates,
+						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, amentitiesID, bookingDates, query,
 						pageable);
 			} else {
-				System.out.println("Here");
 				return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
 						minPrice,
-						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, bookingDates, pageable);
+						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, bookingDates, query,
+						pageable);
 			}
 
 		} else
 			return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
 					minPrice,
-					maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, pageable);
+					maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, query, pageable);
 	}
 
 	public int updateRoomStatus(Integer roomId) {

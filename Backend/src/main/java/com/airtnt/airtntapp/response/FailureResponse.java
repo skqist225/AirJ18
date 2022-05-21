@@ -13,7 +13,7 @@ public class FailureResponse<T> extends Response<T> {
 	@Override
 	public Response<T> setResponse(int code, T data) {
 		statusCode = code;
-		standardJSONResponse = new StandardJSONResponse<>(false, data, message);
+		standardJSONResponse = new StandardJSONResponse<T>(false, data, message);
 		return this;
 	}
 }

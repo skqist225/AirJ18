@@ -1,18 +1,18 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { fetchRoomById, roomState } from '../../features/room/roomSlice';
-import { getImage } from '../../helpers';
-import { getRoomlocation } from '../../utils/getLocation';
-import Header from '../Header';
-import { Amenity, Rule, ReserveRoom } from './components';
-import roomDetails from './script/room_details';
-import { BookingCalendar, ClientReview, LocationAndLikeShare, RoomImages } from '../room_details';
-import { Div, Image } from '../../globalStyle';
-import { userState } from '../../features/user/userSlice';
+import { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { fetchRoomById, roomState } from "../../features/room/roomSlice";
+import { getImage } from "../../helpers";
+import { getRoomlocation } from "../../utils/getLocation";
+import Header from "../Header";
+import { Amenity, Rule, ReserveRoom } from "./components";
+import roomDetails from "./script/room_details";
+import { BookingCalendar, ClientReview, LocationAndLikeShare, RoomImages } from "../room_details";
+import { Div, Image } from "../../globalStyle";
+import { userState } from "../../features/user/userSlice";
 
-import $ from 'jquery';
-import './css/room_details.css';
+import $ from "jquery";
+import "./css/room_details.css";
 
 interface IRoomDetailsProps {}
 
@@ -23,12 +23,12 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
     const { user, wishlistsIDs } = useSelector(userState);
 
     const initComp = () => {
-        $('html,body').scrollTop(0);
+        $("html,body").scrollTop(0);
         roomDetails(wishlistsIDs, user!);
     };
 
     useEffect(() => {
-        dispatch(fetchRoomById({ roomid: pathname.split('/').pop()! }));
+        dispatch(fetchRoomById({ roomid: pathname.split("/").pop()! }));
     }, [dispatch, pathname]);
 
     useEffect(() => {
@@ -61,11 +61,11 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                     <div className='rdt_room__count flex'>
                                         <div>
                                             <h2 className='rdt__body--hostDetails'>
-                                                {room.privacy} tại {room.name}. Chủ nhà{' '}
+                                                {room.privacy} tại {room.name}. Chủ nhà{" "}
                                                 {room.host.name}
                                             </h2>
                                             <p className='rdt__body--room-infos'>
-                                                {room.guest} khách · {room.bedroom} phòng ngủ ·{' '}
+                                                {room.guest} khách · {room.bedroom} phòng ngủ ·{" "}
                                                 {room.bed} giường · {room.bathroom} phòng tắm riêng
                                             </p>
                                         </div>
@@ -88,14 +88,14 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                             <div
                                                 className='normal-flex'
                                                 style={{
-                                                    marginBottom: '16px',
+                                                    marginBottom: "16px",
                                                 }}
                                             >
                                                 <Image
                                                     src={getImage(room.images[2])}
                                                     width='318px'
                                                     height='212px'
-                                                    style={{ borderRadius: '8px' }}
+                                                    style={{ borderRadius: "8px" }}
                                                 />
                                             </div>
                                             <Div margin='0 0 8px 0' className='fs-16 fw-500'>
@@ -134,7 +134,7 @@ const RoomDetails: FC<IRoomDetailsProps> = () => {
                                                 alt={room.host.avatar}
                                             />
                                         </div>
-                                        <div style={{ marginLeft: '20px' }}>
+                                        <div style={{ marginLeft: "20px" }}>
                                             <h2 className='room-hostName'>{room.host.name}</h2>
                                             <div className='room-createdDate'>
                                                 {room.host.createdDate}
