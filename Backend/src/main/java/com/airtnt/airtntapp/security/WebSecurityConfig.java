@@ -65,13 +65,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/listings/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/booking/*/create").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/booking/*/canceled", "/api/booking/*/approved").hasRole("Host")
+//                .antMatchers(HttpMethod.GET, "/admin/api/*").hasRole("Admin")
+//                .antMatchers(HttpMethod.POST, "/admin/api/*").hasRole("Admin")
+//                .antMatchers(HttpMethod.DELETE, "/admin/api/*").hasRole("Admin")
                 .antMatchers("/progress/**",
                         "/user/bookings", "/hosting/listings/*", "/wishlists*",
                         "/become-a-host/*",
                         "/user/personal-info", "/user/add-to-wishlists/*", "/user/remove-from-wishlists/*")
                 .authenticated()
                 .antMatchers("/booking/**").authenticated()
-                .antMatchers("/admin/**").hasRole("Admin")
+                //.antMatchers("/admin/**").hasRole("Admin")
                 .anyRequest()
                 .permitAll().and().formLogin().loginPage("/login")
                 .usernameParameter("email").permitAll().and().logout().permitAll().and().rememberMe()

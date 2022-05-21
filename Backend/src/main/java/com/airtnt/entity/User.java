@@ -3,6 +3,7 @@ package com.airtnt.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Size;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -69,6 +71,7 @@ public class User extends BaseEntity {
 	@NotEmpty(message = "Mật khẩu không được để trống.")
 	@Size(min = 8, max = 512, message = "Mật khẩu phải ít nhất 8 kí tự.")
 	@Column(nullable = false, length = 255)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
 	@ManyToOne
@@ -82,7 +85,7 @@ public class User extends BaseEntity {
 
 	@Builder.Default
 	@JsonIgnore
-	@OneToMany(mappedBy = "host", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "host", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	private List<Room> ownedRooms = new ArrayList<>();
 
 	@JsonIgnore
@@ -112,7 +115,7 @@ public class User extends BaseEntity {
 
 	@JsonIgnore
 	private LocalDateTime resetPasswordExpirationTime;
-	
+
 	@Transient
 	private String cookie;
 
@@ -194,5 +197,4 @@ public class User extends BaseEntity {
 
 		return false;
 	}
-
 }

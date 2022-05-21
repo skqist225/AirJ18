@@ -6,7 +6,7 @@ import com.airtnt.entity.Country;
 import com.airtnt.entity.State;
 import com.airtnt.entity.User;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
