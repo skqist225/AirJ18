@@ -77,7 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("email").permitAll().and().logout().permitAll().and().rememberMe()
                 .rememberMeCookieName("rememberme")
                 .key("remember-me-token").tokenValiditySeconds(365 * 24 * 60 * 60).alwaysRemember(true);
-        ;
+        
         // http.addFilterBefore(jwtAuthenticationFilter(),
         // UsernamePasswordAuthenticationFilter.class);
     }

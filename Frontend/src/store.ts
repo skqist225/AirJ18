@@ -1,5 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
+import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
 import {
     countrySlice,
     categorySlice,
@@ -12,7 +12,8 @@ import {
     reviewSlice,
     earningSlice,
     inboxSlice,
-} from './features';
+    authSlice,
+} from "./features";
 
 const rootReducer = combineReducers({
     room: roomSlice,
@@ -26,15 +27,16 @@ const rootReducer = combineReducers({
     review: reviewSlice,
     earning: earningSlice,
     inbox: inboxSlice,
+    auth: authSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-const localUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null;
+const localUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!) : null;
 
 const store = configureStore({
     reducer: rootReducer,
-    devTools: process.env.NODE_ENV !== 'production',
+    devTools: process.env.NODE_ENV !== "production",
     preloadedState: {
         user: {
             user: localUser,

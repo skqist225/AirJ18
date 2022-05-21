@@ -113,6 +113,9 @@ public class User extends BaseEntity {
 	@JsonIgnore
 	private LocalDateTime resetPasswordExpirationTime;
 	
+//	@Enumerated(EnumType.STRING)
+//	private AuthenticationProvider authProvider;
+	
 	@Transient
 	private String cookie;
 
