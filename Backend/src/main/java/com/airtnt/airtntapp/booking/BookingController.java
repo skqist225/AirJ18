@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.airtnt.airtntapp.exception.BookingNotFoundException;
 import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.room.RoomService;
@@ -162,9 +163,9 @@ public class BookingController {
     @GetMapping(value = "/{bookingId}/cancel")
     public String cancelBooking(@PathVariable("bookingId") Integer bookingId,
             @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes)
-            throws ForbiddenException, UserNotFoundException {
+            throws ForbiddenException, UserNotFoundException, BookingNotFoundException {
         User currentUser = userService.findByEmail(userDetails.getUsername());
-        Booking booking = bookingService.cancelBooking(bookingId, currentUser);
+        Booking booking = bookingService.hostCancelBooking(bookingId, currentUser);
         if (booking != null)
             redirectAttributes.addFlashAttribute("cancelMessage", "Hủy đặt phòng thành công");
         else

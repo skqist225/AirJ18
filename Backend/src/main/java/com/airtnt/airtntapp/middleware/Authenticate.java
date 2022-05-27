@@ -20,7 +20,7 @@ public class Authenticate {
 
     public User getLoggedInUser(String cookie) throws NullCookieException, NotAuthenticatedException {
         if (cookie == null || cookie.isEmpty())
-            throw new NullCookieException("invalid cookie");
+            throw new NullCookieException("Your request requires cookie for validation");
 
         String userEmail = cookieProcess.readCookie(cookie);
         try {

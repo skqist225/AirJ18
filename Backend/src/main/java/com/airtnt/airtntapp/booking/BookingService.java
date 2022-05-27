@@ -2,17 +2,24 @@ package com.airtnt.airtntapp.booking;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import javax.transaction.Transactional;
 
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
+import com.airtnt.airtntapp.exception.AlreadyCancelException;
 import com.airtnt.airtntapp.exception.BookingNotFoundException;
 import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.exception.RoomHasBeenBookedException;
@@ -43,8 +50,12 @@ public class BookingService {
         return bookingRepository.findById(bookingId).get();
     }
 
-    public Booking getBookingById(Integer bookingId) {
-        return bookingRepository.findById(bookingId).get();
+    public Booking getBookingById(Integer bookingId) throws BookingNotFoundException {
+        try {
+            return bookingRepository.findById(bookingId).get();
+        } catch (NoSuchElementException e) {
+            throw new BookingNotFoundException("Booking not found");
+        }
     }
 
     public boolean isBooked(Date checkinDate, Date checkoutDate, Integer roomId) throws ParseException {
@@ -340,37 +351,80 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking cancelBooking(Integer bookingId, User user) throws ForbiddenException {
+    public Booking hostCancelBooking(Integer bookingId, User user) throws ForbiddenException, BookingNotFoundException {
         Booking canceledBooking = getBookingById(bookingId);
+
         LocalDateTime cancelDate = LocalDateTime.now();
 
-        if (!user.getId().equals(canceledBooking.getRoom().getHost().getId())) {
-            throw new ForbiddenException(); // if user sent request is not host of the room
+        // if user sent request is not host of the room
+        if (!user.getId().equals(canceledBooking.getRoom().getHost().getId()))
+            throw new ForbiddenException("You are not the host of the room");
+
+        canceledBooking.setCancelDate(cancelDate);
+        canceledBooking.setRefund(true);
+        canceledBooking.setComplete(false);
+        canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
+
+        return bookingRepository.save(canceledBooking);
+    }
+
+    @Transactional
+    public Booking userCancelBooking(Integer bookingId, User user)
+            throws ForbiddenException, BookingNotFoundException, AlreadyCancelException {
+        Booking canceledBooking = getBookingById(bookingId);
+
+        if (canceledBooking.isRefund() == true && canceledBooking.isComplete() == false)
+            throw new AlreadyCancelException("You have been canceled this room");
+
+        LocalDateTime checkinDate = canceledBooking.getCheckinDate().toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        LocalDateTime bookingDate = canceledBooking.getBookingDate();
+        LocalDateTime cancelDate = LocalDateTime.now();
+
+        long numOfDays = ChronoUnit.DAYS.between(bookingDate.toLocalDate(), checkinDate.toLocalDate());
+        List<LocalDate> listOfDates = LongStream.range(0, numOfDays)
+                .mapToObj(bookingDate.toLocalDate()::plusDays)
+                .collect(Collectors.toList());
+
+        LocalDateTime dateBetweenBookingDateAndCheckinDate = listOfDates.get((int) Math.floor(
+                listOfDates.size() / 2)).atStartOfDay();
+        System.out.println(dateBetweenBookingDateAndCheckinDate.toString());
+        // if user sent request is not customer of the room
+        if (!user.getId().equals(canceledBooking.getCustomer().getId()))
+            throw new ForbiddenException("You are not the owner of this booking");
+
+        // If canceled date is after the date between booking date and checkin date
+        // User will only get half of the refund paid.
+        if (cancelDate.isBefore(dateBetweenBookingDateAndCheckinDate)) {
+            canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
+        } else {
+            canceledBooking.setRefundPaid(canceledBooking.getTotalFee() / 2);
         }
 
         canceledBooking.setCancelDate(cancelDate);
         canceledBooking.setRefund(true);
         canceledBooking.setComplete(false);
-        if (canceledBooking.isComplete())
-            canceledBooking.setRefundPaid(canceledBooking.getTotalFee() - canceledBooking.getSiteFee());
-        else
-            canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
 
         return bookingRepository.save(canceledBooking);
     }
 
     @Transactional
     public Booking approveBooking(Integer bookingId, User user) throws ForbiddenException {
-        Booking approvedBooking = getBookingById(bookingId);
+        Booking approvedBooking;
+        try {
+            approvedBooking = getBookingById(bookingId);
 
-        if (!user.getId().equals(approvedBooking.getRoom().getHost().getId())) {
-            throw new ForbiddenException(); // if user sent request is not host of the room
+            if (!user.getId().equals(approvedBooking.getRoom().getHost().getId())) {
+                throw new ForbiddenException(); // if user sent request is not host of the room
+            }
+
+            approvedBooking.setComplete(true);
+            approvedBooking.setUserToken(null);
+
+            return bookingRepository.save(approvedBooking);
+        } catch (BookingNotFoundException e) {
+            return null;
         }
-
-        approvedBooking.setComplete(true);
-        approvedBooking.setUserToken(null);
-
-        return bookingRepository.save(approvedBooking);
     }
 
     public Page<Booking> listByPage(int pageNum, String sortField, String sortDir, String keyword) {

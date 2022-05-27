@@ -15,7 +15,7 @@ import FormError from "../../components/register/FormError";
 import { getImage } from "../../helpers";
 import { addUser } from "../../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import "./css/register.css";
+import "../css/register.css";
 
 const phoneNumberSchema = yup
     .object({
