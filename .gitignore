@@ -15,6 +15,7 @@
 /Backend/terraform
 /Backend/mvnw
 /Backend/mvnw.cmd
+/Backend/src/test
 /Backend/test_ubuntu.sh
 # testing
 /Frontend/coverage
