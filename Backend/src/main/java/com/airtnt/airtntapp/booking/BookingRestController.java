@@ -81,8 +81,11 @@ public class BookingRestController {
                 // "Pending");
                 // }
 
-                return new OkResponse<BookingDTO>(BookingDTO.buildBookingDTO(
-                        booking)).response();
+                return booking != null ? new OkResponse<BookingDTO>(BookingDTO.buildBookingDTO(
+                        booking)).response()
+                        : new BadResponse<BookingDTO>(
+                                "Cannot create booking")
+                                .response();
             } catch (RoomHasBeenBookedException e) {
                 return new BadResponse<BookingDTO>(e.getMessage()).response();
             } catch (UserHasBeenBookedThisRoomException e) {

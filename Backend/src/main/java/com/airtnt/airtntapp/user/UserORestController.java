@@ -314,7 +314,6 @@ public class UserORestController {
 			@CookieValue(value = "user", required = false) String cookie,
 			@RequestParam(value = "query", required = false, defaultValue = "") String query) {
 		try {
-
 			User user = authenticate.getLoggedInUser(cookie);
 			List<BookedRoomDTO> bookings = bookingService.getBookedRoomsByUser(user.getId(), query);
 

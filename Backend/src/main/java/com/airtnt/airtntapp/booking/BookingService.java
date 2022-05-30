@@ -110,8 +110,7 @@ public class BookingService {
                 .clientMessage(
                         clientMessage)
                 .userToken(userToken)
-                .isComplete(true).build();
-        // .isComplete(false).build();
+                .isComplete(false).build();
 
         Booking savedBooking = bookingRepository.save(booking);
 
@@ -162,7 +161,11 @@ public class BookingService {
     }
 
     public List<BookedRoomDTO> getBookedRoomsByUser(Integer customerId, String query) {
-        return bookingRepository.getBookedRoomsByUser(customerId, query);
+        List<Booking> bookings = bookingRepository.getBookedRoomsByUser(customerId, query);
+        List<BookedRoomDTO> bookedRoomDTOs = new ArrayList<>();
+        for (Booking booking : bookings)
+            bookedRoomDTOs.add(BookedRoomDTO.buildBookedRoomDTO(booking));
+        return bookedRoomDTOs;
     }
 
     public Page<Booking> getBookingsByRooms(Integer[] roomIds, int pageNumber, Map<String, String> filters)
