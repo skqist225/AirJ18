@@ -38,6 +38,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -91,6 +92,16 @@ public class AuthRestController {
 			return new BadResponse<String>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
 			return new NotAuthenticatedResponse<String>().response();
+		}
+	}
+	
+	@GetMapping("check-phonenumber/{phoneNumber}")
+	public ResponseEntity<StandardJSONResponse<String>> checkPhoneNumer(@PathVariable(value = "phoneNumber") String phoneNumber){
+		int isUsed = userService.checkPhoneNumber(phoneNumber);
+		if(isUsed > 0) {
+			return new BadResponse<String>("Phone number has already been taken").response();
+		} else {
+			return new OkResponse<String>("Phone number has not been used by anyone yet").response();
 		}
 	}
 

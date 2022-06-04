@@ -40,7 +40,8 @@ const LoginPage: FC<HomeProps> = () => {
     const dispatch = useDispatch();
     const [state, setState] = useState("login");
     const { user, successMessage, errorMessage } = useSelector(userState);
-    const { successMessage: forgotPasswordSuccessMessage } = useSelector(authState);
+    const { successMessage: forgotPasswordSuccessMessage, errorMessage: eMessage } =
+        useSelector(authState);
     const {
         register,
         handleSubmit,
@@ -67,11 +68,19 @@ const LoginPage: FC<HomeProps> = () => {
     }, []);
 
     useEffect(() => {
-        console.log(successMessage);
         if (forgotPasswordSuccessMessage) {
             callToast("success", forgotPasswordSuccessMessage);
         }
     }, [forgotPasswordSuccessMessage]);
+
+    useEffect(() => {
+        if (eMessage === "User does not exist.") {
+            callToast("error", "Người dùng không tồn tại");
+        }
+        if (eMessage === "Incorrect password") {
+            callToast("error", "Người dùng hoặc mật khẩu không đúng");
+        }
+    }, [eMessage]);
 
     const onSubmit = (data: any) => {
         console.log(state);
@@ -211,16 +220,18 @@ const LoginPage: FC<HomeProps> = () => {
             <div id='register__container' className='flex-center'>
                 <div className='register__content col-flex'>
                     <header className='flex-center'>
-                        <div>
-                            <button className='transparent-button' onClick={resetState}>
-                                <img
-                                    src={getImage("/svg/back.svg")}
-                                    alt=''
-                                    width={"20px"}
-                                    height={"20px"}
-                                />
-                            </button>
-                        </div>
+                        {state === "forgot-password" && (
+                            <div>
+                                <button className='transparent-button' onClick={resetState}>
+                                    <img
+                                        src={getImage("/svg/back.svg")}
+                                        alt=''
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </button>
+                            </div>
+                        )}
                         <div id='register__header--title'>Đăng nhập</div>
                     </header>
                     <Divider />
@@ -275,14 +286,14 @@ const LoginPage: FC<HomeProps> = () => {
                                 <span className='register__or--option'>hoặc</span>
                                 <Divider className='flex-1'></Divider>
                             </div>
-                            <div className='register__login flex-space'>
+                            {/* <div className='register__login flex-space'>
                                 <button className='register__login--button mr-10'>
                                     <span>
                                         <FacebookLogo width='20px' height='20px' />
                                     </span>
                                     <span>Tiếp tục với Facebook</span>
-                                </button>
-                                {/* <button
+                                </button> */}
+                            {/* <button
                                     className='register__login--button g-signin2'
                                     onClick={() => handleLoginWithGoogle()}
                                     // data-onsuccess='onSignIn'
@@ -292,7 +303,7 @@ const LoginPage: FC<HomeProps> = () => {
                                     </span>
                                     <span>Tiếp tục với Google</span>
                                 </button> */}
-                                <div className='register__login--button'>
+                            {/* <div className='register__login--button'>
                                     <button
                                         id='authorize-button'
                                         style={{ display: "block" }}
@@ -307,9 +318,9 @@ const LoginPage: FC<HomeProps> = () => {
                                     >
                                         Sign Out
                                     </button>
-                                </div>
-                                <div id='content'></div>
-                                {/* <GoogleLogin
+                                </div> */}
+                            {/* <div id='content'></div> */}
+                            {/* <GoogleLogin
                                     onSuccess={credentialResponse => {
                                         console.log(credentialResponse);
                                     }}
@@ -318,11 +329,11 @@ const LoginPage: FC<HomeProps> = () => {
                                     }}
                                     useOneTap
                                 /> */}
-                            </div>
+                            {/* </div> */}
                             <div className='flex-center'>
-                                Bạn mới biết đến AirJ18?{" "}
+                                Bạn mới biết đến AirJ18?&nbsp;
                                 <Link
-                                    to={"/register"}
+                                    to={"/auth/register"}
                                     style={{
                                         color: "rgb(93, 93, 207)",
                                         textDecoration: "underline",

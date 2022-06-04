@@ -1,4 +1,4 @@
-export interface IAddUser {
+export interface IRegisterUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
@@ -18,7 +18,7 @@ export interface IAddress {
     aprtNoAndStreet: string;
 }
 
-export interface IUser extends IAddUser {
+export interface IUser extends IRegisterUser {
     id: number;
     avatarPath: string;
     fullPathAddress: string;

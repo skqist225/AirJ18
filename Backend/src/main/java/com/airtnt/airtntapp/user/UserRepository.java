@@ -2,6 +2,8 @@ package com.airtnt.airtntapp.user;
 
 import com.airtnt.entity.User;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -31,4 +33,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     @Query("SELECT count(*) From User ")
     public Integer getNumberOfUser();
+    
+    public List<User> findByPhoneNumber(String phoneNumber);
 }
