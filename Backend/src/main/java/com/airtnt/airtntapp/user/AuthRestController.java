@@ -3,25 +3,16 @@ package com.airtnt.airtntapp.user;
 import java.time.LocalDateTime;
 
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import com.airtnt.airtntapp.cookie.CookieProcess;
+import com.airtnt.airtntapp.email.SendEmail;
 import com.airtnt.airtntapp.exception.DuplicatedEntryPhoneNumberExeption;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
@@ -47,6 +38,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,8 +62,7 @@ public class AuthRestController {
 	private ObjectMapper objectMapper;
 
 	@PostMapping("login")
-	public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser,
-			HttpServletResponse res) {
+	public ResponseEntity<StandardJSONResponse<User>> login(@RequestBody PostLoginUserDTO postUser) {
 		try {
 			User user = userService.findByEmail(postUser.getEmail());
 			String cookie = cookiePorcess.writeCookie("user", user.getEmail());
@@ -101,6 +92,16 @@ public class AuthRestController {
 			return new BadResponse<String>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
 			return new NotAuthenticatedResponse<String>().response();
+		}
+	}
+	
+	@GetMapping("check-phonenumber/{phoneNumber}")
+	public ResponseEntity<StandardJSONResponse<String>> checkPhoneNumer(@PathVariable(value = "phoneNumber") String phoneNumber){
+		int isUsed = userService.checkPhoneNumber(phoneNumber);
+		if(isUsed > 0) {
+			return new BadResponse<String>("Phone number has already been taken").response();
+		} else {
+			return new OkResponse<String>("Phone number has not been used by anyone yet").response();
 		}
 	}
 
@@ -144,44 +145,13 @@ public class AuthRestController {
 		String email = payLoad.get("email");
 		try {
 			User user = userService.findByEmail(email);
-			final String username = "thuan.leminhthuan.10.2@gmail.com";
-			final String password = "tqgxcudjgljrhztj";
-			final String smtpServer = "smtp.gmail.com";
-
-			Properties properties = new Properties();
-			properties.put("mail.smtp.auth", "true");
-			// properties.put("mail.smtp.starttls.enable", "true"); #587
-			properties.put("mail.smtp.ssl.enable", "true"); // #465
-			properties.put("mail.smtp.host", smtpServer);
-			properties.put("mail.smtp.port", "465");
-			properties.put("mail.smtp.ssl.trust", smtpServer);
-			properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
-
-			Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(username, password);
-				}
-			});
-			session.setDebug(true);
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(username));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-			message.setSubject("Reset your password - AirJ18");
 
 			String msg = "Hi " + user.getFullName() + "<div>Need to reset your password?</div>"
 					+ "</div>" + "<div>Click on the link below and enter the secret code above.</div>"
 					+ "<a href='http://localhost:3000/auth/reset-password'>Reset your password</a>"
 					+ "<div>If you did not forget your password, you can ignore this email.</div>";
 
-			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
-
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(mimeBodyPart);
-
-			message.setContent(multipart);
-
-			Transport.send(message);
+			SendEmail.send(user.getEmail(), "Reset your password - AirJ18", msg);
 
 			Random rand = new Random();
 			int resetPasswordCode = rand.nextInt(999999) + 1;

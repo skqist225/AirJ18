@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import { string } from "yup";
-import api from "../../axios";
+import api, { DataType } from "../../axios";
 import { RootState } from "../../store";
 import {
-    IAddUser,
     IUser,
     IUserUpdate,
     IBookedRoom,
@@ -11,27 +9,6 @@ import {
     IRatingLabel,
 } from "../../types/user/type_User";
 import { setUserToLocalStorage } from "../common";
-
-export const addUser = createAsyncThunk(
-    "user/register",
-    async (postUser: IAddUser, { dispatch, getState, rejectWithValue }) => {
-        try {
-            const {
-                data: { user, successMessage },
-            } = await api.post(`/auth/register`, postUser, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            setUserToLocalStorage(user);
-
-            return { user, successMessage };
-        } catch ({ data: { errorMessage } }) {
-            return rejectWithValue(errorMessage);
-        }
-    }
-);
 
 export const fetchWishlistsIDsOfCurrentUser = createAsyncThunk(
     "user/fetchWishlistsIDsOfCurrentUser",
@@ -74,7 +51,11 @@ export const updateUserAvatar = createAsyncThunk(
     "user/updateUserAvatar",
     async (formData: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.post(`/user/update-avatar`, formData);
+            const { data } = await api.put(`/user/update-avatar`, formData, {
+                headers: {
+                    "Content-Type": DataType.MULTIPARTFORMDATA,
+                },
+            });
             if (data) setUserToLocalStorage(data as IUser);
 
             return { data };
@@ -139,11 +120,7 @@ const userSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addCase(addUser.fulfilled, (state, { payload }) => {
-                state.loading = false;
-                state.successMessage = payload.successMessage;
-                state.user = payload.user;
-            })
+
             .addCase(fetchWishlistsIDsOfCurrentUser.pending, (state, { payload }) => {
                 state.wishlistsIDsFetching = true;
             })
@@ -169,16 +146,10 @@ const userSlice = createSlice({
             .addCase(updateUserInfo.pending, (state, { payload }) => {
                 state.update.loading = true;
             })
-            .addMatcher(isAnyOf(addUser.pending), state => {
-                state.loading = true;
-            })
-            .addMatcher(
-                isAnyOf(addUser.rejected, fetchWishlistsOfCurrentUser.rejected),
-                (state, { payload }) => {
-                    state.loading = false;
-                    if (payload) state.errorMessage = payload as string;
-                }
-            );
+            .addMatcher(isAnyOf(fetchWishlistsOfCurrentUser.rejected), (state, { payload }) => {
+                state.loading = false;
+                if (payload) state.errorMessage = payload as string;
+            });
     },
 });
 

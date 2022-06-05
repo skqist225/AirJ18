@@ -1,14 +1,14 @@
-import { FC, useEffect } from 'react';
-import { FieldValues, UseFormRegister } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCitiesByState } from '../../../features/address/citySlice';
-import { fetchStatesByCountry } from '../../../features/address/stateSlice';
-import { fetchCountries } from '../../../features/country/countrySlice';
-import { RootState } from '../../../store';
-import { IAddress } from '../../../types/user/type_User';
-import { DropDown, FormGroup } from '../../utils';
-import { IOption } from '../../utils/DropDown';
-import $ from 'jquery';
+import { FC, useEffect } from "react";
+import { FieldValues, UseFormRegister } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCitiesByState } from "../../../features/address/citySlice";
+import { fetchStatesByCountry } from "../../../features/address/stateSlice";
+import { fetchCountries } from "../../../features/country/countrySlice";
+import { RootState } from "../../../store";
+import { IAddress } from "../../../types/user/type_User";
+import { DropDown, FormGroup } from "../../utils";
+import { IOption } from "../../utils/DropDown";
+import $ from "jquery";
 
 interface IAddressEditProps {
     register: UseFormRegister<FieldValues>;
@@ -60,10 +60,10 @@ const AddressEdit: FC<IAddressEditProps> = ({
 
     useEffect(() => {
         if (!countryLoading) {
-            $('#countrySelect').on('change', function () {
-                const countryId = parseInt($(this).children('option:selected').val() as string);
+            $("#countrySelect").on("change", function () {
+                const countryId = parseInt($(this).children("option:selected").val() as string);
 
-                if (countryId !== countryDefaultValue) {
+                if (countryDefaultValue && countryId !== countryDefaultValue) {
                     dispatch(fetchStatesByCountry({ countryId: countryDefaultValue }));
                 }
             });
@@ -72,10 +72,10 @@ const AddressEdit: FC<IAddressEditProps> = ({
 
     useEffect(() => {
         if (!stateLoading) {
-            $('#stateSelect').on('change', function () {
-                const stateId = parseInt($(this).children('option:selected').val() as string);
+            $("#stateSelect").on("change", function () {
+                const stateId = parseInt($(this).children("option:selected").val() as string);
 
-                if (stateId !== stateDefaultValue) {
+                if (stateDefaultValue && stateId !== stateDefaultValue) {
                     dispatch(fetchCitiesByState({ stateId: stateDefaultValue }));
                 }
             });
@@ -84,8 +84,10 @@ const AddressEdit: FC<IAddressEditProps> = ({
 
     return (
         <div>
-            <input type='hidden' value={address.country.name} id='userCountryName' />
-            <input type='hidden' value={address.state.name} id='userStateName' />
+            {address.country && (
+                <input type='hidden' value={address.country.name} id='userCountryName' />
+            )}
+            {address.state && <input type='hidden' value={address.state.name} id='userStateName' />}
             <div>
                 <DropDown
                     register={register}

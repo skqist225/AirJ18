@@ -13,9 +13,14 @@ import { fetchCountries } from "../../features/country/countrySlice";
 import { RootState } from "../../store";
 import FormError from "../../components/register/FormError";
 import { getImage } from "../../helpers";
-import { addUser } from "../../features/user/userSlice";
+import {
+    checkPhoneNumber,
+    clearErrorMessage,
+    clearSuccessMessage,
+    registerUser,
+} from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
-import "./css/register.css";
+import "../css/register.css";
 
 const phoneNumberSchema = yup
     .object({
@@ -30,11 +35,14 @@ const phoneNumberSchema = yup
 
 const schema = yup
     .object({
-        firstName: yup.string().required("Vui lòng nhập tên!"),
-        lastName: yup.string().required("Vui lòng nhập họ"),
-        password: yup.string().length(8, "Mật khẩu ít nhất 8 kí tự!"),
-        birthday: yup.string().required(),
-        email: yup.string().email().required("Vui lòng nhập địa chỉ email!"),
+        firstName: yup.string().required("Vui lòng nhập tên."),
+        lastName: yup.string().required("Vui lòng nhập họ."),
+        password: yup.string().length(8, "Mật khẩu ít nhất 8 kí tự."),
+        birthday: yup.string().required("Vui lòng chọn ngày sinh."),
+        email: yup
+            .string()
+            .email("Địa chỉ email chưa đúng định dạng.")
+            .required("Vui lòng nhập địa chỉ email."),
     })
     .required();
 
@@ -44,7 +52,7 @@ const RegisterPage: FC<HomeProps> = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { countries } = useSelector((state: RootState) => state.country);
-    const { user, successMessage, errorMessage } = useSelector((state: RootState) => state.user);
+    const { user, successMessage, errorMessage } = useSelector((state: RootState) => state.auth);
     const {
         register,
         control,
@@ -69,10 +77,8 @@ const RegisterPage: FC<HomeProps> = () => {
         dispatch(fetchCountries());
     }, []);
 
-    console.log(errors);
-
     useEffect(() => {
-        const bg = `${process.env.REACT_APP_SERVER_URL}/images/register_background.jpg`;
+        const bg = getImage("/images/register_background.jpg");
 
         $("#register").css({
             "background-image": `url(${bg})`,
@@ -93,11 +99,11 @@ const RegisterPage: FC<HomeProps> = () => {
     const onSubmit = (data: any) => {
         setPhoneNumber(data.phoneNumber);
         setCountry(data.country);
-
-        hide("#register__first--form");
-        hide("#register__login--section");
-        display("#register__second--form");
-        display("#register__header--back");
+        dispatch(
+            checkPhoneNumber({
+                phoneNumber: data.phoneNumber,
+            })
+        );
     };
 
     const backToPreviousPage = () => {
@@ -109,7 +115,7 @@ const RegisterPage: FC<HomeProps> = () => {
 
     const onSubmitFinalStep = (data: any) => {
         dispatch(
-            addUser({
+            registerUser({
                 ...data,
                 phoneNumber,
             })
@@ -117,8 +123,19 @@ const RegisterPage: FC<HomeProps> = () => {
     };
 
     useEffect(() => {
-        if (user != null) navigate("/");
+        if (user != null) navigate("/auth/login");
     }, [user]);
+
+    useEffect(() => {
+        if (successMessage === "Phone number has not been used by anyone yet") {
+            dispatch(clearErrorMessage({}));
+            hide("#register__first--form");
+            hide("#register__login--section");
+            display("#register__second--form");
+            display("#register__header--back");
+            dispatch(clearSuccessMessage({}));
+        }
+    }, [successMessage]);
 
     return (
         <div id='register'>
@@ -160,7 +177,9 @@ const RegisterPage: FC<HomeProps> = () => {
                             {errors?.phoneNumber && (
                                 <FormError message={errors.phoneNumber.message} />
                             )}
-
+                            {errorMessage === "Phone number has already been taken" && (
+                                <FormError message='Số điện thoại đã được sử dụng' />
+                            )}
                             <div style={{ textAlign: "center" }}>
                                 <MainButton type='submit' style={{ width: "100%" }}>
                                     <span>Tiếp tục</span>
@@ -195,6 +214,10 @@ const RegisterPage: FC<HomeProps> = () => {
                                 type='date'
                                 register={register2}
                             />
+                            {errors2?.birthday && <FormError message={errors2.birthday.message} />}
+                            {errorMessage === "Không chọn ngày lớn hơn hiện tại." && (
+                                <FormError message={errorMessage} />
+                            )}
                             <DropDown
                                 label='Giới tính'
                                 fieldName='sex'
@@ -222,7 +245,7 @@ const RegisterPage: FC<HomeProps> = () => {
                                 register={register2}
                             />
                             {errors2?.email && <FormError message={errors2.email.message} />}
-                            {errorMessage === "Duplicate entry email" && (
+                            {errorMessage === "Email has already been taken" && (
                                 <FormError message='Địa chỉ email đã tồn tại' />
                             )}
                             <FormGroup
@@ -238,7 +261,7 @@ const RegisterPage: FC<HomeProps> = () => {
                             </MainButton>
                         </form>
 
-                        <div id='register__login--section'>
+                        {/* <div id='register__login--section'>
                             <div className='normal-flex'>
                                 <Divider className='flex-1'></Divider>
                                 <span className='register__or--option'>hoặc</span>
@@ -260,7 +283,7 @@ const RegisterPage: FC<HomeProps> = () => {
                                     <span>Tiếp tục với Google</span>
                                 </button>
                             </div>
-                        </div>
+                        </div> */}
                     </article>
                 </div>
             </div>

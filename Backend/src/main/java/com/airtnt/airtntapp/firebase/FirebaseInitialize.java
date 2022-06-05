@@ -16,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 @Service
 public class FirebaseInitialize {
     private static DatabaseReference database = null;
-    private static FirebaseApp firebaseInstance = null;
 
     @Autowired
     private Environment env;
@@ -35,8 +34,8 @@ public class FirebaseInitialize {
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl("https://airj18-65bd5-default-rtdb.asia-southeast1.firebasedatabase.app")
                     .build();
-            if (firebaseInstance == null)
-                firebaseInstance = FirebaseApp.initializeApp(options);
+            if (FirebaseApp.getInstance() == null)
+                FirebaseApp.initializeApp(options);
         } catch (Exception e) {
             e.printStackTrace();
         }

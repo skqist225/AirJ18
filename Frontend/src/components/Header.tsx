@@ -40,7 +40,7 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
     }, []);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logout({}));
     };
 
     function refreshPage() {
@@ -70,19 +70,19 @@ const Header: FC<IHeaderProps> = ({ includeMiddle, excludeBecomeHostAndNavigatio
                     <div className='header__middle'>
                         <ul id='ulMiddle'>
                             <li className='nav__container'>
-                                <a href='@{/progress/reviews}' className='nav__link'>
+                                <Link to='/progress/reviews' className='nav__link'>
                                     Đánh giá
-                                </a>
+                                </Link>
                             </li>
                             <li className='nav__container'>
-                                <a href='@{/progress/earnings}' className='nav__link'>
+                                <Link to='/progress/earnings' className='nav__link'>
                                     Thu nhập
-                                </a>
+                                </Link>
                             </li>
                             <li className='nav__container'>
-                                <a href='@{/user/bookings}' className='nav__link'>
+                                <Link to='/user/booked-rooms' className='nav__link'>
                                     Phòng đã đặt
-                                </a>
+                                </Link>
                             </li>
                             <li className='nav__container'>
                                 <Link to='/hosting/listings/1' className='nav__link'>

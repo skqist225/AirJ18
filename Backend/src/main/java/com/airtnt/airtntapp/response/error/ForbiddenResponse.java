@@ -7,4 +7,9 @@ public class ForbiddenResponse<T> extends FailureResponse<T> {
         super.setMessage("forbidden");
         super.setResponse(403, null);
     }
+
+    public ForbiddenResponse(String message) {
+        super.setMessage(message);
+        super.setResponse(403, null);
+    }
 }

@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import api from "../../axios";
+import { makeGetAsyncThunk, makePostAsyncThunk } from "../../helpers/create_async_thunk";
 import { RootState } from "../../store";
 import { IForgotPassword, ILogin, IResetPassword } from "../../types/auth/type_Auth";
-import { IUser } from "../../types/user/type_User";
+import { IRegisterUser, IUser } from "../../types/user/type_User";
 import { setUserToLocalStorage } from "../common";
 import { setUser } from "../user/userSlice";
 
@@ -30,8 +31,8 @@ export const login = createAsyncThunk(
             }
 
             return { data };
-        } catch ({ data: { errorMessage } }) {
-            return rejectWithValue(errorMessage);
+        } catch ({ data: { error } }) {
+            return rejectWithValue(error);
         }
     }
 );
@@ -50,17 +51,19 @@ export const forgotPassword = createAsyncThunk(
     }
 );
 
-export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue, dispatch }) => {
-    try {
-        const { data } = await api.get("/auth/logout");
-        if (data) {
-            localStorage.removeItem("user");
-            dispatch(setUser(null));
-        }
-        return { data };
-    } catch ({ data: { errorMessage } }) {
-        return rejectWithValue(errorMessage);
-    }
+export const logout = makeGetAsyncThunk("auth/logout", {
+    uri: "/auth/logout/",
+    isLogout: true,
+});
+
+export const checkPhoneNumber = makeGetAsyncThunk("auth/checkPhoneNumber", {
+    uri: "/auth/check-phonenumber/",
+    fieldName: "phoneNumber",
+    insertIntoURIPosition: -1,
+});
+
+export const registerUser = makePostAsyncThunk("auth/register", {
+    uri: "/auth/register",
 });
 
 type AuthState = {
@@ -80,9 +83,23 @@ const initialState: AuthState = {
 const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
+    reducers: {
+        setUser: (state, { payload }) => {
+            state.user = payload as IUser;
+        },
+        clearErrorMessage(state, _) {
+            state.errorMessage = null;
+        },
+        clearSuccessMessage(state, _) {
+            state.successMessage = null;
+        },
+    },
     extraReducers: builder => {
         builder
+            .addCase(registerUser.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.user = payload.data;
+            })
             .addCase(login.fulfilled, (state, { payload }) => {
                 state.loading = false;
             })
@@ -90,6 +107,7 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.successMessage = payload.data;
                 state.user = null;
+                localStorage.removeItem("user");
             })
             .addCase(
                 forgotPassword.fulfilled,
@@ -102,12 +120,16 @@ const authSlice = createSlice({
             .addCase(resetPassword.fulfilled, (state, { payload }) => {
                 state.successMessage = payload.data;
             })
+            .addCase(checkPhoneNumber.fulfilled, (state, { payload }) => {
+                state.successMessage = payload.data as string;
+            })
             .addMatcher(
                 isAnyOf(
                     login.pending,
                     logout.pending,
                     forgotPassword.pending,
-                    resetPassword.pending
+                    resetPassword.pending,
+                    registerUser.pending
                 ),
                 (state, _) => {
                     state.loading = true;
@@ -118,7 +140,9 @@ const authSlice = createSlice({
                     login.rejected,
                     logout.rejected,
                     forgotPassword.rejected,
-                    resetPassword.rejected
+                    resetPassword.rejected,
+                    registerUser.rejected,
+                    checkPhoneNumber.rejected
                 ),
                 (state, { payload }) => {
                     state.loading = false;
@@ -128,5 +152,6 @@ const authSlice = createSlice({
     },
 });
 
+export const { clearErrorMessage, clearSuccessMessage } = authSlice.actions;
 export const authState = (state: RootState) => state.auth;
 export default authSlice.reducer;

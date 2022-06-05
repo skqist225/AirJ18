@@ -165,6 +165,11 @@ public class UserService {
 		else
 			throw new UserNotFoundException("User does not exist.");
 	}
+	
+	public int checkPhoneNumber(String phoneNumber) {
+		List<User> user =userRepository.findByPhoneNumber(phoneNumber);
+		return user.size() > 0 ? 1 : -1;
+	}
 
 	public Integer getNumberOfUser() {
 		return userRepository.getNumberOfUser();

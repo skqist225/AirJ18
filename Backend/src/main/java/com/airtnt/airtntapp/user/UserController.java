@@ -13,6 +13,7 @@ import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.booking.BookingService;
 import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.country.CountryService;
+import com.airtnt.airtntapp.exception.BookingNotFoundException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.review.ReviewService;
 import com.airtnt.airtntapp.security.AirtntUserDetails;
@@ -272,7 +273,7 @@ public class UserController {
             @Param("accuracyRating") Integer accuracyRating,
             @Param("locationRating") Integer locationRating,
             @Param("valueRating") Integer valueRating,
-            @Param("comment") String comment) {
+            @Param("comment") String comment) throws BookingNotFoundException {
 
         SubRating subRating = SubRating.builder()
                 .cleanliness(cleanlinessRating)

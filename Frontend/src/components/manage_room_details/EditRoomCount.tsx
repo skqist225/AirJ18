@@ -1,16 +1,16 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ManageYSContainer } from '.';
-import { categoryState, fetchCategories } from '../../features/category/categorySlice';
-import { fetchRoomGroups, fetchRoomPrivacies, roomState } from '../../features/room/roomSlice';
-import { Div } from '../../globalStyle';
-import { IRoomDetails } from '../../types/room/type_RoomDetails';
-import BoxFooter from './BoxFooter';
-import { HideEditBox } from './components';
-import DisplayEditUI from './components/DisplayEditUI';
+import { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ManageYSContainer } from ".";
+import { categoryState, fetchCategories } from "../../features/category/categorySlice";
+import { fetchRoomGroups, fetchRoomPrivacies, roomState } from "../../features/room/roomSlice";
+import { Div } from "../../globalStyle";
+import { IRoomDetails } from "../../types/room/type_RoomDetails";
+import BoxFooter from "./BoxFooter";
+import { HideEditBox } from "./components";
+import DisplayEditUI from "./components/DisplayEditUI";
 
-import { hideEditBox } from '../../pages/script/manage_your_space';
-import { IncAndDecBtn } from '../utils/IncAndDecBtn';
+import { hideEditBox } from "../../pages/script/manage_your_space";
+import { IncAndDecBtn } from "../utils/IncAndDecBtn";
 
 interface IEditRoomCountProps {
     room: IRoomDetails;
@@ -33,17 +33,17 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                 <div>
                     <div>
                         <div
-                            style={{ height: '85px', borderBottom: '1px solid #d3d6db' }}
+                            style={{ height: "85px", borderBottom: "1px solid #d3d6db" }}
                             className='flex-space'
                             id='manage-ys__groupAndTypeAndPrivacy-control-view'
                         >
                             <div>
                                 <div className='manage-ys__section-content-title'>Loại chỗ ở</div>
                                 <div className='manage-ys__section-content-info'>
-                                    {room?.groupName} cho thuê
+                                    {room.groupName} cho thuê
                                 </div>
                                 <div className='manage-ys__section-content-info'>
-                                    Loại hình cho thuê: {room?.privacy}
+                                    Loại hình cho thuê: {room.privacy}
                                 </div>
                             </div>
                             <div>
@@ -187,7 +187,7 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
 
                                 <div className='flex-space manage-ys__section-content'>
                                     <div className='manage-ys__section-content-title'>
-                                        {' '}
+                                        {" "}
                                         Phòng tắm
                                     </div>
                                     <div>

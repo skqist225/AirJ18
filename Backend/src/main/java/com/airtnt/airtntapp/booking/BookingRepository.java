@@ -30,12 +30,9 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
         @Query("SELECT b FROM Booking b WHERE b.customer.id = :customerId AND CONCAT(b.room.name, ' ', b.customer.firstName, ' ', b.customer.lastName) LIKE %:query% ORDER BY b.bookingDate DESC")
         public List<Booking> getByCustomer(Integer customerId, String query);
 
-        @Query("SELECT new com.airtnt.airtntapp.user.dto.BookedRoomDTO(b.id, b.bookingDate, b.checkinDate, b.checkoutDate, b.pricePerDay, b.numberOfDays, b.siteFee, b.isComplete, b.isRefund,"
-                        + " b.room.id, CONCAT('/room_images/', b.room.host.email, '/', b.room.id, '/', b.room.thumbnail), b.room.name, CONCAT(b.room.host.firstName, ' ', b.room.host.lastName), CONCAT('/user_images/', b.room.host.id, '/', b.room.host.avatar), b.room.currency.symbol, b.room.privacyType.name, b.room.category.name, b.room.priceType,"
-                        + " b.review.comment, b.review.subRating)"
-                        + " FROM Booking b WHERE b.customer.id = :customerId"
+        @Query("SELECT b FROM Booking b WHERE b.customer.id = :customerId"
                         + " AND CONCAT(b.room.name, ' ', b.customer.firstName, ' ', b.customer.lastName) LIKE %:query% ORDER BY b.bookingDate DESC")
-        public List<BookedRoomDTO> getBookedRoomsByUser(Integer customerId, String query);
+        public List<Booking> getBookedRoomsByUser(Integer customerId, String query);
 
         @Query("SELECT b FROM Booking b WHERE b.room.id IN (:roomIds) AND b.bookingDate >= :startDate AND b.bookingDate <= :endDate")
         public List<Booking> getBookingsByRooms(Integer[] roomIds, LocalDateTime startDate, LocalDateTime endDate);
