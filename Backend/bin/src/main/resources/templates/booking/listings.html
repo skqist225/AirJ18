@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Quản lý mục cho thuê của bạn</title>
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <div th:replace="header :: css"></div>
+        <link rel="stylesheet" th:href="@{/css/hosting/listings.css}" />
+    </head>
+
+    <body>
+        <div th:replace="header :: content"></div>
+
+        <main>
+            <div class="listings__container">
+                <div class="listings__header flex">
+                    <div class="listings__header-rooms-length">
+                        [[${totalBookings}]] đơn đặt phòng
+                    </div>
+                </div>
+                <div class="listings__filter-container">
+                    <div class="listings__search-room">
+                        <div
+                            class="listings__search-icon-container"
+                            onclick="filterBookingByInput();"
+                        >
+                            <img th:src="@{/svg/search.svg}" alt="" width="12px" height="12px" />
+                        </div>
+                        <div style="flex: 1">
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm lịch đặt phòng theo mã, tên phòng"
+                                id="listings__search-input"
+                            />
+                        </div>
+                    </div>
+                    <div class="listings__filter">
+                        <button
+                            class="listings__filter-option"
+                            data-dropdown="listings__filter-roomAndBedRoom"
+                        >
+                            <span>Ngày đặt phòng</span>
+                            <div class="listings__filter-img-container">
+                                <img
+                                    th:src="@{/svg/dropdown.svg}"
+                                    alt=""
+                                    width="12px"
+                                    height="12px"
+                                />
+                            </div>
+                        </button>
+                        <div id="listings__filter-roomAndBedRoom">
+                            <div class="listings__filter-wrapper">
+                                <div class="filter-box">
+                                    <div
+                                        class="normal-flex listings__filter-status-row"
+                                        style="height: 100%"
+                                    >
+                                        <input
+                                            type="date"
+                                            class="form-control"
+                                            id="bookingDateInput"
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    th:replace="hosting/_listings_partial :: filterFooter('bookingDate')"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="listings__filter">
+                        <button
+                            class="listings__filter-option"
+                            data-dropdown="listings__filter-amentities"
+                        >
+                            <span>Tìm kiếm theo tháng/năm</span>
+                            <div class="listings__filter-img-container">
+                                <img
+                                    th:src="@{/svg/dropdown.svg}"
+                                    alt=""
+                                    width="12px"
+                                    height="12px"
+                                />
+                            </div>
+                        </button>
+                        <div
+                            id="listings__filter-amentities"
+                            style="height: 400px; overflow: hidden"
+                        >
+                            <div class="filter-box" style="height: 80%">
+                                <div>
+                                    <label for="" class="form-label">Tháng: </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Tháng"
+                                        class="form-control mb-5"
+                                        id="bookingDateMonthInput"
+                                        pattern="^[1-12]{1,2}$"
+                                        minlength="1"
+                                        maxlength="2"
+                                    />
+                                </div>
+                                <div>
+                                    <label for="" class="form-label">Năm: </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Năm"
+                                        class="form-control"
+                                        id="bookingDateYearInput"
+                                        pattern="^[0-9]+"
+                                        minlength="4"
+                                        maxlength="4"
+                                    />
+                                </div>
+                            </div>
+                            <div
+                                th:replace="hosting/_listings_partial :: filterFooter('bookingDateByMonthAndYear')"
+                            ></div>
+                        </div>
+                    </div>
+                    <div class="listings__filter">
+                        <button
+                            class="listings__filter-option"
+                            data-dropdown="listings__filter-status"
+                        >
+                            <span>Trạng thái lịch đặt phòng</span>
+                            <div class="listings__filter-img-container">
+                                <img
+                                    th:src="@{/svg/dropdown.svg}"
+                                    alt=""
+                                    width="12px"
+                                    height="12px"
+                                />
+                            </div>
+                        </button>
+                        <div id="listings__filter-status">
+                            <div class="listings__filter-wrapper">
+                                <div style="padding: 24px; flex: 1">
+                                    <div class="normal-flex listings__filter-status-row">
+                                        <input
+                                            type="checkbox"
+                                            class="isCompleteSelected"
+                                            value="1"
+                                        />
+                                        <div>Hoàn tất</div>
+                                    </div>
+                                    <div class="normal-flex listings__filter-status-row">
+                                        <input
+                                            type="checkbox"
+                                            class="isCompleteSelected"
+                                            value="0"
+                                        />
+                                        <div>Phê duyệt</div>
+                                    </div>
+                                    <div class="normal-flex listings__filter-status-row">
+                                        <input
+                                            type="checkbox"
+                                            class="isCompleteSelected"
+                                            value="2"
+                                        />
+                                        <div>Đã hủy</div>
+                                    </div>
+                                </div>
+                                <div
+                                    th:replace="hosting/_listings_partial :: filterFooter('isComplete')"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="listings__filter">
+                        <button
+                            class="listings__filter-option"
+                            data-dropdown="listings__filter-others"
+                        >
+                            <span>Tổng phí</span>
+                            <div class="listings__filter-img-container">
+                                <img
+                                    th:src="@{/svg/dropdown.svg}"
+                                    alt=""
+                                    width="12px"
+                                    height="12px"
+                                />
+                            </div>
+                        </button>
+                        <div id="listings__filter-others">
+                            <div class="listings__filter-wrapper">
+                                <div class="filter-box" style="overflow: hidden">
+                                    <div class="normal-flex listings__filter-others-row">
+                                        <input
+                                            type="range"
+                                            class="form-range form-control"
+                                            id="totalFeeRangeInput"
+                                            min="0"
+                                            onchange="updateTextInput(this.value);"
+                                            step="1000000"
+                                            style="width: 100%"
+                                        />
+                                    </div>
+                                    <div class="normal-flex listings__filter-others-row">
+                                        <input
+                                            type="text"
+                                            id="textInput"
+                                            value=""
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    th:replace="hosting/_listings_partial :: filterFooter('totalFee')"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="listings__filter">
+                        <button
+                            class="listings__filter-option deleteAllFilterOption"
+                            data-dropdown="listings__filter-others"
+                        >
+                            <span>Xóa toàn bộ bộ lọc</span>
+                        </button>
+                    </div>
+                </div>
+                <div style="flex: 1">
+                    <div
+                        th:replace="booking/_booking_listings_partial :: listingsTable(${bookings})"
+                    ></div>
+                </div>
+                <div class="pagination">
+                    <a data-page="prev">&laquo;</a>
+                    <a data-page="1" class="active listings__link">1</a>
+                    <a data-page="2" class="listings__link">2</a>
+                    <a data-page="3" class="listings__link">3</a>
+                    <a data-page="4" class="listings__link">4</a>
+                    <a data-page="5" class="listings__link">5</a>
+                    <a data-page="6" class="listings__link">6</a>
+                    <a data-page="next">&raquo;</a>
+                </div>
+            </div>
+        </main>
+
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/helpers/format_number.js}"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const baseURL = /*[[@{/}]]*/ '';
+            /*]]>*/
+        </script>
+        <div th:replace="header :: javascript"></div>
+        <script>
+            let pageNumber = 1;
+            const currentUrl = window.location.href;
+            if (currentUrl.toString().includes('?')) {
+                pageNumber = currentUrl.split('?')[0].split('/').pop();
+            } else pageNumber = window.location.href.split('/').pop();
+            jQuery(document).ready(function () {
+                $('#totalFeeRangeInput').attr('max', 100_000_000);
+                highlightCurrentPageNumber(pageNumber);
+                let url = `${baseURL}booking/listings/${pageNumber}`;
+
+                $('.listings__table-header').each(function () {
+                    $(this).click(function () {
+                        const params = new URLSearchParams(window.location.search);
+                        const sortField = $(this).data('sort-field');
+                        const sortDir = params.get('sort_dir') === 'asc' ? 'desc' : 'asc';
+
+                        url += `?sort_field=${sortField}&sort_dir=${sortDir}`;
+                        window.location.href = url;
+                    });
+                });
+
+                $('.listings__filter-option').each(function () {
+                    $(this).click(function () {
+                        const self = $(this);
+                        $('.listings__filter-option').each(function () {
+                            if (!$(this).is(self))
+                                $(this).siblings().filter('.active').removeClass('active');
+                        });
+
+                        const id = $(this).data('dropdown');
+                        const filterBox = $('#' + id);
+                        if (filterBox.hasClass('active')) filterBox.removeClass('active');
+                        else filterBox.addClass('active');
+                    });
+                });
+
+                $('.applyBtn').each(function () {
+                    $(this).click(function () {
+                        let redirectURL = `${baseURL}booking/listings/${pageNumber}`;
+                        const dataModify = $(this).data('modify');
+
+                        switch (dataModify) {
+                            case 'isComplete': {
+                                const selectedStatus = $(
+                                    'input[class="isCompleteSelected"]:checked'
+                                );
+                                let statuses = [];
+                                selectedStatus.each(function () {
+                                    statuses.push($(this).val());
+                                });
+                                redirectURL += `?isComplete=${statuses.join(' ')}`;
+
+                                break;
+                            }
+                            case 'bookingDate': {
+                                const bookingDateInput = $('#bookingDateInput').val();
+                                if (bookingDateInput)
+                                    redirectURL += `?bookingDate=${bookingDateInput}`;
+
+                                break;
+                            }
+                            case 'bookingDateByMonthAndYear': {
+                                const month = $('#bookingDateMonthInput').val();
+                                const year = $('#bookingDateYearInput').val();
+
+                                if (!isNaN(month) && !isNaN(year)) {
+                                    redirectURL += `?booking_date_month=${month}&booking_date_year=${year}`;
+                                } else {
+                                    alert('Tháng hoặc năm không hợp lệ!');
+                                }
+                                break;
+                            }
+                            case 'totalFee': {
+                                redirectURL += `?totalFee=${$('#textInput')
+                                    .val()
+                                    .replace(/\./g, '')}`;
+                                break;
+                            }
+                        }
+
+                        window.location.href = redirectURL;
+                    });
+                });
+
+                $('.deleteAllFilterOption').click(function () {
+                    window.location.href = `${baseURL}booking/listings/1`;
+                });
+
+                $('.listings__link').each(function () {
+                    $(this).attr(
+                        'href',
+                        `${baseURL}booking/listings/${$(this).data('page')}${
+                            window.location.search
+                        }`
+                    );
+                });
+            });
+
+            function highlightCurrentPageNumber(pageNumber) {
+                $('.pagination').children().filter('.active').removeClass('active');
+                $('.pagination')
+                    .children()
+                    .each(function () {
+                        const pageNum = $(this).data('page');
+                        if (pageNum.toString() === pageNumber.toString()) {
+                            $(this).addClass('active');
+                            return false;
+                        }
+                    });
+            }
+
+            function filterBookingByInput() {
+                const query = $('#listings__search-input').val().toString().trim();
+                let url = window.location.href;
+                const paramsMap = new Map();
+                if (url.includes('?')) {
+                    let params = new URLSearchParams(window.location.search);
+
+                    if (params.get('query')) {
+                        for (const key of params.keys()) {
+                            paramsMap.set(key, params.get(key));
+                        }
+                        let newURL = `${baseURL}booking/listings/${pageNumber}?`;
+                        const mapLen = getMapSize(paramsMap);
+
+                        let count = 0;
+                        for (const [key, value] of paramsMap.entries()) {
+                            if (key === 'query') newURL += `query=${query}`;
+                            else newURL += `${key}=${value}`;
+                            if (count <= mapLen - 2) newURL += '&';
+                            count++;
+                        }
+                        window.location.href = newURL;
+                        return;
+                    } else url += `&query=${query}`;
+                } else url += `?query=${query}`;
+
+                window.location.href = url;
+            }
+            function updateTextInput(val) {
+                document.getElementById('textInput').value = seperateNumber(val);
+            }
+
+            function getMapSize(map) {
+                let len = 0;
+                for (let key of map.keys()) {
+                    len++;
+                }
+
+                return len;
+            }
+            function approveBooking(self) {
+                window.location.href = `${baseURL}booking/${self.data('booking-id')}/approved`;
+            }
+
+            function viewBooking(self) {
+                window.location.href = `${baseURL}booking/${self.data('booking-id')}/view`;
+            }
+        </script>
+    </body>
+</html>

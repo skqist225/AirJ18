@@ -1,0 +1,77 @@
+.room-info__left {
+    position: relative;
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+    background: #fc5c7d; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+        to right,
+        #6a82fb,
+        #fc5c7d
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+        to right,
+        #6a82fb,
+        #fc5c7d
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.room-info__right-middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-info__info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70%;
+    margin-bottom: 32px;
+}
+
+.room-info__info-title {
+    font-size: 26px;
+    line-height: 30px;
+    font-weight: 600;
+}
+
+.incAndDecBtn {
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    -webkit-box-flex: 0;
+    width: 32px;
+    height: 32px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: inline-flex;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    text-decoration: none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(176, 176, 176);
+    color: rgb(113, 113, 113);
+    font-family: inherit;
+    outline: none;
+    touch-action: manipulation;
+    align-items: center;
+    justify-content: center;
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+}
+
+.incAndDecBtn:disabled {
+    color: rgb(235, 235, 235);
+    cursor: not-allowed;
+    border-color: rgb(235, 235, 235);
+    background: rgb(255, 255, 255);
+}
+
+.stepProcess.room-info-step {
+    width: calc(100% / 11 * 5);
+}

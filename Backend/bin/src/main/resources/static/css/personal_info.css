@@ -1,0 +1,207 @@
+.personal__info_page {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    right: 0;
+}
+
+.page__container {
+    width: 1050px;
+    max-width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#userDayOfBirth {
+    margin: 0 20px;
+}
+
+.formEdit_firstNameAndLastName,
+.formEdit_sex,
+.formEdit_birthday,
+.formEdit_email,
+.formEdit_phoneNumber,
+.formEdit_address,
+.formEdit_password,
+.formEdit_avatar {
+    display: none;
+}
+
+.formEdit_firstNameAndLastName.editMode,
+.formEdit_sex.editMode,
+.formEdit_birthday.editMode,
+.formEdit_email.editMode,
+.formEdit_phoneNumber.editMode,
+.formEdit_address.editMode,
+.formEdit_password.editMode,
+.formEdit_avatar.editMode {
+    display: block;
+}
+
+.personal__info_part {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 76px;
+}
+
+.personal__info_part:last-child {
+    height: 300px;
+}
+
+.personal__info_part:not(:last-child) {
+    border-bottom: 1px solid #ebebeb;
+}
+
+.personal__info_part.editMode {
+    height: 200px;
+}
+
+.personal__info_part.editMode.passwordArea {
+    height: 300px;
+}
+
+.personal__info_part.editMode.needMoreSpace {
+    height: 400px;
+}
+
+.personal__info_title {
+    margin: 0 px;
+    overflow-wrap: break-word;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.375em;
+    color: rgb(72, 72, 72);
+    width: 100%;
+}
+
+.editBtn {
+    color: #008489;
+    text-decoration: none;
+    appearance: none;
+    background: transparent;
+    border: 0 px;
+    cursor: pointer;
+    margin: 0 px;
+    padding: 0 px;
+    user-select: auto;
+    text-align: left;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    width: 15%;
+}
+
+.editBtn.editMode {
+    display: none;
+}
+
+.closeBtn {
+    color: #008489;
+    text-decoration: none;
+    appearance: none;
+    background: transparent;
+    border: 0 px;
+    cursor: pointer;
+    margin: 0 px;
+    padding: 0 px;
+    user-select: auto;
+    text-align: left;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: none;
+}
+
+.closeBtn.editMode {
+    display: block;
+}
+
+.displayWhenNormalMode {
+    display: block;
+}
+
+.displayWhenNormalMode.editMode {
+    display: none;
+}
+
+.personal__info_text {
+    margin: 0 px;
+    overflow-wrap: break-word;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.375em;
+    color: rgb(72, 72, 72);
+}
+
+.saveEditBtn {
+    display: inline-block;
+    margin: 0 px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition-property: background, border-color, color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-out;
+    cursor: pointer;
+    border-radius: 4 px;
+    font-size: 16px;
+    line-height: 24px;
+    border-radius: 3px;
+    height: 48px;
+    width: 76px;
+    letter-spacing: normal;
+    padding: 10 px 22 px;
+    font-weight: 800;
+    border-width: 2 px;
+    border-style: solid;
+    min-width: 71.1935 px;
+    box-shadow: none;
+    background: rgb(0, 132, 137);
+    border-color: transparent;
+    color: rgb(255, 255, 255);
+}
+
+.c-validation {
+    background: #c51244 !important;
+    padding: 10px 5px !important;
+    border-radius: 2px !important;
+    position: relative;
+    display: inline-block !important;
+    box-shadow: 1px 1px 1px #aaaaaa;
+    margin-top: 10px;
+    width: 100%;
+    font-size: 14px;
+}
+
+.c-validation:before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #c51244;
+    position: absolute;
+    top: -10px;
+}
+.c-label:after {
+    color: #c51244 !important;
+}
+
+.c-validation.hidden {
+    display: none !important;
+}
+
+@media (min-width: 991px) {
+    .editBtn {
+        width: 12%;
+    }
+}
+
+.saveEditBtn {
+    margin-top: 20px;
+}

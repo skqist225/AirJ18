@@ -1,0 +1,29 @@
+{
+    "name": "tên phòng 2134",
+    "amentities": [14, 28, 18],
+    "images": [
+        "247129345_909249943358568_6309293780230821703_n.jpg",
+        "251815822_4574231789326013_1714193150017519534_n.jpg",
+        "asdfsad.PNG",
+        "Capture.PNG",
+        "BG.png"
+    ],
+    "country": 216,
+    "state": "Ho Chi Minh City 715100",
+    "city": "Quận 9",
+    "street": "Học Viện Công Nghệ Bưu Chính Viễn Thông, 92 đường Man Thiện - P.Tăng Nhơn Phú A - Q9, Quận 9",
+    "bedroomCount": 4,
+    "bathroomCount": 5,
+    "bedCount": 3,
+    "accomodatesCount": 2,
+    "currency": 2,
+    "category": 5,
+    "roomGroup": 1,
+    "descriptions": "Phong cách, Rộng rãi",
+    "latitude": 10.847943375639462,
+    "longitude": 106.7850438407035,
+    "price": 387000,
+    "priceType": "PER_NIGHT",
+    "host": "thuan.leminhthuan.10.2@gmail.com",
+    "privacyType": 3
+}
