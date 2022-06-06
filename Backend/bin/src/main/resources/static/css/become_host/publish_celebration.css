@@ -1,0 +1,33 @@
+.room-publish-celebration__left {
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+    position: relative;
+    background: url('/images/publish_celebration.jpg');
+    background-position: center;
+}
+
+.room-publish-celebration__right {
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: black;
+}
+
+.room-publish-celebration__right-first {
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+.room-publish-celebration__right-middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        disableConcurrentBuilds()
+        skipStagesAfterUnstable()
+    }
+    parameters {
+        booleanParam(name: 'executeBuild', defaultValue: true, description: '')
+    }
+    environment {
+        BACKEND_FOLDER = 'Backend'
+//         DOCKER_TAG = getVersion()
+    }
+    stages {
+        stage('Build') {
+            when {
+                expression {
+                    params.executeBuild
+                }
+            }
+            steps {
+                sh 'echo $(pwd)'
+                sh 'aws s3 cp s3://airj18/serviceAccountKey.json $WORKSPACE/Backend/src/main/resources/static/'
+                sh 'mvn clean package --file */pom.xml'
+                sh 'echo "Hello World" > hello.txt'
+                archiveArtifacts(artifacts: '**/*.txt', followSymlinks: false)
+            }
+        }
+        stage('Send Build Artifact To AWS S3') {
+            environment {
+                AWS_S3_BUCKET = 'airj18'
+            }
+            steps {
+                sh "aws s3 cp ${BACKEND_FOLDER}/target/*.war s3://${AWS_S3_BUCKET}"
+            }
+        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         sh "sudo -S jar -xvf ${BACKEND_FOLDER}/target/*.war"
+        //         sh "docker build ${BACKEND_FOLDER} -t skqist225/airj18:${DOCKER_TAG}"
+        //     }
+        // }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         sh "docker push skqist225/airj18:${DOCKER_TAG}"
+        //     }
+        // }
+        stage('Deploy Application Prodution Stage') {
+            steps {
+                timeout(time:5, unit:'MINUTES') {
+                    input message: 'Approve PRODUCTION Deployment?'
+                }
+                    sshPublisher(
+                    publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.165.245',
+                    transfers: [sshTransfer(cleanRemote: false, excludes: '',
+                    execCommand: '~/airtnt-build.sh airj18-db.cvkwid3ehrok.ap-southeast-1.rds.amazonaws.com admin 12345678',
+                    execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false,
+                    patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '',
+                    sourceFiles: '.')],
+                    usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]
+                )
+            }
+            // post {
+            //     success {
+            //         emailext(
+            //             body: 'build successfully.',
+            //             recipientProviders: [buildUser()],
+            //             subject: 'Build AirJ18 Successfully',
+            //             to: 'thuan.leminhthuan.10.2@gmail.com'
+            //         )
+            //     }
+            // }
+        }
+    }
+}
+
+// def getVersion() {
+//     def commitHash = sh returnStdout: true, script: 'git rev-parse --short HEAD'
+//     return commitHash
+// }

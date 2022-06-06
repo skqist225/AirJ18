@@ -1,0 +1,115 @@
+<div th:fragment="saveAndShare" th:remove="tag">
+    <button class="room__likeBtn rdt_button__action" th:data-room-id="${room.id}">
+        <svg
+            viewBox="0 0 32 32"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            role="presentation"
+            focusable="false"
+            style="
+                display: block;
+                fill: rgba(0, 0, 0, 0.5);
+                height: 24px;
+                width: 24px;
+                stroke: rgb(255, 255, 255);
+                stroke-width: 2;
+                overflow: visible;
+            "
+            class="heartSvg"
+        >
+            <path
+                d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"
+            ></path>
+        </svg>
+        <span>Lưu</span>
+    </button>
+</div>
+
+<div th:fragment="image__header" th:remove="tag">
+    <div style="width: 100%; height: 60px; padding: 0 24px">
+        <div class="flex2">
+            <div>
+                <button class="" id="closeShowImgBtn">
+                    <span class="_e296pg">
+                        <img
+                            th:src="@{/svg/close.svg}"
+                            alt=""
+                            width="16px"
+                            height="16px"
+                            style="color: #fff"
+                            class="backSvg"
+                    /></span>
+                </button>
+            </div>
+            <div>
+                <div class="rdt_header__action">
+                    <div th:replace="room/_room_details_partial :: saveAndShare"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="showMoreImage" th:remove="tag">
+    <div class="rdt_images_show">
+        <a href="javascript:showFullscreenImage()">
+            <div th:each="image,itr : ${room.images}">
+                <div th:if="${(itr.index + 1) % 3 != 0 && (itr.index + 2) % 3 != 0}">
+                    <img
+                        th:src="${image.getImagePath(room.host.email, room.id)}"
+                        alt=""
+                        width="746px"
+                        th:class="${itr.index + 1}"
+                    />
+                </div>
+
+                <img
+                    th:src="${image.getImagePath(room.host.email, room.id)}"
+                    alt=""
+                    width="370px"
+                    height="247px"
+                    th:class="${itr.index + 1}"
+                    style="display: inline-block"
+                    th:if="${(itr.index + 2) % 3 == 0 || (itr.index + 1) % 3 == 0 }"
+                />
+            </div>
+        </a>
+    </div>
+</div>
+
+<div th:fragment="changeImage" th:remove="tag">
+    <div class="_1lyyzem">
+        <button
+            type="button"
+            class="prevImage"
+            onclick="changeImage(this, 'bigImage');"
+            data-function-name="prevImage"
+        >
+            <span class="_e296pg"
+                ><img th:src="@{/svg/prev.svg}" width="20px" height="20px"
+            /></span>
+        </button>
+    </div>
+    <div class="_1lyyzem">
+        <button
+            type="button"
+            class="nextImage"
+            onclick="changeImage(this, 'bigImage');"
+            data-function-name="nextImage"
+        >
+            <span class="_e296pg"
+                ><img th:src="@{/svg/next.svg}" width="20px" height="20px"
+            /></span>
+        </button>
+    </div>
+</div>
+
+<div th:fragment="nextCoupleOfMonth(icon, className)" th:remove="tag">
+    <div>
+        <button type="button" th:class="${className + ' getMonth-btn'}">
+            <span class="_e296pg"
+                ><img th:src="@{${'/svg/' + icon + '.svg'}}" width="12px" height="12px"
+            /></span>
+        </button>
+    </div>
+</div>

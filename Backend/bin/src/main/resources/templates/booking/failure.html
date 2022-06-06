@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Thanks for your order!</title>
+    </head>
+    <body>
+        <section>
+            <p>Đặt phòng thất bại</p>
+        </section>
+
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const baseURL = /*[[@{/}]]*/ 'default';
+            const roomPrice = /*[[${room.price}]]*/ 0;
+            const roomPriceType = /*[[${room.priceType}]]*/ 'đêm';
+            const symbol = /*[[${room.currency.symbol}]]*/ 'đ';
+            const numberOfNights = /*[[${numberOfNights}]]*/ 0;
+            const roomId = /*[[${room.id}]]*/ 0;
+            const roomCurrency = /*[[${room.currency.unit}]]*/ 'vnd';
+            const stripePublicKey = /*[[${stripePublicKey}]]*/ '';
+            /*]]>*/
+        </script>
+        <script>
+            jQuery(document).ready(function () {
+                async function createBookingd() {
+                    await axios.post();
+                }
+            });
+        </script>
+    </body>
+</html>

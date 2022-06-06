@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div class="stocks-container"></div>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script>
+            var source = new EventSource('http://localhost:8001/airtnt/stocks');
+            source.addEventListener(
+                'stock-changed',
+                function (e) {
+                    var updatedStocks = JSON.parse(e.data);
+                    updatedStocks.forEach(function (updatedStock) {
+                        updateStock(updatedStock);
+                    });
+                },
+                false
+            );
+
+            function updateStock(stock) {
+                var stockDivContainer = $('.stocks-container');
+                var stockDiv = $('#stock-' + stock.symbol);
+                var stockDivInnerHtml =
+                    '<span class="current-price">' +
+                    '<span class="currency-symbol">$</span>' +
+                    stock.currentPrice +
+                    '</span>\n' +
+                    '<h1>' +
+                    stock.name +
+                    '</h1>\n' +
+                    '<h2>' +
+                    stock.symbol +
+                    '</h2>';
+
+                if (stockDiv.length) {
+                    stockDiv.html(stockDivInnerHtml);
+                } else {
+                    var stockDivHtml =
+                        '<div id="stock-' +
+                        stock.symbol +
+                        '" class="stock-widget">\n' +
+                        stockDivInnerHtml +
+                        '\n</div>';
+                    $('.stocks-container').append($(stockDivHtml));
+                }
+            }
+        </script>
+    </body>
+</html>

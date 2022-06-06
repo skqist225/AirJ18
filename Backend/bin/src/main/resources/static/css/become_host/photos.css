@@ -1,0 +1,272 @@
+.room-photos__left {
+    position: relative;
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+    background: url('/images/photo.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.photos__btn__load-images {
+    appearance: none;
+    background: transparent;
+    border: 0px;
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+    user-select: auto;
+    color: rgb(34, 34, 34);
+    text-decoration: underline;
+    border-radius: 4px;
+    font-weight: 600;
+    text-align: inherit;
+    outline: none;
+}
+
+.drag_n_drop_zone {
+    width: 485px;
+    height: 440px;
+    border: 1px dashed #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.drag_n_drop_zone.disabled {
+    display: none;
+}
+
+.photos__right-middle {
+    flex: 1;
+    padding: 0 48px;
+    max-width: 90%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.photos__drag-title {
+    padding-bottom: 8px;
+    font-size: 22px;
+    line-height: 26px;
+}
+
+.photosContainer {
+    margin-top: 20px;
+    height: 777px;
+    width: 847px;
+    max-width: 93%;
+    display: none;
+    transition: all 0.2 ease;
+}
+
+.photosContainer.active {
+    display: block;
+}
+
+.upload__btn {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: 100px;
+    height: 40px;
+    touch-action: manipulation;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    border-style: solid;
+    border: 1px solid rgb(34, 34, 34);
+    outline: none;
+    padding: 7px 15px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    background: rgb(255, 255, 255);
+    color: rgb(34, 34, 34);
+    display: flex;
+    align-items: center;
+}
+
+.upload__btn:hover {
+    border-color: rgb(0, 0, 0);
+    background: rgb(247, 247, 247);
+    color: rgb(34, 34, 34);
+}
+
+#thumbnailPhotos {
+    width: 683px;
+    height: 455px;
+    position: relative;
+}
+.thumbnail-title {
+    position: absolute;
+    top: 20px;
+    left: 15px;
+    width: 65px;
+    height: 32px;
+    z-index: 99;
+    padding: 0 8px;
+    color: #222;
+    background-color: #fff;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+#subImages {
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    width: 100%;
+    height: fit-content;
+}
+
+#photosContainer__body {
+    width: 100%;
+    height: 92%;
+    overflow-y: scroll;
+}
+
+.photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imageIcon {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+.photo-cover {
+    width: 333px;
+    height: 222px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.containerOfImageIcon {
+    width: 333px;
+    height: 222px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #222;
+}
+
+.containerOfImageIcon:hover {
+    border: 2px solid #222;
+}
+
+.containerOfPhoto {
+    width: 333px;
+    height: 222px;
+}
+
+.photoAction {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.photo-action__btn {
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    appearance: none;
+    display: inline-flex;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    outline: none;
+    margin: 0px;
+    padding: 0px;
+    color: rgb(34, 34, 34);
+    background-color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    touch-action: manipulation;
+    align-items: center;
+    justify-content: center;
+    background-clip: padding-box;
+    box-shadow: transparent 0px 0px 0px 1px, transparent 0px 0px 0px 4px,
+        rgb(0 0 0 / 18%) 0px 2px 4px;
+    transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s,
+        transform 0.25s ease 0s;
+    width: 32px;
+    height: 32px;
+}
+
+.photo-action__btn:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.photo-action__div-hidden {
+    margin-top: 5px;
+    width: 200px;
+    height: fit-content;
+    background-color: #fff;
+    overflow: hidden;
+    border-radius: 10px;
+    -webkit-box-shadow: 5px 5px 8px -4px #000000;
+    box-shadow: 5px 5px 8px -4px #000000;
+    position: absolute;
+    right: -10px;
+    display: none;
+    transition: all 0.2 ease-in-out;
+}
+
+.photo-action__div-hidden.active {
+    display: block;
+}
+
+.photo-action__div-hidden ul {
+    padding-left: 0;
+    list-style: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.photo-action__div-hidden ul li {
+    color: #222;
+    font-size: 16px;
+    line-height: 20px;
+    height: 32px;
+    font-weight: 500;
+    padding: 8px 16px;
+    text-align: left;
+}
+
+.photo-action__div-hidden ul li:hover {
+    background-color: aliceblue;
+}
+
+.photo-action__div-hidden ul[data-index='0'] li:nth-child(odd) {
+    display: none;
+}
+
+.photo-action__div-hidden ul[data-index='4'] li:nth-child(2) {
+    display: none;
+}
+
+.stepProcess.room-photos-step {
+    width: calc(100% / 11 * 7);
+}

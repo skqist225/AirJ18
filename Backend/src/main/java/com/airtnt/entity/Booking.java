@@ -69,7 +69,7 @@ public class Booking extends BaseEntity {
 	@JoinColumn(name = "customer_id", nullable = false)
 	private User customer;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "room_id", nullable = false)
 	private Room room;
 

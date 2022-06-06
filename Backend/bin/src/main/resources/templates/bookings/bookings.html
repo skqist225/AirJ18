@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeLeaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+  xml:lang="en"
+>
+  <head th:replace="fragments::page_head('Rooms', 'none')"> </head>
+
+  <body>
+    <div class="container-fluid">
+      <div th:replace="navigation::menu"></div>
+
+      <div>
+        <h1>Manage Booking</h1>
+      </div>
+
+      <div
+        th:replace="fragments :: search_form_and_message('/admin/bookings/page/1')"
+      ></div>
+
+      <div class="full-details table-responsive-xl">
+        <table class="table table-bordered table-striped table-hover">
+          <thead class="thead-dark">
+            <th
+              th:replace="fragments :: column_link('/admin/bookings', 'id', 'ID', 'none')"
+            ></th>
+            <th
+              th:replace="fragments :: column_link('/admin/bookings', 'customer', 'Customer', 'none')"
+            ></th>
+            <th
+              th:replace="fragments :: column_link('/admin/bookings', 'room', 'Room', 'none')"
+            ></th>
+            <th
+              th:replace="fragments :: column_link('/admin/bookings', 'bookingDate', 'Booking Date', 'none')"
+            ></th>
+            <th
+              th:replace="fragments :: column_link('/admin/bookings', 'checkinDate', 'Checkin Date', 'none')"
+            ></th>
+            <th
+              th:replace="fragments :: column_link('/admin/bookings', 'checkoutDate', 'Checkout Date', 'none')"
+            ></th>
+            <th
+              th:replace="fragments :: column_link('/admin/bookings', 'totalFee', 'Total Fee', 'none')"
+            ></th>
+            <th>Complete</th>
+            <th>Refund</th>
+            <th>Full Detail</th>
+          </thead>
+          <tbody>
+            <tr th:each="booking : ${listBookings}">
+              <td class="hideable-column">[[${booking.id}]]</td>
+              <td class="hideable-column">
+                <image
+                  th:src="@{${booking.customer.avatarPath}}"
+                  style="width: 50px; height: 50px"
+                ></image>
+                [[${booking.customer.fullName}]]
+              </td>
+              <td class="hideable-column">
+                <image
+                  th:src="${booking.room.renderThumbnailImage}"
+                  style="width: 50px; height: 50px"
+                ></image
+                >[[${booking.room.name}]]
+              </td>
+              <td
+                th:text="${#temporals.format(booking.bookingDate, 'dd-MM-yyyy')}"
+              ></td>
+              <td
+                th:text="${#dates.format(booking.checkinDate, 'dd-MM-yyyy')}"
+              ></td>
+              <td
+                th:text="${#dates.format(booking.checkoutDate, 'dd-MM-yyyy')}"
+              ></td>
+              <td>[[${booking.totalFee}]]</td>
+              <td>[[${booking.Complete}]]</td>
+              <td>[[${booking.Refund}]]</td>
+
+              <td>
+                <div
+                  th:replace="fragments::edit('Booking', '/admin/bookings/edit/' + ${booking.id})"
+                ></div>
+                &nbsp;
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        th:replace="fragments :: pagination('/admin/bookings', 'bookings')"
+      ></div>
+
+      <div th:replace="fragments :: confirm_modal"></div>
+
+      <div th:replace="fragments::footer"></div>
+    </div>
+    <script type="text/javascript"></script>
+  </body>
+</html>

@@ -70,6 +70,11 @@ public class AdminUserRestController {
     public ResponseEntity<Object> findUserById(@PathVariable Integer id) {
     	if(id<1)return ResponseEntity.badRequest().body("Id must greater than 0!");
     	AdminUserDTO adminUserDTO = userService.findById(id);
+    	if(adminUserDTO.getAvatar()!=null) {
+    		adminUserDTO.setAvatar("/user_images/" + id + "/" + adminUserDTO.getAvatar());    		
+    	}else {
+    		adminUserDTO.setAvatar("/user_images/default_user_avatar.png");
+    	}
         return ResponseEntity.ok().body(adminUserDTO);
     }
     

@@ -1,0 +1,221 @@
+*,
+*::before,
+*::after {
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.room-group__main {
+    width: 100%;
+    height: 100vh;
+}
+
+.room-group__container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.logoWrapper {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 99;
+}
+
+.room-group__left-title {
+    font-size: 48px;
+    line-height: 56px;
+    margin-bottom: 12 px;
+}
+
+.room-group__left {
+    position: relative;
+    background-image: url('/images/property_type_group.jpg');
+    background-position: center;
+}
+
+#airTntLogo {
+    width: 100px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.room-group__left,
+.room-group__right {
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+}
+
+.room-group__right {
+    display: flex;
+    flex-direction: column;
+}
+
+.roomTypesContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.room-group__right-middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-group__right-first {
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+.room-group__right-last {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+
+.become-a-host__right-cancelBtn {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    cursor: pointer;
+    text-align: center;
+    border: none rgb(176, 176, 176);
+    background-color: rgb(34, 34, 34);
+    outline: none;
+    padding: 0 px 16 px;
+    margin: 0 px;
+    border-radius: 32 px;
+    color: rgb(255, 255, 255);
+    position: relative;
+    height: 32 px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    border-radius: 32px;
+    height: 32px;
+    width: calc(64px * 2);
+}
+
+.become-a-host__right-startBtn {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8 px;
+    outline: none;
+    padding: 14 px 24 px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s,
+        -webkit-transform 0.1s ease 0s, transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+    color: rgb(255, 255, 255);
+    width: 120px;
+    height: 48px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.room-group__prev-step {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 px;
+    position: relative;
+    text-align: center;
+    border-color: black;
+    width: auto;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8 px;
+    border-width: 1 px;
+    border-style: solid;
+    outline: none;
+    padding-top: 10 px;
+    padding-bottom: 10 px;
+    padding-left: 10 px;
+    padding-right: 10 px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease,
+        -webkit-transform 0.1s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: transparent;
+    color: #222222;
+    text-decoration: underline;
+    margin-left: -10 px;
+    margin-right: -10 px;
+}
+
+.stepProcess {
+    width: 100%;
+    height: 2px;
+    background-color: #222222;
+}
+
+.stepProcess.room-group-step {
+    width: calc(100% / 11 * 1);
+}
+
+.room-group__box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 464px;
+    height: 90px;
+    border: 2px solid #f7f7f7;
+
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+}
+
+.room-group__box:hover {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.room-group__box.active {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.room-group__name {
+    font-size: 18px;
+    line-height: 24px;
+    font-style: bold;
+}

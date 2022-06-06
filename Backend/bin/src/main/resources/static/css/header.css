@@ -1,0 +1,227 @@
+.header {
+    height: 80px;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ebebeb;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+
+.header__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 80px;
+    height: 100%;
+}
+
+.header__left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.button_container {
+    width: 46px;
+    height: 42px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    margin-left: 15px;
+}
+
+.account__button {
+    appearance: none;
+    background: transparent;
+    border: 1px solid #dddddd;
+    color: #222222;
+    cursor: pointer;
+    display: -webkit-inline-box;
+    display: -moz-inline-box;
+    display: -ms-inline-flexbox;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    margin: 0px;
+    outline: none;
+    overflow: visible;
+    padding: 5px 5px 5px 12px;
+    text-align: inherit;
+    text-decoration: none;
+    user-select: auto;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 21px;
+    height: 42px;
+    position: relative;
+    vertical-align: middle;
+    transition: box-shadow 0.2s ease;
+    z-index: 1;
+}
+
+.header__user-avatar {
+    background-color: currentcolor;
+    border-radius: 50%;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+#userAvatar {
+    object-fit: cover;
+    width: 30px;
+    height: 30px;
+}
+
+.header__become-host {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    display: inline-block;
+    appearance: none;
+    background: transparent;
+    border: 0px;
+    cursor: pointer;
+    border-radius: 30px;
+    line-height: 18px;
+    margin: 0px;
+    outline: none;
+    overflow: visible;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    z-index: 1;
+    color: #222222;
+    width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header__become-host:hover {
+    background-color: rgb(134, 143, 219);
+    color: #fff;
+    cursor: pointer;
+    height: 42px;
+    width: 150px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginAndLogoutHidden {
+    display: none;
+    /* display: block; */
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 260px;
+    border-radius: 12px;
+    background-color: #fff;
+    -webkit-box-shadow: 5px 6px 17px -7px #000000;
+    box-shadow: 5px 6px 17px -7px #000000;
+    overflow: hidden;
+    transition: all 0.2s ease-out;
+}
+
+.headerBridge {
+    width: 260px;
+    height: 10px;
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    opacity: 0;
+}
+
+.loginAndLogoutHidden ul {
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.loginAndLogoutHidden ul li {
+    list-style: none;
+    padding: 8.25px 12.25px;
+    font-size: 16px;
+    color: #222;
+    cursor: pointer;
+}
+
+.loginAndLogoutHidden ul li a {
+    text-decoration: none;
+    color: #222;
+    display: inline-block;
+    width: 100%;
+}
+
+.loginAndLogoutHidden ul li:hover {
+    background-color: palevioletred;
+}
+
+.loginAndLogoutHidden ul li:hover a {
+    color: white;
+}
+
+.loginAndLogoutHidden.active {
+    display: block;
+}
+
+.navMenuHeader {
+    position: relative;
+}
+
+.header__middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav__link {
+    cursor: pointer;
+    position: relative;
+    border-color: black;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    outline: none;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 24px;
+    padding-right: 24px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease, transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    background: transparent;
+    border: none;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    text-decoration: none;
+    height: 100%;
+    width: 100%;
+}
+
+.nav__link {
+    text-decoration: none;
+    color: #717171 !important;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+    padding: 10px 16px;
+}
+
+.nav__link:hover {
+    opacity: 1;
+    text-decoration: none;
+    background: #f7f7f7;
+    border-radius: 40px;
+}
