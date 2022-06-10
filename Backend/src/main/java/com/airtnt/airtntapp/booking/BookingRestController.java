@@ -117,11 +117,8 @@ public class BookingRestController {
         try {
             User host = authenticate.getLoggedInUser(cookie);
 
-            List<Room> rooms = roomService.getRoomsByHostId(host);
-            Integer[] roomIds = new Integer[rooms.size()];
-            for (int i = 0; i < rooms.size(); i++) {
-                roomIds[i] = rooms.get(i).getId();
-            }
+            List<Integer> roomIds = roomService.getRoomIdByHost(host);
+
             Map<String, String> filters = new HashMap<>();
             filters.put("sortField", sortField);
             filters.put("sortDir", sortDir);
@@ -134,17 +131,8 @@ public class BookingRestController {
 
             Page<Booking> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
             List<BookingListDTO> bookings2 = new ArrayList<>();
-            int i = 0;
             for (Booking b : bookings.toList()) {
-                i++;
-                if (i == 1)
-                    bookings2.add(BookingListDTO.buildDTO(b));
-                else
-                    continue;
-            }
-            System.out.println(bookings2.size());
-            for (BookingListDTO bb : bookings2) {
-                System.out.println(bb);
+                bookings2.add(BookingListDTO.buildDTO(b));
             }
 
             return new OkResponse<BookingListResponse>(

@@ -1,21 +1,20 @@
-import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import api from '../../axios';
-import { RootState } from '../../store';
-import { IBooking } from '../../types/booking/type_Booking';
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
+import api from "../../axios";
+import { RootState } from "../../store";
+import { IBooking } from "../../types/booking/type_Booking";
 
 interface IFetchUserBookings {
+    query?: string;
     page: number;
 }
 
 export const fetchUserBookings = createAsyncThunk(
-    'booking/fetchUserBookings',
-    async ({ page }: IFetchUserBookings, { dispatch, getState, rejectWithValue }) => {
+    "booking/fetchUserBookings",
+    async ({ page, query = "" }: IFetchUserBookings, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
-                data: {
-                    bookings: { content, totalElements },
-                },
-            } = await api.get(`/booking/listings/${page}`);
+                data: { content, totalElements },
+            } = await api.get(`/booking/listings/${page}?query=${query}`);
             return { content, totalElements };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
@@ -32,7 +31,7 @@ interface ICreateBooking {
 }
 
 export const createBooking = createAsyncThunk(
-    'booking/createBooking',
+    "booking/createBooking",
     async (
         { roomid, checkinDate, checkoutDate, numberOfDays, clientMessage }: ICreateBooking,
         { dispatch, getState, rejectWithValue }
@@ -55,14 +54,14 @@ interface IStripeArgs {
 }
 
 export const getStripeClientSecret = createAsyncThunk(
-    'booking/getStripeClientSecret',
+    "booking/getStripeClientSecret",
     async (fetchPayload: IStripeArgs, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
                 data: { clientSecret },
             } = await api.post(`/create-payment-intent`, fetchPayload, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
             return { clientSecret };
@@ -73,7 +72,7 @@ export const getStripeClientSecret = createAsyncThunk(
 );
 
 export const cancelBooking = createAsyncThunk(
-    'booking/cancelBooking',
+    "booking/cancelBooking",
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/booking/${bookingid}/canceled`);
@@ -85,7 +84,7 @@ export const cancelBooking = createAsyncThunk(
 );
 
 export const approveBooking = createAsyncThunk(
-    'booking/approveBooking',
+    "booking/approveBooking",
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/booking/${bookingid}/approved`);
@@ -109,13 +108,13 @@ const initialState: BookingState = {
     bookingsOfCurrentUserRooms: [],
     totalElements: 0,
     loading: true,
-    clientSecret: '',
+    clientSecret: "",
     newlyCreatedBooking: {},
-    cancelMessage: '',
+    cancelMessage: "",
 };
 
 const bookingSlice = createSlice({
-    name: 'booking',
+    name: "booking",
     initialState,
     reducers: {},
     extraReducers: builder => {

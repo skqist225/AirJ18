@@ -29,6 +29,12 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
         (state: RootState) => state.booking
     );
 
+    function handleFindBookingByRoomIdAndName(event: any) {
+        dispatch(
+            fetchUserBookings({ page: parseInt(params.page!), query: event.currentTarget.value })
+        );
+    }
+
     return (
         <>
             <Header includeMiddle={true} excludeBecomeHostAndNavigationHeader={true} />
@@ -53,6 +59,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                     type='text'
                                     placeholder='Tìm kiếm lịch đặt phòng theo mã, tên phòng'
                                     id='listings__search-input'
+                                    onChange={handleFindBookingByRoomIdAndName}
                                 />
                             </div>
                         </div>
