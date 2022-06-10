@@ -1,6 +1,7 @@
 package com.airtnt.airtntapp.booking;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.mail.internet.AddressException;
 
 import com.airtnt.airtntapp.booking.dto.BookingDTO;
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
+import com.airtnt.airtntapp.booking.dto.BookingListResponse;
 import com.airtnt.airtntapp.email.SendEmail;
 import com.airtnt.airtntapp.exception.AlreadyCancelException;
 import com.airtnt.airtntapp.exception.BookingNotFoundException;
@@ -100,7 +102,7 @@ public class BookingRestController {
     }
 
     @GetMapping(value = "/listings/{pageNumber}")
-    public ResponseEntity<StandardJSONResponse<Page<BookingListDTO>>> listings(
+    public ResponseEntity<StandardJSONResponse<BookingListResponse>> listings(
             @CookieValue(value = "user", required = false) String cookie,
             @PathVariable("pageNumber") Integer pageNumber,
             @RequestParam(name = "booking_date_month", required = false, defaultValue = "") String bookingDateMonth,
@@ -130,13 +132,29 @@ public class BookingRestController {
             filters.put("bookingDateYear", bookingDateYear);
             filters.put("totalFee", totalFee);
 
-            Page<BookingListDTO> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
-            return new OkResponse<Page<BookingListDTO>>(bookings).response();
+            Page<Booking> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
+            List<BookingListDTO> bookings2 = new ArrayList<>();
+            int i = 0;
+            for (Booking b : bookings.toList()) {
+                i++;
+                if (i == 1)
+                    bookings2.add(BookingListDTO.buildDTO(b));
+                else
+                    continue;
+            }
+            System.out.println(bookings2.size());
+            for (BookingListDTO bb : bookings2) {
+                System.out.println(bb);
+            }
+
+            return new OkResponse<BookingListResponse>(
+                    new BookingListResponse(bookings2, bookings.getTotalElements(), bookings.getTotalPages()))
+                    .response();
 
         } catch (NullCookieException ex) {
-            return new BadResponse<Page<BookingListDTO>>(ex.getMessage()).response();
+            return new BadResponse<BookingListResponse>(ex.getMessage()).response();
         } catch (NotAuthenticatedException ex) {
-            return new NotAuthenticatedResponse<Page<BookingListDTO>>().response();
+            return new NotAuthenticatedResponse<BookingListResponse>().response();
         }
     }
 

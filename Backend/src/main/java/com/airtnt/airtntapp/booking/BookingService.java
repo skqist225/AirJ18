@@ -260,7 +260,7 @@ public class BookingService {
                     bookingDate, bookingDate2, totalFee, pageable);
     }
 
-    public Page<BookingListDTO> getBookingListByRooms(Integer[] roomIds, int pageNumber, Map<String, String> filters) {
+    public Page<Booking> getBookingListByRooms(Integer[] roomIds, int pageNumber, Map<String, String> filters) {
         String sortField = filters.get("sortField");
         String sortDir = filters.get("sortDir");
         String query = filters.get("query");
@@ -345,11 +345,27 @@ public class BookingService {
                     Integer.parseInt(bookingDateYear), Integer.parseInt(bookingDateMonth), pageable);
         }
 
-        if (bookingId != -1)
+        if (bookingId != -1) {
             return bookingRepository.getBookingListByRooms(roomIds, bookingId, pageable);
-        else
-            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
-                    bookingDate, bookingDate2, totalFee, pageable);
+        } else {
+            System.out.println("here2");
+            System.out.println(roomIds);
+            System.out.println(query);
+            System.out.println(isCompleteLst);
+            System.out.println(isCancelledLst);
+            System.out.println(bookingDate);
+            System.out.println(bookingDate2);
+            System.out.println(totalFee);
+            List<Booking> hostBooking = bookingRepository
+                    .getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
+                            bookingDate, bookingDate2, totalFee, pageable)
+                    .toList();
+            System.out.println(hostBooking.size());
+        }
+
+        return bookingRepository
+                .getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
+                        bookingDate, bookingDate2, totalFee, pageable);
     }
 
     @Transactional

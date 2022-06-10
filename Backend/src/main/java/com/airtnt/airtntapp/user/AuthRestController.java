@@ -94,14 +94,26 @@ public class AuthRestController {
 			return new NotAuthenticatedResponse<String>().response();
 		}
 	}
-	
+
 	@GetMapping("check-phonenumber/{phoneNumber}")
-	public ResponseEntity<StandardJSONResponse<String>> checkPhoneNumer(@PathVariable(value = "phoneNumber") String phoneNumber){
-		int isUsed = userService.checkPhoneNumber(phoneNumber);
-		if(isUsed > 0) {
+	public ResponseEntity<StandardJSONResponse<String>> checkPhoneNumer(
+			@PathVariable(value = "phoneNumber") String phoneNumber) {
+		boolean isUsed = userService.checkPhoneNumber(phoneNumber);
+		if (isUsed) {
 			return new BadResponse<String>("Phone number has already been taken").response();
 		} else {
 			return new OkResponse<String>("Phone number has not been used by anyone yet").response();
+		}
+	}
+
+	@GetMapping("check-email/{email}")
+	public ResponseEntity<StandardJSONResponse<String>> checkEmail(
+			@PathVariable(value = "email") String email) {
+		boolean isUsed = userService.checkEmail(email);
+		if (isUsed) {
+			return new BadResponse<String>("Email has already been taken").response();
+		} else {
+			return new OkResponse<String>("Email has not been used by anyone yet").response();
 		}
 	}
 

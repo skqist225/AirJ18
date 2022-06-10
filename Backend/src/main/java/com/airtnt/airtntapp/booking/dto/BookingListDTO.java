@@ -1,20 +1,30 @@
 package com.airtnt.airtntapp.booking.dto;
 
 import java.util.Date;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.airtnt.entity.Booking;
+import com.airtnt.entity.Room;
+import com.airtnt.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.google.auto.value.AutoValue.Builder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingListDTO {
+@Builder
+@ToString
+public class BookingListDTO implements Serializable {
     private Integer bookingId;
     private Integer roomId;
     private String roomName;
@@ -27,6 +37,7 @@ public class BookingListDTO {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime bookingDate;
 
+    @JsonInclude(value = Include.NON_NULL)
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime cancelDate;
 
@@ -43,4 +54,20 @@ public class BookingListDTO {
 
     private String customerName;
     private String customerAvatar;
+
+    public static BookingListDTO buildDTO(Booking b) {
+        Room room = b.getRoom();
+        User customer = b.getCustomer();
+
+        return new BookingListDTO(b.getId(),
+                room.getId(), room.getName(),
+                room.renderThumbnailImage(),
+                room.getCurrency().getUnit(),
+                b.isComplete(), b.isRefund(),
+                b.getBookingDate(), b.getCancelDate(), b.getCheckinDate(),
+                b.getCheckoutDate(),
+                b.getPricePerDay(), b.getNumberOfDays(), b.getSiteFee(), b.getRefundPaid(),
+                customer.getFullName(),
+                customer.getAvatarPath());
+    }
 }

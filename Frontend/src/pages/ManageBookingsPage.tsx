@@ -1,25 +1,28 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { BookingsTable } from '../components/booking';
-import Header from '../components/Header';
-import { FilterFooter, Pagination } from '../components/utils';
-import { fetchUserBookings } from '../features/booking/bookingSlice';
-import { Div, Image } from '../globalStyle';
-import { getImage } from '../helpers';
-import { RootState } from '../store';
+import { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { BookingsTable } from "../components/booking";
+import Header from "../components/Header";
+import { FilterFooter, Pagination } from "../components/utils";
+import { fetchUserBookings } from "../features/booking/bookingSlice";
+import { Div, Image } from "../globalStyle";
+import { getImage } from "../helpers";
+import { RootState } from "../store";
 
-import './css/manage_booking_page.css';
+import "./css/manage_booking_page.css";
+import "../components/hosting/listings/css/filter_by_line.css";
+import "../components/hosting/listings/css/filter_footer.css";
+import { IncAndDecBtn } from "../components/utils/IncAndDecBtn";
+import { FilterButton } from "../components/hosting/listings/components";
 
 interface IManageBookingPageProps {}
 
 const ManageBookingPage: FC<IManageBookingPageProps> = () => {
     const dispatch = useDispatch();
-    const page = (window.location.href as string).includes('?')
-        ? window.location.href.split('?')[0].split('/').pop()!
-        : window.location.href.split('/').pop()!;
+    const params = useParams();
 
     useEffect(() => {
-        dispatch(fetchUserBookings({ page: parseInt(page) }));
+        dispatch(fetchUserBookings({ page: parseInt(params.page!) }));
     }, []);
 
     const { bookingsOfCurrentUserRooms, totalElements } = useSelector(
@@ -31,7 +34,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
             <Header includeMiddle={true} excludeBecomeHostAndNavigationHeader={true} />
 
             <div id='booking--listings__mainContainer'>
-                <div className='listings__container'>
+                <div className='listings__container col-flex' style={{ height: "95vh" }}>
                     <div className='listings__header flex'>
                         <div className='listings__header-rooms-length'>
                             {totalElements} đơn đặt phòng
@@ -43,7 +46,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                 className='listings__search-icon-container'
                                 // onclick='filterBookingByInput();'
                             >
-                                <Image src={getImage('/svg/search.svg')} size='12px' />
+                                <Image src={getImage("/svg/search.svg")} size='12px' />
                             </div>
                             <div className='f1'>
                                 <input
@@ -53,14 +56,48 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                 />
                             </div>
                         </div>
+                        {/* <FilterButton
+                            dataDropDown='listings__filter-roomAndBedRoom'
+                            title='Ngày đặt phòng'
+                            width='300px'
+                            height='300px'
+                            content={
+                                <>
+                                    <div className='filter-box'>
+                                        <div className='flex-space listings__filter-roomAndBedRoom-row'>
+                                            <div>Phòng ngủ</div>
+                                            <IncAndDecBtn
+                                                dataEdit='listings__bed-room-count'
+                                                dataTrigger='roomAndBedRoom'
+                                            />
+                                        </div>
+                                        <div className='flex-space listings__filter-roomAndBedRoom-row'>
+                                            <div>Giường</div>
+                                            <IncAndDecBtn
+                                                dataEdit='listings__bed-count'
+                                                dataTrigger='roomAndBedRoom'
+                                            />
+                                        </div>
+                                        <div className='flex-space listings__filter-roomAndBedRoom-row'>
+                                            <div>Phòng tắm</div>
+                                            <IncAndDecBtn
+                                                dataEdit='listings__bath-room-count'
+                                                dataTrigger='roomAndBedRoom'
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            }
+                            footerOf='roomAndBedRoom'
+                        /> */}
                         <div className='listings__filter'>
                             <button
-                                className='listings__filter-option'
+                                className='listings__filter--option'
                                 data-dropdown='listings__filter-roomAndBedRoom'
                             >
                                 <span>Ngày đặt phòng</span>
                                 <div className='listings__filter-img-container'>
-                                    <Image src={getImage('/svg/dropdown.svg')} size='12px' />
+                                    <Image src={getImage("/svg/dropdown.svg")} size='12px' />
                                 </div>
                             </button>
                             <div id='listings__filter-roomAndBedRoom'>
@@ -80,12 +117,12 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                         </div>
                         <div className='listings__filter'>
                             <button
-                                className='listings__filter-option'
+                                className='listings__filter--option'
                                 data-dropdown='listings__filter-amentities'
                             >
                                 <span>Tìm kiếm theo tháng/năm</span>
                                 <div className='listings__filter-img-container'>
-                                    <Image src={getImage('/svg/dropdown.svg')} size='12px' />
+                                    <Image src={getImage("/svg/dropdown.svg")} size='12px' />
                                 </div>
                             </button>
                             <Div
@@ -124,17 +161,17 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                         </div>
                         <div className='listings__filter'>
                             <button
-                                className='listings__filter-option'
+                                className='listings__filter--option'
                                 data-dropdown='listings__filter-status'
                             >
                                 <span>Trạng thái lịch đặt phòng</span>
                                 <div className='listings__filter-img-container'>
-                                    <Image src={getImage('/svg/dropdown.svg')} size='12px' />
+                                    <Image src={getImage("/svg/dropdown.svg")} size='12px' />
                                 </div>
                             </button>
                             <div id='listings__filter-status'>
                                 <div className='listings__filter-wrapper'>
-                                    <div style={{ padding: '24px' }} className='f1'>
+                                    <div style={{ padding: "24px" }} className='f1'>
                                         <div className='normal-flex listings__filter-status-row'>
                                             <input
                                                 type='checkbox'
@@ -166,12 +203,12 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                         </div>
                         <div className='listings__filter'>
                             <button
-                                className='listings__filter-option'
+                                className='listings__filter--option'
                                 data-dropdown='listings__filter-others'
                             >
                                 <span>Tổng phí</span>
                                 <div className='listings__filter-img-container'>
-                                    <Image src={getImage('/svg/dropdown.svg')} size='12px' />
+                                    <Image src={getImage("/svg/dropdown.svg")} size='12px' />
                                 </div>
                             </button>
                             <div id='listings__filter-others'>
@@ -202,7 +239,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                         </div>
                         <div className='listings__filter'>
                             <button
-                                className='listings__filter-option deleteAllFilterOption'
+                                className='listings__filter--option deleteAllFilterOption'
                                 data-dropdown='listings__filter-others'
                             >
                                 <span>Xóa toàn bộ bộ lọc</span>
