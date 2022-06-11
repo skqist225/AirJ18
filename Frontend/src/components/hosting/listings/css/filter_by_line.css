@@ -61,14 +61,16 @@
 #listings__filter-amentities.active,
 #listings__filter-status.active,
 #listings__filter-others.active,
-#listings__setting-column-display.active {
+#listings__setting-column-display.active,
+#listings__filter-findByMonthAndYear.active,
+#listings__filter-bookingDate.active {
     display: block;
 }
 
 .filter-box {
     padding: 24px;
     flex: 1;
-    overflow-y: scroll;
+    overflow: hidden auto;
 }
 
 .listings__filter-status-row,

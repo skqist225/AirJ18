@@ -343,6 +343,12 @@ public class BookingService {
         if (!bookingDateMonth.isEmpty() && !bookingDateYear.isEmpty()) {
             return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
                     Integer.parseInt(bookingDateYear), Integer.parseInt(bookingDateMonth), pageable);
+        } else if (!bookingDateMonth.isEmpty()) {
+            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst,
+                    Integer.parseInt(bookingDateMonth), isCancelledLst, pageable);
+        } else if (!bookingDateYear.isEmpty()) {
+            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst,
+                    isCancelledLst, Integer.parseInt(bookingDateYear), pageable);
         }
 
         if (bookingId != -1) {

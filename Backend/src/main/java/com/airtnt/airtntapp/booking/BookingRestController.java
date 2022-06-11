@@ -111,7 +111,7 @@ public class BookingRestController {
             @RequestParam(name = "query", required = false, defaultValue = "") String query,
             @RequestParam(name = "sort_dir", required = false, defaultValue = "asc") String sortDir,
             @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
-            @RequestParam(name = "bookingDate", required = false, defaultValue = "") String bookingDate,
+            @RequestParam(name = "booking_date", required = false, defaultValue = "") String bookingDate,
             @RequestParam(name = "isComplete", required = false, defaultValue = "") String isComplete)
             throws ParseException {
         try {
@@ -130,13 +130,14 @@ public class BookingRestController {
             filters.put("totalFee", totalFee);
 
             Page<Booking> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
-            List<BookingListDTO> bookings2 = new ArrayList<>();
+            List<BookingListDTO> bookingListDtos = new ArrayList<>();
             for (Booking b : bookings.toList()) {
-                bookings2.add(BookingListDTO.buildDTO(b));
+                bookingListDtos.add(BookingListDTO.buildDTO(b));
             }
 
             return new OkResponse<BookingListResponse>(
-                    new BookingListResponse(bookings2, bookings.getTotalElements(), bookings.getTotalPages()))
+                    new BookingListResponse(
+                            bookingListDtos, bookings.getTotalElements(), bookings.getTotalPages()))
                     .response();
 
         } catch (NullCookieException ex) {

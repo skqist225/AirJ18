@@ -17,97 +17,99 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
     const currentUrl = window.location.href;
     if (currentUrl.toString().includes("?")) {
         pageNumber = parseInt(currentUrl.split("?")[0].split("/").pop()!);
-    } else pageNumber = parseInt(window.location.href.split("/").pop()!);
-    $(document).ready(function () {
-        $("#totalFeeRangeInput").attr("max", 100000000);
-        highlightCurrentPageNumber(pageNumber);
-        let url = `${window.location.origin}/booking/listings/${pageNumber}`;
+    } else {
+        pageNumber = parseInt(window.location.href.split("/").pop()!);
+    }
+    // $(document).click(function () {
+    //     $("#totalFeeRangeInput").attr("max", 100000000);
+    //     highlightCurrentPageNumber(pageNumber);
+    //     let url = `${window.location.origin}/booking/listings/${pageNumber}`;
 
-        $(".listings__table-header").each(function () {
-            $(this).click(function () {
-                const params = new URLSearchParams(window.location.search);
-                const sortField = $(this).data("sort-field");
-                const sortDir = params.get("sort_dir") === "asc" ? "desc" : "asc";
+    //     $(".listings__table-header").each(function () {
+    //         $(this).on("click", function () {
+    //             const params = new URLSearchParams(window.location.search);
+    //             const sortField = $(this).data("sort-field");
+    //             const sortDir = params.get("sort_dir") === "asc" ? "desc" : "asc";
 
-                url += `?sort_field=${sortField}&sort_dir=${sortDir}`;
-                window.location.href = url;
-            });
-        });
+    //             url += `?sort_field=${sortField}&sort_dir=${sortDir}`;
+    //             window.location.href = url;
+    //         });
+    //     });
 
-        $(".listings__filter-option").each(function () {
-            $(this).click(function () {
-                const self = $(this);
-                $(".listings__filter-option").each(function () {
-                    if (!$(this).is(self))
-                        $(this).siblings().filter(".active").removeClass("active");
-                });
+    //     // $(".listings__filter-option").each(function () {
+    //     //     $(this).click(function () {
+    //     //         const self = $(this);
+    //     //         $(".listings__filter-option").each(function () {
+    //     //             if (!$(this).is(self))
+    //     //                 $(this).siblings().filter(".active").removeClass("active");
+    //     //         });
 
-                const id = $(this).data("dropdown");
-                const filterBox = $("#" + id);
-                if (filterBox.hasClass("active")) filterBox.removeClass("active");
-                else filterBox.addClass("active");
-            });
-        });
+    //     //         const id = $(this).data("dropdown");
+    //     //         const filterBox = $("#" + id);
+    //     //         if (filterBox.hasClass("active")) filterBox.removeClass("active");
+    //     //         else filterBox.addClass("active");
+    //     //     });
+    //     // });
 
-        $(".applyBtn").each(function () {
-            $(this).click(function () {
-                let redirectURL = `${window.location.origin}/booking/listings/${pageNumber}`;
-                const dataModify = $(this).data("modify");
+    //     // $(".applyBtn").each(function () {
+    //     //     $(this).click(function () {
+    //     //         let redirectURL = `${window.location.origin}/booking/listings/${pageNumber}`;
+    //     //         const dataModify = $(this).data("modify");
 
-                switch (dataModify) {
-                    case "isComplete": {
-                        const selectedStatus = $('input[class="isCompleteSelected"]:checked');
-                        let statuses: string[] = [];
-                        selectedStatus.each(function () {
-                            statuses.push($(this).val() as string);
-                        });
-                        redirectURL += `?isComplete=${statuses.join(" ")}`;
+    //     //         switch (dataModify) {
+    //     //             case "isComplete": {
+    //     //                 const selectedStatus = $('input[class="isCompleteSelected"]:checked');
+    //     //                 let statuses: string[] = [];
+    //     //                 selectedStatus.each(function () {
+    //     //                     statuses.push($(this).val() as string);
+    //     //                 });
+    //     //                 redirectURL += `?isComplete=${statuses.join(" ")}`;
 
-                        break;
-                    }
-                    case "bookingDate": {
-                        const bookingDateInput = $("#bookingDateInput").val();
-                        if (bookingDateInput) redirectURL += `?bookingDate=${bookingDateInput}`;
+    //     //                 break;
+    //     //             }
+    //     //             case "bookingDate": {
+    //     //                 const bookingDateInput = $("#bookingDateInput").val();
+    //     //                 if (bookingDateInput) redirectURL += `?bookingDate=${bookingDateInput}`;
 
-                        break;
-                    }
-                    case "bookingDateByMonthAndYear": {
-                        const month = $("#bookingDateMonthInput").val() as number;
-                        const year = $("#bookingDateYearInput").val() as number;
+    //     //                 break;
+    //     //             }
+    //     //             case "bookingDateByMonthAndYear": {
+    //     //                 const month = $("#bookingDateMonthInput").val() as number;
+    //     //                 const year = $("#bookingDateYearInput").val() as number;
 
-                        if (!isNaN(month) && !isNaN(year)) {
-                            redirectURL += `?booking_date_month=${month}&booking_date_year=${year}`;
-                        } else {
-                            alert("Tháng hoặc năm không hợp lệ!");
-                        }
-                        break;
-                    }
-                    case "totalFee": {
-                        redirectURL += `?totalFee=${($("#textInput").val()! as string).replace(
-                            /\./g,
-                            ""
-                        )}`;
-                        break;
-                    }
-                }
+    //     //                 if (!isNaN(month) && !isNaN(year)) {
+    //     //                     redirectURL += `?booking_date_month=${month}&booking_date_year=${year}`;
+    //     //                 } else {
+    //     //                     alert("Tháng hoặc năm không hợp lệ!");
+    //     //                 }
+    //     //                 break;
+    //     //             }
+    //     //             case "totalFee": {
+    //     //                 redirectURL += `?totalFee=${($("#textInput").val()! as string).replace(
+    //     //                     /\./g,
+    //     //                     ""
+    //     //                 )}`;
+    //     //                 break;
+    //     //             }
+    //     //         }
 
-                window.location.href = redirectURL;
-            });
-        });
+    //     //         window.location.href = redirectURL;
+    //     //     });
+    //     // });
 
-        $(".deleteAllFilterOption").click(function () {
-            window.location.href = `${window.location.origin}/booking/listings/1`;
-        });
+    //     $(".deleteAllFilterOption").click(function () {
+    //         window.location.href = `${window.location.origin}/booking/listings/1`;
+    //     });
 
-        $(".listings__link").each(function () {
-            $(this).attr(
-                "href",
-                `${window.location.origin}/booking/listings/${$(this).data("page")}${
-                    window.location.search
-                }`
-            );
-        });
-    });
+    //     $(".listings__link").each(function () {
+    //         $(this).attr(
+    //             "href",
+    //             `${window.location.origin}/booking/listings/${$(this).data("page")}${
+    //                 window.location.search
+    //             }`
+    //         );
+    //     });
+    // });
 
     function highlightCurrentPageNumber(pageNumber: number) {
         $(".pagination").children().filter(".active").removeClass("active");

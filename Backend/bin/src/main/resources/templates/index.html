@@ -212,8 +212,8 @@
                                         <div class="room__name">[[${room.name}]]</div>
                                         <div class="room__price">
                                             [[${room.currency.symbol}]]
-                                            [[${#numbers.formatDecimal(room.price,3, 'POINT',0,
-                                            'COMMA')}]] /
+                                            [[${\#numbers.formatDecimal(room.price,3, 'POINT',0,
+                                            'COMMA')}]]
                                             <span
                                                 th:if="${room.priceType.equals(T(com.airtnt.entity.PriceType).PER_NIGHT)}"
                                                 >đêm</span
@@ -272,7 +272,7 @@
                                 <div>
                                     <div>
                                         Giá trung bình hàng đêm là
-                                        <span>đ</span>[[${#numbers.formatDecimal(averageRoomPrice,
+                                        <span>đ</span>[[${\#numbers.formatDecimal(averageRoomPrice,
                                         3, 'POINT', 0, 'COMMA')}]]
                                     </div>
                                     <div class="flex-center" style="width: 100%; height: 50px">
@@ -414,76 +414,76 @@
 
         <script th:inline="javascript">
             /*<![CDATA[*/
-            const baseURL = /*[[@{/}]]*/ '';
+            const baseURL = /*[[@{/}]]*/ "";
             let wishlists = /*[[${wishlists}]]*/ [];
             if (wishlists === null) wishlists = [];
-            const user = /*[[${user}]]*/ 'user';
+            const user = /*[[${user}]]*/ "user";
             /*]]>*/
         </script>
         <script>
             jQuery(document).ready(function () {
-                $('.listings__minus-btn').attr('disabled', true);
-                const maxModifyInput = $('#max-input__modify');
-                const minModifyInput = $('#min-input__modify');
-                const roomPriceRange = $('#roomPriceRange');
+                $(".listings__minus-btn").attr("disabled", true);
+                const maxModifyInput = $("#max-input__modify");
+                const minModifyInput = $("#min-input__modify");
+                const roomPriceRange = $("#roomPriceRange");
 
-                maxModifyInput.val(roomPriceRange.attr('max'));
-                minModifyInput.val(roomPriceRange.attr('min') * 1);
+                maxModifyInput.val(roomPriceRange.attr("max"));
+                minModifyInput.val(roomPriceRange.attr("min") * 1);
 
-                maxModifyInput.on('change', function () {
-                    roomPriceRange.attr('max', $(this).val() * 1);
+                maxModifyInput.on("change", function () {
+                    roomPriceRange.attr("max", $(this).val() * 1);
                 });
 
-                minModifyInput.on('change', function () {
-                    roomPriceRange.attr('min', $(this).val() * 1);
+                minModifyInput.on("change", function () {
+                    roomPriceRange.attr("min", $(this).val() * 1);
                 });
 
-                $('.incAndDecBtn').each(function () {
+                $(".incAndDecBtn").each(function () {
                     $(this).click(function () {
-                        const spanInfoTag = $(this).siblings(`#${$(this).data('edit')}`);
+                        const spanInfoTag = $(this).siblings(`#${$(this).data("edit")}`);
                         let spanValue = spanInfoTag.text() * 1;
-                        const dataFunction = $(this).data('function');
-                        const deleteButton = $('.deleteBtn.' + $(this).data('trigger'));
-                        const applyButton = $('.applyBtn.' + $(this).data('trigger'));
+                        const dataFunction = $(this).data("function");
+                        const deleteButton = $(".deleteBtn." + $(this).data("trigger"));
+                        const applyButton = $(".applyBtn." + $(this).data("trigger"));
                         const self = $(this);
 
-                        if (dataFunction === 'dec') {
+                        if (dataFunction === "dec") {
                             if (spanValue > 0) {
-                                if (spanValue === 1) $(this).attr('disabled', true);
+                                if (spanValue === 1) $(this).attr("disabled", true);
                                 spanInfoTag.text(--spanValue);
                             }
                             let countZero = 0;
                             if (spanValue === 0)
-                                $('.listings__minus-btn').each(function () {
+                                $(".listings__minus-btn").each(function () {
                                     if (!$(this).is(self)) {
                                         const spanValue =
                                             $(this)
-                                                .siblings(`#${$(this).data('edit')}`)
+                                                .siblings(`#${$(this).data("edit")}`)
                                                 .text() * 1;
                                         if (spanValue === 0) countZero++;
                                     }
                                 });
 
-                            if (countZero === $('.listings__minus-btn').length - 1)
-                                deleteButton.attr('disabled', true);
+                            if (countZero === $(".listings__minus-btn").length - 1)
+                                deleteButton.attr("disabled", true);
                         }
 
-                        if (dataFunction === 'inc') {
+                        if (dataFunction === "inc") {
                             if (spanValue === 0)
                                 $(this)
                                     .siblings(`.listings__minus-btn.incAndDecBtn`)
-                                    .removeAttr('disabled');
+                                    .removeAttr("disabled");
                             spanInfoTag.text(++spanValue);
 
-                            if (spanValue > 0) deleteButton.removeAttr('disabled');
+                            if (spanValue > 0) deleteButton.removeAttr("disabled");
                         }
                     });
                 });
 
-                $('#index__filter-btn').click(function () {
+                $("#index__filter-btn").click(function () {
                     $(this).click(function () {
                         const categoryId = new URLSearchParams(window.location.search).get(
-                            'categoryId'
+                            "categoryId"
                         );
 
                         let choosenPrivacy = [];
@@ -491,12 +491,12 @@
                             choosenPrivacy.push($(this).val() * 1);
                         });
 
-                        const minPrice = $('#min-input__modify').val().replace(/\./g, '');
-                        const maxPrice = $('#max-input__modify').val();
+                        const minPrice = $("#min-input__modify").val().replace(/\./g, "");
+                        const maxPrice = $("#max-input__modify").val();
 
-                        const bedRoomCount = $('#listings__bed-room-count').text() * 1;
-                        const bedCount = $('#listings__bed-count').text() * 1;
-                        const bathRoomCount = $('#listings__bath-room-count').text() * 1;
+                        const bedRoomCount = $("#listings__bed-room-count").text() * 1;
+                        const bedCount = $("#listings__bed-count").text() * 1;
+                        const bathRoomCount = $("#listings__bath-room-count").text() * 1;
 
                         const selectedAmentities = [];
                         $('input[class="amentitySelected"]:checked').each(function () {
@@ -504,9 +504,9 @@
                         });
 
                         window.location.href = `${baseURL}?categoryId=${categoryId}&privacies=${choosenPrivacy.join(
-                            ' '
+                            " "
                         )}&minPrice=${minPrice}&maxPrice=${maxPrice}&bedRoom=${bedRoomCount}&bed=${bedCount}&bathRoom=${bathRoomCount}&amentities=${selectedAmentities.join(
-                            ' '
+                            " "
                         )}`;
                     });
                 });
@@ -517,21 +517,21 @@
             }
 
             function hideEditThumbnailBox() {
-                $('.radioThumbnail').each(function () {
+                $(".radioThumbnail").each(function () {
                     if ($(this).val() === thumbnail) {
-                        $(this).prop('checked', true);
-                    } else $(this).prop('checked', false);
+                        $(this).prop("checked", true);
+                    } else $(this).prop("checked", false);
                 });
 
-                $('#chooseRoomThumbnail').css('display', 'none');
+                $("#chooseRoomThumbnail").css("display", "none");
             }
 
             function displayEditThumbnailBox() {
-                $('#chooseRoomThumbnail').css('display', 'block');
+                $("#chooseRoomThumbnail").css("display", "block");
             }
 
             function updateTextInput(val) {
-                $('#min-input__modify').val(seperateNumber(val));
+                $("#min-input__modify").val(seperateNumber(val));
             }
         </script>
         <script type="text/javascript" th:src="@{/js/room/room.js}"></script>

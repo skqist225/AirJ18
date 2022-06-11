@@ -167,7 +167,8 @@ public class UserService {
 	}
 
 	public boolean checkPhoneNumber(String phoneNumber) {
-		return userRepository.findByPhoneNumber(phoneNumber) != null ? true : false;
+		List<User> users = userRepository.findByPhoneNumber(phoneNumber);
+		return users.size() > 0 ? true : false;
 	}
 
 	public boolean checkEmail(String email) {

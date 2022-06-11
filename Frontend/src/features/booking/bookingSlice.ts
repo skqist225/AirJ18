@@ -6,15 +6,42 @@ import { IBooking } from "../../types/booking/type_Booking";
 interface IFetchUserBookings {
     query?: string;
     page: number;
+    bookingDateMonth?: string;
+    bookingDateYear?: string;
+    bookingDate?: string;
 }
 
 export const fetchUserBookings = createAsyncThunk(
     "booking/fetchUserBookings",
-    async ({ page, query = "" }: IFetchUserBookings, { dispatch, getState, rejectWithValue }) => {
+    async (
+        { page, query = "", bookingDateMonth, bookingDateYear, bookingDate }: IFetchUserBookings,
+        { dispatch, getState, rejectWithValue }
+    ) => {
         try {
+            let fetchUrl = `/booking/listings/${page}?query=${query}`;
+            console.log(bookingDateMonth);
+            console.log(bookingDateYear);
+            if (bookingDateMonth && bookingDateYear) {
+                fetchUrl += `&booking_date_month=${bookingDateMonth}&booking_date_year=${bookingDateYear}`;
+                dispatch(setBookingDateMonth(bookingDateMonth));
+                dispatch(setBookingDateYear(bookingDateYear));
+            } else if (bookingDateMonth) {
+                fetchUrl += `&booking_date_month=${bookingDateMonth}`;
+                dispatch(setBookingDateMonth(bookingDateMonth));
+            } else if (bookingDateYear) {
+                fetchUrl += `&booking_date_year=${bookingDateYear}`;
+                dispatch(setBookingDateYear(bookingDateYear));
+            }
+            if (bookingDate) {
+                fetchUrl += `&booking_date=${bookingDate}`;
+            }
+
+            console.info(fetchUrl);
+
             const {
                 data: { content, totalElements },
-            } = await api.get(`/booking/listings/${page}?query=${query}`);
+            } = await api.get(fetchUrl);
+
             return { content, totalElements };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
@@ -102,6 +129,7 @@ type BookingState = {
     clientSecret: string;
     newlyCreatedBooking: any;
     cancelMessage: string;
+    fetchData: IFetchUserBookings;
 };
 
 const initialState: BookingState = {
@@ -111,12 +139,31 @@ const initialState: BookingState = {
     clientSecret: "",
     newlyCreatedBooking: {},
     cancelMessage: "",
+    fetchData: {
+        query: "",
+        page: 1,
+        bookingDateMonth: "",
+        bookingDateYear: "",
+    },
 };
 
 const bookingSlice = createSlice({
     name: "booking",
     initialState,
-    reducers: {},
+    reducers: {
+        setPage: (state, { payload }) => {
+            state.fetchData.page = payload;
+        },
+        setQuery: (state, { payload }) => {
+            state.fetchData.query = payload;
+        },
+        setBookingDateMonth: (state, { payload }) => {
+            state.fetchData.bookingDateMonth = payload;
+        },
+        setBookingDateYear: (state, { payload }) => {
+            state.fetchData.bookingDateYear = payload;
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(fetchUserBookings.fulfilled, (state, { payload }) => {
@@ -147,5 +194,6 @@ const bookingSlice = createSlice({
     },
 });
 
+export const { setPage, setQuery, setBookingDateMonth, setBookingDateYear } = bookingSlice.actions;
 export const bookingState = (state: RootState) => state.booking;
 export default bookingSlice.reducer;
