@@ -27,13 +27,13 @@ public class SMSController {
 
     // You can send SMS in verified Number
     @PostMapping("/api/otp")
-    public ResponseEntity<StandardJSONResponse<String>> smsSubmit(@RequestBody String phoneNumber) {
+    public ResponseEntity<StandardJSONResponse<String>> smsSubmit(@RequestBody PNDTO otp) {
         try {
-            service.send(phoneNumber);
+            service.send(otp.getPhoneNumber());
         } catch (Exception e) {
             return new BadResponse<String>("Phone number is not correct or exist!").response();
         }
-        webSocket.convertAndSend(TOPIC_DESTINATION, getTimeStamp() + ": SMS has been sent!: " + phoneNumber);
+        webSocket.convertAndSend(TOPIC_DESTINATION, getTimeStamp() + ": SMS has been sent!: " + otp.getPhoneNumber());
         return new SuccessResponse<String>().setResponse(200, "Sent successfully!").response();
     }
 

@@ -9,18 +9,25 @@ interface IFetchUserBookings {
     bookingDateMonth?: string;
     bookingDateYear?: string;
     bookingDate?: string;
+    isComplete?: string;
 }
 
 export const fetchUserBookings = createAsyncThunk(
     "booking/fetchUserBookings",
     async (
-        { page, query = "", bookingDateMonth, bookingDateYear, bookingDate }: IFetchUserBookings,
+        {
+            page,
+            query = "",
+            bookingDateMonth,
+            bookingDateYear,
+            bookingDate,
+            isComplete,
+        }: IFetchUserBookings,
         { dispatch, getState, rejectWithValue }
     ) => {
         try {
             let fetchUrl = `/booking/listings/${page}?query=${query}`;
-            console.log(bookingDateMonth);
-            console.log(bookingDateYear);
+
             if (bookingDateMonth && bookingDateYear) {
                 fetchUrl += `&booking_date_month=${bookingDateMonth}&booking_date_year=${bookingDateYear}`;
                 dispatch(setBookingDateMonth(bookingDateMonth));
@@ -34,9 +41,15 @@ export const fetchUserBookings = createAsyncThunk(
             }
             if (bookingDate) {
                 fetchUrl += `&booking_date=${bookingDate}`;
+                dispatch(setBookingDate(bookingDate));
             }
 
-            console.info(fetchUrl);
+            if (isComplete) {
+                fetchUrl += `&is_complete=${isComplete}`;
+                dispatch(setIsComplete(isComplete));
+            }
+
+            dispatch(setQuery(query));
 
             const {
                 data: { content, totalElements },
@@ -163,6 +176,12 @@ const bookingSlice = createSlice({
         setBookingDateYear: (state, { payload }) => {
             state.fetchData.bookingDateYear = payload;
         },
+        setBookingDate: (state, { payload }) => {
+            state.fetchData.bookingDateYear = payload;
+        },
+        setIsComplete: (state, { payload }) => {
+            state.fetchData.isComplete = payload;
+        },
     },
     extraReducers: builder => {
         builder
@@ -194,6 +213,13 @@ const bookingSlice = createSlice({
     },
 });
 
-export const { setPage, setQuery, setBookingDateMonth, setBookingDateYear } = bookingSlice.actions;
+export const {
+    setPage,
+    setQuery,
+    setBookingDateMonth,
+    setBookingDateYear,
+    setBookingDate,
+    setIsComplete,
+} = bookingSlice.actions;
 export const bookingState = (state: RootState) => state.booking;
 export default bookingSlice.reducer;

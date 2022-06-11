@@ -25,8 +25,8 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
     const params = useParams();
     const { fetchData } = useSelector(bookingState);
 
-    function closeFilterBox() {
-        $(`#listings__filter-${footerOf}`).removeClass("active");
+    function closeFilterBox(footerClass: string) {
+        $(`#listings__filter-${footerClass}`).removeClass("active");
     }
 
     useEffect(() => {
@@ -116,16 +116,30 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
                                     bookingDateYear: year,
                                 })
                             );
-
                             break;
                         }
                         case "bookingDate": {
                             const bookingDateInput = $("#bookingDateInput").val()!.toString();
                             dispatch(
                                 fetchUserBookings({
-                                    // page: parseInt(params.page!),
-                                    bookingDate: bookingDateInput,
                                     ...fetchData,
+                                    bookingDate: bookingDateInput,
+                                })
+                            );
+                            break;
+                        }
+                        case "bookingStatus": {
+                            const statuses = $("input.isCompleteSelected");
+                            let isComplete: string[] = [];
+                            statuses.each(function () {
+                                if ($(this).prop("checked")) {
+                                    isComplete.push($(this).val()!.toString());
+                                }
+                            });
+                            dispatch(
+                                fetchUserBookings({
+                                    ...fetchData,
+                                    isComplete: isComplete.join(","),
                                 })
                             );
 
@@ -133,7 +147,7 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
                         }
                     }
 
-                    closeFilterBox();
+                    closeFilterBox(dataModify);
                 });
         });
     }, []);

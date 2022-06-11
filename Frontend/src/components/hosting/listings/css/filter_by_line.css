@@ -63,7 +63,8 @@
 #listings__filter-others.active,
 #listings__setting-column-display.active,
 #listings__filter-findByMonthAndYear.active,
-#listings__filter-bookingDate.active {
+#listings__filter-bookingDate.active,
+#listings__filter-bookingStatus.active {
     display: block;
 }
 

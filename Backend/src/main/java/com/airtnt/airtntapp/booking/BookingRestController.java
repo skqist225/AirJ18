@@ -112,7 +112,7 @@ public class BookingRestController {
             @RequestParam(name = "sort_dir", required = false, defaultValue = "asc") String sortDir,
             @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
             @RequestParam(name = "booking_date", required = false, defaultValue = "") String bookingDate,
-            @RequestParam(name = "isComplete", required = false, defaultValue = "") String isComplete)
+            @RequestParam(name = "is_complete", required = false, defaultValue = "") String isComplete)
             throws ParseException {
         try {
             User host = authenticate.getLoggedInUser(cookie);

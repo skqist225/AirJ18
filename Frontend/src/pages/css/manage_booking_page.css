@@ -64,7 +64,7 @@
     display: none;
 }
 
-#listings__filter-status {
+#listings__filter-bookingStatus {
     -webkit-box-direction: normal;
     -webkit-box-orient: vertical;
     position: absolute;
@@ -76,7 +76,7 @@
     z-index: 2001;
     width: 300px;
     top: 100%;
-    height: 229px;
+    height: fit-content;
     left: 0px;
     right: auto;
     display: none;
@@ -91,12 +91,4 @@
     border: 1px solid #b0b0b0;
     border-radius: 32px;
     padding: 6px 18px;
-}
-
-#listings__filter-roomAndBedRoom.active,
-#listings__filter-findByMonthAndYear.active,
-#listings__filter-status.active,
-#listings__filter-others.active,
-#listings__setting-column-display.active {
-    display: block;
 }
