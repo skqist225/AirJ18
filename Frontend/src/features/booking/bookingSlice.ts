@@ -11,6 +11,8 @@ interface IFetchUserBookings {
     bookingDate?: string;
     isComplete?: string;
     totalFee?: number;
+    sortField?: string;
+    sortDir?: string;
 }
 
 export const fetchUserBookings = createAsyncThunk(
@@ -24,6 +26,8 @@ export const fetchUserBookings = createAsyncThunk(
             bookingDate,
             isComplete,
             totalFee,
+            sortField = "bookingDate",
+            sortDir = "desc",
         }: IFetchUserBookings,
         { dispatch, getState, rejectWithValue }
     ) => {
@@ -63,14 +67,19 @@ export const fetchUserBookings = createAsyncThunk(
                 fetchUrl += `&total_fee=${totalFee || fetchData.totalFee}`;
                 dispatch(setTotalFee(totalFee || fetchData.totalFee));
             }
+
+            dispatch(setQuery(query || fetchData.query));
+            fetchUrl += `&sort_field=${sortField}&sort_dir=${sortDir}`;
+            dispatch(setSortField(sortField || fetchData.sortField));
+            dispatch(setSortDir(sortDir || fetchData.sortDir));
+
             console.info(fetchUrl);
-            dispatch(setQuery(query));
 
             const {
-                data: { content, totalElements },
+                data: { content, totalElements, totalPages },
             } = await api.get(fetchUrl);
 
-            return { content, totalElements };
+            return { content, totalElements, totalPages };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
         }
@@ -158,6 +167,7 @@ type BookingState = {
     newlyCreatedBooking: any;
     cancelMessage: string;
     fetchData: IFetchUserBookings;
+    totalPages: number;
 };
 
 const initialState: BookingState = {
@@ -174,7 +184,10 @@ const initialState: BookingState = {
         bookingDateYear: "",
         isComplete: "0,1,2",
         totalFee: 0,
+        sortField: "bookingDate",
+        sortDir: "desc",
     },
+    totalPages: 0,
 };
 
 const bookingSlice = createSlice({
@@ -202,6 +215,12 @@ const bookingSlice = createSlice({
         setTotalFee: (state, { payload }) => {
             state.fetchData.totalFee = payload;
         },
+        setSortField: (state, { payload }) => {
+            state.fetchData.sortField = payload;
+        },
+        setSortDir: (state, { payload }) => {
+            state.fetchData.sortDir = payload;
+        },
         clearAllFetchData: (state, action) => {
             state.fetchData.page = 1;
             state.fetchData.query = "";
@@ -210,6 +229,8 @@ const bookingSlice = createSlice({
             state.fetchData.bookingDateYear = "";
             state.fetchData.isComplete = "0,1,2";
             state.fetchData.totalFee = 0;
+            state.fetchData.sortField = "bookingDate";
+            state.fetchData.sortDir = "desc";
         },
     },
     extraReducers: builder => {
@@ -218,6 +239,7 @@ const bookingSlice = createSlice({
                 state.loading = false;
                 state.bookingsOfCurrentUserRooms = payload?.content;
                 state.totalElements = payload?.totalElements;
+                state.totalPages = payload?.totalPages;
             })
             .addCase(getStripeClientSecret.fulfilled, (state, { payload }) => {
                 state.loading = false;
@@ -250,6 +272,8 @@ export const {
     setBookingDate,
     setIsComplete,
     setTotalFee,
+    setSortField,
+    setSortDir,
     clearAllFetchData,
 } = bookingSlice.actions;
 export const bookingState = (state: RootState) => state.booking;

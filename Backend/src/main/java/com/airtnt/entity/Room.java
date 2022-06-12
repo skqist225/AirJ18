@@ -11,6 +11,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -21,7 +22,7 @@ import java.util.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "rooms")
-public class Room extends BaseEntity {
+public class Room extends BaseEntity implements Serializable {
 
 	@Builder
 	public Room(

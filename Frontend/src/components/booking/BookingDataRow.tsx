@@ -21,52 +21,6 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
         pageNumber = parseInt(window.location.href.split("/").pop()!);
     }
 
-    function highlightCurrentPageNumber(pageNumber: number) {
-        $(".pagination").children().filter(".active").removeClass("active");
-        $(".pagination")
-            .children()
-            .each(function () {
-                const pageNum = $(this).data("page");
-                if (pageNum.toString() === pageNumber.toString()) {
-                    $(this).addClass("active");
-                    return false;
-                }
-            });
-    }
-
-    function filterBookingByInput() {
-        const query = ($("#listings__search-input").val()! as string).trim();
-        let url = window.location.href;
-        const paramsMap: globalThis.Map<string, string> = new Map();
-        if (url.includes("?")) {
-            let params = new URLSearchParams(window.location.search);
-
-            if (params.get("query")) {
-                for (const key of Array.from(params.keys())) {
-                    paramsMap.set(key, params.get(key)!);
-                }
-
-                let newURL = `${window.location.origin}/booking/listings/${pageNumber}?`;
-                const mapLen = getMapSize(paramsMap);
-
-                let count = 0;
-                for (const [key, value] of Array.from(paramsMap.entries())) {
-                    if (key === "query") newURL += `query=${query}`;
-                    else newURL += `${key}=${value}`;
-                    if (count <= mapLen - 2) newURL += "&";
-                    count++;
-                }
-                window.location.href = newURL;
-                return;
-            } else url += `&query=${query}`;
-        } else url += `?query=${query}`;
-
-        window.location.href = url;
-    }
-    // function updateTextInput(val) {
-    //     document.getElementById('textInput').value = seperateNumber(val);
-    // }
-
     function getMapSize(map: globalThis.Map<string, string>) {
         let len = 0;
         for (let key of Array.from(map.keys())) {
@@ -289,8 +243,9 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                             isPrefix
                             removeStayType
                             currency={bookingRowData.roomCurrency}
-                            priceFontSize='20px'
-                            stayTypeFontSize='20px'
+                            priceFontSize='16px'
+                            stayTypeFontSize='16px'
+                            priceFontWeight='500'
                             color='rgb(255, 56, 92)'
                         />
                     </div>
@@ -301,8 +256,9 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                         isPrefix
                         removeStayType
                         currency={bookingRowData.roomCurrency}
-                        priceFontSize='20px'
-                        stayTypeFontSize='20px'
+                        priceFontSize='16px'
+                        stayTypeFontSize='16px'
+                        priceFontWeight='500'
                     />
                 </td>
                 <td>

@@ -32,16 +32,15 @@ interface IManageBookingPageProps {}
 const ManageBookingPage: FC<IManageBookingPageProps> = () => {
     const dispatch = useDispatch();
     const params = useParams();
-    const { pathname } = useLocation();
     const [query, setLocalQuery] = useState("");
-    const [inputValue, setInputValue] = useState(0);
+
+    const { bookingsOfCurrentUserRooms, totalElements, fetchData, totalPages } =
+        useSelector(bookingState);
 
     useEffect(() => {
-        dispatch(fetchUserBookings({ page: parseInt(params.page!) }));
+        dispatch(fetchUserBookings({ ...fetchData, page: parseInt(params.page!) }));
         dispatch(setPage(parseInt(params.page!)));
-    }, [pathname]);
-
-    const { bookingsOfCurrentUserRooms, totalElements, fetchData } = useSelector(bookingState);
+    }, [params.page]);
 
     function handleFindBookingByRoomIdAndName(event: any) {
         setLocalQuery(event.currentTarget.value);
@@ -412,7 +411,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                             <BookingsTable bookings={bookingsOfCurrentUserRooms} />
                         )}
                     </div>
-                    <Pagination totalPages={6} />
+                    <Pagination totalPages={totalPages} to='booking' />
                 </div>
             </div>
         </>

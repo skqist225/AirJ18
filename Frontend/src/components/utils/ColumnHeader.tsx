@@ -1,11 +1,12 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from "react";
 
-import $ from 'jquery';
-import { useDispatch } from 'react-redux';
-import { fetchUserOwnedRoom } from '../../features/room/roomSlice';
-import { useParams } from 'react-router-dom';
+import $ from "jquery";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserOwnedRoom } from "../../features/room/roomSlice";
+import { useLocation, useParams } from "react-router-dom";
 
-import './css/column_header.css';
+import "./css/column_header.css";
+import { bookingState, fetchUserBookings } from "../../features/booking/bookingSlice";
 
 interface IColumnHeaderProps {
     columnName: string;
@@ -20,27 +21,40 @@ const ColumnHeader: FC<IColumnHeaderProps> = ({
 }) => {
     const dispatch = useDispatch();
     const { page } = useParams();
-    const [sortDir, setSortDir] = useState('ASC');
+    const { pathname } = useLocation();
 
-    const searchParams = new URLSearchParams().get('SORTDIR');
-    if (searchParams) searchParams === 'ASC' ? setSortDir('DESC') : setSortDir('ASC');
+    const [sortDir, setSortDir] = useState("ASC");
+    const { fetchData } = useSelector(bookingState);
 
-    console.log('component reload!');
+    const searchParams = new URLSearchParams().get("SORTDIR");
+    if (searchParams) searchParams === "ASC" ? setSortDir("DESC") : setSortDir("ASC");
 
     function sortData(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        const sortField: string = $(event.currentTarget).data('sort-field');
-        dispatch(fetchUserOwnedRoom({ pageNumber: parseInt(page!), sortField, sortDir }));
+        const sortField: string = $(event.currentTarget).data("sort-field");
 
-        if (sortDir === 'ASC') {
-            const upperSelft = $('.upper.' + sortField);
-            $('.sort').filter('.active').removeClass('active');
-            upperSelft.addClass('active');
-            setSortDir('DESC');
+        console.log(sortField);
+        console.log(sortDir);
+        if (pathname.includes("/booking/listings")) {
+            dispatch(
+                fetchUserBookings({
+                    ...fetchData,
+                    sortField,
+                    sortDir,
+                })
+            );
         } else {
-            const downerSelf = $('.downer.' + sortField);
-            $('.sort').filter('.active').removeClass('active');
-            downerSelf.addClass('active');
-            setSortDir('ASC');
+            dispatch(fetchUserOwnedRoom({ pageNumber: parseInt(page!), sortField, sortDir }));
+        }
+        if (sortDir === "ASC") {
+            const upperSelft = $(".upper." + sortField);
+            $(".sort").filter(".active").removeClass("active");
+            upperSelft.addClass("active");
+            setSortDir("DESC");
+        } else {
+            const downerSelf = $(".downer." + sortField);
+            $(".sort").filter(".active").removeClass("active");
+            downerSelf.addClass("active");
+            setSortDir("ASC");
         }
     }
 
@@ -54,9 +68,9 @@ const ColumnHeader: FC<IColumnHeaderProps> = ({
                 <div className='mr-10'>{columnName}</div>
                 {isSortableHeader && (
                     <div className='col-flex-center'>
-                        {' '}
-                        <span className={'upper sort ' + sortField}></span>
-                        <span className={'downer sort ' + sortField}></span>
+                        {" "}
+                        <span className={"upper sort " + sortField}></span>
+                        <span className={"downer sort " + sortField}></span>
                     </div>
                 )}
             </button>

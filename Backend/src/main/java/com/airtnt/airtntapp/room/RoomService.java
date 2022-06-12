@@ -137,7 +137,7 @@ public class RoomService {
 		}
 
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-		Pageable pageable = PageRequest.of(pageNumber - 1, MAX_ROOM_PER_FETCH_BY_HOST, sort); // pase base 0
+		Pageable pageable = PageRequest.of(pageNumber - 1, 100000, sort); // pase base 0
 
 		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
 		for (Map.Entry<String, String> key : filters.entrySet()) {
@@ -172,6 +172,12 @@ public class RoomService {
 				amentitiesID, statusesID, pageable);
 		return rooms;
 	}
+
+	// public Page<Room> getRoomsByCategoryId(Integer categoryId, boolean status,
+	// int pageNumber,
+	// Map<String, String> filters) throws ParseException {
+
+	// }
 
 	public Page<Room> getRoomsByCategoryId(Integer categoryId, boolean status, int pageNumber,
 			Map<String, String> filters) throws ParseException {
@@ -470,7 +476,7 @@ public class RoomService {
 		}
 		System.out.println("true: " + sortDir.equals("ASC"));
 		sort = sortDir.equals("ASC") ? sort.ascending() : sort.descending();
-		Pageable pageable = PageRequest.of(pageNumber - 1, MAX_ROOM_PER_FETCH_BY_HOST, sort); // pase base 0
+		Pageable pageable = PageRequest.of(pageNumber - 1, 100000, sort); // pase base 0
 
 		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
 		for (Map.Entry<String, String> key : filters.entrySet()) {

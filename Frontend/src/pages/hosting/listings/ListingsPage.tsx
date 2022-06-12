@@ -1,19 +1,19 @@
-import { FC, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Header from '../../../components/Header';
-import { TableContent } from '../../../components/hosting/listings';
-import hostingListings from '../../../components/hosting/listings/script/listings';
-import { fetchAmenities } from '../../../features/amenity/amenitySlice';
-import { fetchUserOwnedRoom, roomState } from '../../../features/room/roomSlice';
-import { getImage, getPageNumber } from '../../../helpers';
-import { Image } from '../../../globalStyle';
+import { FC, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Header from "../../../components/Header";
+import { TableContent } from "../../../components/hosting/listings";
+import hostingListings from "../../../components/hosting/listings/script/listings";
+import { fetchAmenities } from "../../../features/amenity/amenitySlice";
+import { fetchUserOwnedRoom, roomState } from "../../../features/room/roomSlice";
+import { getImage, getPageNumber } from "../../../helpers";
+import { Image } from "../../../globalStyle";
 
-import FilterByLine from '../../../components/hosting/listings/FilterByLine';
-import { userState } from '../../../features/user/userSlice';
+import FilterByLine from "../../../components/hosting/listings/FilterByLine";
+import { userState } from "../../../features/user/userSlice";
 
-import './css/listings_page.css';
-import { Pagination } from '../../../components/utils';
+import "./css/listings_page.css";
+import { Pagination } from "../../../components/utils";
 
 interface IListingsPageProps {}
 
@@ -35,7 +35,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
 
     useEffect(() => {
         if (user === null && !loading) {
-            navigate('/login');
+            navigate("/login");
         }
     }, []);
 
@@ -70,17 +70,17 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                                 {totalRecords} nhà/phòng cho thuê
                             </div>
                             <div>
-                                <Link to={'/become-a-host/intro'}>
-                                    {' '}
+                                <Link to={"/become-a-host/intro"}>
+                                    {" "}
                                     <button className='listings__create-new-room'>
                                         <span>
                                             <Image
-                                                src={getImage('/svg/plus.svg')}
+                                                src={getImage("/svg/plus.svg")}
                                                 size='16px'
-                                                style={{ objectFit: 'cover' }}
+                                                style={{ objectFit: "cover" }}
                                             />
                                         </span>
-                                        <div style={{ marginLeft: '10px' }}>Tạo mục cho thuê</div>
+                                        <div style={{ marginLeft: "10px" }}>Tạo mục cho thuê</div>
                                     </button>
                                 </Link>
                             </div>
@@ -95,7 +95,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
                             rooms={rooms}
                         />
 
-                        <Pagination totalPages={totalPages} />
+                        <Pagination totalPages={totalPages} to='hosting' />
                     </div>
                 </div>
             ) : (

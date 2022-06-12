@@ -290,7 +290,7 @@ public class BookingService {
             sort = sortByCustomerFirstName.and(sortByCustomerLastName);
         }
 
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+        sort = sortDir.equals("ASC") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(page - 1, MAX_BOOKING_PER_FETCH_BY_HOST, sort);
 
         Page<Booking> bookingPage = bookingRepository.findAll(new Specification<Booking>() {
@@ -315,8 +315,7 @@ public class BookingService {
 
                 if (!StringUtils.isEmpty(bookingDateStr)) {
                     try {
-                        System.out.println("bookingDateStr: " + bookingDateStr);
-                        LocalDateTime bkDate = new SimpleDateFormat("yyyy/MM/dd").parse(bookingDateStr).toInstant()
+                        LocalDateTime bkDate = new SimpleDateFormat("yyyy-MM-dd").parse(bookingDateStr).toInstant()
                                 .atZone(ZoneId.systemDefault()).toLocalDateTime();
                         LocalDateTime startOfBookingDate = bkDate.withHour(0).withMinute(0).withSecond(0);
                         LocalDateTime endOfBookingDate = bkDate.withHour(23).withMinute(0).withSecond(0);
@@ -404,7 +403,8 @@ public class BookingService {
                 predicates
                         .add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("totalFee"), totalFee)));
 
-                criteriaQuery.orderBy(criteriaBuilder.desc(bookingdDate), criteriaBuilder.desc(bookingId));
+                // criteriaQuery.orderBy(criteriaBuilder.desc(bookingdDate),
+                // criteriaBuilder.desc(bookingId));
 
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
@@ -441,6 +441,10 @@ public class BookingService {
             throws ForbiddenException, BookingNotFoundException, AlreadyCancelException {
         Booking canceledBooking = getBookingById(bookingId);
 
+        // if user sent request is not customer of the room
+        if (!user.getId().equals(canceledBooking.getCustomer().getId()))
+            throw new ForbiddenException("You are not the owner of this booking");
+
         if (canceledBooking.isRefund() == true && canceledBooking.isComplete() == false)
             throw new AlreadyCancelException("You have been canceled this room");
 
@@ -449,25 +453,27 @@ public class BookingService {
         LocalDateTime bookingDate = canceledBooking.getBookingDate();
         LocalDateTime cancelDate = LocalDateTime.now();
 
-        long numOfDays = ChronoUnit.DAYS.between(bookingDate.toLocalDate(), checkinDate.toLocalDate());
-        List<LocalDate> listOfDates = LongStream.range(0, numOfDays)
-                .mapToObj(bookingDate.toLocalDate()::plusDays)
-                .collect(Collectors.toList());
+        if (!bookingDate.toLocalDate().toString().equals(LocalDate.now().toString())) {
+            long numOfDays = ChronoUnit.DAYS.between(bookingDate.toLocalDate(), checkinDate.toLocalDate());
+            List<LocalDate> listOfDates = LongStream.range(0, numOfDays)
+                    .mapToObj(bookingDate.toLocalDate()::plusDays)
+                    .collect(Collectors.toList());
 
-        LocalDateTime dateBetweenBookingDateAndCheckinDate = listOfDates.get((int) Math.floor(
-                listOfDates.size() / 2)).atStartOfDay();
-        System.out.println(dateBetweenBookingDateAndCheckinDate.toString());
-        // if user sent request is not customer of the room
-        if (!user.getId().equals(canceledBooking.getCustomer().getId()))
-            throw new ForbiddenException("You are not the owner of this booking");
+            System.out.println(listOfDates);
+            LocalDateTime dateBetweenBookingDateAndCheckinDate = listOfDates.get((int) Math.floor(
+                    listOfDates.size() / 2)).atStartOfDay();
+
+            if (cancelDate.isBefore(dateBetweenBookingDateAndCheckinDate)) {
+                canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
+            } else {
+                canceledBooking.setRefundPaid(canceledBooking.getTotalFee() / 2);
+            }
+        } else {
+            canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
+        }
 
         // If canceled date is after the date between booking date and checkin date
         // User will only get half of the refund paid.
-        if (cancelDate.isBefore(dateBetweenBookingDateAndCheckinDate)) {
-            canceledBooking.setRefundPaid(canceledBooking.getTotalFee());
-        } else {
-            canceledBooking.setRefundPaid(canceledBooking.getTotalFee() / 2);
-        }
 
         canceledBooking.setCancelDate(cancelDate);
         canceledBooking.setRefund(true);

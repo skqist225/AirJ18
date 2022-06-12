@@ -74,6 +74,9 @@ import com.airtnt.entity.User;
 public class RoomRestController {
     private final String STATIC_PATH = System.getProperty("user.dir") + "/src/main/resources/static/room_images";
 
+    // @Autowired
+    // private RedisTemplate template;
+
     @Autowired
     private RoomService roomService;
 
@@ -296,14 +299,37 @@ public class RoomRestController {
             filters.put("sortField", sortField);
             filters.put("amentities", amentitiesFilter);
             filters.put("status", status);
-
-            Page<Room> roomsPage = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
             List<RoomListingsDTO> roomListingsDTOs = new ArrayList<>();
-            roomsPage.getContent().forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
+            // if (template.hasKey("RoomTest")) {
 
-            return new OkResponse<RoomsOwnedByUserResponseEntity>(new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
-                    roomsPage.getTotalElements(), roomsPage.getTotalPages())).response();
-        } catch (NullCookieException ex) {
+            // return new OkResponse<RoomsOwnedByUserResponseEntity>(
+            // new RoomsOwnedByUserResponseEntity(
+            // (List<RoomListingsDTO>) template.opsForList().range("RoomTest", 0, -1),
+            // (long) template.opsForHash().get("totalEles",
+            // "string"),
+            // (int) template.opsForHash().get("totalPages",
+            // "string")))
+            // .response();
+
+            // } else {
+            Page<Room> roomsPage = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
+            roomsPage.getContent()
+                    .forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
+
+            // template.opsForHash().put("totalEles", "string",
+            // roomsPage.getTotalElements());
+            // template.opsForHash().put("totalPages", "string", roomsPage.getTotalPages());
+            // template.opsForList().rightPushAll("RoomTest", roomListingsDTOs);
+
+            return new OkResponse<RoomsOwnedByUserResponseEntity>(
+                    new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
+                            roomsPage.getTotalElements(), roomsPage.getTotalPages()))
+                    .response();
+            // }
+
+        } catch (
+
+        NullCookieException ex) {
             return new BadResponse<RoomsOwnedByUserResponseEntity>(ex.getMessage()).response();
         } catch (NotAuthenticatedException ex) {
             return new NotAuthenticatedResponse<RoomsOwnedByUserResponseEntity>().response();
