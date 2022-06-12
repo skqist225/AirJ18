@@ -11,7 +11,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
 import com.airtnt.airtntapp.booking.dto.BookingDTO;
-import com.airtnt.airtntapp.booking.dto.BookingListDTO;
 import com.airtnt.airtntapp.booking.dto.BookingListResponse;
 import com.airtnt.airtntapp.email.SendEmail;
 import com.airtnt.airtntapp.exception.AlreadyCancelException;
@@ -34,7 +33,6 @@ import com.airtnt.entity.Booking;
 import com.airtnt.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -100,16 +98,16 @@ public class BookingRestController {
         }
     }
 
-    @GetMapping(value = "/listings/{pageNumber}")
+    @GetMapping(value = "/listings/{page}")
     public ResponseEntity<StandardJSONResponse<BookingListResponse>> listings(
             @CookieValue(value = "user", required = false) String cookie,
-            @PathVariable("pageNumber") Integer pageNumber,
+            @PathVariable("page") Integer page,
             @RequestParam(name = "booking_date_month", required = false, defaultValue = "") String bookingDateMonth,
             @RequestParam(name = "booking_date_year", required = false, defaultValue = "") String bookingDateYear,
             @RequestParam(name = "total_fee", required = false, defaultValue = "0") String totalFee,
             @RequestParam(name = "query", required = false, defaultValue = "") String query,
-            @RequestParam(name = "sort_dir", required = false, defaultValue = "asc") String sortDir,
-            @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
+            @RequestParam(name = "sort_dir", required = false, defaultValue = "desc") String sortDir,
+            @RequestParam(name = "sort_field", required = false, defaultValue = "bookingDate") String sortField,
             @RequestParam(name = "booking_date", required = false, defaultValue = "") String bookingDate,
             @RequestParam(name = "is_complete", required = false, defaultValue = "") String isComplete)
             throws ParseException {
@@ -128,17 +126,9 @@ public class BookingRestController {
             filters.put("bookingDateYear", bookingDateYear);
             filters.put("totalFee", totalFee);
 
-            Page<Booking> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
-            List<BookingListDTO> bookingListDtos = new ArrayList<>();
-            for (Booking b : bookings.toList()) {
-                bookingListDtos.add(BookingListDTO.buildDTO(b));
-            }
+            BookingListResponse bookings = bookingService.getBookingListByRooms(roomIds, filters, page);
 
-            return new OkResponse<BookingListResponse>(
-                    new BookingListResponse(
-                            bookingListDtos, bookings.getTotalElements(), bookings.getTotalPages()))
-                    .response();
-
+            return new OkResponse<BookingListResponse>(bookings).response();
         } catch (NullCookieException ex) {
             return new BadResponse<BookingListResponse>(ex.getMessage()).response();
         } catch (NotAuthenticatedException ex) {

@@ -4,19 +4,18 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import com.airtnt.airtntapp.booking.dto.BookingListDTO;
-import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookingRepository extends JpaRepository<Booking, Integer> {
+public interface BookingRepository extends JpaRepository<Booking, Integer>, JpaSpecificationExecutor<Booking> {
 
         @Query("SELECT b FROM Booking b WHERE b.room.id = :roomId AND b.isComplete = true")
         public List<Booking> getBookedDates(Integer roomId);
@@ -48,44 +47,17 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
         @Query("SELECT b FROM Booking b"
                         + " WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND b.bookingDate <= :bookingDate"
-                        + " AND b.bookingDate >= :bookingDate2 AND b.totalFee >= :totalFee AND b.isComplete IN (:isCompleteLst)"
-                        + " AND b.isRefund IN (:isCancelledLst) ORDER BY b.bookingDate DESC")
-        public Page<Booking> getBookingListByRooms(List<Integer> roomIds, String query, List<Boolean> isCompleteLst,
-                        List<Boolean> isCancelledLst, LocalDateTime bookingDate, LocalDateTime bookingDate2,
+                        + " AND b.bookingDate >= :bookingDate2 AND b.totalFee >= :totalFee"
+                        + " AND b.isRefund = true AND b.isComplete = false OR b.isRefund = false AND b.isComplete = true"
+                        + " ORDER BY b.bookingDate DESC")
+        public Page<Booking> getBookingListByRooms(List<Integer> roomIds, String query,
+                        LocalDateTime bookingDate, LocalDateTime bookingDate2,
                         Float totalFee,
                         Pageable pageable);
 
         @Query("SELECT b FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND year(b.bookingDate)=:year AND month(b.bookingDate)=:month AND b.isComplete IN (:isCompleteLst) AND b.isRefund IN (:isCancelledLst) ORDER BY b.bookingDate ASC")
         public Page<Booking> getBookingsByRooms(Integer[] roomIds, String query, List<Boolean> isCompleteLst,
                         List<Boolean> isCancelledLst, Integer year, Integer month,
-                        Pageable pageable);
-
-        @Query("SELECT b FROM Booking b"
-                        + " WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query%"
-                        + " AND month(b.bookingDate)=:month AND year(b.bookingDate)=:year"
-                        + " AND b.isRefund IN (:isCancelledLst) AND b.isComplete IN (:isCompleteLst)"
-                        + " ORDER BY b.bookingDate DESC")
-        public Page<Booking> getBookingListByRooms(List<Integer> roomIds, String query, List<Boolean> isCompleteLst,
-                        List<Boolean> isCancelledLst, Integer year, Integer month,
-                        Pageable pageable);
-
-        @Query("SELECT b FROM Booking b"
-                        + " WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query%"
-                        + " AND year(b.bookingDate)=:year"
-                        + " AND b.isRefund IN (:isCancelledLst) AND b.isComplete IN (:isCompleteLst)"
-                        + " ORDER BY b.bookingDate DESC")
-        public Page<Booking> getBookingListByRooms(List<Integer> roomIds, String query, List<Boolean> isCompleteLst,
-                        List<Boolean> isCancelledLst, Integer year,
-                        Pageable pageable);
-
-        @Query("SELECT b FROM Booking b"
-                        + " WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query%"
-                        + " AND month(b.bookingDate)=:month"
-                        + " AND b.isRefund IN (:isCancelledLst) AND b.isComplete IN (:isCompleteLst)"
-                        + " ORDER BY b.bookingDate DESC")
-        public Page<Booking> getBookingListByRooms(List<Integer> roomIds, String query, List<Boolean> isCompleteLst,
-                        Integer month,
-                        List<Boolean> isCancelledLst,
                         Pageable pageable);
 
         @Query("SELECT b FROM Booking b WHERE b.room.id IN (:roomIds) AND b.room.name LIKE %:query% AND (b.isComplete = :isComplete OR b.isRefund = :isCancelled)")

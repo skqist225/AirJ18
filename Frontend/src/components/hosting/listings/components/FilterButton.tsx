@@ -54,7 +54,7 @@ const FilterButton: FC<IFilterButtonProps> = ({
 }) => {
     return (
         <div className='listings__filter'>
-            <button className='listings__filter--option' data-dropdown={dataDropDown}>
+            <button className={`listings__filter--option ${footerOf}`} data-dropdown={dataDropDown}>
                 <span>{title}</span>
                 {haveBox && (
                     <span>

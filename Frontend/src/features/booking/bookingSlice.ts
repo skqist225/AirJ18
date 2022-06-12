@@ -29,32 +29,41 @@ export const fetchUserBookings = createAsyncThunk(
     ) => {
         try {
             let fetchUrl = `/booking/listings/${page}?query=${query}`;
+            const state = getState() as RootState;
+            const { fetchData } = state.booking;
 
-            if (bookingDateMonth && bookingDateYear) {
-                fetchUrl += `&booking_date_month=${bookingDateMonth}&booking_date_year=${bookingDateYear}`;
-                dispatch(setBookingDateMonth(bookingDateMonth));
-                dispatch(setBookingDateYear(bookingDateYear));
-            } else if (bookingDateMonth) {
-                fetchUrl += `&booking_date_month=${bookingDateMonth}`;
-                dispatch(setBookingDateMonth(bookingDateMonth));
-            } else if (bookingDateYear) {
-                fetchUrl += `&booking_date_year=${bookingDateYear}`;
-                dispatch(setBookingDateYear(bookingDateYear));
-            }
-            if (bookingDate) {
-                fetchUrl += `&booking_date=${bookingDate}`;
-                dispatch(setBookingDate(bookingDate));
-            }
-
-            if (isComplete) {
-                fetchUrl += `&is_complete=${isComplete}`;
-                dispatch(setIsComplete(isComplete));
+            if (
+                (bookingDateMonth && bookingDateYear) ||
+                (fetchData.bookingDateMonth && fetchData.bookingDateYear)
+            ) {
+                fetchUrl += `&booking_date_month=${
+                    bookingDateMonth || fetchData.bookingDateMonth
+                }&booking_date_year=${bookingDateYear || fetchData.bookingDateYear}`;
+                dispatch(setBookingDateMonth(bookingDateMonth || fetchData.bookingDateMonth));
+                dispatch(setBookingDateYear(bookingDateYear || fetchData.bookingDateYear));
+            } else if (bookingDateMonth || fetchData.bookingDateMonth) {
+                fetchUrl += `&booking_date_month=${bookingDateMonth || fetchData.bookingDateMonth}`;
+                dispatch(setBookingDateMonth(bookingDateMonth || fetchData.bookingDateMonth));
+            } else if (bookingDateYear || fetchData.bookingDateYear) {
+                fetchUrl += `&booking_date_year=${bookingDateYear || fetchData.bookingDateYear}`;
+                dispatch(setBookingDateYear(bookingDateYear || fetchData.bookingDateYear));
             }
 
-            if (totalFee) {
-                fetchUrl += `&total_fee=${totalFee}`;
-                dispatch(setTotalFee(totalFee));
+            if (bookingDate || fetchData.bookingDate) {
+                fetchUrl += `&booking_date=${bookingDate || fetchData.bookingDate}`;
+                dispatch(setBookingDate(bookingDate || fetchData.bookingDate));
             }
+
+            if (isComplete || fetchData.isComplete) {
+                fetchUrl += `&is_complete=${isComplete || fetchData.isComplete}`;
+                dispatch(setIsComplete(isComplete || fetchData.isComplete));
+            }
+
+            if (totalFee || fetchData.bookingDate) {
+                fetchUrl += `&total_fee=${totalFee || fetchData.totalFee}`;
+                dispatch(setTotalFee(totalFee || fetchData.totalFee));
+            }
+            console.info(fetchUrl);
             dispatch(setQuery(query));
 
             const {
@@ -163,6 +172,8 @@ const initialState: BookingState = {
         page: 1,
         bookingDateMonth: "",
         bookingDateYear: "",
+        isComplete: "0,1,2",
+        totalFee: 0,
     },
 };
 
@@ -183,13 +194,22 @@ const bookingSlice = createSlice({
             state.fetchData.bookingDateYear = payload;
         },
         setBookingDate: (state, { payload }) => {
-            state.fetchData.bookingDateYear = payload;
+            state.fetchData.bookingDate = payload;
         },
         setIsComplete: (state, { payload }) => {
             state.fetchData.isComplete = payload;
         },
         setTotalFee: (state, { payload }) => {
             state.fetchData.totalFee = payload;
+        },
+        clearAllFetchData: (state, action) => {
+            state.fetchData.page = 1;
+            state.fetchData.query = "";
+            state.fetchData.bookingDate = "";
+            state.fetchData.bookingDateMonth = "";
+            state.fetchData.bookingDateYear = "";
+            state.fetchData.isComplete = "0,1,2";
+            state.fetchData.totalFee = 0;
         },
     },
     extraReducers: builder => {
@@ -230,6 +250,7 @@ export const {
     setBookingDate,
     setIsComplete,
     setTotalFee,
+    clearAllFetchData,
 } = bookingSlice.actions;
 export const bookingState = (state: RootState) => state.booking;
 export default bookingSlice.reducer;

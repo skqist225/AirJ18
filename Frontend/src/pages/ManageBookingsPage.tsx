@@ -6,11 +6,14 @@ import Header from "../components/Header";
 import { FilterFooter, Pagination } from "../components/utils";
 import {
     bookingState,
+    clearAllFetchData,
     fetchUserBookings,
+    setBookingDate,
     setBookingDateMonth,
     setBookingDateYear,
     setPage,
     setQuery,
+    setTotalFee,
 } from "../features/booking/bookingSlice";
 import { Div, Image } from "../globalStyle";
 import { getImage, seperateNumber } from "../helpers";
@@ -69,6 +72,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                         : filterBox.addClass("active");
 
                     if ($(this).data("dropdown") === "clearFilter") {
+                        dispatch(clearAllFetchData({}));
                         dispatch(fetchUserBookings({ page: fetchData.page }));
                     }
                 });
@@ -96,18 +100,19 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
         dispatch(setBookingDateYear(value));
     }
 
-    function updateTextInput(event: any) {
+    function handleBookingDateChange(event: any) {
         const { value } = event.currentTarget;
-        enableDeleteButton(value, "findByMonthAndYear");
+        enableDeleteButton(value, "bookingDate");
+        dispatch(setBookingDate(value));
     }
 
     const onChange = (value: number) => {
-        console.log(value);
         if (isNaN(value)) {
             return;
         }
 
-        setInputValue(value);
+        enableDeleteButton(value.toString(), "totalFee");
+        dispatch(setTotalFee(value));
     };
 
     return (
@@ -150,6 +155,8 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                                     type='date'
                                                     className='form-control'
                                                     id='bookingDateInput'
+                                                    value={fetchData.bookingDate}
+                                                    onChange={handleBookingDateChange}
                                                 />
                                             </div>
                                         </div>
@@ -217,7 +224,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                                     <input
                                                         type='checkbox'
                                                         className='isCompleteSelected'
-                                                        value='1'
+                                                        value='0'
                                                     />
                                                 </div>
                                                 <div
@@ -267,7 +274,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                                     <input
                                                         type='checkbox'
                                                         className='isCompleteSelected'
-                                                        value='0'
+                                                        value='1'
                                                     />
                                                 </div>
                                                 <div
@@ -372,11 +379,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                                         step={500000}
                                                         onChange={onChange}
                                                         tooltipVisible={false}
-                                                        value={
-                                                            typeof inputValue === "number"
-                                                                ? inputValue
-                                                                : 0
-                                                        }
+                                                        value={fetchData.totalFee!}
                                                     />
                                                 </Col>
                                             </div>
@@ -384,7 +387,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                                 <input
                                                     type='text'
                                                     id='totalFeeInput'
-                                                    value={seperateNumber(inputValue)}
+                                                    value={seperateNumber(fetchData.totalFee!)}
                                                     className='form-control'
                                                 />
                                             </div>

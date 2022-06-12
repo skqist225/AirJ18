@@ -9,8 +9,11 @@ import "./css/filter_footer.css";
 import {
     bookingState,
     fetchUserBookings,
+    setBookingDate,
     setBookingDateMonth,
     setBookingDateYear,
+    setIsComplete,
+    setTotalFee,
 } from "../../features/booking/bookingSlice";
 import { convertToObject } from "typescript";
 
@@ -27,6 +30,10 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
 
     function closeFilterBox(footerClass: string) {
         $(`#listings__filter-${footerClass}`).removeClass("active");
+    }
+
+    function setCurrentFilterTitle(className: string, title: string) {
+        $(`.listings__filter--option.${className}`).text(title);
     }
 
     useEffect(() => {
@@ -126,6 +133,7 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
                                     bookingDate: bookingDateInput,
                                 })
                             );
+                            setCurrentFilterTitle("bookingDate", bookingDateInput);
                             break;
                         }
                         case "bookingStatus": {
@@ -150,6 +158,7 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
                                 .val()!
                                 .toString()
                                 .replace(/,/g, "");
+                            console.log(fetchData);
                             dispatch(
                                 fetchUserBookings({
                                     ...fetchData,
@@ -221,10 +230,25 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
                     case "findByMonthAndYear": {
                         dispatch(setBookingDateMonth(""));
                         dispatch(setBookingDateYear(""));
-                        $(this).attr("disabled", "true");
+                        break;
+                    }
+                    case "bookingDate": {
+                        $("#bookingDateInput").val("");
+                        $(".listings__filter--option.bookingDate").text("Ngày đặt phòng");
+                        dispatch(setBookingDate(""));
+                        break;
+                    }
+                    case "bookingStatus": {
+                        dispatch(setIsComplete("0,1,2"));
+                        break;
+                    }
+                    case "totalFee": {
+                        dispatch(setTotalFee(0));
                         break;
                     }
                 }
+
+                $(this).attr("disabled", "true");
             });
     });
 

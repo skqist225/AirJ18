@@ -62,7 +62,7 @@ public class BookingListDTO implements Serializable {
         return new BookingListDTO(b.getId(),
                 room.getId(), room.getName(),
                 room.renderThumbnailImage(),
-                room.getCurrency().getUnit(),
+                room.getCurrency().getSymbol(),
                 b.isComplete(), b.isRefund(),
                 b.getBookingDate(), b.getCancelDate(), b.getCheckinDate(),
                 b.getCheckoutDate(),
