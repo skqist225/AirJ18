@@ -261,7 +261,7 @@ public class UserORestController {
 				if (environment.equals("development")) {
 					uploadDir = "src/main/resources/static/user_images/" + currentUser.getId() + "/";
 				} else {
-					Path uploadPath = Paths.get("classpath:static/user_images/" + currentUser.getId() + "/");
+					Path uploadPath = Paths.get("classes/static/user_images/" + currentUser.getId() + "/");
 
 					if (!Files.exists(uploadPath)) {
 						Files.createDirectories(uploadPath);
