@@ -23,9 +23,12 @@ public class AdminRoomRestController {
 	AdminRoomService adminRoomService;
 	
 	@GetMapping(value="/room")
-	public ResponseEntity<Object> getAll(@RequestParam("page") Integer page, @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir){
+	public ResponseEntity<Object> getAll(@RequestParam("page") Integer page, 
+			@RequestParam("sortField") String sortField, 
+			@RequestParam("sortDir") String sortDir,
+			@RequestParam("searchText") String textSearch){
 		Pageable pageable = PageRequest.of(page-1, ROOM_PER_PAGE, Sort.by(sortField).ascending());
-		Page<Room> roomList = adminRoomService.getAll(pageable);
+		Page<Room> roomList = adminRoomService.getAll(textSearch, pageable);
 		return ResponseEntity.ok().body(roomList);
 	}
 }

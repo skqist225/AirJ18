@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeLeaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+  xml:lang="en"
+>
+  <head th:replace="fragments::page_head('Rooms', 'none')"> </head>
+
+  <body>
+    <div class="container-fluid">
+      <div th:replace="navigation::menu"></div>
+
+      <div>
+        <h1>Stats Page</h1>
+      </div>
+
+      <div class="container">
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">Number Of Users</div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${numberOfUsers}"
+            disabled
+          />
+        </div>
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">Number Of Rooms</div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${numberOfRooms}"
+            disabled
+          />
+        </div>
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">Number Of Bookings</div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${numberOfBookings}"
+            disabled
+          />
+        </div>
+
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">Number Of Bookings Complete</div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${numberOfBookingsComplete}"
+            disabled
+          />
+        </div>
+
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">
+            Number Of Bookings Not Complete
+          </div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${numberOfBookingsNotComplete}"
+            disabled
+          />
+        </div>
+
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">Number Of Bookings Refund</div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${numberOfBookingsRefund}"
+            disabled
+          />
+        </div>
+
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">Revenue Bookings</div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${totalRevenue}"
+            disabled
+          />
+        </div>
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">
+            Number Of Bookings Last Month
+          </div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${numberOfBookingsInLastMonths}"
+            disabled
+          />
+        </div>
+        <div class="row justify-content-start mt-2">
+          <div class="col-sm-4 text-left mt-2">
+            Total Revenue Of Bookings Last Month
+          </div>
+          <input
+            class="col-sm-8"
+            type="text"
+            th:value="${totalRevenueInLastMonths}"
+            disabled
+          />
+        </div>
+      </div>
+
+      <form
+        class="container mt-5"
+        th:action="@{/admin/stats/checkRevenue}"
+        method="post"
+      >
+        <div class="form-group row">
+          <div class="col-sm-4">Month</div>
+          <input type="text" name="month" class="col-sm-8 form-control" />
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-4">Year</div>
+          <input type="text" name="year" class="col-sm-8 form-control" />
+        </div>
+        <div class="form-group row ml-3">
+          <button class="btn-primary" type="submit">
+            Check Revenue in specific Month
+          </button>
+        </div>
+      </form>
+
+      <form
+        class="container mt-5"
+        th:action="@{/admin/stats/checkRevenueYear}"
+        method="post"
+      >
+        <div class="form-group row">
+          <div class="col-sm-4">Year</div>
+          <input type="text" name="year" class="col-sm-8 form-control" />
+        </div>
+        <div class="form-group row ml-3">
+          <button class="btn-primary" type="submit">
+            Check Revenue in specific Year
+          </button>
+        </div>
+      </form>
+
+      <div th:replace="fragments :: confirm_modal"></div>
+
+      <div th:replace="fragments::footer"></div>
+    </div>
+    <script type="text/javascript"></script>
+  </body>
+</html>

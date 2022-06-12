@@ -12,7 +12,7 @@ public class AdminBookingService {
 	@Autowired
 	AdminBookingRepository adminBookingRepository;
 	
-	public Page<Booking> getAll(Pageable pageable) {
-		return (Page<Booking>) adminBookingRepository.findAll(pageable);
+	public Page<Booking> getAll(String searchText, Pageable pageable) {
+		return (Page<Booking>) adminBookingRepository.findAll(searchText, pageable);
 	}
 }

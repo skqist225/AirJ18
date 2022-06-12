@@ -12,16 +12,16 @@ import com.airtnt.entity.Chat;
 @Controller
 public class ChatController {
 
-	@Autowired
-	private ChatService chatService;
-
-	@Autowired
-	private SimpMessagingTemplate simpMessagingTemplate;
-
-	@MessageMapping("/private-message") ///user/1/private
-	public Message sendPrivateMessage(@Payload Message message) {
-		chatService.saveMessage(Chat.buildChatDTO(message));
-		simpMessagingTemplate.convertAndSendToUser(message.getReceiver().toString(), "/private", message.getMessage());
-		return message;
-	}
+//	@Autowired
+//	private ChatService chatService;
+//
+//	@Autowired
+//	private SimpMessagingTemplate simpMessagingTemplate;
+//
+//	@MessageMapping("/private-message") ///user/1/private
+//	public Message sendPrivateMessage(@Payload Message message) {
+//		chatService.saveMessage(Chat.buildChatDTO(message));
+//		simpMessagingTemplate.convertAndSendToUser(message.getReceiver().toString(), "/private", message.getMessage());
+//		return message;
+//	}
 }

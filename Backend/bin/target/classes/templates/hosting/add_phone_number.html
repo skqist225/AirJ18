@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xml:lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Xác minh số điện thoại</title>
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"
+        />
+        <link
+            rel="stylesheet"
+            href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <div th:replace="header :: css"></div>
+        <link rel="stylesheet" th:href="@{'/css/hosting/add_phone_number.css'}" />
+    </head>
+
+    <body>
+        <main>
+            <div class="add-pn__container">
+                <div class="add-pn__first-container">
+                    <div id="add-pn__prev-info">
+                        <h4 style="margin-bottom: 15px; text-align: center">
+                            Khách có thể liên hệ với bạn theo số nào?
+                        </h4>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="+84"
+                                id="phoneNumber"
+                                pattern="[0-9]*"
+                                max="11"
+                                min="10"
+                                autocomplete="nofill"
+                            />
+                            <button class="add-pn__continue-btn">Tiếp tục</button>
+                        </div>
+                    </div>
+                    <div id="add-pn__after-info" style="display: none">
+                        <h4 style="margin-bottom: 15px; text-align: center">
+                            Nhập mã xác nhận bao gồm 6 chữ số được gửi về điện thoại của bạn.
+                        </h4>
+                        <div style="display: flex; align-items: center">
+                            <input
+                                type="text"
+                                minlength="1"
+                                maxlength="1"
+                                pattern="[0-9]{1}"
+                                class="add-pn__otp-part"
+                                id="firstDigit"
+                            />
+                            <input
+                                type="text"
+                                minlength="1"
+                                maxlength="1"
+                                pattern="[0-9]{1}"
+                                class="add-pn__otp-part"
+                                id="secondDigit"
+                            />
+                            <input
+                                type="text"
+                                minlength="1"
+                                maxlength="1"
+                                pattern="[0-9]{1}"
+                                class="add-pn__otp-part"
+                                id="thirdDigit"
+                            />
+                            <input
+                                type="text"
+                                minlength="1"
+                                maxlength="1"
+                                pattern="[0-9]{1}"
+                                class="add-pn__otp-part"
+                                id="fourthDigit"
+                            />
+                            <input
+                                type="text"
+                                minlength="1"
+                                pattern="[0-9]{1}"
+                                class="add-pn__otp-part"
+                                id="fifthDigit"
+                            />
+                            <input
+                                type="text"
+                                maxlength="1"
+                                pattern="[0-9]{1}"
+                                class="add-pn__otp-part"
+                                id="sixthDigit"
+                            />
+                        </div>
+                        <div style="margin-top: 20px">
+                            <button class="add-pn__confirm-otp-btn">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="add-pn__last-container">
+                    <button class="add-pn__transparent-btn" onclick="backToVerifyPage();">
+                        Quay lại
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const baseURL = /*[[@{/}]]*/ 'default';
+            const roomId = /*[[${roomId}]]*/ 'default';
+            /*]]>*/
+        </script>
+        <script>
+            jQuery(document).ready(function () {
+                $('.add-pn__continue-btn')
+                    .first()
+                    .click(async function () {
+                        let phoneNumber = $('#phoneNumber').val().toString();
+
+                        if (isNaN(phoneNumber)) {
+                            alertify.error('Vui lòng nhập đúng định dạng số điện thoại');
+                            return;
+                        } else if (phoneNumber[0] === '0') {
+                            phoneNumber = phoneNumber.substring(1, phoneNumber.length);
+                        }
+                        if (phoneNumber.length < 9 || phoneNumber.length > 10) {
+                            alertify.error('Số điện thoại ít nhất 10 số hoặc 11 số');
+                            return;
+                        }
+
+                        phoneNumber = `+84${phoneNumber}`;
+
+                        const { data } = await axios.post(`${baseURL}mobile-number`, {
+                            phoneNumber,
+                        });
+
+                        if (data === 'Sent successfully!') {
+                            $('#add-pn__prev-info').css('display', 'none');
+                            $('#add-pn__after-info').css('display', 'block');
+                            alertify.success('Gửi thành công!');
+                        }
+                    });
+
+                $('.add-pn__confirm-otp-btn')
+                    .first()
+                    .click(async function () {
+                        const firstDigit = $('#firstDigit').val().toString();
+                        const secondDigit = $('#secondDigit').val().toString();
+                        const thirdDigit = $('#thirdDigit').val().toString();
+                        const fourthDigit = $('#fourthDigit').val().toString();
+                        const fifthDigit = $('#fifthDigit').val().toString();
+                        const sixthDigit = $('#sixthDigit').val().toString();
+
+                        const otp =
+                            firstDigit +
+                            secondDigit +
+                            thirdDigit +
+                            fourthDigit +
+                            fifthDigit +
+                            sixthDigit;
+
+                        if (otp.length !== 6) {
+                            alertify.error('Vui lòng điền đủ 6 chữ số');
+                            return;
+                        }
+
+                        if (isNaN(otp)) {
+                            alertify.error('Vui lòng nhập số');
+                            return;
+                        }
+
+                        const { data } = await axios.post(`${baseURL}otp`, {
+                            otp,
+                        });
+
+                        if (data === 'Correct OTP') {
+                            const { data: response } = await axios.post(
+                                `${baseURL}room/verify-phone`,
+                                {
+                                    roomId,
+                                }
+                            );
+                            if (response === 'success') {
+                                window.location.href = `${baseURL}verify-listing/${roomId}`;
+                            } else {
+                                alertify.error('Something went wrong');
+                            }
+                        } else {
+                            alertify.error('Mã xác nhận không đúng. Vui lòng nhập lại!');
+                        }
+                    });
+            });
+
+            function backToVerifyPage() {
+                window.location.href = `/airtnt/verify-listing/${roomId}`;
+            }
+        </script>
+    </body>
+</html>

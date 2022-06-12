@@ -61,9 +61,14 @@ public class AdminUserRestController {
     AdminUserService userService;
 
     @GetMapping("/users")
-    public Page<User> findAllUser(@RequestParam("page")int page, @RequestParam("sortField")String sortField, @RequestParam("sortDir")String sortDir) {
+    public Page<User> findAllUser(
+    		@RequestParam("page")int page, 
+    		@RequestParam("sortField")String sortField, 
+    		@RequestParam("sortDir")String sortDir,
+    		@RequestParam("searchText") String searchText
+    		) {
     	Pageable pageable = PageRequest.of(page-1, NUMBER_OF_USER_PER_PAGE, Sort.by(sortField).ascending());
-        return userService.findAll(pageable);
+        return userService.findAll(searchText, pageable);
     }
 
     @GetMapping("/users/{id}")
@@ -71,7 +76,7 @@ public class AdminUserRestController {
     	if(id<1)return ResponseEntity.badRequest().body("Id must greater than 0!");
     	AdminUserDTO adminUserDTO = userService.findById(id);
     	if(adminUserDTO.getAvatar()!=null) {
-    		adminUserDTO.setAvatar("/user_images/" + id + "/" + adminUserDTO.getAvatar());    		
+    		adminUserDTO.setAvatar("/user_images/" + id + "/" + adminUserDTO.getAvatar());	
     	}else {
     		adminUserDTO.setAvatar("/user_images/default_user_avatar.png");
     	}
@@ -112,8 +117,9 @@ public class AdminUserRestController {
         	return ResponseEntity.badRequest().body("Please Choose Role");
         if(userDTO.getPhoneNumber().isEmpty())
         	return ResponseEntity.badRequest().body("Please Enter Phone Number");
-        if (!userDTO.getPassword().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b"))
+        if (!userDTO.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b")) {
         	return ResponseEntity.badRequest().body("PhoneNumber must have right format!!!");
+        }
         if(userDTO.getAddress().getCountry()==null)
         	return ResponseEntity.badRequest().body("Please Choose Country");
         if(userDTO.getAddress().getState()==null)

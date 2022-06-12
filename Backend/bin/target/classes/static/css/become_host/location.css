@@ -1,0 +1,487 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    background-color: #a4ddf5;
+}
+
+.room-location__left {
+    position: relative;
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+    background-image: url('/images/location.jpg');
+    background-position: center;
+}
+
+.room-group__main {
+    width: 100%;
+    height: 100vh;
+}
+
+.room-group__container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.logoWrapper {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 99;
+}
+
+.room-group__left-title {
+    font-size: 48px;
+    line-height: 56px;
+    margin-bottom: 12px;
+}
+
+.room-group__left {
+    position: relative;
+    background: rgb(34, 193, 195);
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
+}
+
+#airTntLogo {
+    width: 100px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.room-group__left,
+.room-group__right {
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+}
+
+.room-group__right {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.roomTypesContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.room-group__right-middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-group__right-first {
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 99;
+}
+
+.room-group__right-last {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+
+.become-a-host__right-cancelBtn {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    cursor: pointer;
+    text-align: center;
+    border: none rgb(176, 176, 176);
+    background-color: rgb(34, 34, 34);
+    outline: none;
+    padding: 0px 16px;
+    margin: 0px;
+    border-radius: 32px;
+    color: rgb(255, 255, 255);
+    position: relative;
+    height: 32px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    width: calc(64px * 2);
+}
+
+.become-a-host__right-startBtn {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8 px;
+    outline: none;
+    padding: 14 px 24 px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+    color: rgb(255, 255, 255);
+    width: 120px;
+    height: 48px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.room-group__prev-step {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 px;
+    position: relative;
+    text-align: center;
+    border-color: black;
+    width: auto;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8 px;
+    border-width: 1 px;
+    border-style: solid;
+    outline: none;
+    padding-top: 10 px;
+    padding-bottom: 10 px;
+    padding-left: 10 px;
+    padding-right: 10 px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease, transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: transparent;
+    color: #222222;
+    text-decoration: underline;
+    margin-left: -10 px;
+    margin-right: -10 px;
+}
+
+.stepProcess {
+    width: 100%;
+    height: 2px;
+    background-color: #222222;
+}
+
+.stepProcess.location-step {
+    width: calc(100% / 11 * 4);
+}
+
+.privacy-type__box {
+    display: flex;
+    flex-direction: column;
+    width: 464px;
+    height: 90px;
+    border: 2px solid #f7f7f7;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    padding: 24px;
+}
+
+.privacy-type__box:hover {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.privacy-type__box.active {
+    box-shadow: 0 0 0 2px #222222;
+    background-color: #f7f7f7;
+}
+
+.room-type__name {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+.room-type__description {
+    font-size: 14px;
+    line-height: 20px;
+    color: #717171;
+    margin-top: 8px;
+}
+
+.location__search-location {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+    width: 600px;
+    height: 68px;
+    border-radius: 78px;
+    background-color: #fff;
+    box-shadow: 0px 6px 16px rgb(0 0 0 / 12%);
+}
+
+.location__search-location.input-focus {
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.location__search-location.non-active {
+    display: none;
+}
+
+.location__search-location.active {
+    display: block;
+}
+
+.location__search-location input {
+    width: 90%;
+    height: 100%;
+    border: none;
+    outline: none;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-left: 16px;
+    margin-right: 8px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    min-height: 1px;
+    color: #222222;
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 20px;
+    flex: 1;
+    padding: 0px;
+    text-overflow: ellipsis;
+    padding: 12px 12px 12px 16px;
+}
+
+.location__search-location input::placeholder {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.location__btn-complete-address {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    border-color: black;
+    width: auto;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    outline: none;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 24px;
+    padding-right: 24px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease, transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: #222222;
+    color: #ffffff;
+    contain: paint;
+}
+
+.location__right-middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.location__input-container {
+    width: 100%;
+    height: calc(100% / 6);
+    overflow: hidden;
+    border-bottom: 1px solid rgb(176, 176, 176);
+    padding-left: 10px;
+    position: relative;
+}
+
+.location__input-container:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: none;
+}
+
+.location__input-container div:first-child {
+    width: 100%;
+}
+
+.location__input-container div:last-child input {
+    border: none;
+    outline: none;
+    width: 100%;
+    color: rgb(34, 34, 34);
+    font-weight: 400;
+    font-size: 18px;
+}
+
+.location__input-container.focus {
+    border: 2px solid #222;
+    border-radius: 8px;
+    inset: -1px 0px -1px;
+}
+
+.location__input-container.focus:last-child {
+    inset: 0px 0px 1px;
+}
+
+.location__input-container div:last-child input.focus {
+    height: 60%;
+}
+
+.location__label-input {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    color: #484848;
+}
+
+.location__label-input.focus {
+    height: 40%;
+    font-size: 14px;
+}
+
+#selectTagContainer {
+    width: 100%;
+    height: 300px;
+    width: 100%;
+    position: absolute;
+    top: 483px;
+    left: 29px;
+}
+
+.location__location-option-box {
+    background-color: #fff;
+    width: 100%;
+    height: 140px;
+    display: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.location__location-option-box.input-focus {
+    display: block;
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+}
+
+.location__enter-address-btn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    text-align: center;
+    color: #222;
+    text-decoration: underline;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#location__enter-address-option {
+    width: 600px;
+    height: 600px;
+    position: absolute;
+    display: none;
+    transition: all 0.2 ease-in-out;
+}
+
+#location__enter-address-option.active {
+    display: block;
+}
+
+#location__enter-address-option__body {
+    flex: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid rgb(176, 176, 176);
+}
+
+.location__location-option-box-first {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.location__location-option-box-first:hover {
+    background-color: rgb(204, 204, 204);
+}
+
+.location__confirm-address {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+button:disabled {
+    cursor: no-drop;
+    background-color: #717171;
+}

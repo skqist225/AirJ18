@@ -12,7 +12,7 @@ public class AdminRoomService {
 	@Autowired
 	AdminRoomRepository adminRoomRepository;
 	
-	public Page<Room> getAll(Pageable pageable) {
-		return (Page<Room>)adminRoomRepository.findAll(pageable);
+	public Page<Room> getAll(String textSearch, Pageable pageable) {
+		return (Page<Room>)adminRoomRepository.findAll(textSearch, pageable);
 	}
 }

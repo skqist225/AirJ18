@@ -1,0 +1,106 @@
+.room-price__left {
+    flex: 1;
+    max-width: 50%;
+    height: 100%;
+    position: relative;
+    background: url('/images/room_price_step.jpg');
+    background-position: center;
+}
+
+.price-middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-price__btn {
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    -webkit-box-flex: 0;
+    width: 48px;
+    height: 48px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: inline-flex;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    text-decoration: none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(176, 176, 176);
+    color: rgb(113, 113, 113);
+    font-family: inherit;
+    outline: none;
+    touch-action: manipulation;
+    align-items: center;
+    justify-content: center;
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+}
+
+#room-price {
+    width: 324px;
+    outline: none;
+    padding: 8px 12px;
+    min-height: 1px;
+    background-color: transparent;
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 80px;
+    appearance: none;
+    border-radius: 10px;
+    border: 1px solid rgb(34, 34, 34);
+    margin: 0 40px;
+    text-align: center;
+}
+
+input::placeholder {
+    font-size: 48px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.per-night {
+    font-size: 16px !important;
+    line-height: 20px !important;
+    padding-top: 12px;
+}
+
+.stepProcess.room-price-step {
+    width: calc(100% / 11 * 10);
+}
+
+.become-a-host__preview-room {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    outline: none;
+    padding: 14px 2px;
+    transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s,
+        transform 0.1s ease 0s;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: linear-gradient(
+        to right,
+        rgb(230, 30, 77) 0%,
+        rgb(227, 28, 95) 50%,
+        rgb(215, 4, 102) 100%
+    );
+    color: rgb(255, 255, 255);
+    width: 260px;
+    height: 48px;
+    font-size: 18px;
+}

@@ -22,9 +22,12 @@ public class AdminBookingRestController {
 	AdminBookingService adminBookingService;
 	
 	@GetMapping(value="/booking")
-	public ResponseEntity<Object> getAll(@RequestParam("page") Integer page, @RequestParam("sortField") String sortField, @RequestParam("sortDir") String sortDir){
+	public ResponseEntity<Object> getAll(@RequestParam("page") Integer page, 
+			@RequestParam("sortField") String sortField, 
+			@RequestParam("sortDir") String sortDir,
+			@RequestParam("searchText") String searchText){
 		Pageable pageable = PageRequest.of(page-1, ROOM_PER_PAGE, Sort.by(sortField).ascending());
-		Page<Booking> bookingList = adminBookingService.getAll(pageable);
+		Page<Booking> bookingList = adminBookingService.getAll(searchText, pageable);
 		return ResponseEntity.ok().body(bookingList);
 	}
-}
+} 

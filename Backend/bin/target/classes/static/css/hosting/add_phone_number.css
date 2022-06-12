@@ -1,0 +1,142 @@
+main {
+    width: 1200px;
+    height: 100vh;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.add-pn__container {
+    padding: 0 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.add-pn__first-container {
+    flex: 1;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-pn__first-container div {
+    width: 520px;
+}
+
+.add-pn__last-container {
+    max-height: 10%;
+}
+
+input {
+    width: 100%;
+    outline: none;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 26px;
+    margin-bottom: 10px;
+    min-height: 1px;
+    background-color: transparent;
+    -webkit-appearance: none;
+    height: 54px;
+    padding: 12px;
+    border-radius: 12px;
+    width: 100%;
+}
+
+.add-pn__continue-btn {
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    border-color: black;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    outline: none;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 24px;
+    padding-right: 24px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease,
+        -webkit-transform 0.1s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: #222222;
+    color: #ffffff;
+    contain: paint;
+    width: 100%;
+}
+
+.add-pn__transparent-btn {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    text-decoration: underline;
+    color: #222;
+    font-size: 16;
+    font-weight: 500;
+}
+
+.add-pn__otp-part {
+    width: 100%;
+    outline: none;
+    margin-right: 10px;
+    padding-bottom: 0px;
+    margin-top: 26px;
+    margin-bottom: 10px;
+    min-height: 1px;
+    background-color: transparent;
+    -webkit-appearance: none;
+    height: 54px;
+    padding: 12px;
+    border-radius: 12px;
+    width: 100%;
+    text-align: center;
+}
+
+.add-pn__confirm-otp-btn {
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    border-color: black;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    outline: none;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 24px;
+    padding-right: 24px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease,
+        -webkit-transform 0.1s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: #222222;
+    color: #ffffff;
+    contain: paint;
+    width: 100%;
+}

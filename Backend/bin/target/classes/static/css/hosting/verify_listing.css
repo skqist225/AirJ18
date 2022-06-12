@@ -1,0 +1,129 @@
+main {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 80px - 97px);
+}
+
+.verify-listing__body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 144px 80px;
+    width: 1200px;
+    max-width: 90%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.verify-listing__body-right {
+    flex: 1;
+    max-width: 70%;
+}
+
+.verify-listing__body-right-first {
+    padding: 24px 0;
+    border-bottom: 1px solid rgb(225, 225, 225);
+}
+
+.verify-listing__body-right-first__title {
+    font-size: 21px;
+    color: #222;
+    margin-bottom: 15px;
+}
+.verify-listing__body-right-first__subtitle {
+    font-size: 14px;
+    color: #222;
+    margin-bottom: 15wpx;
+}
+.verify-listing__body-right-first__is-mandatory-or-complete {
+    padding-top: 24px;
+}
+.verify-listing__body-right-middle {
+    padding: 24px 0;
+    border-bottom: 1px solid rgb(225, 225, 225);
+}
+
+.verify-listing__body-right-last {
+    padding: 24px 0;
+    border-bottom: 1px solid rgb(225, 225, 225);
+}
+
+.verify-listing__body-left {
+    flex: 1;
+    max-width: 25%;
+}
+.verify-listing__footer {
+    height: 97px;
+    width: 100%;
+    border-top: 1px solid rgb(225, 225, 225);
+}
+
+.verify-listing__footer-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 1200px;
+    height: 100%;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.verify-listing__button-rent:disabled {
+    cursor: not-allowed;
+    opacity: 1;
+    border: none;
+    background: #dddddd;
+    color: #ffffff;
+}
+
+.verify-listing__body-partional-room-preview {
+    height: calc(212px + 92px);
+    width: 318px;
+    border-radius: 32px;
+    overflow: hidden;
+
+    border: 1px solid rgb(225, 225, 225);
+    border-top: none;
+}
+
+#roomThumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.verify-listing__button-rent {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    border-color: black;
+    width: auto;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    outline: none;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    padding-left: 24px;
+    padding-right: 24px;
+    -webkit-transition: box-shadow 0.2s ease, -webkit-transform 0.1s ease,
+        transform 0.1s ease;
+    -moz-transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, -ms-transform 0.1s ease,
+        -webkit-transform 0.1s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: #222222;
+    color: #ffffff;
+    contain: paint;
+}

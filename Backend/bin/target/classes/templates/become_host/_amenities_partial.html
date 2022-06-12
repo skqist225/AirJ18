@@ -1,0 +1,27 @@
+<div th:fragment="content(amentitiesArg, className)" th:remove="tag">
+    <div class="amentities__card-container">
+        <th:block th:each="a : ${amentitiesArg}">
+            <div th:class="${'amentity__card ' + className}">
+                <input type="hidden" th:value="${a.id}" />
+                <input
+                    type="hidden"
+                    th:value="${a.name}"
+                    class="amentityName"
+                />
+                <input type="hidden" th:value="${a.iconImage}" />
+                <div>
+                    <img
+                        th:src="@{'/amentity_images/' + ${a.iconImage}}"
+                        th:alt="${a.iconImage}"
+                        width="52px"
+                        height="52px"
+                        th:class="${className + 'Img'}"
+                    />
+                </div>
+                <div th:text="${a.name}" class="amentity__name"></div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<div th:fragment="loNuongBBQIcon" th:remove="tag"></div>

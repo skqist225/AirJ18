@@ -21,8 +21,13 @@ public class AdminUserService {
     @Autowired
     AdminUserRepository userRepository;
 
-    public Page<User> findAll(Pageable pageable) {
-        return (Page<User>) userRepository.findAll(pageable);
+    public Page<User> findAll(String searchText, Pageable pageable) {
+    	if (searchText != null && searchText != "")
+    		return (Page<User>) userRepository.findAll(searchText, pageable);
+    	else {
+    		return (Page<User>) userRepository.findAll(pageable);
+    	}
+        
     }
 
     public AdminUserDTO findById(Integer id) {

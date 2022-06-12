@@ -1,0 +1,322 @@
+<div th:remove="tag" th:fragment="incAndDecBtn(dataEdit, dataTrigger)">
+    <div>
+        <button
+            class="listings__minus-btn incAndDecBtn"
+            data-function="dec"
+            th:data-edit="${dataEdit}"
+            th:data-trigger="${dataTrigger}"
+        >
+            <span>
+                <img
+                    th:src="@{/svg/minus.svg}"
+                    alt="minus icon"
+                    width="12px"
+                    height="12px"
+                    style="object-fit: contain"
+                />
+            </span>
+        </button>
+        <span th:id="${dataEdit}" class="filter-count">0</span>
+        <button
+            class="listings__plus-btn incAndDecBtn"
+            data-function="inc"
+            th:data-edit="${dataEdit}"
+            th:data-trigger="${dataTrigger}"
+        >
+            <span
+                ><img
+                    th:src="@{/svg/plus.svg}"
+                    alt="plus icon"
+                    width="12px"
+                    height="12px"
+                    style="object-fit: contain"
+            /></span>
+        </button>
+    </div>
+</div>
+
+<div th:remove="tag" th:fragment="filterFooter(footerOf)">
+    <div style="padding: 16px 24px; border-top: 1px solid rgb(235, 235, 235)">
+        <div class="flex">
+            <button
+                style="display: inline-block"
+                th:class="${'listings__transparent-btn deleteBtn ' + footerOf}"
+                th:data-modify="${footerOf}"
+                disabled
+            >
+                Xóa</button
+            ><button
+                style="display: inline-block"
+                th:class="${'listings__black-btn applyBtn ' + footerOf}"
+                th:data-modify="${footerOf}"
+            >
+                Áp dụng
+            </button>
+        </div>
+    </div>
+</div>
+
+<div th:remove="tag" th:fragment="listingsTable(list)">
+    <table id="table" th:if="${#lists.size(rooms) > 0}">
+        <thead>
+            <tr>
+                <th>
+                    <div>
+                        <button class="listings__table-header" data-sort-field="id">
+                            <div>MÃ PHÒNG</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th>
+                    <div>
+                        <button class="listings__table-header" data-sort-field="name">
+                            <div>NHÀ/PHÒNG CHO THUÊ</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th>
+                    <div>
+                        <button class="listings__table-header" data-sort-field="status">
+                            <div>TRẠNG THÁI</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th>
+                    <div>
+                        <button class="listings__table-header" data-sort-field="price">
+                            <div>GIÁ PHÒNG MỖI ĐÊM</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th>
+                    <div>
+                        <button class="listings__table-header" data-sort-field="category-name">
+                            <div>LOẠI PHÒNG</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th data-column="BEDROOM">
+                    <div>
+                        <button class="listings__table-header" data-sort-field="bedroomCount">
+                            <div>PHÒNG NGỦ</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th data-column="BED">
+                    <div>
+                        <button class="listings__table-header" data-sort-field="bedCount">
+                            <div>GIƯỜNG</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th data-column="BATHROOM">
+                    <div>
+                        <button class="listings__table-header" data-sort-field="bathroomCount">
+                            <div>PHÒNG TẮM</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th>
+                    <div>
+                        <button class="listings__table-header" data-sort-field="location">
+                            <div>VỊ TRÍ</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th data-column="LASTMODIFIED">
+                    <div>
+                        <button class="listings__table-header" data-sort-field="lastModified">
+                            <div>SỬA ĐỔI LẦN CUỐI</div>
+                            <div class="listings__fiter-icon-container">
+                                <span class="upper"> </span>
+                                <span class="downer"></span>
+                            </div>
+                        </button>
+                    </div>
+                </th>
+                <th>
+                    <div style="position: relative">
+                        <div
+                            style="cursor: pointer"
+                            class="listings__filter-option"
+                            data-dropdown="listings__setting-column-display"
+                        >
+                            <img th:src="@{/svg/setting.svg}" alt="" width="20px" height="20px" />
+                        </div>
+                        <div id="listings__setting-column-display" class="filter-box">
+                            <div class="listings__setting-column-display-header">Tùy chỉnh cột</div>
+                            <div style="flex: 1; height: 80%">
+                                <div class="normal-flex listings__setting-column-display-row">
+                                    <input
+                                        type="checkbox"
+                                        checked="true"
+                                        class="columnDisplay"
+                                        value="COMMONNAME"
+                                    />
+                                    <div style="font-size: 14px">TÊN THƯỜNG GỌI</div>
+                                </div>
+                                <div class="normal-flex listings__setting-column-display-row">
+                                    <input
+                                        type="checkbox"
+                                        checked="true"
+                                        class="columnDisplay"
+                                        value="BEDROOM"
+                                    />
+                                    <div style="font-size: 14px">PHÒNG NGỦ</div>
+                                </div>
+                                <div class="normal-flex listings__setting-column-display-row">
+                                    <input
+                                        type="checkbox"
+                                        checked="true"
+                                        class="columnDisplay"
+                                        value="BED"
+                                    />
+                                    <div style="font-size: 14px">GIƯỜNG</div>
+                                </div>
+                                <div class="normal-flex listings__setting-column-display-row">
+                                    <input
+                                        type="checkbox"
+                                        checked="true"
+                                        class="columnDisplay"
+                                        value="BATHROOM"
+                                    />
+                                    <div style="font-size: 14px">PHÒNG TẮM</div>
+                                </div>
+                                <div class="normal-flex listings__setting-column-display-row">
+                                    <input
+                                        type="checkbox"
+                                        checked="true"
+                                        class="columnDisplay"
+                                        value="LASTMODIFIED"
+                                    />
+                                    <div style="font-size: 14px">SỬA ĐỔI LẦN CUỐI</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="room : ${list}">
+                <tr th:data-room-id="${room.id}">
+                    <td>
+                        <div style="padding-left: 8px">[[${room.id}]]</div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center">
+                            <div style="width: 56px; height: 40px">
+                                <img
+                                    th:src="@{'/room_images/' + ${userEmail + '/' + room.id + '/' + room.thumbnail}}"
+                                    alt="Room's thumbnail'"
+                                    class="listings__room-thumbnail"
+                                    th:if="${room.thumbnail != null}"
+                                />
+                                <img
+                                    th:src="@{'/room_images/' + ${userEmail + '/' + room.id + '/' + room.images[0].image}}"
+                                    alt="Room's thumbnail'"
+                                    class="listings__room-thumbnail"
+                                    th:if="${room.thumbnail == null}"
+                                />
+                            </div>
+                            <div class="listings__room-name">[[${room.name}]]</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; height: 100%">
+                            <div>
+                                <img src="" alt="" />
+                            </div>
+                            <div
+                                th:text="${room.status == true} ? 'Hoàn thành' : 'Đang tiến hành'"
+                            ></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            [[${room.currency.symbol}]][[${#numbers.formatDecimal(room.price, 3,
+                            'POINT', 0, 'COMMA')}]]
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center">
+                            <!-- <div>
+                                <svg
+                                    viewBox="0 0 16 16"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    style="display: block; height: 16px; width: 16px; fill: #008a05"
+                                    aria-hidden="true"
+                                    role="presentation"
+                                    focusable="false"
+                                >
+                                    <path
+                                        d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm3.159 4.869L6.67 9.355 4.42 7.105 3.289 8.236 6.67 11.62 12.291 6z"
+                                    ></path>
+                                </svg>
+                            </div>
+                            <div style="margin-left: 8px">Bật</div> -->
+                            [[${room.category.name}]]
+                        </div>
+                    </td>
+                    <td class="listings__td-text" data-column="BEDROOM">
+                        [[${room.bedroomCount}]]
+                    </td>
+                    <td class="listings__td-text" data-column="BED">[[${room.bedCount}]]</td>
+                    <td class="listings__td-text" data-column="BATHROOM">
+                        [[${room.bathroomCount}]]
+                    </td>
+                    <td class="listings__td-text">
+                        [[${room.city.name}]], [[${room.state.name}]], [[${room.country.name}]]
+                    </td>
+                    <td class="listings__td-text" data-column="LASTMODIFIED">
+                        [[${room.calculateHowManyDaysFromPastToCurrent()}]] ngày trước
+                    </td>
+                    <td></td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+    <div
+        style="font-weight: 600; font-size: 18px; line-height: 24px"
+        class="flex-2"
+        th:if="${#lists.isEmpty(rooms)}"
+    >
+        Không tìm thấy kết quả
+    </div>
+</div>
