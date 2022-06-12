@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.user;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -261,9 +262,12 @@ public class UserORestController {
 				if (environment.equals("development")) {
 					uploadDir = "src/main/resources/static/user_images/" + currentUser.getId() + "/";
 				} else {
+					System.out.println("here3");
+					new File("static/user_images/" + currentUser.getId() + "/").mkdirs();
 					Path uploadPath = Paths.get("static/user_images/" + currentUser.getId() + "/");
-
+					System.out.println("here4");
 					if (!Files.exists(uploadPath)) {
+						System.out.println("here1");
 						Files.createDirectories(uploadPath);
 					}
 					uploadDir = GetResource.getResourceAsFile("static/user_images/" + currentUser.getId() + "/");
