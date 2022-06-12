@@ -85,6 +85,15 @@ public class UserService {
 			throw new UserNotFoundException("User does not exist.");
 	}
 
+	public User findByPhoneNumber2(String phoneNumber) throws UserNotFoundException {
+		User user = userRepository.findByPhoneNumber2(phoneNumber);
+		if (user != null)
+			return user;
+		else {
+			throw new UserNotFoundException("User does not exist.");
+		}
+	}
+
 	@Transactional
 	public int verifyPhoneNumber(Integer userId) {
 		return userRepository.verifyPhoneNumber(userId);

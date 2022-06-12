@@ -10,6 +10,7 @@ interface IFetchUserBookings {
     bookingDateYear?: string;
     bookingDate?: string;
     isComplete?: string;
+    totalFee?: number;
 }
 
 export const fetchUserBookings = createAsyncThunk(
@@ -22,6 +23,7 @@ export const fetchUserBookings = createAsyncThunk(
             bookingDateYear,
             bookingDate,
             isComplete,
+            totalFee,
         }: IFetchUserBookings,
         { dispatch, getState, rejectWithValue }
     ) => {
@@ -49,6 +51,10 @@ export const fetchUserBookings = createAsyncThunk(
                 dispatch(setIsComplete(isComplete));
             }
 
+            if (totalFee) {
+                fetchUrl += `&total_fee=${totalFee}`;
+                dispatch(setTotalFee(totalFee));
+            }
             dispatch(setQuery(query));
 
             const {
@@ -182,6 +188,9 @@ const bookingSlice = createSlice({
         setIsComplete: (state, { payload }) => {
             state.fetchData.isComplete = payload;
         },
+        setTotalFee: (state, { payload }) => {
+            state.fetchData.totalFee = payload;
+        },
     },
     extraReducers: builder => {
         builder
@@ -220,6 +229,7 @@ export const {
     setBookingDateYear,
     setBookingDate,
     setIsComplete,
+    setTotalFee,
 } = bookingSlice.actions;
 export const bookingState = (state: RootState) => state.booking;
 export default bookingSlice.reducer;

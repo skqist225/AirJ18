@@ -31,7 +31,6 @@ import com.airtnt.airtntapp.response.error.NotFoundResponse;
 import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.room.RoomService;
 import com.airtnt.entity.Booking;
-import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +106,7 @@ public class BookingRestController {
             @PathVariable("pageNumber") Integer pageNumber,
             @RequestParam(name = "booking_date_month", required = false, defaultValue = "") String bookingDateMonth,
             @RequestParam(name = "booking_date_year", required = false, defaultValue = "") String bookingDateYear,
-            @RequestParam(name = "totalFee", required = false, defaultValue = "0") String totalFee,
+            @RequestParam(name = "total_fee", required = false, defaultValue = "0") String totalFee,
             @RequestParam(name = "query", required = false, defaultValue = "") String query,
             @RequestParam(name = "sort_dir", required = false, defaultValue = "asc") String sortDir,
             @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,

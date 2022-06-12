@@ -17,6 +17,7 @@
 /Backend/mvnw.cmd
 /Backend/src/test
 /Backend/test_ubuntu.sh
+/Backend/bin
 # testing
 /Frontend/coverage
 

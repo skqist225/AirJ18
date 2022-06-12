@@ -145,6 +145,19 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
 
                             break;
                         }
+                        case "totalFee": {
+                            const totalFee = $("#totalFeeInput")
+                                .val()!
+                                .toString()
+                                .replace(/,/g, "");
+                            dispatch(
+                                fetchUserBookings({
+                                    ...fetchData,
+                                    totalFee: parseInt(totalFee),
+                                })
+                            );
+                            break;
+                        }
                     }
 
                     closeFilterBox(dataModify);

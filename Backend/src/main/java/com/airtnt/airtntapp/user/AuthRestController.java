@@ -24,6 +24,7 @@ import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.user.dto.PostLoginUserDTO;
 import com.airtnt.airtntapp.user.dto.PostRegisterUserDTO;
+import com.airtnt.airtntapp.user.dto.ResetPasswordByPhoneNumberDTO;
 import com.airtnt.airtntapp.user.dto.ResetPasswordDTO;
 import com.airtnt.airtntapp.user.response.ForgotPasswordResponse;
 import com.airtnt.entity.User;
@@ -206,6 +207,36 @@ public class AuthRestController {
 			boolean isAfter = now.isAfter(user.getResetPasswordExpirationTime());
 			if (isAfter)
 				return new BadResponse<String>("Reset password session is out of time").response();
+
+			if (!newPassword.equals(confirmNewPassword))
+				return new BadResponse<String>("New password does not match confirm new password").response();
+
+			user.setPassword(userService.getEncodedPassword(newPassword));
+			user.setResetPasswordExpirationTime(null);
+			userService.saveUser(user);
+
+			return new OkResponse<String>("Your password has been changed successfully").response();
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+			return new BadResponse<String>(e.getMessage()).response();
+		}
+	}
+
+	@PutMapping("reset-password-by-phonenumber")
+	public ResponseEntity<StandardJSONResponse<String>> resetPassword(
+			@RequestBody ResetPasswordByPhoneNumberDTO resetPassword) {
+		if (resetPassword.getPhone().isEmpty()) {
+			return new BadResponse<String>(
+					"Phone number is required to reset password. Discard reset password session.")
+					.response();
+		}
+
+		String phoneNumber = resetPassword.getPhone();
+		String newPassword = resetPassword.getNewPassword();
+		String confirmNewPassword = resetPassword.getConfirmNewPassword();
+
+		try {
+			User user = userService.findByPhoneNumber2(phoneNumber);
 
 			if (!newPassword.equals(confirmNewPassword))
 				return new BadResponse<String>("New password does not match confirm new password").response();

@@ -13,7 +13,7 @@ import {
     setQuery,
 } from "../features/booking/bookingSlice";
 import { Div, Image } from "../globalStyle";
-import { getImage } from "../helpers";
+import { getImage, seperateNumber } from "../helpers";
 import { RootState } from "../store";
 
 import "./css/manage_booking_page.css";
@@ -22,6 +22,7 @@ import "../components/hosting/listings/css/filter_footer.css";
 import { FilterButton } from "../components/hosting/listings/components";
 import $ from "jquery";
 import { Col, Slider } from "antd";
+import { sep } from "node:path/win32";
 
 interface IManageBookingPageProps {}
 
@@ -101,6 +102,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
     }
 
     const onChange = (value: number) => {
+        console.log(value);
         if (isNaN(value)) {
             return;
         }
@@ -357,7 +359,7 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                             dataDropDown='listings__filter-totalFee'
                             title='Tổng phí'
                             width='300px'
-                            height='300px'
+                            height='200px'
                             content={
                                 <>
                                     <div className='listings__filter-wrapper'>
@@ -381,8 +383,8 @@ const ManageBookingPage: FC<IManageBookingPageProps> = () => {
                                             <div className='normal-flex listings__filter-others-row'>
                                                 <input
                                                     type='text'
-                                                    id='textInput'
-                                                    value=''
+                                                    id='totalFeeInput'
+                                                    value={seperateNumber(inputValue)}
                                                     className='form-control'
                                                 />
                                             </div>

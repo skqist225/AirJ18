@@ -33,6 +33,9 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     @Query("SELECT count(*) From User ")
     public Integer getNumberOfUser();
-    
+
     public List<User> findByPhoneNumber(String phoneNumber);
+
+    @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber")
+    public User findByPhoneNumber2(String phoneNumber);
 }
