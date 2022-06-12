@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import { IBooking } from '../../types/booking/type_Booking';
-import BookingDataRow from './BookingDataRow';
-import { ColumnHeader } from '../utils';
+import { FC } from "react";
+import { IBooking } from "../../types/booking/type_Booking";
+import BookingDataRow from "./BookingDataRow";
+import { ColumnHeader } from "../utils";
 
 interface IBookingsTableProps {
     bookings: IBooking[];
@@ -15,7 +15,7 @@ const BookingsTable: FC<IBookingsTableProps> = ({ bookings }) => {
                     <table id='table'>
                         <thead>
                             <tr>
-                                <th style={{ width: '7%' }}>
+                                <th style={{ width: "7%" }}>
                                     <ColumnHeader columnName='MÃ ĐẶT PHÒNG' sortField='id' />
                                 </th>
                                 <th>
@@ -92,8 +92,11 @@ const BookingsTable: FC<IBookingsTableProps> = ({ bookings }) => {
                     </table>
                 </>
             ) : (
-                <div style={{ fontSize: '18px', lineHeight: '24px' }} className='flex-2 fw-600'>
-                    Không tìm thấy kết quả
+                <div
+                    style={{ fontSize: "18px", lineHeight: "24px" }}
+                    className='flex-2 fw-600 flex-center w100-h100'
+                >
+                    <h3> Không tìm thấy kết quả</h3>
                 </div>
             )}
         </>

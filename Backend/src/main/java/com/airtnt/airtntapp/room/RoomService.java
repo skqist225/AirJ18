@@ -491,4 +491,8 @@ public class RoomService {
 	public List<RoomPricePerCurrencyDTO> findAverageRoomPriceByPriceType(PriceType type) {
 		return roomRepository.findAverageRoomPriceByPriceType(type);
 	}
+
+	public List<Integer> getRoomIdByHost(User host) {
+		return roomRepository.getRoomIdByHost(host);
+	}
 }

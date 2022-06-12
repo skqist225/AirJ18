@@ -1,6 +1,7 @@
 package com.airtnt.airtntapp.booking;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.mail.internet.AddressException;
 
 import com.airtnt.airtntapp.booking.dto.BookingDTO;
 import com.airtnt.airtntapp.booking.dto.BookingListDTO;
+import com.airtnt.airtntapp.booking.dto.BookingListResponse;
 import com.airtnt.airtntapp.email.SendEmail;
 import com.airtnt.airtntapp.exception.AlreadyCancelException;
 import com.airtnt.airtntapp.exception.BookingNotFoundException;
@@ -100,7 +102,7 @@ public class BookingRestController {
     }
 
     @GetMapping(value = "/listings/{pageNumber}")
-    public ResponseEntity<StandardJSONResponse<Page<BookingListDTO>>> listings(
+    public ResponseEntity<StandardJSONResponse<BookingListResponse>> listings(
             @CookieValue(value = "user", required = false) String cookie,
             @PathVariable("pageNumber") Integer pageNumber,
             @RequestParam(name = "booking_date_month", required = false, defaultValue = "") String bookingDateMonth,
@@ -109,17 +111,14 @@ public class BookingRestController {
             @RequestParam(name = "query", required = false, defaultValue = "") String query,
             @RequestParam(name = "sort_dir", required = false, defaultValue = "asc") String sortDir,
             @RequestParam(name = "sort_field", required = false, defaultValue = "id") String sortField,
-            @RequestParam(name = "bookingDate", required = false, defaultValue = "") String bookingDate,
-            @RequestParam(name = "isComplete", required = false, defaultValue = "") String isComplete)
+            @RequestParam(name = "booking_date", required = false, defaultValue = "") String bookingDate,
+            @RequestParam(name = "is_complete", required = false, defaultValue = "") String isComplete)
             throws ParseException {
         try {
             User host = authenticate.getLoggedInUser(cookie);
 
-            List<Room> rooms = roomService.getRoomsByHostId(host);
-            Integer[] roomIds = new Integer[rooms.size()];
-            for (int i = 0; i < rooms.size(); i++) {
-                roomIds[i] = rooms.get(i).getId();
-            }
+            List<Integer> roomIds = roomService.getRoomIdByHost(host);
+
             Map<String, String> filters = new HashMap<>();
             filters.put("sortField", sortField);
             filters.put("sortDir", sortDir);
@@ -130,13 +129,21 @@ public class BookingRestController {
             filters.put("bookingDateYear", bookingDateYear);
             filters.put("totalFee", totalFee);
 
-            Page<BookingListDTO> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
-            return new OkResponse<Page<BookingListDTO>>(bookings).response();
+            Page<Booking> bookings = bookingService.getBookingListByRooms(roomIds, pageNumber, filters);
+            List<BookingListDTO> bookingListDtos = new ArrayList<>();
+            for (Booking b : bookings.toList()) {
+                bookingListDtos.add(BookingListDTO.buildDTO(b));
+            }
+
+            return new OkResponse<BookingListResponse>(
+                    new BookingListResponse(
+                            bookingListDtos, bookings.getTotalElements(), bookings.getTotalPages()))
+                    .response();
 
         } catch (NullCookieException ex) {
-            return new BadResponse<Page<BookingListDTO>>(ex.getMessage()).response();
+            return new BadResponse<BookingListResponse>(ex.getMessage()).response();
         } catch (NotAuthenticatedException ex) {
-            return new NotAuthenticatedResponse<Page<BookingListDTO>>().response();
+            return new NotAuthenticatedResponse<BookingListResponse>().response();
         }
     }
 

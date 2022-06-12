@@ -1,21 +1,60 @@
-import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import api from '../../axios';
-import { RootState } from '../../store';
-import { IBooking } from '../../types/booking/type_Booking';
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
+import api from "../../axios";
+import { RootState } from "../../store";
+import { IBooking } from "../../types/booking/type_Booking";
 
 interface IFetchUserBookings {
+    query?: string;
     page: number;
+    bookingDateMonth?: string;
+    bookingDateYear?: string;
+    bookingDate?: string;
+    isComplete?: string;
 }
 
 export const fetchUserBookings = createAsyncThunk(
-    'booking/fetchUserBookings',
-    async ({ page }: IFetchUserBookings, { dispatch, getState, rejectWithValue }) => {
+    "booking/fetchUserBookings",
+    async (
+        {
+            page,
+            query = "",
+            bookingDateMonth,
+            bookingDateYear,
+            bookingDate,
+            isComplete,
+        }: IFetchUserBookings,
+        { dispatch, getState, rejectWithValue }
+    ) => {
         try {
+            let fetchUrl = `/booking/listings/${page}?query=${query}`;
+
+            if (bookingDateMonth && bookingDateYear) {
+                fetchUrl += `&booking_date_month=${bookingDateMonth}&booking_date_year=${bookingDateYear}`;
+                dispatch(setBookingDateMonth(bookingDateMonth));
+                dispatch(setBookingDateYear(bookingDateYear));
+            } else if (bookingDateMonth) {
+                fetchUrl += `&booking_date_month=${bookingDateMonth}`;
+                dispatch(setBookingDateMonth(bookingDateMonth));
+            } else if (bookingDateYear) {
+                fetchUrl += `&booking_date_year=${bookingDateYear}`;
+                dispatch(setBookingDateYear(bookingDateYear));
+            }
+            if (bookingDate) {
+                fetchUrl += `&booking_date=${bookingDate}`;
+                dispatch(setBookingDate(bookingDate));
+            }
+
+            if (isComplete) {
+                fetchUrl += `&is_complete=${isComplete}`;
+                dispatch(setIsComplete(isComplete));
+            }
+
+            dispatch(setQuery(query));
+
             const {
-                data: {
-                    bookings: { content, totalElements },
-                },
-            } = await api.get(`/booking/listings/${page}`);
+                data: { content, totalElements },
+            } = await api.get(fetchUrl);
+
             return { content, totalElements };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
@@ -32,7 +71,7 @@ interface ICreateBooking {
 }
 
 export const createBooking = createAsyncThunk(
-    'booking/createBooking',
+    "booking/createBooking",
     async (
         { roomid, checkinDate, checkoutDate, numberOfDays, clientMessage }: ICreateBooking,
         { dispatch, getState, rejectWithValue }
@@ -55,14 +94,14 @@ interface IStripeArgs {
 }
 
 export const getStripeClientSecret = createAsyncThunk(
-    'booking/getStripeClientSecret',
+    "booking/getStripeClientSecret",
     async (fetchPayload: IStripeArgs, { dispatch, getState, rejectWithValue }) => {
         try {
             const {
                 data: { clientSecret },
             } = await api.post(`/create-payment-intent`, fetchPayload, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
             return { clientSecret };
@@ -73,7 +112,7 @@ export const getStripeClientSecret = createAsyncThunk(
 );
 
 export const cancelBooking = createAsyncThunk(
-    'booking/cancelBooking',
+    "booking/cancelBooking",
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/booking/${bookingid}/canceled`);
@@ -85,7 +124,7 @@ export const cancelBooking = createAsyncThunk(
 );
 
 export const approveBooking = createAsyncThunk(
-    'booking/approveBooking',
+    "booking/approveBooking",
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/booking/${bookingid}/approved`);
@@ -103,21 +142,47 @@ type BookingState = {
     clientSecret: string;
     newlyCreatedBooking: any;
     cancelMessage: string;
+    fetchData: IFetchUserBookings;
 };
 
 const initialState: BookingState = {
     bookingsOfCurrentUserRooms: [],
     totalElements: 0,
     loading: true,
-    clientSecret: '',
+    clientSecret: "",
     newlyCreatedBooking: {},
-    cancelMessage: '',
+    cancelMessage: "",
+    fetchData: {
+        query: "",
+        page: 1,
+        bookingDateMonth: "",
+        bookingDateYear: "",
+    },
 };
 
 const bookingSlice = createSlice({
-    name: 'booking',
+    name: "booking",
     initialState,
-    reducers: {},
+    reducers: {
+        setPage: (state, { payload }) => {
+            state.fetchData.page = payload;
+        },
+        setQuery: (state, { payload }) => {
+            state.fetchData.query = payload;
+        },
+        setBookingDateMonth: (state, { payload }) => {
+            state.fetchData.bookingDateMonth = payload;
+        },
+        setBookingDateYear: (state, { payload }) => {
+            state.fetchData.bookingDateYear = payload;
+        },
+        setBookingDate: (state, { payload }) => {
+            state.fetchData.bookingDateYear = payload;
+        },
+        setIsComplete: (state, { payload }) => {
+            state.fetchData.isComplete = payload;
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(fetchUserBookings.fulfilled, (state, { payload }) => {
@@ -148,5 +213,13 @@ const bookingSlice = createSlice({
     },
 });
 
+export const {
+    setPage,
+    setQuery,
+    setBookingDateMonth,
+    setBookingDateYear,
+    setBookingDate,
+    setIsComplete,
+} = bookingSlice.actions;
 export const bookingState = (state: RootState) => state.booking;
 export default bookingSlice.reducer;

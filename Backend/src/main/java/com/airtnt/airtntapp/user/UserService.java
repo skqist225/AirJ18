@@ -154,6 +154,20 @@ public class UserService {
 		userRepository.deleteById(id);
 	}
 
+	public boolean deleteUser(Integer id) throws UserNotFoundException {
+		try {
+			Long countById = userRepository.countById(id);
+			if ((countById == null || countById == 0)) {
+				throw new UserNotFoundException("Could not find any user with ID " + id);
+			}
+
+			userRepository.deleteById(id);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
 	public void updateUserEnabledStatus(Integer id, boolean enabled) {
 		userRepository.updateStatus(id, enabled);
 	}
@@ -165,10 +179,14 @@ public class UserService {
 		else
 			throw new UserNotFoundException("User does not exist.");
 	}
-	
-	public int checkPhoneNumber(String phoneNumber) {
-		List<User> user =userRepository.findByPhoneNumber(phoneNumber);
-		return user.size() > 0 ? 1 : -1;
+
+	public boolean checkPhoneNumber(String phoneNumber) {
+		List<User> users = userRepository.findByPhoneNumber(phoneNumber);
+		return users.size() > 0 ? true : false;
+	}
+
+	public boolean checkEmail(String email) {
+		return userRepository.findByEmail(email) != null ? true : false;
 	}
 
 	public Integer getNumberOfUser() {

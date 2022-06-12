@@ -17,6 +17,7 @@ import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
+import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
@@ -47,6 +48,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -330,6 +332,18 @@ public class UserORestController {
 			return new BadResponse<BookedRoomsByUser>(ex.getMessage()).response();
 		} catch (NotAuthenticatedException ex) {
 			return new NotAuthenticatedResponse<BookedRoomsByUser>().response();
+		}
+	}
+
+	@DeleteMapping("{userid}")
+	public ResponseEntity<StandardJSONResponse<String>> deleteUser(@PathVariable("userid") String userId)
+			throws NumberFormatException, UserNotFoundException {
+		boolean isDeleteSucceeded = userService.deleteUser(Integer.parseInt(userId));
+
+		if (isDeleteSucceeded) {
+			return new OkResponse<String>("Delete user successfully").response();
+		} else {
+			return new BadResponse<String>("Can not delete user").response();
 		}
 	}
 

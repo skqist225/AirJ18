@@ -1,8 +1,8 @@
-import { FC } from 'react';
-import styled from 'styled-components';
-import { Div, Image } from '../../../../globalStyle';
-import { getImage } from '../../../../helpers';
-import { FilterFooter } from '../../../utils';
+import React, { FC } from "react";
+import styled from "styled-components";
+import { Div, Image } from "../../../../globalStyle";
+import { getImage } from "../../../../helpers";
+import { FilterFooter } from "../../../utils";
 
 interface IFilterButtonProps {
     title: string;
@@ -58,7 +58,7 @@ const FilterButton: FC<IFilterButtonProps> = ({
                 <span>{title}</span>
                 {haveBox && (
                     <span>
-                        <Image src={getImage('/svg/dropdown.svg')} size='12px' />
+                        <Image src={getImage("/svg/dropdown.svg")} size='12px' />
                     </span>
                 )}
             </button>

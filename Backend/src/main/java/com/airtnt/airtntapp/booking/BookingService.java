@@ -260,7 +260,7 @@ public class BookingService {
                     bookingDate, bookingDate2, totalFee, pageable);
     }
 
-    public Page<BookingListDTO> getBookingListByRooms(Integer[] roomIds, int pageNumber, Map<String, String> filters) {
+    public Page<Booking> getBookingListByRooms(List<Integer> roomIds, int pageNumber, Map<String, String> filters) {
         String sortField = filters.get("sortField");
         String sortDir = filters.get("sortDir");
         String query = filters.get("query");
@@ -343,13 +343,21 @@ public class BookingService {
         if (!bookingDateMonth.isEmpty() && !bookingDateYear.isEmpty()) {
             return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
                     Integer.parseInt(bookingDateYear), Integer.parseInt(bookingDateMonth), pageable);
+        } else if (!bookingDateMonth.isEmpty()) {
+            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst,
+                    Integer.parseInt(bookingDateMonth), isCancelledLst, pageable);
+        } else if (!bookingDateYear.isEmpty()) {
+            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst,
+                    isCancelledLst, Integer.parseInt(bookingDateYear), pageable);
         }
 
-        if (bookingId != -1)
+        if (bookingId != -1) {
             return bookingRepository.getBookingListByRooms(roomIds, bookingId, pageable);
-        else
-            return bookingRepository.getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
-                    bookingDate, bookingDate2, totalFee, pageable);
+        } else {
+            return bookingRepository
+                    .getBookingListByRooms(roomIds, query, isCompleteLst, isCancelledLst,
+                            bookingDate, bookingDate2, totalFee, pageable);
+        }
     }
 
     @Transactional

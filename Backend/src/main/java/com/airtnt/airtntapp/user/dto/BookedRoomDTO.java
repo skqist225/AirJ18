@@ -54,7 +54,7 @@ public class BookedRoomDTO {
         String roomThumbnail = "/room_images/" + b.getRoom().getHost().getEmail() + "/" + b.getRoom().getId() + "/"
                 + b.getRoom().getThumbnail();
         String userFullName = b.getRoom().getHost().getFirstName() + " " + b.getRoom().getHost().getLastName();
-        String userAvatar = "/room_images/" + b.getRoom().getHost().getId() + "/" + b.getRoom().getHost().getAvatar();
+        String userAvatar = "/user_images/" + b.getRoom().getHost().getId() + "/" + b.getRoom().getHost().getAvatar();
         String bookingReview = null;
         SubRating reviewRating = null;
 
