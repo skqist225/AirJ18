@@ -154,6 +154,20 @@ public class UserService {
 		userRepository.deleteById(id);
 	}
 
+	public boolean deleteUser(Integer id) throws UserNotFoundException {
+		try {
+			Long countById = userRepository.countById(id);
+			if ((countById == null || countById == 0)) {
+				throw new UserNotFoundException("Could not find any user with ID " + id);
+			}
+
+			userRepository.deleteById(id);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
 	public void updateUserEnabledStatus(Integer id, boolean enabled) {
 		userRepository.updateStatus(id, enabled);
 	}
