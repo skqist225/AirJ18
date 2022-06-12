@@ -48,9 +48,9 @@ pipeline {
         // }
         stage('Deploy Application Prodution Stage') {
             steps {
-                timeout(time:5, unit:'MINUTES') {
-                    input message: 'Approve PRODUCTION Deployment?'
-                }
+                // timeout(time:5, unit:'MINUTES') {
+                //     input message: 'Approve PRODUCTION Deployment?'
+                // }
                     sshPublisher(
                     publishers: [sshPublisherDesc(configName: 'ubuntu@54.255.165.245',
                     transfers: [sshTransfer(cleanRemote: false, excludes: '',
