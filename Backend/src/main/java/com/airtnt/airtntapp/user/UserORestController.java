@@ -6,10 +6,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.airtnt.airtntapp.FileUploadUtil;
@@ -262,13 +266,15 @@ public class UserORestController {
 				if (environment.equals("development")) {
 					uploadDir = "src/main/resources/static/user_images/" + currentUser.getId() + "/";
 				} else {
-					System.out.println("here3");
-					new File("static/user_images/" + currentUser.getId() + "/").mkdirs();
-					Path uploadPath = Paths.get("static/user_images/" + currentUser.getId() + "/");
-					System.out.println("here4");
+					String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classesstatic/user_images/"
+							+ currentUser.getId() + "/";
+					Path uploadPath = Paths.get(filePath);
 					if (!Files.exists(uploadPath)) {
-						System.out.println("here1");
-						Files.createDirectories(uploadPath);
+						Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr--r--");
+						FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions
+								.asFileAttribute(permissions);
+
+						Files.createDirectories(uploadPath, fileAttributes);
 					}
 					uploadDir = GetResource.getResourceAsFile("static/user_images/" + currentUser.getId() + "/");
 					System.out.println(uploadDir);
