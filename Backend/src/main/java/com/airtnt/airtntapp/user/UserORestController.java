@@ -266,7 +266,7 @@ public class UserORestController {
 				if (environment.equals("development")) {
 					uploadDir = "src/main/resources/static/user_images/" + currentUser.getId() + "/";
 				} else {
-					String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classesstatic/user_images/"
+					String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classes/static/user_images/"
 							+ currentUser.getId() + "/";
 					Path uploadPath = Paths.get(filePath);
 					if (!Files.exists(uploadPath)) {
