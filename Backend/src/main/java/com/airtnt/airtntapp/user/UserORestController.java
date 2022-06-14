@@ -22,14 +22,12 @@ import com.airtnt.airtntapp.city.CityService;
 import com.airtnt.airtntapp.common.GetResource;
 import com.airtnt.airtntapp.cookie.CookieProcess;
 import com.airtnt.airtntapp.country.CountryService;
-import com.airtnt.airtntapp.exception.ForbiddenException;
 import com.airtnt.airtntapp.exception.NotAuthenticatedException;
 import com.airtnt.airtntapp.exception.NullCookieException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.middleware.Authenticate;
 import com.airtnt.airtntapp.response.StandardJSONResponse;
 import com.airtnt.airtntapp.response.error.BadResponse;
-import com.airtnt.airtntapp.response.error.ForbiddenResponse;
 import com.airtnt.airtntapp.response.error.NotAuthenticatedResponse;
 import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.airtntapp.room.RoomService;
@@ -178,11 +176,16 @@ public class UserORestController {
 
 			switch (updatedField) {
 				case "firstNameAndLastName": {
-					String newFirstName = updateData.get("firstName");
-					String newLastName = updateData.get("lastName");
+					if (updateData.get("firstName") == null && updateData.get("lastName") == null) {
+						return new BadResponse<User>("First name or last name is required").response();
+					}
 
-					currentUser.setFirstName(newFirstName);
-					currentUser.setLastName(newLastName);
+					if (updateData.get("firstName") != null) {
+						currentUser.setFirstName(updateData.get("firstName"));
+					}
+					if (updateData.get("lastName") != null) {
+						currentUser.setLastName(updateData.get("lastName"));
+					}
 					savedUser = userService.saveUser(currentUser);
 					break;
 				}
@@ -193,12 +196,31 @@ public class UserORestController {
 					savedUser = userService.saveUser(currentUser);
 					break;
 				}
-				case "birthday": {
+				case "gender": {
+					if (updateData.get("gender") == null) {
+						return new BadResponse<User>("Gender is required").response();
+					}
+					String newSex = updateData.get("gender");
+					Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
+					currentUser.setSex(sex);
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "birthdayWeb": {
 					Integer yearOfBirth = Integer.parseInt(updateData.get("yearOfBirth"));
 					Integer monthOfBirth = Integer.parseInt(updateData.get("monthOfBirth"));
 					Integer dayOfBirth = Integer.parseInt(updateData.get("dayOfBirth"));
 
 					currentUser.setBirthday(LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth));
+					savedUser = userService.saveUser(currentUser);
+					break;
+				}
+				case "birthday": {
+					if (updateData.get("birthday") == null) {
+						return new BadResponse<User>("Birthday is required").response();
+					}
+					LocalDate birthd = LocalDate.parse(updateData.get("birthday"));
+					currentUser.setBirthday(birthd);
 					savedUser = userService.saveUser(currentUser);
 					break;
 				}
@@ -379,6 +401,18 @@ public class UserORestController {
 			return new BadResponse<List<Chat>>(e.getMessage()).response();
 		} catch (NotAuthenticatedException e) {
 			return new BadResponse<List<Chat>>(e.getMessage()).response();
+		}
+	}
+
+	@GetMapping("info")
+	public ResponseEntity<StandardJSONResponse<User>> getUserInfo(
+			@CookieValue(value = "user", required = false) String cookie) {
+		try {
+			return new OkResponse<User>(authenticate.getLoggedInUser(cookie)).response();
+		} catch (NullCookieException e) {
+			return new BadResponse<User>(e.getMessage()).response();
+		} catch (NotAuthenticatedException e) {
+			return new BadResponse<User>(e.getMessage()).response();
 		}
 	}
 }

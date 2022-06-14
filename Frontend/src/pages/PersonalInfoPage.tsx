@@ -1,16 +1,16 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
-import { UserInfo } from '../components/personal_info/UserInfo';
-import { getImage, formatDate, getUserSex, callToast } from '../helpers';
-import { RootState } from '../store';
+import { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import { UserInfo } from "../components/personal_info/UserInfo";
+import { getImage, formatDate, getUserSex, callToast } from "../helpers";
+import { RootState } from "../store";
 
-import { jqueryCode } from '../components/personal_info/script/personal_info';
-import Toast from '../components/notify/Toast';
+import { jqueryCode } from "../components/personal_info/script/personal_info";
+import Toast from "../components/notify/Toast";
 
-import './css/personal_info.css';
-import { Image } from '../globalStyle';
+import "./css/personal_info.css";
+import { Image } from "../globalStyle";
 
 type IPersonalInfoPageProps = {};
 
@@ -28,8 +28,8 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
     }, []);
 
     useEffect(() => {
-        if (successMessage === 'UPDATE_USER_SUCCESSFULLY')
-            callToast('success', 'Cập nhật thành công');
+        if (successMessage === "UPDATE_USER_SUCCESSFULLY")
+            callToast("success", "Cập nhật thành công");
     }, [successMessage]);
 
     return (
@@ -42,8 +42,8 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                         <div className='normal-flex'>
                             <span className='personal__info--title'>Tài khoản</span>
                             <div className='personal__info__next-icon'>
-                                <Image src={getImage('/svg/next.svg')} size={'10px'} />
-                            </div>{' '}
+                                <Image src={getImage("/svg/next.svg")} size={"10px"} />
+                            </div>{" "}
                             <span className='personal__info--title'>Thông tin cá nhân</span>
                         </div>
                         <h2>Thông tin cá nhân</h2>
@@ -52,7 +52,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                 <UserInfo
                                     title='Tên pháp lý'
                                     dataEdit='firstNameAndLastName'
-                                    value={user.firstName + ' ' + user.lastName}
+                                    value={user.firstName + " " + user.lastName}
                                 />
                                 <UserInfo
                                     title='Giới tính'
@@ -61,7 +61,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                 />
                                 <UserInfo
                                     title='Ngày sinh'
-                                    dataEdit='birthday'
+                                    dataEdit='birthdayWeb'
                                     value={formatDate(user.birthday)}
                                 />
                                 <UserInfo
@@ -72,7 +72,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                 <UserInfo
                                     title='Mật khẩu'
                                     dataEdit='password'
-                                    value={'**********'}
+                                    value={"**********"}
                                 />
                                 <UserInfo
                                     title='Số điện thoại'
@@ -94,7 +94,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                             <div id='personal-info__right'>
                                 <div>
                                     <div>
-                                        <Image src={getImage('/svg/block.svg')} size='40px' />
+                                        <Image src={getImage("/svg/block.svg")} size='40px' />
                                     </div>
                                     <h4>Bạn có thể chỉnh sửa những thông tin nào?</h4>
                                     <p>
@@ -108,7 +108,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
                                 <div>
                                     <div>
                                         <Image
-                                            src={getImage('/svg/paper_identity.svg')}
+                                            src={getImage("/svg/paper_identity.svg")}
                                             size='40px'
                                         />
                                     </div>

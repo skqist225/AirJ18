@@ -87,7 +87,7 @@ export const FormEdit: FC<IFormEditProps> = ({ dataEdit }) => {
                 );
                 break;
             }
-            case "birthday": {
+            case "birthdayWeb": {
                 const { yearOfBirth, monthOfBirth, dayOfBirth } = data;
                 const status = checkBirthdayIsGreaterThenPresent(
                     yearOfBirth,

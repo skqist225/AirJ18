@@ -1,5 +1,6 @@
 package com.airtnt.airtntapp.room.dto.page.listings;
 
+import java.io.Serializable;
 import java.util.Date;
 import com.airtnt.entity.Room;
 
@@ -18,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoomListingsDTO {
+public class RoomListingsDTO implements Serializable {
     private Integer id;
     private String name;
     private String thumbnail;

@@ -34,7 +34,9 @@ import com.airtnt.airtntapp.response.success.OkResponse;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -62,6 +64,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.text.ParseException;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -75,7 +80,7 @@ public class RoomRestController {
     private final String STATIC_PATH = System.getProperty("user.dir") + "/src/main/resources/static/room_images";
 
     // @Autowired
-    // private RedisTemplate template;
+    // RedisTemplate redisTemplate;
 
     @Autowired
     private RoomService roomService;
@@ -100,6 +105,9 @@ public class RoomRestController {
 
     @Autowired
     private Authenticate authenticate;
+
+    @Autowired
+    private Environment env;
 
     @RequestMapping("/api/rooms")
     public ResponseEntity<StandardJSONResponse<List<RoomHomePageDTO>>> fetchRoomsByCategoryId(
@@ -259,15 +267,30 @@ public class RoomRestController {
         Room savedRoom = roomService.save(room);
 
         /* MOVE IMAGE TO FOLDER */
-        if (savedRoom != null) {
-            String uploadDir = STATIC_PATH + "/" + user.getEmail() + "/"
+        String environment = env.getProperty("env");
+        if (environment.equals("development")) {
+            if (savedRoom != null) {
+                String uploadDir = STATIC_PATH + "/" + user.getEmail() + "/"
+                        + savedRoom.getId();
+                String source = STATIC_PATH + "/" + user.getEmail() + "/";
+                Path sourcePath = Paths.get(source);
+                Path targetPath = Files.createDirectories(Paths.get(uploadDir));
+                for (String imageName : payload.getImages()) {
+                    Files.move(sourcePath.resolve(imageName), targetPath.resolve(imageName),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        } else {
+            String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classes/static/room_images/"
+                    + user.getEmail() + "/"
                     + savedRoom.getId();
-            String source = STATIC_PATH + "/" + user.getEmail() + "/";
-            Path sourcePath = Paths.get(source);
-            Path targetPath = Files.createDirectories(Paths.get(uploadDir));
-            for (String imageName : payload.getImages()) {
-                Files.move(sourcePath.resolve(imageName), targetPath.resolve(imageName),
-                        StandardCopyOption.REPLACE_EXISTING);
+            Path uploadPath = Paths.get(filePath);
+            if (!Files.exists(uploadPath)) {
+                Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr--r--");
+                FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions
+                        .asFileAttribute(permissions);
+
+                Files.createDirectories(uploadPath, fileAttributes);
             }
         }
 
@@ -300,33 +323,38 @@ public class RoomRestController {
             filters.put("amentities", amentitiesFilter);
             filters.put("status", status);
             List<RoomListingsDTO> roomListingsDTOs = new ArrayList<>();
-            // if (template.hasKey("RoomTest")) {
+            RoomsOwnedByUserResponseEntity roomsOwnedByUserResponseEntity = new RoomsOwnedByUserResponseEntity();
 
-            // return new OkResponse<RoomsOwnedByUserResponseEntity>(
-            // new RoomsOwnedByUserResponseEntity(
-            // (List<RoomListingsDTO>) template.opsForList().range("RoomTest", 0, -1),
-            // (long) template.opsForHash().get("totalEles",
-            // "string"),
-            // (int) template.opsForHash().get("totalPages",
-            // "string")))
-            // .response();
+            // if (redisTemplate.opsForHash().get("TOTAL_PAGES", "TOTAL_PAGES") != null) {
+            // roomListingsDTOs = redisTemplate.opsForHash().values("ROOM");
 
+            // roomsOwnedByUserResponseEntity.setRooms(roomListingsDTOs);
+            // roomsOwnedByUserResponseEntity
+            // .setTotalPages((int) redisTemplate.opsForHash().get("TOTAL_PAGES",
+            // "TOTAL_PAGES"));
+            // roomsOwnedByUserResponseEntity
+            // .setTotalRecords((long) redisTemplate.opsForHash().get("TOTAL_ELS",
+            // "TOTAL_ELS"));
             // } else {
             Page<Room> roomsPage = roomService.fetchUserOwnedRooms(host, pageNumber, filters);
-            roomsPage.getContent()
-                    .forEach(room -> roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room)));
-
-            // template.opsForHash().put("totalEles", "string",
+            for (Room room : roomsPage.getContent()) {
+                roomListingsDTOs.add(RoomListingsDTO.buildRoomListingsDTO(room));
+                // redisTemplate.opsForHash().put("ROOM", room.getId().toString(),
+                // RoomListingsDTO.buildRoomListingsDTO(room));
+            }
+            // redisTemplate.opsForHash().put("TOTAL_PAGES", "TOTAL_PAGES", (Integer)
+            // roomsPage.getTotalPages());
+            // redisTemplate.opsForHash().put("TOTAL_ELS", "TOTAL_ELS", (Long)
             // roomsPage.getTotalElements());
-            // template.opsForHash().put("totalPages", "string", roomsPage.getTotalPages());
-            // template.opsForList().rightPushAll("RoomTest", roomListingsDTOs);
 
-            return new OkResponse<RoomsOwnedByUserResponseEntity>(
-                    new RoomsOwnedByUserResponseEntity(roomListingsDTOs,
-                            roomsPage.getTotalElements(), roomsPage.getTotalPages()))
-                    .response();
+            // roomsOwnedByUserResponseEntity.setRooms(roomListingsDTOs);
+            // roomsOwnedByUserResponseEntity.setTotalPages(roomsPage.getTotalPages());
+            // roomsOwnedByUserResponseEntity.setTotalRecords(roomsPage.getTotalElements());
             // }
 
+            return new OkResponse<RoomsOwnedByUserResponseEntity>(
+                    roomsOwnedByUserResponseEntity)
+                    .response();
         } catch (
 
         NullCookieException ex) {
