@@ -2,6 +2,8 @@ package com.airtnt.airtntapp.user.dto;
 
 import java.util.Map;
 
+import com.airtnt.entity.Sex;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserDTO {
-    private Map<String, String> updateData;
+    private String firstName;
+    private String lastName;
+    private String gender;
+    private String birthday;
 }

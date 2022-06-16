@@ -281,31 +281,29 @@ public class UserORestController {
 		try {
 			User currentUser = authenticate.getLoggedInUser(cookie);
 
-			Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
-
-			if (updateData.get("firstName") == null && updateData.get("lastName") == null) {
+			if (postUpdateUserDTO.getFirstName() == null && postUpdateUserDTO.getLastName() == null) {
 				return new BadResponse<User>("First name or last name is required").response();
 			}
-			if (updateData.get("firstName") != null) {
-				currentUser.setFirstName(updateData.get("firstName"));
+			if (postUpdateUserDTO.getFirstName() != null) {
+				currentUser.setFirstName(postUpdateUserDTO.getFirstName());
 			}
-			if (updateData.get("lastName") != null) {
-				currentUser.setLastName(updateData.get("lastName"));
+			if (postUpdateUserDTO.getLastName() != null) {
+				currentUser.setLastName(postUpdateUserDTO.getLastName());
 			}
 
-			if (updateData.get("gender") == null) {
+			if (postUpdateUserDTO.getGender() == null) {
 				return new BadResponse<User>("Gender is required").response();
 			}
 
-			String newSex = updateData.get("gender");
+			String newSex = postUpdateUserDTO.getGender();
 			Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
 			currentUser.setSex(sex);
 
-			if (updateData.get("birthday") == null) {
+			if (postUpdateUserDTO.getBirthday() == null) {
 				return new BadResponse<User>("Birthday is required").response();
 			}
 
-			LocalDate birthd = LocalDate.parse(updateData.get("birthday"));
+			LocalDate birthd = LocalDate.parse(postUpdateUserDTO.getBirthday());
 			currentUser.setBirthday(birthd);
 
 			return new OkResponse<User>(userService.saveUser(currentUser)).response();
