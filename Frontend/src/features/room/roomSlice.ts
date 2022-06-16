@@ -1,9 +1,10 @@
-import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import api from '../../axios';
-import { RootState } from '../../store';
-import { IRoom, IRoomGroup, IRoomPrivacy } from '../../types/room/type_Room';
-import { IRoomDetails } from '../../types/room/type_RoomDetails';
-import { IRoomListings } from '../../types/room/type_RoomListings';
+import { Satellite } from "@material-ui/icons";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
+import api from "../../axios";
+import { RootState } from "../../store";
+import { IRoom, IRoomGroup, IRoomPrivacy } from "../../types/room/type_Room";
+import { IRoomDetails } from "../../types/room/type_RoomDetails";
+import { IRoomListings } from "../../types/room/type_RoomListings";
 
 interface IFetchRoomsByCategoryAndConditions {
     categoryid: number;
@@ -18,7 +19,7 @@ interface IFetchRoomsByCategoryAndConditions {
 }
 
 export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
-    'room/fetchRoomsByCategoryAndConditions',
+    "room/fetchRoomsByCategoryAndConditions",
     async (
         {
             categoryid,
@@ -36,10 +37,10 @@ export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
         try {
             const { data } = await api.get(
                 `/rooms?categoryId=${categoryid}&privacies=${privacies.join(
-                    ' '
+                    " "
                 )}&minPrice=${minPrice}&maxPrice=${maxPrice}&bedRoom=${bedRoomCount}&bed=${bedCount}&bathRoom=${bathRoomCount}&amentities=${selectedAmentities.join(
-                    ' '
-                )}&bookingDates=${bookingDates.join(',')}`
+                    " "
+                )}&bookingDates=${bookingDates.join(",")}`
             );
             if (data) dispatch(setMockingRoomLoading(true));
             return { data };
@@ -48,7 +49,7 @@ export const fetchRoomsByCategoryAndConditions = createAsyncThunk(
 );
 
 export const fetchRoomById = createAsyncThunk(
-    'room/fetchRoomById',
+    "room/fetchRoomById",
     async ({ roomid }: { roomid: string }, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/room/${roomid}`);
@@ -58,12 +59,14 @@ export const fetchRoomById = createAsyncThunk(
     }
 );
 
-interface IGetUserOwnedRoom {
-    pageNumber: number;
+interface IFetchUserOwnedRoom {
+    page: number;
     query?: string;
     bathRooms?: number;
     bedRooms?: number;
     beds?: number;
+    minPrice?: number;
+    maxPrice?: number;
     amenityIDs?: string;
     statuses?: string;
     sortField?: string;
@@ -71,27 +74,64 @@ interface IGetUserOwnedRoom {
 }
 
 export const fetchUserOwnedRoom = createAsyncThunk(
-    'room/fetchUserOwnedRoom',
+    "room/fetchUserOwnedRoom",
     async (
         {
-            pageNumber,
-            query = '',
+            page,
+            query = "",
             bathRooms = 0,
             bedRooms = 0,
             beds = 0,
-            amenityIDs = '',
-            statuses = '',
-            sortField = 'id',
-            sortDir = 'asc',
-        }: IGetUserOwnedRoom,
+            amenityIDs = "",
+            statuses = "",
+            sortField = "id",
+            sortDir = "asc",
+        }: IFetchUserOwnedRoom,
         { dispatch, getState, rejectWithValue }
     ) => {
         try {
+            const state = getState() as RootState;
+            const { filterObject } = state.room;
+            let fetchUrl = `/rooms/user/${page}?QUERY=${query}`;
+
+            if (
+                (beds && bathRooms && bedRooms) ||
+                (filterObject.beds && filterObject.bathRooms && filterObject.bedRooms)
+            ) {
+                fetchUrl += `&BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}`;
+                dispatch(
+                    setRoomInfo(
+                        {
+                            beds,
+                            bathRooms,
+                            bedRooms,
+                        } || {
+                            beds: filterObject.beds,
+                            bathRooms: filterObject.bathRooms,
+                            bedRooms: filterObject.bedRooms,
+                        }
+                    )
+                );
+            }
+            if (amenityIDs || filterObject.amenityIDs) {
+                fetchUrl += `&AMENITY_IDS=${amenityIDs || filterObject.amenityIDs}`;
+                dispatch(setAmenities(amenityIDs || filterObject.amenityIDs));
+            }
+
+            if (statuses || filterObject.statuses) {
+                fetchUrl += `&STATUSES=${statuses || filterObject.statuses}`;
+                dispatch(setStatus(statuses || filterObject.statuses));
+            }
+
+            dispatch(setRoomQuery(query || filterObject.query));
+            fetchUrl += `&SORTFIELD=${sortField}&SORTDIR=${sortDir}`;
+            dispatch(setSortField(sortField || filterObject.sortField));
+            dispatch(setSortDir(sortDir || filterObject.sortDir));
+
+            console.info(fetchUrl);
             const {
                 data: { rooms, totalPages, totalRecords },
-            } = await api.get(
-                `/rooms/user/${pageNumber}?QUERY=${query}&BATHROOMS=${bathRooms}&BEDROOMS=${bedRooms}&BEDS=${beds}&AMENITY_IDS=${amenityIDs}&STATUSES=${statuses}&SORTFIELD=${sortField}&SORTDIR=${sortDir}`
-            );
+            } = await api.get(fetchUrl);
 
             return { rooms, totalPages, totalRecords };
         } catch (error) {}
@@ -99,7 +139,7 @@ export const fetchUserOwnedRoom = createAsyncThunk(
 );
 
 export const fetchRoomPrivacies = createAsyncThunk(
-    'room/fetchRoomPrivacies',
+    "room/fetchRoomPrivacies",
     async (_, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/room-privacy`);
@@ -110,7 +150,7 @@ export const fetchRoomPrivacies = createAsyncThunk(
 );
 
 export const fetchRoomGroups = createAsyncThunk(
-    'room/fetchRoomGroups',
+    "room/fetchRoomGroups",
     async (_, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/room-group`);
@@ -121,8 +161,8 @@ export const fetchRoomGroups = createAsyncThunk(
 );
 
 export const findAverageRoomPriceByType = createAsyncThunk(
-    'room/findAverageRoomPriceByType',
-    async (type: string = 'PER_NIGHT', { dispatch, getState, rejectWithValue }) => {
+    "room/findAverageRoomPriceByType",
+    async (type: string = "PER_NIGHT", { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.get(`/rooms/average-price?type=${type}`);
 
@@ -132,16 +172,16 @@ export const findAverageRoomPriceByType = createAsyncThunk(
 );
 
 export const addRoom = createAsyncThunk(
-    'room/addRoom',
+    "room/addRoom",
     async (fd: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
             const { data } = await api.post(`/room/save`, fd, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
 
-            if (data) localStorage.removeItem('room');
+            if (data) localStorage.removeItem("room");
 
             return { data };
         } catch (error) {}
@@ -154,7 +194,7 @@ interface IPostUpdateRoom {
 }
 
 export const updateRoom = createAsyncThunk(
-    'room/updateRoom',
+    "room/updateRoom",
     async (
         { roomid, fieldName, postObj }: IPostUpdateRoom,
         { dispatch, getState, rejectWithValue }
@@ -165,12 +205,12 @@ export const updateRoom = createAsyncThunk(
                 postObj,
                 {
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 }
             );
 
-            if (data === 'OK') {
+            if (data === "OK") {
                 dispatch(fetchRoomById({ roomid: roomid.toString() }));
                 dispatch(resetUpdateStatus());
             }
@@ -194,16 +234,7 @@ type RoomState = {
     roomGroups: IRoomGroup[];
     averageRoomPriceByType: number;
     mockingRoomLoading: boolean;
-    filterObject: {
-        choosenPrivacy: number[];
-        minPrice: number;
-        maxPrice: number;
-        bedCount: number;
-        bedRoomCount: number;
-        bathRoomCount: number;
-        selectedAmentities: number[];
-        bookingDates: string[];
-    };
+    filterObject: IFetchUserOwnedRoom;
     newlyCreatedRoomId: number;
     updateSuccess: boolean;
 };
@@ -223,21 +254,23 @@ const initialState: RoomState = {
     mockingRoomLoading: true,
     averageRoomPriceByType: 0,
     filterObject: {
-        choosenPrivacy: [],
+        page: 1,
+        query: "",
+        // choosenPrivacy: [],
         minPrice: 0,
         maxPrice: 100000000,
-        bedCount: 0,
-        bedRoomCount: 0,
-        bathRoomCount: 0,
-        selectedAmentities: [],
-        bookingDates: [],
+        beds: 0,
+        bedRooms: 0,
+        bathRooms: 0,
+        amenityIDs: "",
+        // bookingDates: [],
     },
     newlyCreatedRoomId: 0,
     updateSuccess: false,
 };
 
 const roomSlice = createSlice({
-    name: 'room',
+    name: "room",
     initialState,
     reducers: {
         setMockingRoomLoading: (state, { payload }) => {
@@ -248,18 +281,43 @@ const roomSlice = createSlice({
         },
         resetCurretnFilterObject: state => {
             state.filterObject = {
-                choosenPrivacy: [],
+                page: 1,
+                query: "",
+                // choosenPrivacy: [],
                 minPrice: 0,
                 maxPrice: 100000000,
-                bedCount: 0,
-                bedRoomCount: 0,
-                bathRoomCount: 0,
-                selectedAmentities: [],
-                bookingDates: [],
+                beds: 0,
+                bedRooms: 0,
+                bathRooms: 0,
+                amenityIDs: "",
+                // bookingDates: [],
             };
         },
         resetUpdateStatus: state => {
             state.updateSuccess = false;
+        },
+        setRoomQuery: (state, { payload }) => {
+            state.filterObject.query = payload;
+        },
+        setRoomInfo: (state, { payload }) => {
+            state.filterObject.beds = payload.beds;
+            state.filterObject.bedRooms = payload.bedRooms;
+            state.filterObject.bathRooms = payload.bathRooms;
+        },
+        setListingPage: (state, { payload }) => {
+            state.filterObject.page = payload;
+        },
+        setAmenities: (state, { payload }) => {
+            state.filterObject.amenityIDs = payload;
+        },
+        setStatus: (state, { payload }) => {
+            state.filterObject.amenityIDs = payload;
+        },
+        setSortField: (state, { payload }) => {
+            state.filterObject.sortField = payload;
+        },
+        setSortDir: (state, { payload }) => {
+            state.filterObject.sortDir = payload;
         },
     },
     extraReducers: builder => {
@@ -294,7 +352,7 @@ const roomSlice = createSlice({
                 state.newlyCreatedRoomId = parseInt(payload?.data as string);
             })
             .addCase(updateRoom.fulfilled, (state, { payload }) => {
-                if (payload?.data === 'OK') state.updateSuccess = true;
+                if (payload?.data === "OK") state.updateSuccess = true;
             })
             .addMatcher(
                 isAnyOf(fetchRoomsByCategoryAndConditions.pending, fetchRoomById.pending),
@@ -316,6 +374,13 @@ export const {
         setCurrentFilterObject,
         resetCurretnFilterObject,
         resetUpdateStatus,
+        setRoomInfo,
+        setRoomQuery,
+        setListingPage,
+        setAmenities,
+        setStatus,
+        setSortField,
+        setSortDir,
     },
 } = roomSlice;
 

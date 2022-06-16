@@ -346,9 +346,9 @@ public class RoomRestController {
             // redisTemplate.opsForHash().put("TOTAL_ELS", "TOTAL_ELS", (Long)
             // roomsPage.getTotalElements());
 
-            // roomsOwnedByUserResponseEntity.setRooms(roomListingsDTOs);
-            // roomsOwnedByUserResponseEntity.setTotalPages(roomsPage.getTotalPages());
-            // roomsOwnedByUserResponseEntity.setTotalRecords(roomsPage.getTotalElements());
+            roomsOwnedByUserResponseEntity.setRooms(roomListingsDTOs);
+            roomsOwnedByUserResponseEntity.setTotalPages(roomsPage.getTotalPages());
+            roomsOwnedByUserResponseEntity.setTotalRecords(roomsPage.getTotalElements());
             // }
 
             return new OkResponse<RoomsOwnedByUserResponseEntity>(

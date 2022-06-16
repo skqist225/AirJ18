@@ -1,7 +1,13 @@
 import React, { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import { fetchUserOwnedRoom } from "../../features/room/roomSlice";
+import {
+    fetchUserOwnedRoom,
+    roomState,
+    setAmenities,
+    setRoomInfo,
+    setStatus,
+} from "../../features/room/roomSlice";
 import { getPageNumber } from "../../helpers";
 
 import $ from "jquery";
@@ -27,6 +33,7 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
 
     const params = useParams();
     const { fetchData } = useSelector(bookingState);
+    const { filterObject } = useSelector(roomState);
 
     function closeFilterBox(footerClass: string) {
         $(`#listings__filter-${footerClass}`).removeClass("active");
@@ -48,7 +55,6 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
                             let bathRooms = 0;
                             let bedRooms = 0;
                             let beds = 0;
-                            const query = $("#listings__search-input").val()!.toString().trim();
 
                             $(".listings__minus-btn").each(function () {
                                 const dataEdit = $(this).data("edit");
@@ -61,14 +67,10 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
                                 else beds = parseInt(spanValue);
                             });
 
-                            console.log(bathRooms);
-                            console.log(bedRooms);
-                            console.log(beds);
-
                             dispatch(
                                 fetchUserOwnedRoom({
-                                    pageNumber: getPageNumber(pathname),
-                                    query,
+                                    ...filterObject,
+                                    page: parseInt(params.page!),
                                     bathRooms,
                                     bedRooms,
                                     beds,
@@ -89,7 +91,7 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
 
                             dispatch(
                                 fetchUserOwnedRoom({
-                                    pageNumber: getPageNumber(pathname),
+                                    page: getPageNumber(pathname),
                                     amenityIDs: amentitiesID.join(" "),
                                 })
                             );
@@ -106,7 +108,8 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
 
                             dispatch(
                                 fetchUserOwnedRoom({
-                                    pageNumber: getPageNumber(pathname),
+                                    ...filterObject,
+                                    page: getPageNumber(pathname),
                                     statuses: statuses.join(" "),
                                 })
                             );

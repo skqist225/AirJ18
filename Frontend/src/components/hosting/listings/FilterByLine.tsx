@@ -1,17 +1,17 @@
-import { Checkbox } from 'antd';
-import { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { amenityState } from '../../../features/amenity/amenitySlice';
-import { fetchUserOwnedRoom } from '../../../features/room/roomSlice';
-import { Image } from '../../../globalStyle';
-import { getImage } from '../../../helpers';
-import { IncAndDecBtn } from '../../utils/IncAndDecBtn';
-import AmenityRow from './AmenityRow';
-import { FilterButton } from './components';
+import { Checkbox } from "antd";
+import { FC } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
+import { amenityState } from "../../../features/amenity/amenitySlice";
+import { fetchUserOwnedRoom, roomState, setRoomQuery } from "../../../features/room/roomSlice";
+import { Image } from "../../../globalStyle";
+import { getImage } from "../../../helpers";
+import { IncAndDecBtn } from "../../utils/IncAndDecBtn";
+import AmenityRow from "./AmenityRow";
+import { FilterButton } from "./components";
 
-import $ from 'jquery';
-import './css/filter_by_line.css';
+import $ from "jquery";
+import "./css/filter_by_line.css";
 
 interface IFilterByLineProps {}
 
@@ -19,12 +19,25 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
     const dispatch = useDispatch();
     const { amenities } = useSelector(amenityState);
     const { pathname } = useLocation();
+    const { filterObject } = useSelector(roomState);
+    const params = useParams();
 
     function findRoomByNameAndId() {
         dispatch(
             fetchUserOwnedRoom({
-                pageNumber: parseInt(pathname.split('/').pop() as string),
-                query: $('#listings__search-input').val() as string,
+                page: parseInt(pathname.split("/").pop() as string),
+                query: $("#listings__search-input").val() as string,
+            })
+        );
+    }
+
+    function handleFindRoomByQuery(event: any) {
+        setRoomQuery(event.currentTarget.value);
+        dispatch(
+            fetchUserOwnedRoom({
+                ...filterObject,
+                page: parseInt(params.page!),
+                query: event.currentTarget.value,
             })
         );
     }
@@ -34,15 +47,16 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
             <div className='listings__search--room normal-flex'>
                 <button
                     className='listings__transparent-btn flex-center'
-                    onClick={findRoomByNameAndId}
+                    // onClick={findRoomByNameAndId}
                 >
-                    <Image src={getImage('/svg/search.svg')} size='12px' />
+                    <Image src={getImage("/svg/search.svg")} size='12px' />
                 </button>
                 <div className='f1'>
                     <input
                         type='text'
                         placeholder='Tìm kiếm nhà/phòng cho thuê'
                         id='listings__search-input'
+                        onChange={handleFindRoomByQuery}
                     />
                 </div>
             </div>
@@ -107,11 +121,11 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
                         <div className='f1 p-24'>
                             <div className='normal-flex listings__filter-status-row'>
                                 <Checkbox value='ACTIVE' className='statusSelected' />
-                                <div style={{ marginLeft: '10px' }}>Đã đăng</div>
+                                <div style={{ marginLeft: "10px" }}>Đã đăng</div>
                             </div>
                             <div className='normal-flex listings__filter-status-row'>
                                 <Checkbox value='UNLISTED' className='statusSelected' />
-                                <div style={{ marginLeft: '10px' }}>Đã hủy đăng</div>
+                                <div style={{ marginLeft: "10px" }}>Đã hủy đăng</div>
                             </div>
                         </div>
                     </>
@@ -128,11 +142,11 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
                         <div className='filter-box overflow-hidden'>
                             <div className='normal-flex listings__filter-others-row'>
                                 <Checkbox />
-                                <div style={{ marginLeft: '10px' }}>Chế độ Đặt ngay đang tắt</div>
+                                <div style={{ marginLeft: "10px" }}>Chế độ Đặt ngay đang tắt</div>
                             </div>
                             <div className='normal-flex listings__filter-others-row'>
                                 <Checkbox />
-                                <div style={{ marginLeft: '10px' }}>
+                                <div style={{ marginLeft: "10px" }}>
                                     Yêu cầu cập nhật mục cho thuê
                                 </div>
                             </div>

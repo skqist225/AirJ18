@@ -4,8 +4,8 @@ import { RootState } from "../../store";
 import { IBooking } from "../../types/booking/type_Booking";
 
 interface IFetchUserBookings {
-    query?: string;
     page: number;
+    query?: string;
     bookingDateMonth?: string;
     bookingDateYear?: string;
     bookingDate?: string;

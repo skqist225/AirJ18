@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Header from "../../../components/Header";
 import { TableContent } from "../../../components/hosting/listings";
 import hostingListings from "../../../components/hosting/listings/script/listings";
 import { fetchAmenities } from "../../../features/amenity/amenitySlice";
-import { fetchUserOwnedRoom, roomState } from "../../../features/room/roomSlice";
+import { fetchUserOwnedRoom, roomState, setListingPage } from "../../../features/room/roomSlice";
 import { getImage, getPageNumber } from "../../../helpers";
 import { Image } from "../../../globalStyle";
 
@@ -24,8 +24,9 @@ const ListingsPage: FC<IListingsPageProps> = () => {
 
     const {
         hosting: { rooms, totalRecords, totalPages, loading: roomsLoading },
+        filterObject,
     } = useSelector(roomState);
-    const { pathname } = useLocation();
+    const params = useParams();
 
     const [commonNameCb, setCommonnameCb] = useState(false);
     const [bedCb, setBedCb] = useState(true);
@@ -44,8 +45,9 @@ const ListingsPage: FC<IListingsPageProps> = () => {
     }, []);
 
     useEffect(() => {
-        dispatch(fetchUserOwnedRoom({ pageNumber: getPageNumber(pathname) }));
-    }, [pathname]);
+        dispatch(fetchUserOwnedRoom({ ...filterObject, page: parseInt(params.page!) }));
+        dispatch(setListingPage(parseInt(params.page!)));
+    }, [params.page]);
 
     useEffect(() => {
         hostingListings(
@@ -55,7 +57,7 @@ const ListingsPage: FC<IListingsPageProps> = () => {
             setBathroomCb,
             setLastModifiedCb,
             dispatch,
-            pathname
+            params.page!
         );
     }, [rooms]);
 

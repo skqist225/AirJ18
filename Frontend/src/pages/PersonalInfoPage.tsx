@@ -11,6 +11,7 @@ import Toast from "../components/notify/Toast";
 
 import "./css/personal_info.css";
 import { Image } from "../globalStyle";
+import { userState } from "../features/user/userSlice";
 
 type IPersonalInfoPageProps = {};
 
@@ -21,7 +22,7 @@ const PersonalInfoPage: FC<IPersonalInfoPageProps> = () => {
     const {
         user,
         update: { loading, successMessage, errorMessage },
-    } = useSelector((state: RootState) => state.user);
+    } = useSelector(userState);
 
     useEffect(() => {
         jqueryCode();

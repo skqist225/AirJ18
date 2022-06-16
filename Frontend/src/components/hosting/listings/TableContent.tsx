@@ -1,11 +1,11 @@
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
-import { userState } from '../../../features/user/userSlice';
-import { IRoomListings } from '../../../types/room/type_RoomListings';
-import { ColumnHeader } from '../../utils';
-import { ColumnSettings, RoomDataRow } from './components';
-import ReactLoading from 'react-loading';
-import { roomState } from '../../../features/room/roomSlice';
+import { FC } from "react";
+import { useSelector } from "react-redux";
+import { userState } from "../../../features/user/userSlice";
+import { IRoomListings } from "../../../types/room/type_RoomListings";
+import { ColumnHeader } from "../../utils";
+import { ColumnSettings, RoomDataRow } from "./components";
+import ReactLoading from "react-loading";
+import { roomState } from "../../../features/room/roomSlice";
 
 interface ITableContentProps {
     commonNameCb: boolean;
@@ -58,7 +58,7 @@ const TableContent: FC<ITableContentProps> = ({
                         <th data-column='BATHROOM'>
                             <ColumnHeader columnName='phòng tắm' sortField='bathroomCount' />
                         </th>
-                        <th style={{ width: '400px' }}>
+                        <th style={{ width: "400px" }}>
                             <ColumnHeader columnName='vị trí' sortField='location' />
                         </th>
                         <th data-column='LASTMODIFIED'>
@@ -75,26 +75,7 @@ const TableContent: FC<ITableContentProps> = ({
                         </th>
                     </tr>
                 </thead>
-                {roomsLoading && (
-                    <div
-                        style={{
-                            width: '100%',
-                            height: '1000px',
-                            position: 'absolute',
-                            left: '0',
-                            top: '-150px',
-                            zIndex: '100',
-                        }}
-                        className='flex-center'
-                    >
-                        <ReactLoading
-                            height={50}
-                            width={50}
-                            color='rgb(230,30,77)'
-                            type='spinningBubbles'
-                        />
-                    </div>
-                )}
+
                 {!roomsLoading && (
                     <tbody>
                         {rooms.map(room => (
@@ -103,6 +84,26 @@ const TableContent: FC<ITableContentProps> = ({
                     </tbody>
                 )}
             </table>
+            {roomsLoading && (
+                <div
+                    style={{
+                        width: "100%",
+                        height: "1000px",
+                        position: "absolute",
+                        left: "0",
+                        top: "-150px",
+                        zIndex: "100",
+                    }}
+                    className='flex-center'
+                >
+                    <ReactLoading
+                        height={50}
+                        width={50}
+                        color='rgb(230,30,77)'
+                        type='spinningBubbles'
+                    />
+                </div>
+            )}
         </div>
     );
 };

@@ -56,7 +56,10 @@ export const updateUserAvatar = createAsyncThunk(
                     "Content-Type": DataType.MULTIPARTFORMDATA,
                 },
             });
-            if (data) setUserToLocalStorage(data as IUser);
+            if (data) {
+                console.log(data);
+                setUserToLocalStorage(data as IUser);
+            }
 
             return { data };
         } catch (error) {}
@@ -145,6 +148,10 @@ const userSlice = createSlice({
             })
             .addCase(updateUserInfo.pending, (state, { payload }) => {
                 state.update.loading = true;
+            })
+            .addCase(updateUserAvatar.fulfilled, (state, { payload }) => {
+                state.user = payload?.data;
+                state.update.loading = false;
             })
             .addMatcher(isAnyOf(fetchWishlistsOfCurrentUser.rejected), (state, { payload }) => {
                 state.loading = false;

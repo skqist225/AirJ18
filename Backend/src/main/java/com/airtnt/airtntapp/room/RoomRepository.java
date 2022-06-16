@@ -99,25 +99,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer>, JpaSpecifi
         @Query("SELECT count(*) From Room r")
         public Integer getNumberOfRoom();
 
-        @Query("SELECT r FROM Room r JOIN r.amentities ra WHERE r.host = :host"
-                        + " AND r.name LIKE %:query%"
-                        + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
-                        + " AND ra.id IN (:amentitiesID)"
-                        + " AND r.status IN (:statusesID) GROUP BY r.id")
-        public Page<Room> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
-                        int bedCount,
-                        @Param("amentitiesID") List<Integer> amentitiesID,
-                        @Param("statusesID") List<Boolean> statusesID, Pageable pageable);
-
-        @Query("SELECT r FROM Room r WHERE r.host = :host"
-                        + " AND r.name LIKE %:query%"
-                        + " AND r.bedroomCount >= :bedroomCount AND r.bathroomCount >= :bathroomCount AND r.bedCount >= :bedCount"
-                        + " AND r.status IN (:statusesID) GROUP BY r.id")
-        public Page<Room> fetchUserOwnedRooms(User host, String query, int bedroomCount, int bathroomCount,
-                        int bedCount,
-                        @Param("statusesID") List<Boolean> statusesID,
-                        Pageable pageable);
-
         @Query("SELECT new com.airtnt.airtntapp.room.dto.RoomPricePerCurrencyDTO(SUM(r.price), r.currency.unit, COUNT(r.price)) FROM Room r WHERE r.priceType = :priceType GROUP BY r.currency.unit")
         public List<RoomPricePerCurrencyDTO> findAverageRoomPriceByPriceType(PriceType priceType);
 }

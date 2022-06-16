@@ -440,101 +440,17 @@ public class RoomService {
 		int bedroomCount = Integer.parseInt(filters.get("bedroomCount"));
 		int bathroomCount = Integer.parseInt(filters.get("bathroomCount"));
 		int bedCount = Integer.parseInt(filters.get("bedCount"));
-		String roomName = filters.get("query");
+		String query = filters.get("query");
 		String sortDir = filters.get("sortDir");
 		String sortField = filters.get("sortField");
 
-		/*-------------------------------------------FILTER KEY------------------------------------------------*/
-		List<Integer> amentitiesID = new ArrayList<>();
-		List<Boolean> statusesID = new ArrayList<>();
-
-		// Page<Room> bookingPage = roomRepository.findAll(new Specification<Room>() {
-		// @Override
-		// public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> criteriaQuery,
-		// CriteriaBuilder criteriaBuilder) {
-		// List<Predicate> predicates = new ArrayList<>();
-
-		// Expression<String> bookingId = root.get("id");
-		// Expression<String> roomName = root.get("room").get("name");
-		// Expression<LocalDateTime> bookingdDate = root.get("bookingDate");
-		// Expression<Boolean> isComplete = root.get("isComplete");
-		// Expression<Boolean> isRefund = root.get("isRefund");
-		// Expression<User> roomId = root.get("room").get("id");
-
-		// predicates.add(criteriaBuilder.and(roomId.in(roomIds)));
-
-		// if (!.isEmpty()) {
-		// String[] amentities = filters.get("amentities").split(" ");
-		// for (int i = 0; i < amentities.length; i++)
-		// amentitiesID.add(Integer.parseInt(amentities[i]));
-		// }
-
-		// if (!StringUtils.isEmpty(filters.get("amentities"))) {
-		// Expression<String> wantedQueryField = criteriaBuilder.concat(bookingId,
-		// roomName);
-		// predicates.add(criteriaBuilder.and(criteriaBuilder.in(wantedQueryField, "%" +
-		// query + "%")));
-		// }
-
-		// if (!StringUtils.isEmpty(bookingDateStr)) {
-		// try {
-		// LocalDateTime bkDate = new
-		// SimpleDateFormat("yyyy-MM-dd").parse(bookingDateStr).toInstant()
-		// .atZone(ZoneId.systemDefault()).toLocalDateTime();
-		// LocalDateTime startOfBookingDate =
-		// bkDate.withHour(0).withMinute(0).withSecond(0);
-		// LocalDateTime endOfBookingDate =
-		// bkDate.withHour(23).withMinute(0).withSecond(0);
-
-		// predicates.add(criteriaBuilder.and(
-		// criteriaBuilder.lessThanOrEqualTo(bookingdDate, endOfBookingDate)));
-		// predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
-		// bookingdDate, startOfBookingDate)));
-		// } catch (ParseException e) {
-		// e.printStackTrace();
-		// }
-		// }
-
-		// if (!StringUtils.isEmpty(isCompleteStr)) {
-		// boolean isCompleteAndCancel = false;
-		// List<Boolean> isCompleteLst = new ArrayList<Boolean>() {
-		// {
-		// add(true);
-		// add(false);
-		// }
-		// };
-		// List<Boolean> isRefundLst = new ArrayList<Boolean>() {
-		// {
-		// add(true);
-		// add(false);
-		// }
-		// };
-
-		// if (!isCompleteAndCancel) {
-		// predicates.add(criteriaBuilder.and(isComplete.in(isCompleteLst),
-		// isRefund.in(isRefundLst)));
-		// }
-		// }
-
-		// predicates
-		// .add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("totalFee"),
-		// totalFee)));
-
-		// // criteriaQuery.orderBy(criteriaBuilder.desc(bookingdDate),
-		// // criteriaBuilder.desc(bookingId));
-
-		// return criteriaBuilder.and(predicates.toArray(new
-		// Predicate[predicates.size()]));
-		// }
-		// }, pageable);
-
-		if (!filters.get("status").isEmpty()) {
-			String[] statuses = filters.get("status").split(" ");
-			for (int i = 0; i < statuses.length; i++) {
-				boolean x = statuses[i].equals("ACTIVE");
-				statusesID.add(x);
-			}
+		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
+		for (Map.Entry<String, String> key : filters.entrySet()) {
+			System.out.println("key: " + key.getKey() + ", value: " + key.getValue());
 		}
+		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
+
+		/*-------------------------------------------FILTER KEY------------------------------------------------*/
 
 		Sort sort = Sort.by(sortField);
 		if (sortField.equals("location")) {
@@ -551,22 +467,60 @@ public class RoomService {
 		}
 		System.out.println("true: " + sortDir.equals("ASC"));
 		sort = sortDir.equals("ASC") ? sort.ascending() : sort.descending();
-		Pageable pageable = PageRequest.of(pageNumber - 1, 100000, sort); // pase base 0
+		Pageable pageable = PageRequest.of(pageNumber - 1, 20, sort); // pase base 0
 
-		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
-		for (Map.Entry<String, String> key : filters.entrySet()) {
-			System.out.println("key: " + key.getKey() + ", value: " + key.getValue());
-		}
-		/*-----------------------------OUPUT FILTER OPTION--------------------------------------------------- */
-		if (amentitiesID.size() != 0)
-			return roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
-					bedCount,
-					amentitiesID, statusesID, pageable);
-		else {
-			return roomRepository.fetchUserOwnedRooms(host, roomName, bedroomCount, bathroomCount,
-					bedCount,
-					statusesID, pageable);
-		}
+		return roomRepository.findAll(new Specification<Room>() {
+			@Override
+			public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				List<Integer> amentitiesID = new ArrayList<>();
+				List<Boolean> statusesID = new ArrayList<>();
+
+				Expression<Set<Amentity>> roomAmenitiesIds = root.get("amentities");
+				Expression<Boolean> roomStatus = root.get("status");
+				Expression<Integer> roomBedroomCount = root.get("bedroomCount");
+				Expression<Integer> roomBathroomCount = root.get("bathroomCount");
+				Expression<Integer> roomBedCount = root.get("bedCount");
+				Expression<String> roomName = root.get("name");
+				Expression<User> roomHost = root.get("host");
+
+				predicates.add(criteriaBuilder.and(criteriaBuilder.equal(roomHost, host)));
+
+				if (!StringUtils.isEmpty(filters.get("amentities"))) {
+					String[] amentities = filters.get("amentities").split(" ");
+					for (int i = 0; i < amentities.length; i++) {
+						amentitiesID.add(Integer.parseInt(amentities[i]));
+					}
+
+					predicates.add(criteriaBuilder.and(roomAmenitiesIds.in(amentitiesID)));
+				}
+
+				if (!StringUtils.isEmpty(filters.get("status"))) {
+					String[] statuses = filters.get("status").split(" ");
+					for (int i = 0; i < statuses.length; i++) {
+						boolean x = statuses[i].equals("ACTIVE");
+						statusesID.add(x);
+					}
+
+					predicates.add(criteriaBuilder.and(roomStatus.in(statusesID)));
+				}
+
+				if (!StringUtils.isEmpty(query)) {
+					predicates.add(criteriaBuilder.and(criteriaBuilder.like(roomName, "%" + query + "%")));
+				}
+
+				predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
+						roomBedroomCount,
+						bedroomCount)));
+				predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
+						roomBathroomCount, bathroomCount)));
+				predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
+						roomBedCount, bedCount)));
+
+				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+			}
+		}, pageable);
 	}
 
 	public List<RoomPricePerCurrencyDTO> findAverageRoomPriceByPriceType(PriceType type) {
