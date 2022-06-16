@@ -274,6 +274,40 @@ public class UserORestController {
 		}
 	}
 
+	@PutMapping("update")
+	public ResponseEntity<StandardJSONResponse<User>> updateUser(@CookieValue("user") String cookie, @RequestBody UpdateUserDTO postUpdateUserDTO) {
+		User currentUser = authenticate.getLoggedInUser(cookie);
+
+		Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
+
+		if (updateData.get("firstName") == null && updateData.get("lastName") == null) {
+			return new BadResponse<User>("First name or last name is required").response();
+		}
+		if (updateData.get("firstName") != null) {
+			currentUser.setFirstName(updateData.get("firstName"));
+		}
+		if (updateData.get("lastName") != null) {
+			currentUser.setLastName(updateData.get("lastName"));
+		}
+
+		if (updateData.get("gender") == null) {
+			return new BadResponse<User>("Gender is required").response();
+		}
+
+		String newSex = updateData.get("gender");
+		Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
+		currentUser.setSex(sex);
+
+		if (updateData.get("birthday") == null) {
+			return new BadResponse<User>("Birthday is required").response();
+		}
+
+		LocalDate birthd = LocalDate.parse(updateData.get("birthday"));
+		currentUser.setBirthday(birthd);
+
+		return userService.saveUser(currentUser);
+	}
+
 	@PutMapping("update-avatar")
 	public ResponseEntity<StandardJSONResponse<User>> updateUserAvatar(@CookieValue("user") String cookie,
 			@RequestParam(name = "newAvatar", required = false) MultipartFile newAvatar) throws IOException {
