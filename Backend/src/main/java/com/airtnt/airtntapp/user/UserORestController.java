@@ -35,6 +35,7 @@ import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.BookedRoomDTO;
 import com.airtnt.airtntapp.user.dto.PostUpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
+import com.airtnt.airtntapp.user.dto.UpdateUserDTO;
 import com.airtnt.airtntapp.user.dto.UserSexDTO;
 import com.airtnt.airtntapp.user.dto.WishlistsDTO;
 import com.airtnt.airtntapp.user.response.BookedRoomsByUser;
@@ -275,37 +276,45 @@ public class UserORestController {
 	}
 
 	@PutMapping("update")
-	public ResponseEntity<StandardJSONResponse<User>> updateUser(@CookieValue("user") String cookie, @RequestBody UpdateUserDTO postUpdateUserDTO) {
-		User currentUser = authenticate.getLoggedInUser(cookie);
+	public ResponseEntity<StandardJSONResponse<User>> updateUser(@CookieValue("user") String cookie,
+			@RequestBody UpdateUserDTO postUpdateUserDTO) {
+		try {
+			User currentUser = authenticate.getLoggedInUser(cookie);
 
-		Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
+			Map<String, String> updateData = postUpdateUserDTO.getUpdateData();
 
-		if (updateData.get("firstName") == null && updateData.get("lastName") == null) {
-			return new BadResponse<User>("First name or last name is required").response();
+			if (updateData.get("firstName") == null && updateData.get("lastName") == null) {
+				return new BadResponse<User>("First name or last name is required").response();
+			}
+			if (updateData.get("firstName") != null) {
+				currentUser.setFirstName(updateData.get("firstName"));
+			}
+			if (updateData.get("lastName") != null) {
+				currentUser.setLastName(updateData.get("lastName"));
+			}
+
+			if (updateData.get("gender") == null) {
+				return new BadResponse<User>("Gender is required").response();
+			}
+
+			String newSex = updateData.get("gender");
+			Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
+			currentUser.setSex(sex);
+
+			if (updateData.get("birthday") == null) {
+				return new BadResponse<User>("Birthday is required").response();
+			}
+
+			LocalDate birthd = LocalDate.parse(updateData.get("birthday"));
+			currentUser.setBirthday(birthd);
+
+			return new OkResponse<User>(userService.saveUser(currentUser)).response();
+		} catch (NullCookieException e) {
+			return new BadResponse<User>(e.getMessage()).response();
+		} catch (NotAuthenticatedException e) {
+			return new NotAuthenticatedResponse<User>().response();
 		}
-		if (updateData.get("firstName") != null) {
-			currentUser.setFirstName(updateData.get("firstName"));
-		}
-		if (updateData.get("lastName") != null) {
-			currentUser.setLastName(updateData.get("lastName"));
-		}
 
-		if (updateData.get("gender") == null) {
-			return new BadResponse<User>("Gender is required").response();
-		}
-
-		String newSex = updateData.get("gender");
-		Sex sex = newSex.equals("MALE") ? Sex.MALE : newSex.equals("FEMALE") ? Sex.FEMALE : Sex.OTHER;
-		currentUser.setSex(sex);
-
-		if (updateData.get("birthday") == null) {
-			return new BadResponse<User>("Birthday is required").response();
-		}
-
-		LocalDate birthd = LocalDate.parse(updateData.get("birthday"));
-		currentUser.setBirthday(birthd);
-
-		return userService.saveUser(currentUser);
 	}
 
 	@PutMapping("update-avatar")

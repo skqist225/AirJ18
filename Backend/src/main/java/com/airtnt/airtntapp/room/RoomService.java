@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -447,96 +448,85 @@ public class RoomService {
 		List<Integer> amentitiesID = new ArrayList<>();
 		List<Boolean> statusesID = new ArrayList<>();
 
-		Page<Room> bookingPage = roomRepository.findAll(new Specification<Room>() {
-            @Override
-            public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> criteriaQuery,
-                    CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
+		// Page<Room> bookingPage = roomRepository.findAll(new Specification<Room>() {
+		// @Override
+		// public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> criteriaQuery,
+		// CriteriaBuilder criteriaBuilder) {
+		// List<Predicate> predicates = new ArrayList<>();
 
-                Expression<String> bookingId = root.get("id");
-                Expression<String> roomName = root.get("room").get("name");
-                Expression<LocalDateTime> bookingdDate = root.get("bookingDate");
-                Expression<Boolean> isComplete = root.get("isComplete");
-                Expression<Boolean> isRefund = root.get("isRefund");
-                Expression<User> roomId = root.get("room").get("id");
+		// Expression<String> bookingId = root.get("id");
+		// Expression<String> roomName = root.get("room").get("name");
+		// Expression<LocalDateTime> bookingdDate = root.get("bookingDate");
+		// Expression<Boolean> isComplete = root.get("isComplete");
+		// Expression<Boolean> isRefund = root.get("isRefund");
+		// Expression<User> roomId = root.get("room").get("id");
 
-                predicates.add(criteriaBuilder.and(roomId.in(roomIds)));
+		// predicates.add(criteriaBuilder.and(roomId.in(roomIds)));
 
-						if (!.isEmpty()) {
-			String[] amentities = filters.get("amentities").split(" ");
-			for (int i = 0; i < amentities.length; i++)
-				amentitiesID.add(Integer.parseInt(amentities[i]));
-		}
+		// if (!.isEmpty()) {
+		// String[] amentities = filters.get("amentities").split(" ");
+		// for (int i = 0; i < amentities.length; i++)
+		// amentitiesID.add(Integer.parseInt(amentities[i]));
+		// }
 
-                if (!StringUtils.isEmpty(filters.get("amentities"))) {
-                    Expression<String> wantedQueryField = criteriaBuilder.concat(bookingId, roomName);
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.in(wantedQueryField, "%" + query + "%")));
-                }
+		// if (!StringUtils.isEmpty(filters.get("amentities"))) {
+		// Expression<String> wantedQueryField = criteriaBuilder.concat(bookingId,
+		// roomName);
+		// predicates.add(criteriaBuilder.and(criteriaBuilder.in(wantedQueryField, "%" +
+		// query + "%")));
+		// }
 
-                if (!StringUtils.isEmpty(bookingDateStr)) {
-                    try {
-                        LocalDateTime bkDate = new SimpleDateFormat("yyyy-MM-dd").parse(bookingDateStr).toInstant()
-                                .atZone(ZoneId.systemDefault()).toLocalDateTime();
-                        LocalDateTime startOfBookingDate = bkDate.withHour(0).withMinute(0).withSecond(0);
-                        LocalDateTime endOfBookingDate = bkDate.withHour(23).withMinute(0).withSecond(0);
+		// if (!StringUtils.isEmpty(bookingDateStr)) {
+		// try {
+		// LocalDateTime bkDate = new
+		// SimpleDateFormat("yyyy-MM-dd").parse(bookingDateStr).toInstant()
+		// .atZone(ZoneId.systemDefault()).toLocalDateTime();
+		// LocalDateTime startOfBookingDate =
+		// bkDate.withHour(0).withMinute(0).withSecond(0);
+		// LocalDateTime endOfBookingDate =
+		// bkDate.withHour(23).withMinute(0).withSecond(0);
 
-                        predicates.add(criteriaBuilder.and(
-                                criteriaBuilder.lessThanOrEqualTo(bookingdDate, endOfBookingDate)));
-                        predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
-                                bookingdDate, startOfBookingDate)));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
+		// predicates.add(criteriaBuilder.and(
+		// criteriaBuilder.lessThanOrEqualTo(bookingdDate, endOfBookingDate)));
+		// predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
+		// bookingdDate, startOfBookingDate)));
+		// } catch (ParseException e) {
+		// e.printStackTrace();
+		// }
+		// }
 
-                if (!StringUtils.isEmpty(isCompleteStr)) {
-                    boolean isCompleteAndCancel = false;
-                    List<Boolean> isCompleteLst = new ArrayList<Boolean>() {
-                        {
-                            add(true);
-                            add(false);
-                        }
-                    };
-                    List<Boolean> isRefundLst = new ArrayList<Boolean>() {
-                        {
-                            add(true);
-                            add(false);
-                        }
-                    };
+		// if (!StringUtils.isEmpty(isCompleteStr)) {
+		// boolean isCompleteAndCancel = false;
+		// List<Boolean> isCompleteLst = new ArrayList<Boolean>() {
+		// {
+		// add(true);
+		// add(false);
+		// }
+		// };
+		// List<Boolean> isRefundLst = new ArrayList<Boolean>() {
+		// {
+		// add(true);
+		// add(false);
+		// }
+		// };
 
-                    if (!isCompleteAndCancel) {
-                        predicates.add(criteriaBuilder.and(isComplete.in(isCompleteLst), isRefund.in(isRefundLst)));
-                    }
-                }
+		// if (!isCompleteAndCancel) {
+		// predicates.add(criteriaBuilder.and(isComplete.in(isCompleteLst),
+		// isRefund.in(isRefundLst)));
+		// }
+		// }
 
-                if (!StringUtils.isEmpty(bookingDateMonth) && !StringUtils.isEmpty(bookingDateYear)) {
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(
-                            criteriaBuilder.function("MONTH", Integer.class, root.get("bookingDate")),
-                            bookingDateMonth)));
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(
-                            criteriaBuilder.function("YEAR", Integer.class, root.get("bookingDate")),
-                            bookingDateYear)));
-                } else if (!StringUtils.isEmpty(bookingDateMonth)) {
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(
-                            criteriaBuilder.function("MONTH", Integer.class, root.get("bookingDate")),
-                            bookingDateMonth)));
-                } else if (!StringUtils.isEmpty(bookingDateYear)) {
-                    predicates.add(criteriaBuilder.and(criteriaBuilder.equal(
-                            criteriaBuilder.function("YEAR", Integer.class, root.get("bookingDate")),
-                            bookingDateYear)));
-                }
+		// predicates
+		// .add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("totalFee"),
+		// totalFee)));
 
-                predicates
-                        .add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("totalFee"), totalFee)));
+		// // criteriaQuery.orderBy(criteriaBuilder.desc(bookingdDate),
+		// // criteriaBuilder.desc(bookingId));
 
-                // criteriaQuery.orderBy(criteriaBuilder.desc(bookingdDate),
-                // criteriaBuilder.desc(bookingId));
-
-                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-            }
-        }, pageable);
-
-
+		// return criteriaBuilder.and(predicates.toArray(new
+		// Predicate[predicates.size()]));
+		// }
+		// }, pageable);
 
 		if (!filters.get("status").isEmpty()) {
 			String[] statuses = filters.get("status").split(" ");
