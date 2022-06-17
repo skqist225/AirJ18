@@ -1,6 +1,9 @@
 package com.airtnt.airtntapp.booking;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +82,57 @@ public class BookingRestController {
                 // firebaseInitialize.writeBooking(booking.getId(), booking.getUserToken(),
                 // "Pending");
                 // }
+
+                return booking != null ? new OkResponse<BookingDTO>(BookingDTO.buildBookingDTO(
+                        booking)).response()
+                        : new BadResponse<BookingDTO>(
+                                "Cannot create booking")
+                                .response();
+            } catch (RoomHasBeenBookedException e) {
+                return new BadResponse<BookingDTO>(e.getMessage()).response();
+            } catch (UserHasBeenBookedThisRoomException e) {
+                return new BadResponse<BookingDTO>(e.getMessage()).response();
+            }
+
+        } catch (NullCookieException ex) {
+            return new BadResponse<BookingDTO>(ex.getMessage()).response();
+        } catch (NotAuthenticatedException ex) {
+            return new NotAuthenticatedResponse<BookingDTO>().response();
+        }
+    }
+    
+    @GetMapping(value = "/{roomid}/create-mobile")
+    public ResponseEntity<StandardJSONResponse<BookingDTO>> createBookingMobile(
+            @CookieValue(value = "user", required = false) String cookie,
+            @PathVariable("roomid") Integer roomId,
+            @RequestParam("checkin") String checkin,
+            @RequestParam("checkout") String checkout,
+            @RequestParam("cardNumber") String cardNumber,
+            @RequestParam("cardExp") String cardExp,
+            @RequestParam("cardCVV") String cardCVV,
+            @RequestParam("clientMessage") String clientMessage) throws ParseException {
+        try {
+            User customer = authenticate.getLoggedInUser(cookie);
+            String userToken = UUID.randomUUID().toString();
+            try {
+            	if(!cardNumber.equals("4242424242424242")) {
+            		return new BadResponse<BookingDTO>("Card number does not correct").response();
+            	}
+            	if(!cardExp.equals("240224")) {
+            		return new BadResponse<BookingDTO>("Card exp does not correct").response();
+            	}
+            	if(!cardCVV.equals("424")) {
+             		return new BadResponse<BookingDTO>("Card CVV does not correct").response();
+            	}
+ 
+    			LocalDate checkinDate = LocalDate.parse(checkin);
+    			LocalDate checkoutDate = LocalDate.parse(checkout);
+
+        		
+        		long noOfDaysBetween = ChronoUnit.DAYS.between(checkinDate,checkoutDate);
+            	
+            	Booking booking = bookingService.createBooking(checkin, checkout, roomService.getRoomById(roomId),
+            			(int)noOfDaysBetween, clientMessage, customer,userToken);
 
                 return booking != null ? new OkResponse<BookingDTO>(BookingDTO.buildBookingDTO(
                         booking)).response()
