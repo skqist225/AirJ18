@@ -6,6 +6,7 @@ import com.airtnt.entity.Currency;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,9 +33,23 @@ public class CurrencyRestController {
     }
 
     @PostMapping("/currencies/save")
-    public String save(@RequestBody Currency currency) {
+    public ResponseEntity<Object> save(@RequestBody Currency currency) {
+        Currency currencyCheck = repo.findByUnit(currency.getUnit());
+        Boolean isOk = false;
+        if (currencyCheck == null) {
+        	isOk = true;        	
+        }
+        Integer id = currency.getId();
+        if (id != null && currencyCheck.getId() == id) {
+        	isOk = true;
+        }
+        
+        if (!isOk) {
+        	ResponseEntity.badRequest().body("Unit đã tồn tại.");
+        }
         Currency savedCurrency = repo.save(currency);
-        return String.valueOf(savedCurrency.getId());
+        
+        return ResponseEntity.ok().body(String.valueOf(savedCurrency.getId()));
     }
 
     @DeleteMapping("/currencies/delete/{id}")

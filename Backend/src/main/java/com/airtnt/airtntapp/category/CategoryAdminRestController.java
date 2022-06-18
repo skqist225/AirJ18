@@ -1,12 +1,22 @@
 package com.airtnt.airtntapp.category;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
+import java.util.Set;
 
 import com.airtnt.airtntapp.FileUploadUtil;
+import com.airtnt.airtntapp.common.GetResource;
 import com.airtnt.entity.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +32,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class CategoryAdminRestController {
     @Autowired
     CategoryService service;
+    
+    @Autowired
+    Environment env;
 
     @GetMapping("/categories/list")
     public List<Category> listAll() {
@@ -35,7 +48,7 @@ public class CategoryAdminRestController {
     }
 
     @PostMapping("/categories/save")
-    public String saveCategory(
+    public ResponseEntity<Object> saveCategory(
             @RequestParam(name = "id", required = false) Integer id,
             @RequestParam("name") String name,
             @RequestParam(name = "fileImage", required = false) MultipartFile multipartFile,
@@ -52,14 +65,35 @@ public class CategoryAdminRestController {
 
             Category savedCategory = service.save(category);
 
-            String uploadDir = "../category_images";
+            String uploadDir = "src/main/resources/static/category_images/";
+            
+            String environment = env.getProperty("env");
+			System.out.println(environment);
+			if (environment.equals("development")) {
+				uploadDir = "src/main/resources/static/category_images/";
+			} else {
+				String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classes/static/category_images/";
+				Path uploadPath = Paths.get(filePath);
+				if (!Files.exists(uploadPath)) {
+					Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr--r--");
+					FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions
+							.asFileAttribute(permissions);
+
+					Files.createDirectories(uploadPath, fileAttributes);
+				}
+				uploadDir = GetResource.getResourceAsFile("static/category_images/");
+				System.out.println(uploadDir);
+			}
 
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
-            return String.valueOf(savedCategory.getId());
+            return ResponseEntity.ok().body(String.valueOf(savedCategory.getId()));
         } else {
+        	if (id == null) {
+        		return ResponseEntity.badRequest().body("please choose image");        		
+        	}
             Category savedCategory = service.save(category);
-            return String.valueOf(savedCategory.getId());
+            return ResponseEntity.ok().body(String.valueOf(savedCategory.getId()));
         }
     }
 

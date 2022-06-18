@@ -2,7 +2,11 @@ package com.airtnt.airtntapp.aadmin.user;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.rmi.AccessException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,10 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.aadmin.address.AdminAddressService;
 import com.airtnt.airtntapp.aadmin.exception.PasswordNotMatchException;
+import com.airtnt.airtntapp.common.GetResource;
 import com.airtnt.airtntapp.response.success.OkResponse;
 import com.airtnt.entity.Address;
 import com.airtnt.entity.City;
@@ -28,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -60,6 +67,9 @@ public class AdminUserRestController {
     @Autowired
     AdminUserService userService;
 
+    @Autowired
+    Environment env;
+    
     @GetMapping("/users")
     public Page<User> findAllUser(
     		@RequestParam("page")int page, 
@@ -162,6 +172,25 @@ public class AdminUserRestController {
     	if (avatar != null) {
 			String fileName = StringUtils.cleanPath(avatar.getOriginalFilename());
 			String uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId();
+			
+			String environment = env.getProperty("env");
+			System.out.println(environment);
+			if (environment.equals("development")) {
+				uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId();
+			} else {
+				String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classes/static/user_images" + "/" + userSaved.getId();
+				Path uploadPath = Paths.get(filePath);
+				if (!Files.exists(uploadPath)) {
+					Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr--r--");
+					FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions
+							.asFileAttribute(permissions);
+
+					Files.createDirectories(uploadPath, fileAttributes);
+				}
+				uploadDir = GetResource.getResourceAsFile("static/user_images" + "/" + userSaved.getId());
+				System.out.println(uploadDir);
+			}
+			
 			FileUploadUtil.cleanDir(uploadDir);
 			FileUploadUtil.saveFile(uploadDir, fileName, avatar);
 
@@ -225,8 +254,9 @@ public class AdminUserRestController {
         	return ResponseEntity.badRequest().body("Please Choose Role");
         if(userDTO.getPhoneNumber().isEmpty())
         	return ResponseEntity.badRequest().body("Please Enter Phone Number");
-        if (!userDTO.getPassword().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b"))
+        if (!userDTO.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b")) {
         	return ResponseEntity.badRequest().body("PhoneNumber must have right format!!!");
+        }
         if(userDTO.getAddress().getCountry()==null)
         	return ResponseEntity.badRequest().body("Please Choose Country");
         if(userDTO.getAddress().getState()==null)
@@ -273,7 +303,26 @@ public class AdminUserRestController {
     	
     	if (avatar != null) {
 			String fileName = StringUtils.cleanPath(avatar.getOriginalFilename());
-			String uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId();
+			String uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId() + "/";
+			
+			String environment = env.getProperty("env");
+			System.out.println(environment);
+			if (environment.equals("development")) {
+				uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId() + "/";
+			} else {
+				String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classes/static/user_images" + "/" + userSaved.getId() + "/";
+				Path uploadPath = Paths.get(filePath);
+				if (!Files.exists(uploadPath)) {
+					Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr--r--");
+					FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions
+							.asFileAttribute(permissions);
+
+					Files.createDirectories(uploadPath, fileAttributes);
+				}
+				uploadDir = GetResource.getResourceAsFile("static/user_images" + "/" + userSaved.getId() + "/");
+				System.out.println(uploadDir);
+			}
+			
 			FileUploadUtil.cleanDir(uploadDir);
 			FileUploadUtil.saveFile(uploadDir, fileName, avatar);
 
