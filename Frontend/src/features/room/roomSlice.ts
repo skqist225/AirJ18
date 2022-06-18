@@ -234,7 +234,10 @@ type RoomState = {
     roomGroups: IRoomGroup[];
     averageRoomPriceByType: number;
     mockingRoomLoading: boolean;
-    filterObject: IFetchUserOwnedRoom;
+    filterObject: IFetchUserOwnedRoom & {
+        choosenPrivacy: Array<any>;
+        bookingDates: Array<any>;
+    };
     newlyCreatedRoomId: number;
     updateSuccess: boolean;
 };
@@ -256,14 +259,14 @@ const initialState: RoomState = {
     filterObject: {
         page: 1,
         query: "",
-        // choosenPrivacy: [],
+        choosenPrivacy: [],
         minPrice: 0,
         maxPrice: 100000000,
         beds: 0,
         bedRooms: 0,
         bathRooms: 0,
         amenityIDs: "",
-        // bookingDates: [],
+        bookingDates: [],
     },
     newlyCreatedRoomId: 0,
     updateSuccess: false,
@@ -283,14 +286,14 @@ const roomSlice = createSlice({
             state.filterObject = {
                 page: 1,
                 query: "",
-                // choosenPrivacy: [],
+                choosenPrivacy: [],
                 minPrice: 0,
                 maxPrice: 100000000,
                 beds: 0,
                 bedRooms: 0,
                 bathRooms: 0,
                 amenityIDs: "",
-                // bookingDates: [],
+                bookingDates: [],
             };
         },
         resetUpdateStatus: state => {
