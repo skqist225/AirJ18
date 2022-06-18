@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserOwnedRoom } from "../../features/room/roomSlice";
+import { fetchUserOwnedRoom, roomState } from "../../features/room/roomSlice";
 import { useLocation, useParams } from "react-router-dom";
 
 import "./css/column_header.css";
@@ -25,6 +25,7 @@ const ColumnHeader: FC<IColumnHeaderProps> = ({
 
     const [sortDir, setSortDir] = useState("ASC");
     const { fetchData } = useSelector(bookingState);
+    const { filterObject } = useSelector(roomState);
 
     const searchParams = new URLSearchParams().get("SORTDIR");
     if (searchParams) searchParams === "ASC" ? setSortDir("DESC") : setSortDir("ASC");
@@ -43,7 +44,9 @@ const ColumnHeader: FC<IColumnHeaderProps> = ({
                 })
             );
         } else {
-            dispatch(fetchUserOwnedRoom({ pageNumber: parseInt(page!), sortField, sortDir }));
+            dispatch(
+                fetchUserOwnedRoom({ ...filterObject, page: parseInt(page!), sortField, sortDir })
+            );
         }
         if (sortDir === "ASC") {
             const upperSelft = $(".upper." + sortField);

@@ -11,9 +11,13 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
@@ -21,10 +25,12 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.FileUploadUtil;
@@ -66,6 +72,9 @@ public class RoomService {
 
 	@Autowired
 	private CityRepository cityRepository;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	public Room save(Room room) {
 		return roomRepository.save(room);
@@ -221,21 +230,17 @@ public class RoomService {
 
 		if (bookingDates.size() > 0) {
 			if (amentitiesID.size() > 0) {
-				return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
-						minPrice,
-						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, amentitiesID, bookingDates, query,
+				return roomRepository.getRoomByCategoryAndConditions(categoryId, status, minPrice, maxPrice,
+						bedroomCount, bedCount, bathroomCount, privaciesID, amentitiesID, bookingDates, query,
 						pageable);
 			} else {
-				return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
-						minPrice,
-						maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, bookingDates, query,
-						pageable);
+				return roomRepository.getRoomByCategoryAndConditions(categoryId, status, minPrice, maxPrice,
+						bedroomCount, bedCount, bathroomCount, privaciesID, bookingDates, query, pageable);
 			}
 
 		} else
-			return roomRepository.getRoomByCategoryAndConditions(categoryId, status,
-					minPrice,
-					maxPrice, bedroomCount, bedCount, bathroomCount, privaciesID, query, pageable);
+			return roomRepository.getRoomByCategoryAndConditions(categoryId, status, minPrice, maxPrice, bedroomCount,
+					bedCount, bathroomCount, privaciesID, query, pageable);
 	}
 
 	public int updateRoomStatus(Integer roomId) {
@@ -266,106 +271,106 @@ public class RoomService {
 	public String updateField(Integer roomId, String fieldName, Map<String, String> values) {
 		Room room = roomRepository.getById(roomId);
 		switch (fieldName) {
-			case "name": {
-				room.setName(values.get(fieldName));
-				break;
-			}
-			case "roomInfo": {
-				room.setBedCount(Integer.parseInt(values.get("bedCount")));
-				room.setBedroomCount(Integer.parseInt(values.get("bedroomCount")));
-				room.setBathroomCount(Integer.parseInt(values.get("bathroomCount")));
-				break;
-			}
-			case "groupAndTypeAndPrivacy": {
-				room.setRoomGroup(new RoomGroup(Integer.parseInt(values.get("roomGroup"))));
-				room.setCategory(new Category(Integer.parseInt(values.get("category"))));
-				room.setPrivacyType(new RoomPrivacy(Integer.parseInt(values.get("roomPrivacy"))));
-				break;
-			}
-			case "location": {
-				Country country = new Country(216);
-				State state = new State(values.get("state"), country);
-				City city = new City(values.get("city"), state);
+		case "name": {
+			room.setName(values.get(fieldName));
+			break;
+		}
+		case "roomInfo": {
+			room.setBedCount(Integer.parseInt(values.get("bedCount")));
+			room.setBedroomCount(Integer.parseInt(values.get("bedroomCount")));
+			room.setBathroomCount(Integer.parseInt(values.get("bathroomCount")));
+			break;
+		}
+		case "groupAndTypeAndPrivacy": {
+			room.setRoomGroup(new RoomGroup(Integer.parseInt(values.get("roomGroup"))));
+			room.setCategory(new Category(Integer.parseInt(values.get("category"))));
+			room.setPrivacyType(new RoomPrivacy(Integer.parseInt(values.get("roomPrivacy"))));
+			break;
+		}
+		case "location": {
+			Country country = new Country(216);
+			State state = new State(values.get("state"), country);
+			City city = new City(values.get("city"), state);
 
-				State state2;
-				state2 = stateRepository.findByName(values.get("state"));
-				if (state2 == null)
-					state2 = stateRepository.save(state);
+			State state2;
+			state2 = stateRepository.findByName(values.get("state"));
+			if (state2 == null)
+				state2 = stateRepository.save(state);
 
-				City city2;
-				city2 = cityRepository.findByName(values.get("city"));
-				if (city2 == null)
-					city2 = cityRepository.save(city);
+			City city2;
+			city2 = cityRepository.findByName(values.get("city"));
+			if (city2 == null)
+				city2 = cityRepository.save(city);
 
-				System.out.println(values.get("country"));
-				System.out.println(values.get("city"));
-				System.out.println(values.get("state"));
-				System.out.println(values.get("street"));
+			System.out.println(values.get("country"));
+			System.out.println(values.get("city"));
+			System.out.println(values.get("state"));
+			System.out.println(values.get("street"));
 
-				room.setCountry(country);
-				room.setState(state2);
-				room.setCity(city2);
-				room.setStreet(values.get("street"));
-				break;
-			}
-			case "status": {
-				int request = Integer.parseInt(values.get("status"));
+			room.setCountry(country);
+			room.setState(state2);
+			room.setCity(city2);
+			room.setStreet(values.get("street"));
+			break;
+		}
+		case "status": {
+			int request = Integer.parseInt(values.get("status"));
 
-				if (request == 1) {
-					room.setStatus(true);
-				} else if (request == 0) {
-					room.setStatus(false);
-				} else {
-					try {
-						roomRepository.delete(room);
-						return "Delete successfully";
-					} catch (Exception e) {
-						return "Delete fail";
-					}
+			if (request == 1) {
+				room.setStatus(true);
+			} else if (request == 0) {
+				room.setStatus(false);
+			} else {
+				try {
+					roomRepository.delete(room);
+					return "Delete successfully";
+				} catch (Exception e) {
+					return "Delete fail";
 				}
-				break;
 			}
-			case "amentities": {
+			break;
+		}
+		case "amentities": {
 
-				Set<Amentity> updatedAmentities = room.getAmentities();
+			Set<Amentity> updatedAmentities = room.getAmentities();
 
-				String[] checkedArr = values.get("checked").split(",");
-				String[] uncheckedArr = values.get("unchecked").split(",");
+			String[] checkedArr = values.get("checked").split(",");
+			String[] uncheckedArr = values.get("unchecked").split(",");
 
-				for (String s : checkedArr)
-					System.out.println(s);
+			for (String s : checkedArr)
+				System.out.println(s);
 
-				for (String s : uncheckedArr)
-					System.out.println(s);
+			for (String s : uncheckedArr)
+				System.out.println(s);
 
-				System.out.println(checkedArr.length);
-				System.out.println(uncheckedArr.length);
+			System.out.println(checkedArr.length);
+			System.out.println(uncheckedArr.length);
 
-				for (Amentity a : updatedAmentities) {
-					for (int i = 0; i < uncheckedArr.length; i++) {
-						if (!uncheckedArr[i].equals("") && a.getId() == Integer.parseInt(uncheckedArr[i])) {
-							updatedAmentities.remove(a);
-						} else
-							continue;
-					}
+			for (Amentity a : updatedAmentities) {
+				for (int i = 0; i < uncheckedArr.length; i++) {
+					if (!uncheckedArr[i].equals("") && a.getId() == Integer.parseInt(uncheckedArr[i])) {
+						updatedAmentities.remove(a);
+					} else
+						continue;
 				}
+			}
 
-				for (int i = 0; i < checkedArr.length; i++) {
-					if (!checkedArr[i].equals(""))
-						updatedAmentities.add(new Amentity(Integer.parseInt(checkedArr[i])));
-				}
+			for (int i = 0; i < checkedArr.length; i++) {
+				if (!checkedArr[i].equals(""))
+					updatedAmentities.add(new Amentity(Integer.parseInt(checkedArr[i])));
+			}
 
-				room.setAmentities(updatedAmentities);
-				break;
-			}
-			case "thumbnail": {
-				room.setThumbnail(values.get("thumbnail"));
-				break;
-			}
-			case "description": {
-				room.setDescription(values.get("description"));
-				break;
-			}
+			room.setAmentities(updatedAmentities);
+			break;
+		}
+		case "thumbnail": {
+			room.setThumbnail(values.get("thumbnail"));
+			break;
+		}
+		case "description": {
+			room.setDescription(values.get("description"));
+			break;
+		}
 		}
 
 		Room savedRoom = roomRepository.save(room);
@@ -469,58 +474,63 @@ public class RoomService {
 		sort = sortDir.equals("ASC") ? sort.ascending() : sort.descending();
 		Pageable pageable = PageRequest.of(pageNumber - 1, 20, sort); // pase base 0
 
-		return roomRepository.findAll(new Specification<Room>() {
-			@Override
-			public Predicate toPredicate(Root<Room> root, CriteriaQuery<?> criteriaQuery,
-					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicates = new ArrayList<>();
-				List<Integer> amentitiesID = new ArrayList<>();
-				List<Boolean> statusesID = new ArrayList<>();
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Room> criteriaQuery = criteriaBuilder.createQuery(Room.class);
+		Root<Room> root = criteriaQuery.from(Room.class);
 
-				Expression<Set<Amentity>> roomAmenitiesIds = root.get("amentities");
-				Expression<Boolean> roomStatus = root.get("status");
-				Expression<Integer> roomBedroomCount = root.get("bedroomCount");
-				Expression<Integer> roomBathroomCount = root.get("bathroomCount");
-				Expression<Integer> roomBedCount = root.get("bedCount");
-				Expression<String> roomName = root.get("name");
-				Expression<User> roomHost = root.get("host");
+		List<Predicate> predicates = new ArrayList<>();
+		List<Integer> amentitiesID = new ArrayList<>();
+		List<Boolean> statusesID = new ArrayList<>();
 
-				predicates.add(criteriaBuilder.and(criteriaBuilder.equal(roomHost, host)));
+		Expression<Boolean> roomStatus = root.get("status");
+		Expression<Integer> roomBedroomCount = root.get("bedroomCount");
+		Expression<Integer> roomBathroomCount = root.get("bathroomCount");
+		Expression<Integer> roomBedCount = root.get("bedCount");
+		Expression<String> roomName = root.get("name");
+		Expression<User> roomHost = root.get("host");
 
-				if (!StringUtils.isEmpty(filters.get("amentities"))) {
-					String[] amentities = filters.get("amentities").split(" ");
-					for (int i = 0; i < amentities.length; i++) {
-						amentitiesID.add(Integer.parseInt(amentities[i]));
-					}
+		predicates.add(criteriaBuilder.and(criteriaBuilder.equal(roomHost, host)));
 
-					predicates.add(criteriaBuilder.and(roomAmenitiesIds.in(amentitiesID)));
-				}
-
-				if (!StringUtils.isEmpty(filters.get("status"))) {
-					String[] statuses = filters.get("status").split(" ");
-					for (int i = 0; i < statuses.length; i++) {
-						boolean x = statuses[i].equals("ACTIVE");
-						statusesID.add(x);
-					}
-
-					predicates.add(criteriaBuilder.and(roomStatus.in(statusesID)));
-				}
-
-				if (!StringUtils.isEmpty(query)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.like(roomName, "%" + query + "%")));
-				}
-
-				predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
-						roomBedroomCount,
-						bedroomCount)));
-				predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
-						roomBathroomCount, bathroomCount)));
-				predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(
-						roomBedCount, bedCount)));
-
-				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+		if (!StringUtils.isEmpty(filters.get("amentities"))) {
+			Join<Room, Amentity> joinOptions = root.join("amentities", JoinType.LEFT);
+			String[] amentities = filters.get("amentities").split(" ");
+			for (int i = 0; i < amentities.length; i++) {
+				amentitiesID.add(Integer.parseInt(amentities[i]));
 			}
-		}, pageable);
+
+			predicates.add(criteriaBuilder.and(joinOptions.get("id").in(amentitiesID)));
+		}
+
+		if (!StringUtils.isEmpty(filters.get("status"))) {
+			String[] statuses = filters.get("status").split(" ");
+			for (int i = 0; i < statuses.length; i++) {
+				boolean x = statuses[i].equals("ACTIVE");
+				statusesID.add(x);
+			}
+
+			predicates.add(criteriaBuilder.and(roomStatus.in(statusesID)));
+		}
+
+		if (!StringUtils.isEmpty(query)) {
+			predicates.add(criteriaBuilder.and(criteriaBuilder.like(roomName, "%" + query + "%")));
+		}
+
+		predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(roomBedroomCount, bedroomCount)));
+		predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(roomBathroomCount, bathroomCount)));
+		predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(roomBedCount, bedCount)));
+
+		criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])))
+				.groupBy(root.get("id"));
+
+		criteriaQuery.orderBy(QueryUtils.toOrders(pageable.getSort(), root, criteriaBuilder));
+		TypedQuery<Room> query2 = entityManager.createQuery(criteriaQuery);
+		int totalRows = query2.getResultList().size();
+		query2.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+		query2.setMaxResults(pageable.getPageSize());
+
+		Page<Room> result = new PageImpl<Room>(query2.getResultList(), pageable, totalRows);
+
+		return result;
 	}
 
 	public List<RoomPricePerCurrencyDTO> findAverageRoomPriceByPriceType(PriceType type) {

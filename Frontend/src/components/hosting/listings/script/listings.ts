@@ -1,7 +1,7 @@
-import $ from 'jquery';
-import { Dispatch } from 'react';
-import { fetchUserOwnedRoom } from '../../../../features/room/roomSlice';
-import { getPageNumber } from '../../../../helpers';
+import $ from "jquery";
+import { Dispatch } from "react";
+import { fetchUserOwnedRoom } from "../../../../features/room/roomSlice";
+import { getPageNumber } from "../../../../helpers";
 
 export default function hostingListings(
     setCommonnameCb: React.Dispatch<React.SetStateAction<boolean>>,
@@ -12,52 +12,52 @@ export default function hostingListings(
     dispatch: Dispatch<any>,
     pathname: string
 ) {
-    const displayColumnCheckboxClassname = 'ant-checkbox-input';
-    const displayColumnCheckbox = $('.' + displayColumnCheckboxClassname);
+    const displayColumnCheckboxClassname = "ant-checkbox-input";
+    const displayColumnCheckbox = $("." + displayColumnCheckboxClassname);
     const initialDisplayedColumns = $(
         'input[class="' + displayColumnCheckboxClassname + '"]:checked'
     );
-    const allColumns = $('th');
-    const allCells = $('td');
+    const allColumns = $("th");
+    const allCells = $("td");
     let displayedColumns: string[] = [];
 
-    $('.listings__minus-btn').attr('disabled', 'true');
+    $(".listings__minus-btn").attr("disabled", "true");
 
     initialDisplayedColumns.each(function () {
         displayedColumns.push($(this).val() as string);
     });
 
     allColumns.each(function () {
-        if ($(this).data('column'))
-            if (!displayedColumns.includes($(this).data('column'))) $(this).addClass('remove');
-            else $(this).removeClass('remove');
+        if ($(this).data("column"))
+            if (!displayedColumns.includes($(this).data("column"))) $(this).addClass("remove");
+            else $(this).removeClass("remove");
     });
 
     allCells.each(function () {
-        if ($(this).data('column'))
-            if (!displayedColumns.includes($(this).data('column'))) $(this).addClass('remove');
-            else $(this).removeClass('remove');
+        if ($(this).data("column"))
+            if (!displayedColumns.includes($(this).data("column"))) $(this).addClass("remove");
+            else $(this).removeClass("remove");
     });
 
     function manageCbState(val: string, state: boolean) {
         switch (val) {
-            case 'COMMONNAME': {
+            case "COMMONNAME": {
                 setCommonnameCb(state);
                 break;
             }
-            case 'BEDROOM': {
+            case "BEDROOM": {
                 setBedroomCb(state);
                 break;
             }
-            case 'BED': {
+            case "BED": {
                 setBedCb(state);
                 break;
             }
-            case 'BATHROOM': {
+            case "BATHROOM": {
                 setBathroomCb(state);
                 break;
             }
-            case 'LASTMODIFIED': {
+            case "LASTMODIFIED": {
                 setLastModifiedCb(state);
                 break;
             }
@@ -66,11 +66,11 @@ export default function hostingListings(
 
     displayColumnCheckbox.each(function () {
         $(this)
-            .off('change')
-            .on('change', function () {
-                console.log($(this).prop('checked'));
+            .off("change")
+            .on("change", function () {
+                console.log($(this).prop("checked"));
 
-                if (!$(this).prop('checked')) {
+                if (!$(this).prop("checked")) {
                     manageCbState($(this).val() as string, true);
                     displayedColumns.push($(this).val() as string);
                 } else {
@@ -78,57 +78,57 @@ export default function hostingListings(
                     displayedColumns = displayedColumns.filter(v => v.toString() !== $(this).val());
                 }
                 allColumns.each(function () {
-                    if ($(this).data('column'))
-                        !displayedColumns.includes($(this).data('column'))
-                            ? $(this).addClass('remove')
-                            : $(this).removeClass('remove');
+                    if ($(this).data("column"))
+                        !displayedColumns.includes($(this).data("column"))
+                            ? $(this).addClass("remove")
+                            : $(this).removeClass("remove");
                 });
                 allCells.each(function () {
-                    if ($(this).data('column'))
-                        !displayedColumns.includes($(this).data('column'))
-                            ? $(this).addClass('remove')
-                            : $(this).removeClass('remove');
+                    if ($(this).data("column"))
+                        !displayedColumns.includes($(this).data("column"))
+                            ? $(this).addClass("remove")
+                            : $(this).removeClass("remove");
                 });
             });
     });
 
     //show filter box
-    $('.listings__filter--option').each(function () {
+    $(".listings__filter--option").each(function () {
         $(this)
-            .off('click')
-            .on('click', function () {
+            .off("click")
+            .on("click", function () {
                 const self = $(this);
-                $('.listings__filter--option').each(function () {
+                $(".listings__filter--option").each(function () {
                     if (!$(this).is(self))
-                        $(this).siblings().filter('.active').removeClass('active');
+                        $(this).siblings().filter(".active").removeClass("active");
                 });
 
-                const filterBox = $(`#${$(this).data('dropdown')}`);
+                const filterBox = $(`#${$(this).data("dropdown")}`);
 
-                filterBox.hasClass('active')
-                    ? filterBox.removeClass('active')
-                    : filterBox.addClass('active');
+                filterBox.hasClass("active")
+                    ? filterBox.removeClass("active")
+                    : filterBox.addClass("active");
 
-                if ($(this).data('dropdown') === 'clearFilter') {
-                    dispatch(fetchUserOwnedRoom({ pageNumber: getPageNumber(pathname) }));
+                if ($(this).data("dropdown") === "clearFilter") {
+                    dispatch(fetchUserOwnedRoom({ page: getPageNumber(pathname) }));
                 }
             });
     });
 
-    $('.deleteBtn').each(function () {
+    $(".deleteBtn").each(function () {
         $(this)
-            .off('click')
-            .on('click', function () {
-                const dataModify = $(this).data('modify');
+            .off("click")
+            .on("click", function () {
+                const dataModify = $(this).data("modify");
 
                 switch (dataModify) {
-                    case 'roomAndBedRoom': {
-                        $('.listings__minus-btn').each(function () {
-                            $(this).attr('disabled', 'true');
-                            const spanInfoTag = $(this).siblings(`#${$(this).data('edit')}`);
+                    case "roomAndBedRoom": {
+                        $(".listings__minus-btn").each(function () {
+                            $(this).attr("disabled", "true");
+                            const spanInfoTag = $(this).siblings(`#${$(this).data("edit")}`);
                             spanInfoTag.text(0);
                         });
-                        $(this).attr('disabled', 'true');
+                        $(this).attr("disabled", "true");
                         break;
                     }
                 }

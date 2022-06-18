@@ -91,7 +91,8 @@ const FilterFooter: FC<IFilterFooterProps> = ({ footerOf }) => {
 
                             dispatch(
                                 fetchUserOwnedRoom({
-                                    page: getPageNumber(pathname),
+                                    ...filterObject,
+                                    page: parseInt(params.page!),
                                     amenityIDs: amentitiesID.join(" "),
                                 })
                             );
