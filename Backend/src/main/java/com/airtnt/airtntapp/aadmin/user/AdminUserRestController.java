@@ -171,14 +171,14 @@ public class AdminUserRestController {
     	
     	if (avatar != null) {
 			String fileName = StringUtils.cleanPath(avatar.getOriginalFilename());
-			String uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId();
+			String uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId() + "/";
 			
 			String environment = env.getProperty("env");
 			System.out.println(environment);
 			if (environment.equals("development")) {
-				uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId();
+				uploadDir = "src/main/resources/static/user_images" + "/" + userSaved.getId() + "/";
 			} else {
-				String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classes/static/user_images" + "/" + userSaved.getId();
+				String filePath = "/opt/tomcat/webapps/ROOT/WEB-INF/classes/static/user_images" + "/" + userSaved.getId() + "/";
 				Path uploadPath = Paths.get(filePath);
 				if (!Files.exists(uploadPath)) {
 					Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr--r--");
@@ -187,7 +187,7 @@ public class AdminUserRestController {
 
 					Files.createDirectories(uploadPath, fileAttributes);
 				}
-				uploadDir = GetResource.getResourceAsFile("static/user_images" + "/" + userSaved.getId());
+				uploadDir = GetResource.getResourceAsFile("static/user_images" + "/" + userSaved.getId()) + "/";
 				System.out.println(uploadDir);
 			}
 			
