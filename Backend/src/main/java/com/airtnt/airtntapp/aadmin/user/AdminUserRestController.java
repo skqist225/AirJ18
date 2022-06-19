@@ -260,17 +260,18 @@ public class AdminUserRestController {
         if (!userDTO.getPhoneNumber().matches("(84|0[3|5|7|8|9])+([0-9]{8})\\b")) {
         	return ResponseEntity.badRequest().body("PhoneNumber must have right format!!!");
         }
+        if (userDTO.getAddress() == null) {
+        	return ResponseEntity.badRequest().body("Please Choose Country");
+        }
         if(userDTO.getAddress().getCountry()==null)
         	return ResponseEntity.badRequest().body("Please Choose Country");
         if(userDTO.getAddress().getState()==null)
         	return ResponseEntity.badRequest().body("Please Choose State");
         if(userDTO.getAddress().getCity()==null)
         	return ResponseEntity.badRequest().body("Please Choose City");
-        if(userDTO.getAddress().getAprtNoAndStreet().equals(""))
+        if(userDTO.getAddress().getAprtNoAndStreet() == null || userDTO.getAddress().getAprtNoAndStreet().equals(""))
         	return ResponseEntity.badRequest().body("Please Enter Address");
-        if(userDTO.getAbout()==null)
-        	return ResponseEntity.badRequest().body("Please Enter About");
-        if(userDTO.getAbout().isEmpty())
+        if(userDTO.getAbout() == null || userDTO.getAbout().isEmpty())
         	return ResponseEntity.badRequest().body("Please Enter About");
         
         Address address = Address.builder()
