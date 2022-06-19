@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.airtnt.airtntapp.aadmin.stats.AdminStatsIncomeDTO;
 import com.airtnt.entity.Booking;
 import com.airtnt.entity.Room;
+import com.airtnt.entity.User;
 
 @Repository
 public interface AdminBookingRepository extends JpaRepository<Booking, Integer>{
@@ -28,5 +29,5 @@ public interface AdminBookingRepository extends JpaRepository<Booking, Integer>{
     		+ "or concat(b.customer.firstName, ' ', b.customer.lastName) like %?1% ")
     public Page<Booking> findAll(String searchText, Pageable pageable);
 	
-	public Booking findByCustomer(Integer id);
+	public Booking findByCustomer(User user);
 }
