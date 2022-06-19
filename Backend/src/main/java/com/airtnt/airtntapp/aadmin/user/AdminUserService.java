@@ -104,9 +104,9 @@ public class AdminUserService {
     	if(!userById.get().getFavRooms().isEmpty())
     		throw new ForeignKeyConstraintException("User co favourite room. Khong the xoa!");
     	
-    	Booking bookingById = bookingRepository.findByCustomer(userById.get());
+    	List<Booking> bookingById = bookingRepository.findByCustomer(userById.get());
     	
-    	if (bookingById != null) {
+    	if (!bookingById.isEmpty()) {
     		throw new ForeignKeyConstraintException("User co booking. Khong the xoa!");
     	}
     	
