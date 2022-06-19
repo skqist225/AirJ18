@@ -86,6 +86,61 @@ export const fetchUserBookings = createAsyncThunk(
     }
 );
 
+interface IMakeReview {
+    bookingId: number;
+    cleanlinessRating: number;
+    contactRating: number;
+    checkinRating: number;
+    accuracyRating: number;
+    locationRating: number;
+    valueRating: number;
+    ratingComment: string;
+}
+
+export const makeReview = createAsyncThunk(
+    "booking/makeReview",
+    async (
+        {
+            bookingId,
+            cleanlinessRating,
+            contactRating,
+            checkinRating,
+            accuracyRating,
+            locationRating,
+            valueRating,
+            ratingComment,
+        }: IMakeReview,
+        { dispatch, getState, rejectWithValue }
+    ) => {
+        try {
+            const data = await api.post(`/booking/${bookingId}/create-review`, {
+                cleanlinessRating,
+                contactRating,
+                checkinRating,
+                accuracyRating,
+                locationRating,
+                valueRating,
+                ratingComment,
+            });
+            return { data };
+        } catch ({ data: { errorMessage } }) {
+            rejectWithValue(errorMessage);
+        }
+    }
+);
+
+export const cancelUserBooking = createAsyncThunk(
+    "booking/cancelUserBooking",
+    async (bookingId: number, { dispatch, getState, rejectWithValue }) => {
+        try {
+            const data = await api.put(`/booking/${bookingId}/user/canceled`);
+            return { data };
+        } catch ({ data: { errorMessage } }) {
+            rejectWithValue(errorMessage);
+        }
+    }
+);
+
 interface ICreateBooking {
     roomid: number;
     checkinDate: string;
@@ -168,6 +223,8 @@ type BookingState = {
     cancelMessage: string;
     fetchData: IFetchUserBookings;
     totalPages: number;
+    createReviewSuccess: boolean;
+    cancelBookingSuccess: boolean;
 };
 
 const initialState: BookingState = {
@@ -188,6 +245,8 @@ const initialState: BookingState = {
         sortDir: "desc",
     },
     totalPages: 0,
+    createReviewSuccess: false,
+    cancelBookingSuccess: false,
 };
 
 const bookingSlice = createSlice({
@@ -254,6 +313,12 @@ const bookingSlice = createSlice({
             })
             .addCase(approveBooking.fulfilled, (state, { payload }) => {
                 state.cancelMessage = payload?.data;
+            })
+            .addCase(makeReview.fulfilled, (state, { payload }) => {
+                state.createReviewSuccess = true;
+            })
+            .addCase(cancelUserBooking.fulfilled, (state, { payload }) => {
+                state.cancelBookingSuccess = true;
             })
             .addMatcher(isAnyOf(fetchUserBookings.pending), state => {
                 state.loading = true;

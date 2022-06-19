@@ -250,6 +250,7 @@ input[type='text'],
 textarea {
     border: 1px solid;
     border-color: rgb(221, 221, 221);
+    border:none;
 }
 
 input[type='text']:focus,

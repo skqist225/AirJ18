@@ -22,13 +22,13 @@ import lombok.Setter;
 public class BookedRoomDTO {
     private Integer bookingId;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime bookingDate;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date checkinDate;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date checkoutDate;
 
     private float pricePerDay;

@@ -1,10 +1,10 @@
-import { FC, useEffect, useState } from 'react';
-import Header from '../../components/Header';
+import { FC, useEffect, useState } from "react";
+import Header from "../../components/Header";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { earningState, fetchEarnings } from '../../features/progress/earningSlice';
-import { useLocation } from 'react-router-dom';
-import { seperateNumber, useURLParams } from '../../helpers';
+import { useDispatch, useSelector } from "react-redux";
+import { earningState, fetchEarnings } from "../../features/progress/earningSlice";
+import { useLocation } from "react-router-dom";
+import { seperateNumber, useURLParams } from "../../helpers";
 import {
     LineChart,
     Line,
@@ -14,34 +14,34 @@ import {
     Tooltip,
     Legend,
     ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 
-import $ from 'jquery';
-import '../css/progress_earnings_page.css';
-import { Div } from '../../globalStyle';
+import $ from "jquery";
+import "../css/progress_earnings_page.css";
+import { Div } from "../../globalStyle";
 
 interface IProgressEarningsPageProps {}
 
 const getIntroOfPage = (label: string) => {
-    if (label === 'Page A') {
+    if (label === "Page A") {
         return "Page A is about men's clothing";
     }
-    if (label === 'Page B') {
+    if (label === "Page B") {
         return "Page B is about women's dress";
     }
-    if (label === 'Page C') {
+    if (label === "Page C") {
         return "Page C is about women's bag";
     }
-    if (label === 'Page D') {
-        return 'Page D is about household goods';
+    if (label === "Page D") {
+        return "Page D is about household goods";
     }
-    if (label === 'Page E') {
-        return 'Page E is about food';
+    if (label === "Page E") {
+        return "Page E is about food";
     }
-    if (label === 'Page F') {
-        return 'Page F is about baby food';
+    if (label === "Page F") {
+        return "Page F is about baby food";
     }
-    return '';
+    return "";
 };
 
 const CustomTooltip = ({
@@ -69,7 +69,7 @@ const CustomTooltip = ({
 const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
     const dispatch = useDispatch();
     const { search } = useLocation();
-    const year = useURLParams(search).get('year');
+    const year = useURLParams(search).get("year");
     const currentYear = year !== undefined ? parseInt(year) : new Date().getFullYear();
     let dataSetTotalEarningsInMonth: number[] = [];
     let dataSetAvgEarningsInMonth: number[] = [];
@@ -82,19 +82,19 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
     }, [currentYear]);
 
     useEffect(() => {
-        $('#earnings__prev-year').text(currentYear - 1);
-        $('#earnings__current-year').text(currentYear);
-        $('#earnings__next-year').text(currentYear + 1);
-        $('#yearHeaderTitle').text(currentYear);
+        $("#earnings__prev-year").text(currentYear - 1);
+        $("#earnings__current-year").text(currentYear);
+        $("#earnings__next-year").text(currentYear + 1);
+        $("#yearHeaderTitle").text(currentYear);
     }, []);
 
     useEffect(() => {
         if (feesInMonth && numberOfBookingsInMonth) {
-            $('#numberOfBookingsInCurrentMonth').text(
+            $("#numberOfBookingsInCurrentMonth").text(
                 numberOfBookingsInMonth[date.getMonth() + 1] || 0
             );
-            $('#earningsInCurrentMonth').text(
-                'đ' + seperateNumber(feesInMonth[date.getMonth() + 1] || 0)
+            $("#earningsInCurrentMonth").text(
+                "đ" + seperateNumber(feesInMonth[date.getMonth() + 1] || 0)
             );
         }
     }, [feesInMonth, numberOfBookingsInMonth]);
@@ -112,9 +112,9 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
     for (let i = 0; i <= 12; i++) {
         data.push({
             label: `Tháng ${i}`,
-            'Thu nhập trung bình': dataSetAvgEarningsInMonth[i],
-            'Tổng thu nhập': dataSetTotalEarningsInMonth[i],
-            'Số lượng đặt phòng': numberOfBookingsInMonth[i] || 0,
+            "Thu nhập trung bình": dataSetAvgEarningsInMonth[i],
+            "Tổng thu nhập": dataSetTotalEarningsInMonth[i],
+            "Số lượng đặt phòng": numberOfBookingsInMonth[i] || 0,
         });
     }
     console.log(data);
@@ -164,26 +164,29 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
             {!loading && (
                 <div id='main'>
                     <div id='earnings__header' className='normal-flex jc-center'>
-                        <div className='mr-5'>
+                        <div className='mr-10'>
                             <div
                                 className='card text-white mb-3 bg-danger'
-                                style={{ minWidth: '20rem' }}
+                                style={{ minWidth: "20rem" }}
                             >
                                 <div className='card-header text-center'>
                                     Thu nhập đặt phòng trong năm <span id='yearHeaderTitle'></span>
                                 </div>
                                 <div className='card-body'>
-                                    <h5 className='card-title text-center'>
+                                    <h5
+                                        className='card-title text-center'
+                                        style={{ color: "white" }}
+                                    >
                                         <span>đ</span>
                                         {seperateNumber(totalFee)}
                                     </h5>
                                 </div>
                             </div>
                         </div>
-                        <div className='mr-5'>
+                        <div className='mr-10'>
                             <div
                                 className='card text-white mb-3 bg-primary'
-                                style={{ minWidth: '20rem' }}
+                                style={{ minWidth: "20rem" }}
                             >
                                 <div className='card-header text-center'>
                                     Doanh thu tháng hiện tại
@@ -192,6 +195,7 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
                                     <h5
                                         className='card-title text-center'
                                         id='earningsInCurrentMonth'
+                                        style={{ color: "white" }}
                                     ></h5>
                                 </div>
                             </div>
@@ -199,7 +203,7 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
                         <div className='mr-5'>
                             <div
                                 className='card text-white bg-success mb-3'
-                                style={{ minWidth: '20rem' }}
+                                style={{ minWidth: "20rem" }}
                             >
                                 <div className='card-header text-center'>
                                     Tổng đặt phòng trong tháng
@@ -208,6 +212,7 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
                                     <h5
                                         className='card-title text-center'
                                         id='numberOfBookingsInCurrentMonth'
+                                        style={{ color: "white" }}
                                     ></h5>
                                 </div>
                             </div>
@@ -251,7 +256,7 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
                     <div id='earnings__footer' className='normal-flex'>
                         <div
                             className='normal-flex'
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: "pointer" }}
                             onClick={getPreviousYearStats}
                         >
                             <div>
@@ -262,10 +267,10 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
                                     aria-hidden='true'
                                     focusable='false'
                                     style={{
-                                        display: 'block',
-                                        fill: ' #222',
-                                        height: '16px',
-                                        width: '16px',
+                                        display: "block",
+                                        fill: " #222",
+                                        height: "16px",
+                                        width: "16px",
                                     }}
                                 >
                                     <path
@@ -285,7 +290,7 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
                         <div className='flex-1'></div>
                         <div
                             className='normal-flex'
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: "pointer" }}
                             onClick={getNextYearStats}
                         >
                             <div className='earnings__year' id='earnings__next-year'>
@@ -299,13 +304,13 @@ const ProgressEarningsPage: FC<IProgressEarningsPageProps> = () => {
                                     role='presentation'
                                     focusable='false'
                                     style={{
-                                        display: 'block',
-                                        fill: 'none',
-                                        height: '16px',
-                                        width: '16px',
-                                        stroke: 'currentcolor',
-                                        strokeWidth: '5.33333',
-                                        overflow: 'visible',
+                                        display: "block",
+                                        fill: "none",
+                                        height: "16px",
+                                        width: "16px",
+                                        stroke: "currentcolor",
+                                        strokeWidth: "5.33333",
+                                        overflow: "visible",
                                     }}
                                 >
                                     <g fill='none'>

@@ -1,7 +1,7 @@
-import { FC, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
-import Header from '../components/Header';
+import { FC, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import Header from "../components/Header";
 import {
     CancelPolicy,
     ContactHost,
@@ -14,42 +14,84 @@ import {
     ProgressBookingContainer,
     PBTitleSection,
     PBRoomInfo,
-} from '../components/progress_booking';
-import { fetchRoomById, roomState } from '../features/room/roomSlice';
-import { Div, Image } from '../globalStyle';
-import { getImage, useURLParams } from '../helpers';
-import { loadStripe } from '@stripe/stripe-js';
+} from "../components/progress_booking";
+import { fetchRoomById, roomState } from "../features/room/roomSlice";
+import { Div, Image } from "../globalStyle";
+import { getImage, useURLParams } from "../helpers";
+import { loadStripe } from "@stripe/stripe-js";
 import {
     bookingState,
     createBooking,
     getStripeClientSecret,
-} from '../features/booking/bookingSlice';
-import { Elements } from '@stripe/react-stripe-js';
+} from "../features/booking/bookingSlice";
+import { Elements, useElements, useStripe } from "@stripe/react-stripe-js";
 import {
     calculateBeforeCheckinDateDateAndMonth,
     getFormattedCheckinAndCheckoutDate,
-} from './script/progress_booking';
+} from "./script/progress_booking";
 
-import $ from 'jquery';
-import './css/progress_booking.css';
+import $ from "jquery";
+import "./css/progress_booking.css";
+import { PaymentElement } from "@stripe/react-stripe-js";
 
 interface IProgressBookingPageProps {}
 
 const stripePromise = loadStripe(
-    'pk_test_51I0IBMJc966wyBI6MIJecSCfMv7UPan6N0DVxro4nTDYIAQKJOiANIUQotSTu0NP99C5tuKPHdaWCrei9iR2ASsH00gRiN3lVe'
+    "pk_test_51I0IBMJc966wyBI6MIJecSCfMv7UPan6N0DVxro4nTDYIAQKJOiANIUQotSTu0NP99C5tuKPHdaWCrei9iR2ASsH00gRiN3lVe"
 );
+
+const CheckoutForm = () => {
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const handleSubmit = async (event: any) => {
+        // We don't want to let default form submission happen here,
+        // which would refresh the page.
+        event.preventDefault();
+
+        if (!stripe || !elements) {
+            // Stripe.js has not yet loaded.
+            // Make sure to disable form submission until Stripe.js has loaded.
+            return;
+        }
+
+        const result = await stripe.confirmPayment({
+            //`Elements` instance that was used to create the Payment Element
+            elements,
+            confirmParams: {
+                return_url: "http://localhost:3000/user/booked-rooms",
+            },
+        });
+
+        if (result.error) {
+            // Show error to your customer (for example, payment details incomplete)
+            console.log(result.error.message);
+        } else {
+            // Your customer will be redirected to your `return_url`. For some payment
+            // methods like iDEAL, your customer will be redirected to an intermediate
+            // site first to authorize the payment, then redirected to the `return_url`.
+        }
+    };
+
+    return (
+        <form>
+            <PaymentElement />
+            <button>Submit</button>
+        </form>
+    );
+};
 
 const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
     const dispatch = useDispatch();
     const { pathname, search } = useLocation();
-    const roomid = pathname.split('/').pop()!;
+    const roomid = pathname.split("/").pop()!;
     const { clientSecret } = useSelector(bookingState);
     const { room } = useSelector(roomState);
     const params = useURLParams(search);
 
-    const checkinDate = params.get('checkin')!;
-    const checkoutDate = params.get('checkout')!;
-    const numberOfNights = parseInt(params.get('numberOfNights')!);
+    const checkinDate = params.get("checkin")!;
+    const checkoutDate = params.get("checkout")!;
+    const numberOfNights = parseInt(params.get("numberOfNights")!);
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [siteFee, setSiteFee] = useState<number>(0);
     const [cleanFee, setCleanFee] = useState<number>(0);
@@ -76,21 +118,24 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
     const [beforeCheckinDateDate, beforeCheckinDateMonth] =
         calculateBeforeCheckinDateDateAndMonth(checkinDate);
 
-
-              console.log(checkinDate);
-              console.log(checkoutDate);
+    console.log(checkinDate);
+    console.log(checkoutDate);
     function makeBooking() {
-  
         dispatch(
             createBooking({
                 roomid: room!.id,
                 checkinDate,
                 checkoutDate,
                 numberOfDays: numberOfNights,
-                clientMessage: $('#clientMessage').text()!,
+                clientMessage: $("#clientMessage").text()!,
             })
         );
     }
+
+    const options = {
+        // passing the client secret obtained from the server
+        clientSecret: clientSecret,
+    };
 
     return (
         <div className='p-relative' id='progress--booking'>
@@ -104,12 +149,12 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                                 to={`/room/${room.id}`}
                                 className='progress--booking__transparentBtn'
                             >
-                                <Image src={getImage('/svg/close3.svg')} size='16px' />
+                                <Image src={getImage("/svg/close3.svg")} size='16px' />
                             </Link>
                             <h1>Yêu cầu đặt phòng/đặt chỗ • AirJ18</h1>
                         </PBTitleSection>
                         <PBRoomInfo>
-                            <div className='f1' style={{ maxWidth: '45%' }}>
+                            <div className='f1' style={{ maxWidth: "45%" }}>
                                 <PaymentError />
                                 <section className='progress--booking__infoSection'>
                                     <div>Chuyến đi của bạn</div>
@@ -126,14 +171,17 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                                         room={room}
                                     />
                                 </section>
-                                <PaymentMethod
+                                <Elements stripe={stripePromise} options={options}>
+                                    <CheckoutForm />
+                                </Elements>
+                                {/* <PaymentMethod
                                     siteFee={siteFee}
                                     cleanFee={cleanFee}
                                     totalPrice={totalPrice}
                                     room={room}
-                                />
+                                /> */}
                                 <section className='progress--booking__infoSection'>
-                                    <div style={{ paddingBottom: '0px !important' }}>
+                                    <div style={{ paddingBottom: "0px !important" }}>
                                         Thanh toán bằng
                                     </div>
                                     <div>
@@ -171,7 +219,7 @@ const ProgressBookingPage: FC<IProgressBookingPageProps> = () => {
                                     </button>
                                 </Div>
                             </div>
-                            <div className='f1' style={{ maxWidth: '5%' }}></div>
+                            <div className='f1' style={{ maxWidth: "5%" }}></div>
                             <RoomAndPricePreview
                                 room={room}
                                 numberOfNights={numberOfNights}

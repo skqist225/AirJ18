@@ -1,4 +1,4 @@
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 
 export interface IMoneyForMat {
     price: number;
@@ -11,6 +11,7 @@ export interface IMoneyForMat {
     isSuffix?: boolean;
     color?: string;
     removeStayType?: boolean;
+    removeSplash?: boolean;
 }
 
 export default function MyNumberForMat({
@@ -23,17 +24,18 @@ export default function MyNumberForMat({
     isPrefix,
     isSuffix,
     color,
+    removeSplash = false,
     removeStayType = false,
 }: IMoneyForMat) {
     return (
         <>
-            {' '}
+            {" "}
             {isPrefix ? (
                 <NumberFormat
                     value={Math.floor(price)}
                     prefix={currency}
                     thousandSeparator={true}
-                    displayType={'text'}
+                    displayType={"text"}
                     renderText={(formattedValue: any) => (
                         <div>
                             {priceFontSize !== null ? (
@@ -45,7 +47,7 @@ export default function MyNumberForMat({
                                             fontWeight: priceFontWeight,
                                         }}
                                     >
-                                        {formattedValue}{' '}
+                                        {formattedValue}{" "}
                                     </span>
                                     {!removeStayType && (
                                         <span style={{ fontSize: stayTypeFontSize, color }}>
@@ -67,7 +69,7 @@ export default function MyNumberForMat({
                     value={price}
                     suffix={currency}
                     thousandSeparator={true}
-                    displayType={'text'}
+                    displayType={"text"}
                     renderText={(formattedValue: any) => (
                         <div>
                             {priceFontSize !== null ? (
@@ -79,7 +81,7 @@ export default function MyNumberForMat({
                                             fontWeight: priceFontWeight,
                                         }}
                                     >
-                                        {formattedValue}{' '}
+                                        {formattedValue}{" "}
                                     </span>
                                     {!removeStayType && (
                                         <span style={{ fontSize: stayTypeFontSize, color }}>
@@ -100,7 +102,7 @@ export default function MyNumberForMat({
                 <NumberFormat
                     value={price}
                     thousandSeparator={true}
-                    displayType={'text'}
+                    displayType={"text"}
                     renderText={(formattedValue: any) => (
                         <div>
                             {priceFontSize !== null ? (
@@ -112,7 +114,7 @@ export default function MyNumberForMat({
                                             fontWeight: priceFontWeight,
                                         }}
                                     >
-                                        {formattedValue}{' '}
+                                        {formattedValue}{" "}
                                     </span>
                                     {!removeStayType && (
                                         <span style={{ fontSize: stayTypeFontSize, color }}>
