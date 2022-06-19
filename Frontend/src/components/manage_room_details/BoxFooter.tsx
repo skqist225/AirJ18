@@ -1,11 +1,12 @@
-import React, { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from '../../axios';
-import { resetUpdateStatus, roomState, updateRoom } from '../../features/room/roomSlice';
-import { callToast } from '../../helpers';
+import React, { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "../../axios";
+import { resetUpdateStatus, roomState, updateRoom } from "../../features/room/roomSlice";
+import { callToast } from "../../helpers";
 
-import $ from 'jquery';
-import './css/box_footer.css';
+import $ from "jquery";
+import "./css/box_footer.css";
+import Toast from "../notify/Toast";
 
 interface IBoxFooterProps {
     sectionKey: string;
@@ -41,10 +42,10 @@ const BoxFooter: FC<IBoxFooterProps> = ({
 
     function closeEditBox() {
         let obj = {};
-        if (sectionKey === 'name') obj = { name };
-        if (sectionKey === 'description') obj = { description };
-        if (sectionKey === 'groupAndTypeAndPrivacy') obj = { roomGroup, category, roomPrivacy };
-        if (sectionKey === 'location')
+        if (sectionKey === "name") obj = { name };
+        if (sectionKey === "description") obj = { description };
+        if (sectionKey === "groupAndTypeAndPrivacy") obj = { roomGroup, category, roomPrivacy };
+        if (sectionKey === "location")
             obj = {
                 country,
                 street,
@@ -65,22 +66,22 @@ const BoxFooter: FC<IBoxFooterProps> = ({
         );
 
         if (updateSuccess) {
-            callToast('success', 'Cập nhật thông tin phòng thành công!');
+            callToast("success", "Cập nhật thông tin phòng thành công!");
         }
     }
 
     async function updateField() {
         switch (sectionKey) {
-            case 'name': {
+            case "name": {
                 const roomName = $(idInput).val();
                 sendRequest({ name: roomName });
                 closeEditBox();
                 break;
             }
-            case 'roomInfo': {
-                const bedroom = $('#manage-ys__bedRoom').text().trim();
-                const bed = $('#manage-ys__bed').text().trim();
-                const bathroom = $('#manage-ys__bathRoom').text().trim();
+            case "roomInfo": {
+                const bedroom = $("#manage-ys__bedRoom").text().trim();
+                const bed = $("#manage-ys__bed").text().trim();
+                const bathroom = $("#manage-ys__bathRoom").text().trim();
 
                 sendRequest({
                     bedroom,
@@ -89,10 +90,12 @@ const BoxFooter: FC<IBoxFooterProps> = ({
                 });
                 break;
             }
-            case 'groupAndTypeAndPrivacy': {
+            case "groupAndTypeAndPrivacy": {
                 const groupId = $('select[id="manage-ys__group-input"]').val();
                 const categoryId = $('select[id="manage-ys__type-input"]').val();
                 const privacyId = $('select[id="manage-ys__privacy-input"]').val();
+
+                console.log(groupId, categoryId);
 
                 sendRequest({
                     roomGroup: groupId,
@@ -102,11 +105,11 @@ const BoxFooter: FC<IBoxFooterProps> = ({
 
                 break;
             }
-            case 'location': {
-                const country = $('#manage-ys__location-country').val();
-                const state = $('#manage-ys__location-state').val();
-                const city = $('#manage-ys__location-city').val();
-                const street = $('#manage-ys__location-street').val();
+            case "location": {
+                const country = $("#manage-ys__location-country").val();
+                const state = $("#manage-ys__location-state").val();
+                const city = $("#manage-ys__location-city").val();
+                const street = $("#manage-ys__location-street").val();
 
                 sendRequest({
                     country,
@@ -117,10 +120,10 @@ const BoxFooter: FC<IBoxFooterProps> = ({
 
                 break;
             }
-            case 'status': {
-                const checked = $('input[type="radio"]:checked').attr('id')!;
+            case "status": {
+                const checked = $('input[type="radio"]:checked').attr("id")!;
                 let request: number = 0;
-                if (checked.startsWith('roomStatus')) {
+                if (checked.startsWith("roomStatus")) {
                     request = parseInt(checked.substr(-1));
                 } else {
                     request = 2;
@@ -133,40 +136,40 @@ const BoxFooter: FC<IBoxFooterProps> = ({
                         status: request,
                     });
 
-                    // if (data === 'OK') {
+                    // if (data === "OK") {
                     //     const status = request === 1 ? true : false;
-                    //     callToast('success', 'Cập nhật thông tin phòng thành công!');
+                    //     callToast("success", "Cập nhật thông tin phòng thành công!");
                     // }
                 }
 
                 break;
             }
-            case 'description': {
-                const description2 = $('#descriptionInput').val();
+            case "description": {
+                const description2 = $("#descriptionInput").val();
                 sendRequest({
                     description: description2,
                 });
                 break;
             }
-            case 'amentities': {
+            case "amentities": {
                 let checkedArray: string[] = [];
                 let uncheckedArray: string[] = [];
 
-                $('.manage-ys__check-btn').each(function () {
-                    if ($(this).hasClass('checked')) {
-                        checkedArray.push($(this).data('edit'));
+                $(".manage-ys__check-btn").each(function () {
+                    if ($(this).hasClass("checked")) {
+                        checkedArray.push($(this).data("edit"));
                     }
                 });
 
-                $('.manage-ys__uncheck-btn').each(function () {
-                    if ($(this).hasClass('checked')) {
-                        uncheckedArray.push($(this).data('edit'));
+                $(".manage-ys__uncheck-btn").each(function () {
+                    if ($(this).hasClass("checked")) {
+                        uncheckedArray.push($(this).data("edit"));
                     }
                 });
 
                 sendRequest({
-                    checkedArray: checkedArray.join(',').trim(),
-                    uncheckedArray: uncheckedArray.join(',').trim(),
+                    checked: checkedArray.join(",").trim(),
+                    unchecked: uncheckedArray.join(",").trim(),
                 });
 
                 break;

@@ -1,8 +1,8 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import Header from '../components/Header';
-import { fetchRoomById, roomState } from '../features/room/roomSlice';
+import { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import Header from "../components/Header";
+import { fetchRoomById, roomState } from "../features/room/roomSlice";
 
 import {
     EditLocation,
@@ -12,11 +12,11 @@ import {
     EditImage,
     EditAmenity,
     ViewRoom,
-} from '../components/manage_room_details';
-import { amenityState, fetchAmenities } from '../features/amenity/amenitySlice';
-import './css/manage_room_details.css';
-import { initComp } from './script/manage_your_space';
-import Toast from '../components/notify/Toast';
+} from "../components/manage_room_details";
+import { amenityState, fetchAmenities } from "../features/amenity/amenitySlice";
+import "./css/manage_room_details.css";
+import { initComp } from "./script/manage_your_space";
+import Toast from "../components/notify/Toast";
 
 interface IManageRoomDetailsPageProps {}
 
@@ -28,7 +28,7 @@ const ManageRoomDetailsPage: FC<IManageRoomDetailsPageProps> = () => {
     const { amenities } = useSelector(amenityState);
 
     useEffect(() => {
-        dispatch(fetchRoomById({ roomid: pathname.split('/')[2] }));
+        dispatch(fetchRoomById({ roomid: pathname.split("/")[2] }));
 
         dispatch(fetchAmenities());
     }, []);

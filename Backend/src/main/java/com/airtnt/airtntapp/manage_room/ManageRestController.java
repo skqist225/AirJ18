@@ -23,6 +23,8 @@ public class ManageRestController {
     public String getMethodName(@PathVariable("roomId") Integer roomId, @PathVariable("fieldName") String fieldName,
             @RequestBody Map<String, Object> payload) {
         Map<String, String> values = new HashMap<>();
+        
+        System.out.println("updated fields: " + fieldName);
 
         if (fieldName.equals("roomInfo")) {
             values.put("bedroomCount", payload.get("bedroom").toString());
@@ -40,8 +42,12 @@ public class ManageRestController {
         } else if (fieldName.equals("status")) {
             values.put("status", payload.get("status").toString());
         } else if (fieldName.equals("amentities")) {
-            values.put("checked", payload.get("checkedArray").toString());
-            values.put("unchecked", payload.get("uncheckedArray").toString());
+        	
+        	
+        	
+            values.put("checked", payload.get("checked").toString());
+            values.put("unchecked", payload.get("unchecked").toString());
+            
         } else if (fieldName.equals("thumbnail")) {
             values.put("thumbnail", payload.get("thumbnail").toString());
         } else

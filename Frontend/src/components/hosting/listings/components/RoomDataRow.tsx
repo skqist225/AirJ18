@@ -4,6 +4,7 @@ import { getImage } from "../../../../helpers";
 import { IRoomListings } from "../../../../types/room/type_RoomListings";
 import { MyNumberForMat } from "../../../utils";
 import { Link } from "react-router-dom";
+import { Image } from "../../../../globalStyle";
 
 interface IRoomDataRowProps {
     room: IRoomListings;
@@ -55,10 +56,13 @@ export const RoomDataRow: FC<IRoomDataRowProps> = ({ room, email }) => {
                                         <path d='M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm3.159 4.869L6.67 9.355 4.42 7.105 3.289 8.236 6.67 11.62 12.291 6z'></path>
                                     </svg>
                                 </div>
-                                <div>Hoàn thành</div>
+                                <div>Đang đăng</div>
                             </div>
                         ) : (
-                            "Đang tiến hành"
+                            <>
+                                <Image src={getImage("/svg/reddot.svg")} size='10px' />
+                                <span>Đã hủy đăng</span>
+                            </>
                         )}
                     </div>
                 </div>

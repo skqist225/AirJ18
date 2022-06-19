@@ -1,16 +1,16 @@
-import { FC, useState } from 'react';
-import { ManageYSContainer } from '.';
-import { Image } from '../../globalStyle';
-import { getImage } from '../../helpers';
-import { IRoomDetails } from '../../types/room/type_RoomDetails';
-import { IncAndDecBtn } from '../utils/IncAndDecBtn';
-import BoxFooter from './BoxFooter';
-import DisplayEditUI from './components/DisplayEditUI';
-import HideEditBox from './components/HideEditBox';
-import RoomStatus from './components/RoomStatus';
+import { FC, useState } from "react";
+import { ManageYSContainer } from ".";
+import { Image } from "../../globalStyle";
+import { getImage } from "../../helpers";
+import { IRoomDetails } from "../../types/room/type_RoomDetails";
+import { IncAndDecBtn } from "../utils/IncAndDecBtn";
+import BoxFooter from "./BoxFooter";
+import DisplayEditUI from "./components/DisplayEditUI";
+import HideEditBox from "./components/HideEditBox";
+import RoomStatus from "./components/RoomStatus";
 
-import './css/edit_room_info.css';
-import { hideEditBox, onKeyDown } from '../../pages/script/manage_your_space';
+import "./css/edit_room_info.css";
+import { hideEditBox, onKeyDown } from "../../pages/script/manage_your_space";
 
 interface IEditRoomInfoProps {
     room: IRoomDetails;
@@ -42,8 +42,8 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                 <div id='manage-ys__name-control-container'>
                     <div className='manage-ys__section-edit'>
                         <div>
-                            <div className='flex-space' style={{ alignItems: 'flex-start' }}>
-                                <div style={{ flex: '1', maxWidth: '600px' }}>
+                            <div className='flex-space' style={{ alignItems: "flex-start" }}>
+                                <div style={{ flex: "1", maxWidth: "600px" }}>
                                     <div className='manage-ys__header-edit-main-title'>
                                         Tiêu đề nhà/phòng cho thuê
                                     </div>
@@ -101,7 +101,7 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                     </div>
                 </div>
                 <div id='manage-ys__description-control-container'>
-                    <div style={{ padding: '24px 24px 0' }}>
+                    <div style={{ padding: "24px 24px 0" }}>
                         <div className='flex-space'>
                             <div className='manage-ys__header-edit-main-title'>
                                 <div>Mô tả nhà/phòng cho thuê</div>
@@ -113,10 +113,10 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                             />
                         </div>
                         <div className=''>
-                            <div style={{ marginBottom: '10px' }}>
+                            <div style={{ marginBottom: "10px" }}>
                                 <textarea
                                     className='_dsnwjc'
-                                    style={{ width: '693px' }}
+                                    style={{ width: "693px" }}
                                     draggable='true'
                                     id='descriptionInput'
                                     value={roomDescription}
@@ -164,12 +164,12 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                         <div className='manage-ys__section-content-info'>
                             <span className='mr-10'>
                                 {!room?.status ? (
-                                    <Image src={getImage('/svg/reddot.svg')} size='10px' />
+                                    <Image src={getImage("/svg/reddot.svg")} size='10px' />
                                 ) : (
-                                    <Image src={getImage('/svg/greendot.svg')} size='10px' />
+                                    <Image src={getImage("/svg/greendot.svg")} size='10px' />
                                 )}
                             </span>
-                            {!room!.status ? 'Đã hủy đăng' : 'Đang đăng'} - Khách không thể đặt
+                            {!room!.status ? "Đã hủy đăng" : "Đang đăng"} - Khách không thể đặt
                             phòng hoặc tìm thấy nhà/phòng cho thuê của bạn trong kết quả tìm kiếm.
                         </div>
                     </div>
@@ -183,11 +183,11 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                             <div className='manage-ys__header-edit-main-title'>
                                 Trạng thái nhà/phòng cho thuê
                             </div>
-                            <div style={{ cursor: 'pointer' }}>
-                                <Image src={getImage('/svg/close.svg')} size='14px' />
+                            <div style={{ cursor: "pointer" }}>
+                                <Image src={getImage("/svg/close.svg")} size='14px' />
                             </div>
                         </div>
-                        <div style={{ flex: '1', paddingBottom: '20px' }}>
+                        <div style={{ flex: "1", paddingBottom: "20px" }}>
                             <RoomStatus
                                 id='roomStatus1'
                                 imageName='greendot'
@@ -201,13 +201,13 @@ const EditRoomInfo: FC<IEditRoomInfoProps> = ({ room }) => {
                                 title='Đã hủy đăng'
                                 subTitle='Khách không thể đặt phòng hoặc tìm thấy nhà/phòng cho thuê của bạn trong kết quả tìm kiếm.'
                             />
-                            <RoomStatus
+                            {/* <RoomStatus
                                 id='deleteRoom'
                                 imageName='stop'
                                 title='Hủy kích hoạt'
                                 subTitle='Xóa vĩnh viễn nhà/phòng cho thuê của bạn
-                                                        khỏi AirJ18.'
-                            />
+                                                        khỏi AirJ18.' */}
+                            {/* /> */}
                         </div>
                     </div>
                     <BoxFooter sectionKey='status' idInput='' hideEditBox={hideEditBox} />

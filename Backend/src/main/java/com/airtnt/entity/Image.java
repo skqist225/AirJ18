@@ -1,5 +1,7 @@
 package com.airtnt.entity;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -46,5 +48,22 @@ public class Image {
 		}
 
 		return "/room_images/" + userName + "/" + roomId + "/" + this.image;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Image other = (Image) obj;
+		return id == other.id && Objects.equals(image, other.image);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, image);
 	}
 }

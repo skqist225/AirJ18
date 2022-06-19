@@ -76,6 +76,7 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                                         key={group.id}
                                                         defaultValue={group.id}
                                                         selected={group.id === room?.groupId}
+                                                        value={group.id}
                                                     >
                                                         {group.name}
                                                     </option>
@@ -167,7 +168,7 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                     </div>
                                     <div>
                                         <IncAndDecBtn
-                                            dataEdit='bedRoom'
+                                            dataEdit='manage-ys__bedRoom'
                                             dataTrigger=''
                                             data={room!.accomodates}
                                         />
@@ -178,7 +179,7 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                     <div className='manage-ys__section-content-title'>Giường</div>
                                     <div>
                                         <IncAndDecBtn
-                                            dataEdit='bed'
+                                            dataEdit='manage-ys__bed'
                                             dataTrigger=''
                                             data={room!.accomodates}
                                         />
@@ -192,7 +193,7 @@ const EditRoomCount: FC<IEditRoomCountProps> = ({ room }) => {
                                     </div>
                                     <div>
                                         <IncAndDecBtn
-                                            dataEdit='bathRoom'
+                                            dataEdit='manage-ys__bathRoom'
                                             dataTrigger=''
                                             data={room!.accomodates}
                                         />
