@@ -300,7 +300,7 @@ public class AdminUserRestController {
     	if(avatar!=null) {
 			userToSave.setAvatar(StringUtils.cleanPath(avatar.getOriginalFilename()));
     	}else {
-    		userToSave.setAvatar(userDTO.getAvatar());
+    		//userToSave.setAvatar(userDTO.getAvatar());
     	}
         
         User userSaved = userService.editUser(userToSave);
