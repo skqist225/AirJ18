@@ -134,11 +134,11 @@ public class AdminUserService {
     }
     
     public User findUserById(Integer id) {
-    	User adminUserDTO = userRepository.findById(id).get();
+    	User user = userRepository.findById(id).get();
         
-        if(adminUserDTO == null)
+        if(user == null)
         	throw new UserNotFoundException("Khong tim thay User!");
         else
-        	return adminUserDTO;
+        	return user;
     }
 }
