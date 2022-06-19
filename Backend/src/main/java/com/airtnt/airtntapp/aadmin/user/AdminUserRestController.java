@@ -162,7 +162,7 @@ public class AdminUserRestController {
 				.role(userDTO.getRole())
 				.phoneNumber(userDTO.getPhoneNumber())
     			.build();
-    	
+    	 
     	if(avatar!=null) {
 			userToSave.setAvatar(StringUtils.cleanPath(avatar.getOriginalFilename()));
     	}

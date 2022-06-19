@@ -111,14 +111,15 @@ public class AdminUserService {
             throw new EmailConflictException("Email da ton tai!");
         
         List<User> list = userRepository.findAllByPhoneNumber(user.getPhoneNumber());
+        System.out.println(user.getPhoneNumber());
         Boolean isOldPhone = false;
         for(int i = 0; i < list.size(); i++) {
-        	if(list.get(i).getId()==user.getId()) {
+        	if(list.get(i).getId() == user.getId()) {
         		isOldPhone = true;
         		break;
         	}
         }
-        if (!isOldPhone)
+        if (list.size() > 0 && !isOldPhone)
             throw new PhoneNumberAlreadyUseException("So dien thoai da duoc su dung!");
         
         User userSaved = userRepository.save(user);
