@@ -27,4 +27,6 @@ public interface AdminBookingRepository extends JpaRepository<Booking, Integer>{
     		+ "where b.room.name like %?1% "
     		+ "or concat(b.customer.firstName, ' ', b.customer.lastName) like %?1% ")
     public Page<Booking> findAll(String searchText, Pageable pageable);
+	
+	public Booking findByCustomer(Integer id);
 }

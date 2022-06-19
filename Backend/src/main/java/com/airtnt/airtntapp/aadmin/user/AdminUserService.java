@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.airtnt.airtntapp.aadmin.address.AdminAddressRepository;
+import com.airtnt.airtntapp.aadmin.booking.AdminBookingRepository;
 import com.airtnt.airtntapp.aadmin.exception.EmailConflictException;
 import com.airtnt.airtntapp.aadmin.exception.ForeignKeyConstraintException;
 import com.airtnt.airtntapp.aadmin.exception.PasswordNotMatchException;
 import com.airtnt.airtntapp.aadmin.exception.PhoneNumberAlreadyUseException;
 import com.airtnt.airtntapp.aadmin.exception.UserNotFoundException;
+import com.airtnt.entity.Booking;
 import com.airtnt.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import org.springframework.stereotype.Service;
 public class AdminUserService {
     @Autowired
     AdminUserRepository userRepository;
+    
+    @Autowired
+    AdminBookingRepository bookingRepository;
 
     public Page<User> findAll(String searchText, Pageable pageable) {
     	if (searchText != null && searchText != "")
@@ -98,6 +103,12 @@ public class AdminUserService {
  
     	if(!userById.get().getFavRooms().isEmpty())
     		throw new ForeignKeyConstraintException("User co favourite room. Khong the xoa!");
+    	
+    	Booking bookingById = bookingRepository.findByCustomer(id);
+    	
+    	if (bookingById != null) {
+    		throw new ForeignKeyConstraintException("User co booking. Khong the xoa!");
+    	}
     	
     	userRepository.deleteById(id);
     	return true;
