@@ -134,6 +134,9 @@ export const cancelUserBooking = createAsyncThunk(
     async (bookingId: number, { dispatch, getState, rejectWithValue }) => {
         try {
             const data = await api.put(`/booking/${bookingId}/user/canceled`);
+
+            if (data) dispatch(setCancelledBooking(bookingId));
+
             return { data };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
@@ -176,14 +179,8 @@ export const getStripeClientSecret = createAsyncThunk(
     "booking/getStripeClientSecret",
     async (fetchPayload: IStripeArgs, { dispatch, getState, rejectWithValue }) => {
         try {
-            const {
-                data: { clientSecret },
-            } = await api.post(`/create-payment-intent`, fetchPayload, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            return { clientSecret };
+            const data = await api.post(`/create-payment-intent`, fetchPayload);
+            return { data };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
         }
@@ -194,7 +191,11 @@ export const cancelBooking = createAsyncThunk(
     "booking/cancelBooking",
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.get(`/booking/${bookingid}/canceled`);
+            const { data } = await api.put(`/booking/${bookingid}/host/canceled`);
+            const state = getState() as RootState;
+            const { fetchData } = state.booking;
+            dispatch(fetchUserBookings({ ...fetchData }));
+
             return { data };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);
@@ -225,6 +226,7 @@ type BookingState = {
     totalPages: number;
     createReviewSuccess: boolean;
     cancelBookingSuccess: boolean;
+    cancelledBookingId: number;
 };
 
 const initialState: BookingState = {
@@ -232,7 +234,7 @@ const initialState: BookingState = {
     totalElements: 0,
     loading: true,
     clientSecret: "",
-    newlyCreatedBooking: {},
+    newlyCreatedBooking: null,
     cancelMessage: "",
     fetchData: {
         query: "",
@@ -247,6 +249,7 @@ const initialState: BookingState = {
     totalPages: 0,
     createReviewSuccess: false,
     cancelBookingSuccess: false,
+    cancelledBookingId: 0,
 };
 
 const bookingSlice = createSlice({
@@ -291,6 +294,9 @@ const bookingSlice = createSlice({
             state.fetchData.sortField = "bookingDate";
             state.fetchData.sortDir = "desc";
         },
+        setCancelledBooking: (state, { payload }) => {
+            state.cancelledBookingId = payload;
+        },
     },
     extraReducers: builder => {
         builder
@@ -302,7 +308,7 @@ const bookingSlice = createSlice({
             })
             .addCase(getStripeClientSecret.fulfilled, (state, { payload }) => {
                 state.loading = false;
-                state.clientSecret = payload?.clientSecret;
+                state.clientSecret = (payload!.data as any).clientSecret!;
             })
             .addCase(createBooking.fulfilled, (state, { payload }) => {
                 state.loading = false;
@@ -340,6 +346,7 @@ export const {
     setSortField,
     setSortDir,
     clearAllFetchData,
+    setCancelledBooking,
 } = bookingSlice.actions;
 export const bookingState = (state: RootState) => state.booking;
 export default bookingSlice.reducer;

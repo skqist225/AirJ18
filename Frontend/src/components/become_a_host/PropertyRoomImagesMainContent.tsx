@@ -425,38 +425,27 @@ const PropertyRoomImagesMainContent: FC<IPropertyRoomImagesMainContentProps> = (
         formData.set("host", user!.email);
         photos.forEach(photo => formData.append("photos", photo));
 
-        const {
-            data: { status, username },
-        } = await axios.post(`/become-a-host/upload-room-photos`, formData, {
+        const data = await axios.post(`/become-a-host/upload-room-photos`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
         });
-
-        if (status === "success") {
+        if ((data.status as any) === "success") {
             isUploaded = true;
-            toast.success("🦄 Tải ảnh lên thành công", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-
+            callToast("success", "Tải ảnh lên thành công");
+            const username2 = (data as any).username;
             let room = {};
             if (!localStorage.getItem("room")) {
                 room = {
                     roomImages: photos.map(({ name }) => name),
-                    username,
+                    username: username2,
                 };
             } else {
                 room = JSON.parse(localStorage.getItem("room")!);
                 room = {
                     ...room,
                     roomImages: photos.map(({ name }) => name),
-                    username,
+                    username: username2,
                 };
             }
             localStorage.setItem("room", JSON.stringify(room));

@@ -1,11 +1,11 @@
-import { FC, useEffect } from 'react';
-import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers';
-import $ from 'jquery';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { fetchCountries } from '../../features/country/countrySlice';
-import { FloatingLabel, Form } from 'react-bootstrap';
+import { FC, useEffect } from "react";
+import { Div, Image } from "../../globalStyle";
+import { getImage } from "../../helpers";
+import $ from "jquery";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { fetchCountries } from "../../features/country/countrySlice";
+import { FloatingLabel, Form } from "react-bootstrap";
 
 interface IPropertyLocationMainContentProps {
     isAprtNoAndStreetFilledUp: boolean;
@@ -17,8 +17,8 @@ const PropertyLocationMainContent: FC<IPropertyLocationMainContentProps> = ({
     isCityFilledUp,
 }) => {
     function backToSearchLocation() {
-        $('#location__enter-address-option').removeClass('active');
-        $('.location__search-location').first().addClass('active');
+        $("#location__enter-address-option").removeClass("active");
+        $(".location__search-location").first().addClass("active");
     }
 
     const dispatch = useDispatch();
@@ -32,9 +32,9 @@ const PropertyLocationMainContent: FC<IPropertyLocationMainContentProps> = ({
             <div id='location__map'></div>
             <div id='location__enter-address-option'>
                 <Div padding='28px' className='col-flex'>
-                    <div style={{ paddingBottom: '40px' }} className='normal-flex'>
-                        <div onClick={backToSearchLocation} style={{ cursor: 'pointer' }}>
-                            <Image src={getImage('/svg/back.svg')} size='24px' />
+                    <div style={{ paddingBottom: "40px" }} className='normal-flex'>
+                        <div onClick={backToSearchLocation} style={{ cursor: "pointer" }}>
+                            <Image src={getImage("/svg/back.svg")} size='24px' />
                         </div>
                         <div className='location__confirm-address'>Xác nhận địa chỉ của bạn</div>
                     </div>
@@ -67,7 +67,7 @@ const PropertyLocationMainContent: FC<IPropertyLocationMainContentProps> = ({
                         </FloatingLabel>
 
                         <div className='form-floating'>
-                            <select className='form-select' id='country' value={'Việt Nam'}>
+                            <select className='form-select' id='country' value={"Việt Nam"}>
                                 {countries.map(c => (
                                     <option value={c.name} key={c.id}>
                                         {c.name} {c.code}
@@ -78,7 +78,7 @@ const PropertyLocationMainContent: FC<IPropertyLocationMainContentProps> = ({
                         </div>
                     </div>
 
-                    <div style={{ paddingTop: '40px' }}>
+                    <div style={{ paddingTop: "40px" }}>
                         <button
                             className='location__btn-complete-address'
                             disabled={isAprtNoAndStreetFilledUp && isCityFilledUp ? false : true}

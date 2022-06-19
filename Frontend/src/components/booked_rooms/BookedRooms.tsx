@@ -27,6 +27,7 @@ let cleanlinessRating2 = 0,
 
 const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
     const { wishlistsIDs, user, wishlistsIDsFetching } = useSelector(userState);
+    const { cancelledBookingId } = useSelector(bookingState);
     const [ratingComment, setRatingComment] = useState(booking.bookingReview);
     const [ratingComment2, setRatingComment2] = useState("");
     const [cleanlinessRating, setCleanlinessRating] = useState(0);

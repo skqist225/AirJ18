@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import BookedRoom from "../components/booked_rooms/BookedRooms";
 import Header from "../components/Header";
 import {
@@ -20,11 +20,18 @@ interface IBookedRoomsPageProps {}
 
 const BookedRoomsPage: FC<IBookedRoomsPageProps> = () => {
     const dispatch = useDispatch();
+    const { search } = useLocation();
     const { bookedRooms, ratingLabels } = useSelector(userState);
-    const { cancelBookingSuccess, createReviewSuccess } = useSelector(bookingState);
+    const { cancelBookingSuccess, createReviewSuccess, cancelledBookingId } =
+        useSelector(bookingState);
 
     useEffect(() => {
-        dispatch(fetchBookedRooms({ query: "" }));
+        let query = "";
+        if (search!.includes("?")) {
+            query = search!.split("=").pop()!;
+        }
+
+        dispatch(fetchBookedRooms({ query }));
         dispatch(fetchWishlistsIDsOfCurrentUser());
     }, []);
 
@@ -40,7 +47,12 @@ const BookedRoomsPage: FC<IBookedRoomsPageProps> = () => {
     }
 
     useEffect(() => {
-        if (cancelBookingSuccess) callToast("success", "Hủy đặt phòng thành công");
+        if (cancelBookingSuccess) {
+            callToast("success", "Hủy đặt phòng thành công");
+            $(`.button[data-booking-id="${cancelledBookingId}"]`).css("display", "none");
+            $(`.button[data-booking-id="${cancelledBookingId}"]`).remove();
+            $(`.button[data-booking-id="${cancelledBookingId}"]`).empty();
+        }
     }, [cancelBookingSuccess]);
 
     useEffect(() => {

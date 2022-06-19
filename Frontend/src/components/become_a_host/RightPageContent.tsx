@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 import { callToast } from "../../helpers";
 import { useDispatch, useSelector } from "react-redux";
-import { addRoom } from "../../features/room/roomSlice";
+import { addRoom, roomState } from "../../features/room/roomSlice";
 import { IPostAddRoom, IRoomLocalStorage } from "../../types/room/type_Room";
 import { userState } from "../../features/user/userSlice";
 
@@ -38,8 +38,13 @@ const RightPageContent: FC<IRightPageContentProps> = ({
     placeName,
     descriptions,
 }) => {
+    // if (stepNumber !== 1 && !localStorage.getItem("room")) {
+    //     window.location.href = "/";
+    // }
+
     const dispatch = useDispatch();
     const { user } = useSelector(userState);
+    const { newlyCreatedRoomId } = useSelector(roomState);
     function moveToNextPage() {
         let room: IRoomLocalStorage = {};
         switch (stepNumber) {
@@ -351,8 +356,16 @@ const RightPageContent: FC<IRightPageContentProps> = ({
         }
 
         localStorage.setItem("room", JSON.stringify(room));
-        window.location.href = `${window.location.origin}/become-a-host/${nextPage}`;
+        if (stepNumber !== 11) {
+            window.location.href = `${window.location.origin}/become-a-host/${nextPage}`;
+        }
     }
+
+    useEffect(() => {
+        if (newlyCreatedRoomId) {
+            window.location.href = `${window.location.origin}/become-a-host/${nextPage}/${newlyCreatedRoomId}`;
+        }
+    }, [newlyCreatedRoomId]);
 
     function backToHomePage() {
         window.location.href = window.location.origin;

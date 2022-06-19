@@ -37,12 +37,19 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
 
     function viewBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         const self = $(event.currentTarget);
-        window.location.href = `${window.location.origin}/booking/${self.data("booking-id")}/view`;
+        window.location.href = `${window.location.origin}/user/booked-rooms?query=${self.data(
+            "booking-id"
+        )}`;
     }
 
     function dropoutBooking(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         dispatch(cancelBooking({ bookingid: $(event.currentTarget).data("booking-id") }));
     }
+
+    const today = new Date().getTime();
+    const checkinDate = new Date(bookingRowData!.checkinDate).getTime();
+
+    console.log(bookingRowData.bookingId, today <= checkinDate);
 
     return (
         <>
@@ -264,6 +271,7 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                 <td>
                     {bookingRowData.complete === false &&
                         bookingRowData.refund === false &&
+                        today <= checkinDate &&
                         !bookingRowData.cancelDate && (
                             <button
                                 className='listings__complete-room-making listings__td-text'
@@ -273,15 +281,17 @@ const BookingDataRow: FC<IBookingDataRowProps> = ({ bookingRowData }) => {
                                 Hủy bỏ
                             </button>
                         )}
-                    {bookingRowData.complete === false && bookingRowData.refund === false && (
-                        <button
-                            className='listings__complete-room-making listings__td-text'
-                            data-booking-id={bookingRowData.bookingId}
-                            onClick={apprvBooking}
-                        >
-                            Phê duyệt
-                        </button>
-                    )}
+                    {bookingRowData.complete === false &&
+                        bookingRowData.refund === false &&
+                        today <= checkinDate && (
+                            <button
+                                className='listings__complete-room-making listings__td-text'
+                                data-booking-id={bookingRowData.bookingId}
+                                onClick={apprvBooking}
+                            >
+                                Phê duyệt
+                            </button>
+                        )}
                     {bookingRowData.complete === true && bookingRowData.refund === false && (
                         <button
                             className='listings__complete-room-making listings__td-text'

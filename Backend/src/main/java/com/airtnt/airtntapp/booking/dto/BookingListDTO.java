@@ -34,17 +34,17 @@ public class BookingListDTO implements Serializable {
     private boolean isComplete;
     private boolean isRefund;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime bookingDate;
 
     @JsonInclude(value = Include.NON_NULL)
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime cancelDate;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date checkinDate;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date checkoutDate;
 
     private float pricePerDay;

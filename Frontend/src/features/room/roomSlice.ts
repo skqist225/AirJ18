@@ -175,7 +175,7 @@ export const addRoom = createAsyncThunk(
     "room/addRoom",
     async (fd: FormData, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.post(`/room/save`, fd, {
+            const data = await api.post(`/room/save`, fd, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -352,7 +352,8 @@ const roomSlice = createSlice({
                 state.averageRoomPriceByType = payload?.data;
             })
             .addCase(addRoom.fulfilled, (state, { payload }) => {
-                state.newlyCreatedRoomId = parseInt(payload?.data as string);
+                console.log(payload);
+                state.newlyCreatedRoomId = parseInt(payload!.data as any as string);
             })
             .addCase(updateRoom.fulfilled, (state, { payload }) => {
                 state.updateSuccess = true;
