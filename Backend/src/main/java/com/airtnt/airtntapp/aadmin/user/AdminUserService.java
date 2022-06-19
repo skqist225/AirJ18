@@ -132,4 +132,13 @@ public class AdminUserService {
     	user.setStatus(!user.isStatus());
     	userRepository.save(user);
     }
+    
+    public User findUserById(Integer id) {
+    	User adminUserDTO = userRepository.findById(id).get();
+        
+        if(adminUserDTO == null)
+        	throw new UserNotFoundException("Khong tim thay User!");
+        else
+        	return adminUserDTO;
+    }
 }

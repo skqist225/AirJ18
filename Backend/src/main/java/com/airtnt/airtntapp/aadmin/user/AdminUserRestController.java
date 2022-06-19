@@ -283,18 +283,17 @@ public class AdminUserRestController {
         		;
         
         Address addressCreated = addressService.saveAddress(address);
-    	User userToSave = User.builder()
-    			.firstName(userDTO.getFirstName())
-    			.lastName(userDTO.getLastName())
-    			.password(userDTO.getPassword())
-    			.about(userDTO.getAbout())
-    			.address(addressCreated)
-				.birthday(userDTO.getBirthDay())
-				.sex(userDTO.getSex())
-				.email(userDTO.getEmail())
-				.role(userDTO.getRole())
-				.phoneNumber(userDTO.getPhoneNumber())
-    			.build();
+        User userToSave = userService.findUserById(id);
+        userToSave.setFirstName(userDTO.getFirstName());
+        userToSave.setLastName(userDTO.getLastName());
+        userToSave.setPassword(userDTO.getPassword());
+        userToSave.setAbout(userDTO.getAbout());
+        userToSave.setAddress(addressCreated);
+        userToSave.setBirthday(userDTO.getBirthDay());
+        userToSave.setSex(userDTO.getSex());
+        userToSave.setEmail(userDTO.getEmail());
+        userToSave.setRole(userDTO.getRole());
+		userToSave.setPhoneNumber(userDTO.getPhoneNumber());
     	userToSave.setId(id);
         
     	if(avatar!=null) {
