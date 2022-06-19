@@ -1,5 +1,8 @@
-import { FC } from 'react';
-import IAmenity from '../../../types/type_Amenity';
+import { FC } from "react";
+import { useSelector } from "react-redux";
+import { roomState } from "../../../features/room/roomSlice";
+import IAmenity from "../../../types/type_Amenity";
+import $ from "jquery";
 
 interface IRoomAmenitiesProps {
     title: string;
@@ -8,6 +11,21 @@ interface IRoomAmenitiesProps {
 }
 
 const RoomAmenities: FC<IRoomAmenitiesProps> = ({ title, amentities, dataType }) => {
+    const { room } = useSelector(roomState);
+
+    const amenitiesIds = room?.amenities.map(({ id }) => id);
+    console.log(amenitiesIds);
+
+    if (room!.amenities) {
+        $(".manage-ys__uncheck-btn").each(function () {
+            if (!amenitiesIds!.includes($(this).data("edit"))) {
+                $(this).addClass("checked");
+                $(this)
+                    .siblings(`.manage-ys__check-btn.${$(this).data("edit")}`)
+                    .removeClass("checked");
+            }
+        });
+    }
     return (
         <div>
             <div className='manage-ys__header-edit-main-title'>{title}</div>
@@ -16,9 +34,9 @@ const RoomAmenities: FC<IRoomAmenitiesProps> = ({ title, amentities, dataType })
                     <div
                         className='flex-space'
                         style={{
-                            height: '80px',
-                            padding: ' 24px 0',
-                            borderBottom: '1px solid rgb(221, 221, 221)',
+                            height: "80px",
+                            padding: " 24px 0",
+                            borderBottom: "1px solid rgb(221, 221, 221)",
                         }}
                         key={amentity.id}
                     >
@@ -36,13 +54,13 @@ const RoomAmenities: FC<IRoomAmenitiesProps> = ({ title, amentities, dataType })
                                         role='presentation'
                                         focusable='false'
                                         style={{
-                                            display: 'block',
-                                            fill: 'none',
-                                            height: '16px',
-                                            width: '16px',
-                                            stroke: ' rgb(113, 113, 113)',
-                                            strokeWidth: '3',
-                                            overflow: 'visible',
+                                            display: "block",
+                                            fill: "none",
+                                            height: "16px",
+                                            width: "16px",
+                                            stroke: " rgb(113, 113, 113)",
+                                            strokeWidth: "3",
+                                            overflow: "visible",
                                         }}
                                     >
                                         <path d='m6 6 20 20'></path>
@@ -51,7 +69,7 @@ const RoomAmenities: FC<IRoomAmenitiesProps> = ({ title, amentities, dataType })
                                 </span>
                             </button>
                             <button
-                                className='manage-ys__check-btn'
+                                className={`manage-ys__check-btn ${amentity.id}`}
                                 data-edit={amentity.id}
                                 data-type={dataType}
                             >
@@ -63,13 +81,13 @@ const RoomAmenities: FC<IRoomAmenitiesProps> = ({ title, amentities, dataType })
                                         role='presentation'
                                         focusable='false'
                                         style={{
-                                            display: 'block',
-                                            fill: 'none',
-                                            height: '16px',
-                                            width: '16px',
-                                            stroke: 'currentcolor',
-                                            strokeWidth: '3',
-                                            overflow: 'visible',
+                                            display: "block",
+                                            fill: "none",
+                                            height: "16px",
+                                            width: "16px",
+                                            stroke: "currentcolor",
+                                            strokeWidth: "3",
+                                            overflow: "visible",
                                         }}
                                     >
                                         <path fill='none' d='m4 16.5 8 8 16-16'></path>

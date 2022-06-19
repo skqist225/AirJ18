@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC } from "react";
 
-import $ from 'jquery';
-import { IRoomDetails } from '../../../types/room/type_RoomDetails';
+import $ from "jquery";
+import { IRoomDetails } from "../../../types/room/type_RoomDetails";
 
 interface IDisplayEditUIProps {
     sectionKey: string;
@@ -17,17 +17,17 @@ const DisplayEditUI: FC<IDisplayEditUIProps> = ({
     room,
 }) => {
     function displayEditBox() {
-        $(`#manage-ys__${sectionKey}-control-container`).addClass('unhideEditBox');
-        $(`#manage-ys__${sectionKey}-control-view`).addClass('hideViewBox');
+        $(`#manage-ys__${sectionKey}-control-container`).addClass("unhideEditBox");
+        $(`#manage-ys__${sectionKey}-control-view`).addClass("hideViewBox");
 
         console.log($(`#manage-ys__${sectionKey}-control-view`));
 
         switch (sectionKey) {
-            case 'name': {
+            case "name": {
                 setRoomName && setRoomName(room?.name);
                 break;
             }
-            case 'description': {
+            case "description": {
                 setRoomDescription && setRoomDescription(room?.description);
                 break;
             }

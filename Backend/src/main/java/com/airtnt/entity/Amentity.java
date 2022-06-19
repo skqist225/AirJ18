@@ -1,5 +1,7 @@
 package com.airtnt.entity;
 
+import java.util.Objects;
+
 import javax.persistence.*;
 import lombok.*;
 
@@ -49,4 +51,26 @@ public class Amentity extends BaseEntity {
 	public String getIconImagePath() {
 		return "/amentity_images/" + this.iconImage;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(amentityCategory, description, favorite, iconImage, name, prominent, safe);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Amentity other = (Amentity) obj;
+		return Objects.equals(amentityCategory, other.amentityCategory)
+				&& Objects.equals(description, other.description) && favorite == other.favorite
+				&& Objects.equals(iconImage, other.iconImage) && Objects.equals(name, other.name)
+				&& prominent == other.prominent && safe == other.safe;
+	}
+	
+	
 }

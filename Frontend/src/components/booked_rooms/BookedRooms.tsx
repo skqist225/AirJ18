@@ -1,16 +1,16 @@
-import { FC, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { Div, Image } from '../../globalStyle';
-import { callToast, getImage } from '../../helpers';
-import { IBookedRoom, IRatingLabel } from '../../types/user/type_User';
-import { MyNumberForMat } from '../utils';
-import { addClickEventForLoveButton } from '../home/script/add_to_wishlists';
-import { userState } from '../../features/user/userSlice';
-import initComp from './script';
-import Toast from '../notify/Toast';
+import { FC, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Div, Image } from "../../globalStyle";
+import { callToast, getImage } from "../../helpers";
+import { IBookedRoom, IRatingLabel } from "../../types/user/type_User";
+import { MyNumberForMat } from "../utils";
+import { addClickEventForLoveButton } from "../home/script/add_to_wishlists";
+import { userState } from "../../features/user/userSlice";
+import initComp from "./script";
+import Toast from "../notify/Toast";
 
-import $ from 'jquery';
+import $ from "jquery";
 
 interface IBookedRoomProps {
     booking: IBookedRoom;
@@ -29,31 +29,31 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
 
     function reviewSubmit(self: JQuery<HTMLElement>) {
         if (!ratingComment) {
-            callToast('warning', 'Vui lòng để lại bình luận!');
+            callToast("warning", "Vui lòng để lại bình luận!");
             return;
         }
 
         window.location.href = `${window.location.origin}/user/rating/${self.data(
-            'booking-id'
+            "booking-id"
         )}?cleanlinessRating=${cleanlinessRating}&contactRating=${contactRating}&checkinRating=${checkinRating}&accuracyRating=${accuracyRating}&locationRating=${locationRating}&valueRating=${valueRating}&comment=${ratingComment}`;
     }
 
     function displayEditThumbnailBox(self: JQuery<HTMLElement>) {
         //find matching booking id and open up review section.
-        $('.chooseRoomThumbnail').each(function () {
-            if (parseInt($(this).data('booking-id')) === parseInt(self.data('booking-id'))) {
-                $(this).addClass('active');
-                $('#user-bookings__mainContainer').addClass('unactive');
+        $(".chooseRoomThumbnail").each(function () {
+            if (parseInt($(this).data("booking-id")) === parseInt(self.data("booking-id"))) {
+                $(this).addClass("active");
+                $("#user-bookings__mainContainer").addClass("unactive");
             }
         });
 
-        $('.ratingContainer', '.chooseRoomThumbnail.active').each(function () {
-            const cleanliness = parseInt($(this).data('rating-cleanliness'));
-            const contact = parseInt($(this).data('rating-contact'));
-            const checkin = parseInt($(this).data('rating-checkin'));
-            const accuracy = parseInt($(this).data('rating-accuracy'));
-            const location = parseInt($(this).data('rating-location'));
-            const value = parseInt($(this).data('rating-value'));
+        $(".ratingContainer", ".chooseRoomThumbnail.active").each(function () {
+            const cleanliness = parseInt($(this).data("rating-cleanliness"));
+            const contact = parseInt($(this).data("rating-contact"));
+            const checkin = parseInt($(this).data("rating-checkin"));
+            const accuracy = parseInt($(this).data("rating-accuracy"));
+            const location = parseInt($(this).data("rating-location"));
+            const value = parseInt($(this).data("rating-value"));
 
             setCleanlinessRating(cleanliness);
             setContactRating(contact);
@@ -62,74 +62,74 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
             setLocationRating(location);
             setValueRating(value);
 
-            $('.ratingStarContainer').each(function () {
+            $(".ratingStarContainer").each(function () {
                 const children = $(this).children();
-                const label = $(this).data('label');
+                const label = $(this).data("label");
 
                 switch (label) {
-                    case 'Mức độ sạch sẽ': {
+                    case "Mức độ sạch sẽ": {
                         children.each(function () {
-                            const svg = $(this).children('svg');
+                            const svg = $(this).children("svg");
                             if (
-                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                $(this).children(".ratingStar").data("star-value") * 1 <=
                                 cleanlinessRating
                             )
-                                $(this).children('.ratingStar').addClass('selected');
+                                $(this).children(".ratingStar").addClass("selected");
                         });
                         break;
                     }
-                    case 'Độ chính xác': {
+                    case "Độ chính xác": {
                         children.each(function () {
-                            const svg = $(this).children('svg');
+                            const svg = $(this).children("svg");
                             if (
-                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                $(this).children(".ratingStar").data("star-value") * 1 <=
                                 accuracyRating
                             )
-                                $(this).children('.ratingStar').addClass('selected');
+                                $(this).children(".ratingStar").addClass("selected");
                         });
                         break;
                     }
-                    case 'Liên lạc': {
+                    case "Liên lạc": {
                         children.each(function () {
-                            const svg = $(this).children('svg');
+                            const svg = $(this).children("svg");
                             if (
-                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                $(this).children(".ratingStar").data("star-value") * 1 <=
                                 contactRating
                             )
-                                $(this).children('.ratingStar').addClass('selected');
+                                $(this).children(".ratingStar").addClass("selected");
                         });
                         break;
                     }
-                    case 'Vị trí': {
+                    case "Vị trí": {
                         children.each(function () {
-                            const svg = $(this).children('svg');
+                            const svg = $(this).children("svg");
                             if (
-                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                $(this).children(".ratingStar").data("star-value") * 1 <=
                                 locationRating
                             )
-                                $(this).children('.ratingStar').addClass('selected');
+                                $(this).children(".ratingStar").addClass("selected");
                         });
                         break;
                     }
-                    case 'Nhận phòng': {
+                    case "Nhận phòng": {
                         children.each(function () {
-                            const svg = $(this).children('svg');
+                            const svg = $(this).children("svg");
                             if (
-                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                $(this).children(".ratingStar").data("star-value") * 1 <=
                                 checkinRating
                             )
-                                $(this).children('.ratingStar').addClass('selected');
+                                $(this).children(".ratingStar").addClass("selected");
                         });
                         break;
                     }
-                    case 'Giá trị': {
+                    case "Giá trị": {
                         children.each(function () {
-                            const svg = $(this).children('svg');
+                            const svg = $(this).children("svg");
                             if (
-                                $(this).children('.ratingStar').data('star-value') * 1 <=
+                                $(this).children(".ratingStar").data("star-value") * 1 <=
                                 valueRating
                             )
-                                $(this).children('.ratingStar').addClass('selected');
+                                $(this).children(".ratingStar").addClass("selected");
                         });
                         break;
                     }
@@ -156,8 +156,8 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
     }, [wishlistsIDsFetching, user]);
 
     function hideEditThumbnailBox() {
-        $('.chooseRoomThumbnail').removeClass('active');
-        $('#user-bookings__mainContainer').removeClass('unactive');
+        $(".chooseRoomThumbnail").removeClass("active");
+        $("#user-bookings__mainContainer").removeClass("unactive");
     }
 
     return (
@@ -178,19 +178,19 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         role='presentation'
                                         viewBox='0 0 32 32'
                                         style={{
-                                            display: 'block',
-                                            fill: 'none',
-                                            height: '16px',
-                                            width: '16px',
-                                            stroke: 'currentcolor',
+                                            display: "block",
+                                            fill: "none",
+                                            height: "16px",
+                                            width: "16px",
+                                            stroke: "currentcolor",
                                             strokeWidth: 2,
-                                            overflow: 'visible',
+                                            overflow: "visible",
                                         }}
                                         className='heartSvg'
                                     >
                                         <path d='m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z'></path>
                                     </svg>
-                                    <span style={{ marginLeft: '5px' }} className='inline-block'>
+                                    <span style={{ marginLeft: "5px" }} className='inline-block'>
                                         Yêu thích
                                     </span>
                                 </button>
@@ -212,12 +212,12 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                             {booking.complete === true && booking.refund === false && (
                                 <div
                                     style={{
-                                        padding: '1px 6px',
-                                        borderRadius: '4px',
-                                        backgroundColor: 'rgb(203 244 201)',
+                                        padding: "1px 6px",
+                                        borderRadius: "4px",
+                                        backgroundColor: "rgb(203 244 201)",
                                     }}
                                 >
-                                    <span style={{ color: 'rgba(14, 98, 69, 1)' }}>
+                                    <span style={{ color: "rgba(14, 98, 69, 1)" }}>
                                         <svg
                                             aria-hidden='true'
                                             className='
@@ -239,16 +239,16 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                     </span>
                                     <span className='booking-status'> Hoàn tất </span>
                                 </div>
-                            )}{' '}
+                            )}{" "}
                             {booking.complete === false && booking.refund === false && (
                                 <div
                                     style={{
-                                        padding: '1px 6px',
-                                        borderRadius: '4px',
-                                        backgroundColor: 'rgb(227 232 238)',
+                                        padding: "1px 6px",
+                                        borderRadius: "4px",
+                                        backgroundColor: "rgb(227 232 238)",
                                     }}
                                 >
-                                    <span style={{ color: 'rgba(14, 98, 69, 1)' }}>
+                                    <span style={{ color: "rgba(14, 98, 69, 1)" }}>
                                         <svg
                                             aria-hidden='true'
                                             className='
@@ -261,7 +261,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                             width='12'
                                             viewBox='0 0 16 16'
                                             xmlns='http://www.w3.org/2000/svg'
-                                            style={{ fill: 'rgb(105 115 134)' }}
+                                            style={{ fill: "rgb(105 115 134)" }}
                                         >
                                             <path
                                                 d='M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16zm1-8.577V4a1 1 0 1 0-2 0v4a1 1 0 0 0 .517.876l2.581 1.49a1 1 0 0 0 1-1.732z'
@@ -269,18 +269,19 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                             ></path>
                                         </svg>
                                     </span>
-                                    <span className='booking-status'>Đang phê duyệt</span>
+                                    <span className='booking-status'>{"Đang phê duyệt"}</span>
+                                    {/*?"Quá thời hạn phê duyệt => Đã hủy" : */}
                                 </div>
                             )}
                             {booking.refund === true && (
                                 <div
                                     style={{
-                                        backgroundColor: 'rgb(227 232 238)',
-                                        padding: '1px 6px',
-                                        borderRadius: '4px',
+                                        backgroundColor: "rgb(227 232 238)",
+                                        padding: "1px 6px",
+                                        borderRadius: "4px",
                                     }}
                                 >
-                                    <span style={{ color: 'rgba(14, 98, 69, 1)' }}>
+                                    <span style={{ color: "rgba(14, 98, 69, 1)" }}>
                                         <svg
                                             aria-hidden='true'
                                             className='
@@ -302,7 +303,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                     </span>
                                     <span
                                         className='booking-status fs-14'
-                                        style={{ color: 'rgba(14, 98, 69, 1)' }}
+                                        style={{ color: "rgba(14, 98, 69, 1)" }}
                                     >
                                         Đã hủy
                                     </span>
@@ -315,15 +316,15 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                             <img
                                 src={getImage(booking.roomThumbnail)}
                                 className='w100-h100'
-                                style={{ borderRadius: '8px' }}
+                                style={{ borderRadius: "8px" }}
                                 alt={booking.roomThumbnail}
                             />
                         </Div>
                         <Div className='normal-flex' width='100%'>
-                            <div style={{ paddingLeft: '12px', maxWidth: '65%' }} className='f1'>
+                            <div style={{ paddingLeft: "12px", maxWidth: "65%" }} className='f1'>
                                 <div className='user-bookings__room-name'>{booking.roomName}</div>
                                 <div>
-                                    <div style={{ color: '#717171' }} className='fs-14'>
+                                    <div style={{ color: "#717171" }} className='fs-14'>
                                         {booking.privacyType} tại
                                         {booking.roomCategory}
                                     </div>
@@ -341,7 +342,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                 </div>
                             </div>
                             <div
-                                style={{ maxWidth: '35%', alignItems: 'flex-end' }}
+                                style={{ maxWidth: "35%", alignItems: "flex-end" }}
                                 className='col-flex f1'
                             >
                                 <Div width='100%' className='flex'>
@@ -360,6 +361,11 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                 <MyNumberForMat
                                                     currency={booking.currency}
                                                     price={booking.pricePerDay}
+                                                    stayType={
+                                                        booking.priceType == "PER_NIGHT"
+                                                            ? "đêm"
+                                                            : "tuần"
+                                                    }
                                                     priceFontSize='16px'
                                                     stayTypeFontSize='16px'
                                                 />
@@ -382,6 +388,11 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                             <MyNumberForMat
                                                 price={booking.siteFee}
                                                 currency={booking.currency}
+                                                stayType={
+                                                    booking.priceType == "PER_NIGHT"
+                                                        ? "đêm"
+                                                        : "tuần"
+                                                }
                                             />
                                         </span>
                                     </div>
@@ -390,8 +401,8 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                     <div className='fw-600 fs-16'>Thời gian ở:</div>
                                     <div className='normal-flex fw-600 jc-fe f1'>
                                         {booking.numberOfDays}
-                                        <span style={{ marginLeft: '5px' }}>
-                                            {booking.priceType === 'PER_NIGHT' ? 'đêm' : 'tuần'}
+                                        <span style={{ marginLeft: "5px" }}>
+                                            {booking.priceType === "PER_NIGHT" ? "đêm" : "tuần"}
                                         </span>
                                     </div>
                                 </Div>
@@ -401,17 +412,18 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                 </div>
                 <div className='col-flex user-bookings__booking-footer'>
                     <div
-                        style={{ alignSelf: 'flex-end', marginBottom: '10px' }}
+                        style={{ alignSelf: "flex-end", marginBottom: "10px" }}
                         className='f1 flex'
                     >
                         <span className='fw-600 fs-16'>Tổng số tiền: </span>
-                        <span className='inline-block' style={{ marginLeft: '10px' }}>
-                            <span style={{ color: 'rgb(255, 56, 92)' }} className='fw-600'>
+                        <span className='inline-block' style={{ marginLeft: "10px" }}>
+                            <span style={{ color: "rgb(255, 56, 92)" }} className='fw-600'>
                                 <MyNumberForMat
                                     price={
                                         booking.pricePerDay * booking.numberOfDays + booking.siteFee
                                     }
                                     currency={booking.currency}
+                                    stayType={booking.priceType == "PER_NIGHT" ? "đêm" : "tuần"}
                                     priceFontSize='20px'
                                     stayTypeFontSize='20px'
                                     isSuffix
@@ -426,7 +438,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                     <button className='button bg-red'>Xem phòng</button>
                                 </div>
                             </Link>
-                            <Link to={'/'}>
+                            <Link to={"/"}>
                                 <div className='mr-10'>
                                     <button className='button bg-normal'>Tiếp tục đặt phòng</button>
                                 </div>
@@ -438,7 +450,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                         data-booking-id={booking.roomId}
                                         onClick={e => displayEditThumbnailBox($(e.currentTarget))}
                                     >
-                                        {ratingComment !== null ? 'Xem đánh giá' : 'Đánh giá'}
+                                        {ratingComment !== null ? "Xem đánh giá" : "Đánh giá"}
                                     </button>
 
                                     <div
@@ -450,9 +462,9 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                 <div id='boxHeader' className='normal-flex'>
                                                     <div onClick={() => hideEditThumbnailBox()}>
                                                         <Image
-                                                            src={getImage('/svg/close2.svg')}
+                                                            src={getImage("/svg/close2.svg")}
                                                             size='16px'
-                                                            style={{ cursor: 'pointer' }}
+                                                            style={{ cursor: "pointer" }}
                                                         />
                                                     </div>
                                                     <div className='manage-photos__title f1 flex jc-center'>
@@ -480,7 +492,7 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                                 </div>
                                                                 <div>
                                                                     <div className='fs-14 717171'>
-                                                                        {booking.privacyType} tại{' '}
+                                                                        {booking.privacyType} tại{" "}
                                                                         <span> </span>
                                                                         {booking.roomCategory}
                                                                     </div>
@@ -615,8 +627,8 @@ const BookedRoom: FC<IBookedRoomProps> = ({ booking, ratingLabels }) => {
                                                             style={{
                                                                 display:
                                                                     ratingComment !== null
-                                                                        ? 'none'
-                                                                        : 'block',
+                                                                        ? "none"
+                                                                        : "block",
                                                             }}
                                                         >
                                                             Đánh giá

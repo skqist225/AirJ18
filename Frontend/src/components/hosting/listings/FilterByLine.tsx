@@ -132,7 +132,7 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
                 }
                 footerOf='status'
             />
-            <FilterButton
+            {/* <FilterButton
                 dataDropDown='listings__filter-others'
                 title='Các bộ lọc khác'
                 width='300px'
@@ -154,7 +154,7 @@ const FilterByLine: FC<IFilterByLineProps> = () => {
                     </>
                 }
                 footerOf='others'
-            />
+            /> */}
 
             <FilterButton
                 dataDropDown='clearFilter'

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,8 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Service;
 
 import com.airtnt.airtntapp.FileUploadUtil;
+import com.airtnt.airtntapp.amentity.AmentityService;
+import com.airtnt.airtntapp.amentity.dto.AmenityRoomDetailsDTO;
 import com.airtnt.airtntapp.city.CityRepository;
 import com.airtnt.airtntapp.exception.RoomNotFoundException;
 import com.airtnt.airtntapp.privacy.PrivacyTypeRepository;
@@ -44,6 +47,7 @@ import com.airtnt.entity.Amentity;
 import com.airtnt.entity.Category;
 import com.airtnt.entity.City;
 import com.airtnt.entity.Country;
+import com.airtnt.entity.Image;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.RoomGroup;
 import com.airtnt.entity.RoomPrivacy;
@@ -75,6 +79,9 @@ public class RoomService {
 
 	@Autowired
 	private EntityManager entityManager;
+	
+	@Autowired
+	private AmentityService amentityService;
 
 	public Room save(Room room) {
 		return roomRepository.save(room);
@@ -270,6 +277,8 @@ public class RoomService {
 
 	public String updateField(Integer roomId, String fieldName, Map<String, String> values) {
 		Room room = roomRepository.getById(roomId);
+
+		System.out.println("field name: " + fieldName);
 		switch (fieldName) {
 		case "name": {
 			room.setName(values.get(fieldName));
@@ -332,38 +341,52 @@ public class RoomService {
 		}
 		case "amentities": {
 
-			Set<Amentity> updatedAmentities = room.getAmentities();
+			Set<Amentity> updatedAmentities = new HashSet<Amentity>();
+			List<Amentity> amentities = amentityService.getAllAmentities();
+			for(Amentity a : amentities) {
+				updatedAmentities.add(a);
+			}
 
 			String[] checkedArr = values.get("checked").split(",");
 			String[] uncheckedArr = values.get("unchecked").split(",");
 
+			System.out.println("checked");
 			for (String s : checkedArr)
 				System.out.println(s);
 
+			System.out.println("unchecked");
 			for (String s : uncheckedArr)
 				System.out.println(s);
-
-			System.out.println(checkedArr.length);
-			System.out.println(uncheckedArr.length);
-
-			for (Amentity a : updatedAmentities) {
-				for (int i = 0; i < uncheckedArr.length; i++) {
-					if (!uncheckedArr[i].equals("") && a.getId() == Integer.parseInt(uncheckedArr[i])) {
-						updatedAmentities.remove(a);
-					} else
-						continue;
+			
+			for(Amentity amentity : amentities) {
+				if(values.get("unchecked").contains(amentity.getId().toString())) {
+					updatedAmentities.remove(amentity);
 				}
 			}
-
-			for (int i = 0; i < checkedArr.length; i++) {
-				if (!checkedArr[i].equals(""))
-					updatedAmentities.add(new Amentity(Integer.parseInt(checkedArr[i])));
+			
+			for(Amentity amentity : amentities) {
+				if(values.get("checked").contains(amentity.getId().toString())) {
+					updatedAmentities.add(amentity);
+				}
 			}
 
 			room.setAmentities(updatedAmentities);
 			break;
 		}
 		case "thumbnail": {
+//			room.getImages().remove(new Image(values.get("thumbnail")));
+			boolean isHaving = false;
+			for (Image image : room.getImages()) {
+				if (image.getImage().equals(room.getThumbnail())) {
+					isHaving = true;
+					break;
+				}
+			}
+			if (!isHaving) {
+				room.getImages().add(new Image(room.getThumbnail()));
+			}
+
+			System.out.println("updated thumbnail: " + values.get("thumbnail"));
 			room.setThumbnail(values.get("thumbnail"));
 			break;
 		}
@@ -502,13 +525,16 @@ public class RoomService {
 		}
 
 		if (!StringUtils.isEmpty(filters.get("status"))) {
+			System.out.println("status" + filters.get("status"));
 			String[] statuses = filters.get("status").split(" ");
-			for (int i = 0; i < statuses.length; i++) {
-				boolean x = statuses[i].equals("ACTIVE");
-				statusesID.add(x);
-			}
+			if(statuses.length != 2) {
+				for (int i = 0; i < statuses.length; i++) {
+					boolean x = statuses[i].equals("ACTIVE");
+					statusesID.add(x);
+				}
 
-			predicates.add(criteriaBuilder.and(roomStatus.in(statusesID)));
+				predicates.add(criteriaBuilder.and(roomStatus.in(statusesID)));
+			}
 		}
 
 		if (!StringUtils.isEmpty(query)) {

@@ -200,17 +200,12 @@ export const updateRoom = createAsyncThunk(
         { dispatch, getState, rejectWithValue }
     ) => {
         try {
-            const { data } = await api.post(
+            const data = await api.post(
                 `/manage-your-space/update/${roomid}/${fieldName}`,
-                postObj,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+                postObj
             );
 
-            if (data === "OK") {
+            if (data) {
                 dispatch(fetchRoomById({ roomid: roomid.toString() }));
                 dispatch(resetUpdateStatus());
             }
@@ -240,6 +235,7 @@ type RoomState = {
     };
     newlyCreatedRoomId: number;
     updateSuccess: boolean;
+    photos: File[];
 };
 
 const initialState: RoomState = {
@@ -270,6 +266,7 @@ const initialState: RoomState = {
     },
     newlyCreatedRoomId: 0,
     updateSuccess: false,
+    photos: [],
 };
 
 const roomSlice = createSlice({
@@ -314,13 +311,16 @@ const roomSlice = createSlice({
             state.filterObject.amenityIDs = payload;
         },
         setStatus: (state, { payload }) => {
-            state.filterObject.amenityIDs = payload;
+            state.filterObject.statuses = payload;
         },
         setSortField: (state, { payload }) => {
             state.filterObject.sortField = payload;
         },
         setSortDir: (state, { payload }) => {
             state.filterObject.sortDir = payload;
+        },
+        setPhotos: (state, { payload }) => {
+            state.photos = [...state.photos, payload];
         },
     },
     extraReducers: builder => {
@@ -355,7 +355,7 @@ const roomSlice = createSlice({
                 state.newlyCreatedRoomId = parseInt(payload?.data as string);
             })
             .addCase(updateRoom.fulfilled, (state, { payload }) => {
-                if (payload?.data === "OK") state.updateSuccess = true;
+                state.updateSuccess = true;
             })
             .addMatcher(
                 isAnyOf(fetchRoomsByCategoryAndConditions.pending, fetchRoomById.pending),
@@ -384,6 +384,7 @@ export const {
         setStatus,
         setSortField,
         setSortDir,
+        setPhotos,
     },
 } = roomSlice;
 
