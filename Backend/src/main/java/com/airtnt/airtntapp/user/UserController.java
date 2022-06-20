@@ -16,7 +16,7 @@ import com.airtnt.airtntapp.country.CountryService;
 import com.airtnt.airtntapp.exception.BookingNotFoundException;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.review.ReviewService;
-import com.airtnt.airtntapp.security.AirtntUserDetails;
+import com.airtnt.airtntapp.security.UserDetailsImpl;
 import com.airtnt.airtntapp.state.StateService;
 import com.airtnt.airtntapp.user.dto.RatingDTO;
 import com.airtnt.entity.Address;
@@ -149,7 +149,7 @@ public class UserController {
     }
 
     @GetMapping("personal-info")
-    public String personalInfo(ModelMap model, @AuthenticationPrincipal AirtntUserDetails userDetails)
+    public String personalInfo(ModelMap model, @AuthenticationPrincipal UserDetailsImpl userDetails)
             throws UserNotFoundException {
         User user = userService.findByEmail(userDetails.getUsername());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

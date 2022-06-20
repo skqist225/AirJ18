@@ -1,8 +1,7 @@
 package com.airtnt.airtntapp.user;
 
 import com.airtnt.entity.User;
-
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
 
-    public User findByEmail(String email);
+    public Optional<User> findByEmail(String email);
 
     @Modifying
     @Query(value = "UPDATE User u SET u.phoneVerified = true WHERE u.id = ?1")
@@ -34,8 +33,5 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query("SELECT count(*) From User ")
     public Integer getNumberOfUser();
 
-    public List<User> findByPhoneNumber(String phoneNumber);
-
-    @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber")
-    public User findByPhoneNumber2(String phoneNumber);
+    public Optional<User> findByPhoneNumber(String phoneNumber);
 }

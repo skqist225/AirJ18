@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.airtnt.airtntapp.exception.UserNotFoundException;
 import com.airtnt.airtntapp.room.RoomService;
-import com.airtnt.airtntapp.security.AirtntUserDetails;
+import com.airtnt.airtntapp.security.UserDetailsImpl;
 import com.airtnt.entity.Room;
 import com.airtnt.entity.User;
 
@@ -34,7 +34,7 @@ public class UserRestController {
 
     @PostMapping("check-password-constraint")
     public String checkPasswordConstaint(@RequestBody Map<String, String> payLoad,
-            @AuthenticationPrincipal AirtntUserDetails userDetails) throws UserNotFoundException {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) throws UserNotFoundException {
         Integer userId = Integer.parseInt(payLoad.get("userId").toString());
         User currentUser = userService.findById(userId);
         String oldPassword = payLoad.get("oldPassword").toString();
@@ -104,7 +104,7 @@ public class UserRestController {
 
     @PostMapping("check-email-constraint")
     public String checkEmailConstraint(@RequestBody Map<String, String> payLoad,
-            @AuthenticationPrincipal AirtntUserDetails userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String email = payLoad.get("email").toString();
         Integer userId = Integer.parseInt(payLoad.get("userId").toString());
 

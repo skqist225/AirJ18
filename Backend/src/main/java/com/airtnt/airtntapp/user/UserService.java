@@ -1,25 +1,30 @@
 package com.airtnt.airtntapp.user;
 
-import java.util.Iterator;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import com.airtnt.airtntapp.country.CountryRepository;
 import com.airtnt.airtntapp.exception.DuplicatedEntryPhoneNumberExeption;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
+import com.airtnt.airtntapp.security.UserDetailsImpl;
+import com.airtnt.airtntapp.security.UserDetailsImpl;
 import com.airtnt.airtntapp.user.admin.RoleRepository;
 import com.airtnt.entity.Country;
 import com.airtnt.entity.Role;
 import com.airtnt.entity.User;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -58,8 +63,8 @@ public class UserService {
 	}
 
 	public boolean isEmailUnique(Integer id, String email) {
-		User userByEmail = userRepository.findByEmail(email);
-
+		User userByEmail = userRepository.findByEmail(email).get();
+		
 		if (userByEmail == null)
 			return true;
 
@@ -78,20 +83,15 @@ public class UserService {
 	}
 
 	public User findByEmail(String email) throws UserNotFoundException {
-		User user = userRepository.findByEmail(email);
-		if (user != null)
-			return user;
-		else
-			throw new UserNotFoundException("User does not exist.");
+		User user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+		return user;
 	}
 
-	public User findByPhoneNumber2(String phoneNumber) throws UserNotFoundException {
-		User user = userRepository.findByPhoneNumber2(phoneNumber);
-		if (user != null)
-			return user;
-		else {
-			throw new UserNotFoundException("User does not exist.");
-		}
+	public User findByPhoneNumber(String phoneNumber) throws UserNotFoundException {
+		User user = userRepository.findByPhoneNumber(phoneNumber)
+				.orElseThrow(() -> new UserNotFoundException("User not found with phone number: " + phoneNumber));
+		return user;
 	}
 
 	@Transactional
@@ -157,7 +157,7 @@ public class UserService {
 	public void delete(Integer id) throws UserNotFoundException {
 		Long countById = userRepository.countById(id);
 		if ((countById == null || countById == 0)) {
-			throw new UserNotFoundException("Could not find any user with ID " + id);
+			throw new UserNotFoundException("User not found with id: " + id);
 		}
 
 		userRepository.deleteById(id);
@@ -167,7 +167,7 @@ public class UserService {
 		try {
 			Long countById = userRepository.countById(id);
 			if ((countById == null || countById == 0)) {
-				throw new UserNotFoundException("Could not find any user with ID " + id);
+				throw new UserNotFoundException("User not found with id: " + id);
 			}
 
 			userRepository.deleteById(id);
@@ -182,20 +182,18 @@ public class UserService {
 	}
 
 	public User findById(Integer id) throws UserNotFoundException {
-		User user = userRepository.findById(id).get();
-		if (user != null)
-			return user;
-		else
-			throw new UserNotFoundException("User does not exist.");
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+		return user;
 	}
 
-	public boolean checkPhoneNumber(String phoneNumber) {
-		List<User> users = userRepository.findByPhoneNumber(phoneNumber);
-		return users.size() > 0 ? true : false;
+	public boolean checkPhoneNumber(String phoneNumber) throws UserNotFoundException {
+		User users = userRepository.findByPhoneNumber(phoneNumber).get();
+		return users != null ? true : false;
 	}
 
 	public boolean checkEmail(String email) {
-		return userRepository.findByEmail(email) != null ? true : false;
+		return userRepository.findByEmail(email) != null;
 	}
 
 	public Integer getNumberOfUser() {

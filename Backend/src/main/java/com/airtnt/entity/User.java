@@ -142,6 +142,9 @@ public class User extends BaseEntity {
 	}
 
 	@Transient
+	public String token;
+
+	@Transient
 	public String getFullPathAddress() {
 		return this.address != null
 				? this.address.getAprtNoAndStreet() + ", " + this.address.getCity().getName() + ", "

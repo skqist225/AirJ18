@@ -7,7 +7,7 @@ import com.airtnt.airtntapp.FileUploadUtil;
 import com.airtnt.airtntapp.address.AddressRepository;
 import com.airtnt.airtntapp.exception.DuplicatedEntryPhoneNumberExeption;
 import com.airtnt.airtntapp.exception.UserNotFoundException;
-import com.airtnt.airtntapp.security.AirtntUserDetails;
+import com.airtnt.airtntapp.security.UserDetailsImpl;
 import com.airtnt.airtntapp.user.UserService;
 import com.airtnt.entity.Address;
 import com.airtnt.entity.City;
@@ -199,7 +199,7 @@ public class UserAdminController {
 	}
 
 	@GetMapping("/account")
-	public String viewDetails(@AuthenticationPrincipal AirtntUserDetails loggedUser, Model model,
+	public String viewDetails(@AuthenticationPrincipal UserDetailsImpl loggedUser, Model model,
 			RedirectAttributes ra) {
 		Integer id = loggedUser.getId();
 
