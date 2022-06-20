@@ -207,7 +207,7 @@ export const approveBooking = createAsyncThunk(
     "booking/approveBooking",
     async ({ bookingid }: { bookingid: number }, { dispatch, getState, rejectWithValue }) => {
         try {
-            const { data } = await api.get(`/booking/${bookingid}/approved`);
+            const { data } = await api.put(`/booking/${bookingid}/approved`);
             return { data };
         } catch ({ data: { errorMessage } }) {
             rejectWithValue(errorMessage);

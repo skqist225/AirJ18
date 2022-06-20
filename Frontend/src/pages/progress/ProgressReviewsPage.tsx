@@ -1,33 +1,33 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchReviews, reviewState } from '../../features/review/reviewSlice';
-import { Div, Image } from '../../globalStyle';
-import { getImage } from '../../helpers';
+import { FC, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchReviews, reviewState } from "../../features/review/reviewSlice";
+import { Div, Image } from "../../globalStyle";
+import { getImage } from "../../helpers";
 
-import $ from 'jquery';
-import '../css/progress_reviews.css';
+import $ from "jquery";
+import "../css/progress_reviews.css";
 interface IProgressReviewsPageProps {}
 
 function Star({ dataStar }: { dataStar: number }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        $('.reviews__select-rating').each(function () {
+        $(".reviews__select-rating").each(function () {
             $(this)
-                .off('click')
-                .on('click', function () {
-                    if ($(this).data('star') === 'all') {
+                .off("click")
+                .on("click", function () {
+                    if ($(this).data("star") === "all") {
                         dispatch(fetchReviews({ numberOfStars: 0 }));
-                    } else dispatch(fetchReviews({ numberOfStars: $(this).data('star') }));
+                    } else dispatch(fetchReviews({ numberOfStars: $(this).data("star") }));
                 });
         });
     }, []);
 
     return (
         <div className='reviews__select-rating flex-center fs-14' data-star={dataStar}>
-            <span style={{ fontSize: '14px', marginRight: '4px' }}>{dataStar}</span>
+            <span style={{ fontSize: "14px", marginRight: "4px" }}>{dataStar}</span>
             <span>
-                <Image src={getImage('/svg/yellowstar.svg')} size='14px' />
+                <Image src={getImage("/svg/yellowstar.svg")} size='14px' />
             </span>
         </div>
     );
@@ -39,7 +39,7 @@ function ReviewLine({ title, subRating }: { title: string; subRating: number }) 
             <div className='fs-14'>{title}</div>
             <div className='normal-flex'>
                 <div className='rdt__empty-rating'>
-                    <div id='cleanlinessRating' className={'rdt__rating w-' + subRating}></div>
+                    <div id='cleanlinessRating' className={"rdt__rating w-" + subRating}></div>
                 </div>
                 <span id='averageCleanlinessRating' className='fs-14 fw-500'>
                     {subRating}
@@ -62,10 +62,10 @@ const ProgressReviewsPage: FC<IProgressReviewsPageProps> = () => {
             {reviews && (
                 <>
                     <div className='d-flex align-items-center justify-content-center'>
-                        <div className='mr-5'>
+                        <div className='mr-10'>
                             <div
                                 className='card text-white mb-3 bg-primary'
-                                style={{ minWidth: '20rem' }}
+                                style={{ minWidth: "20rem" }}
                             >
                                 <div className='card-header text-center'>Xếp hạng tổng thể</div>
                                 <div className='card-body'>
@@ -77,6 +77,7 @@ const ProgressReviewsPage: FC<IProgressReviewsPageProps> = () => {
                                     align-items-center
                                     justify-content-center
                                 '
+                                        style={{ color: "white" }}
                                     >
                                         <span
                                             id='avgFinalRatings'
@@ -86,7 +87,7 @@ const ProgressReviewsPage: FC<IProgressReviewsPageProps> = () => {
                                         </span>
                                         <span>
                                             <Image
-                                                src={getImage('/svg/yellowstar.svg')}
+                                                src={getImage("/svg/yellowstar.svg")}
                                                 size='20px'
                                             />
                                         </span>
@@ -97,11 +98,16 @@ const ProgressReviewsPage: FC<IProgressReviewsPageProps> = () => {
                         <div className='mr-5'>
                             <div
                                 className='card text-white mb-3 bg-success'
-                                style={{ minWidth: '20rem' }}
+                                style={{ minWidth: "20rem" }}
                             >
                                 <div className='card-header text-center'>Toàn bộ đánh giá</div>
                                 <div className='card-body'>
-                                    <h5 className='card-title text-center'>{reviews.length}</h5>
+                                    <h5
+                                        className='card-title text-center'
+                                        style={{ color: "white" }}
+                                    >
+                                        {reviews.length}
+                                    </h5>
                                 </div>
                             </div>
                         </div>
@@ -122,12 +128,12 @@ const ProgressReviewsPage: FC<IProgressReviewsPageProps> = () => {
                                 <Star dataStar={value} key={value} />
                             ))}
                         </div>
-                        <div style={{ marginTop: '20px' }} className='grid-2'>
+                        <div style={{ marginTop: "20px" }} className='grid-2'>
                             {reviews.map(review => (
                                 <div className='reviews__review-box' key={review.id}>
                                     <div className='normal-flex'>
                                         <Div
-                                            style={{ alignSelf: 'flex-start' }}
+                                            style={{ alignSelf: "flex-start" }}
                                             height='calc(153px - 24px)'
                                             className='col-flex f1'
                                         >
@@ -138,13 +144,13 @@ const ProgressReviewsPage: FC<IProgressReviewsPageProps> = () => {
                                                     className='overflow-hidden rounded-border'
                                                 >
                                                     <img
-                                                        src={review.customerAvatar}
+                                                        src={getImage(review.customerAvatar)}
                                                         alt=''
                                                         className='w-100 h-100 of-c'
                                                     />
                                                 </Div>
                                                 <div
-                                                    style={{ marginLeft: '12px' }}
+                                                    style={{ marginLeft: "12px" }}
                                                     className='fs-16'
                                                 >
                                                     <div className='fw-600'>

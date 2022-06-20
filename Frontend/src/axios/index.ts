@@ -5,6 +5,14 @@ export enum DataType {
     APPLICATIONJSON = "application/json",
 }
 
+//  `${
+//         process.env.REACT_APP_NODE_ENV === "development"
+//             ? process.env.REACT_APP_LOCAL_SERVER_URL
+//             : process.env.REACT_APP_REMOTE_SERVER_URL
+//     }/api`
+
+// REACT_APP_REMOTE_SERVER_URL = "https://airj18.skqist225.xyz/api";
+
 const api = axios.create({
     baseURL: `${
         process.env.REACT_APP_NODE_ENV === "development"
